@@ -167,15 +167,21 @@ PyCharm Professional has first-class WSL interpreter support. The setup that wor
 
 PyCharm Community technically supports this too via manual interpreter setup, but Pro's WSL integration is much smoother. If you have free GitHub Student access, it includes JetBrains Pro.
 
-### VS Code (the path that worked for HW5)
+### VS Code on WSL (the delta from Vestal's PyCharm tutorial)
 
-This is the exact recipe that got HW5 (`FinTech533/Homeworks/HW5/Mario_BreakoutStrategy.ipynb`) running in VS Code after a PyCharm-to-VS Code migration. No `.vscode/settings.json` was needed — interpreter and kernel were picked manually each session via the command palette and the notebook's kernel selector. PyCharm hides every one of these steps; VS Code does not.
+Vestal's official ShinyBroker walkthrough ([shinybroker.com](https://shinybroker.com), "ShinyBroker Part I: Hello World") assumes **PyCharm on Windows, with TWS on the same Windows machine**. Run that recipe verbatim and it works on the first try. PyCharm Pro autodetects the venv interpreter, the Jupyter integration picks up the kernel, the terminal is the right shell, and `host='127.0.0.1'` reaches TWS because Python and TWS share a localhost.
 
-**Step 1 — Install the WSL Remote extension on Windows VS Code.**
-Extension ID: `ms-vscode-remote.remote-wsl`. Without it, VS Code reads WSL files over a slow file share and Python integration silently misbehaves.
+This project's authors run the strategy from **VS Code attached to WSL, with TWS on the Windows host**. That setup keeps the data and venv on the Linux filesystem (faster pip, cleaner shell, easier reproducibility for Robert and graders) but introduces a network boundary and a stack of VS Code-specific friction that PyCharm hides.
 
-**Step 2 — Install these extensions *inside WSL*, not on Windows.**
-Once VS Code is connected to WSL, the Extensions pane splits installed extensions into "Local - Installed in Windows" and "WSL: \<distro\>". Every extension below must appear under the WSL section (click "Install in WSL" if it only shows up locally). This is the exact set installed in the WSL distro that ran HW5:
+The list below is *only the deltas* from Vestal's PyCharm path. Every step PyCharm performs implicitly that VS Code does not is called out. No `.vscode/settings.json` is shipped — HW5 ran fine without one; manual interpreter and kernel selection per session is what worked.
+
+---
+
+**Delta 1 — VS Code is not a WSL editor by default.**
+PyCharm Pro has built-in WSL interpreter support. VS Code on Windows treats WSL as foreign until you install the WSL Remote extension on the *Windows side* of VS Code. Extension ID: `ms-vscode-remote.remote-wsl`. Without it, VS Code reads WSL files over a slow file share and Python integration silently misbehaves.
+
+**Delta 2 — Extensions must be installed inside WSL, not on Windows.**
+PyCharm has one place for extensions. VS Code splits them: once VS Code is connected to WSL, the Extensions pane separates "Local - Installed in Windows" from "WSL: \<distro\>". Every extension below must appear under the WSL section (click "Install in WSL" if it only shows up locally). This is the exact set HW5 ran on:
 
 - `ms-python.python` — Python language support
 - `ms-python.debugpy` — debugger
@@ -185,8 +191,8 @@ Once VS Code is connected to WSL, the Extensions pane splits installed extension
 - `ms-toolsai.jupyter-keymap`, `ms-toolsai.jupyter-renderers`, `ms-toolsai.vscode-jupyter-cell-tags`, `ms-toolsai.vscode-jupyter-slideshow` — notebook UX
 - `mechatroner.rainbow-csv` — convenient for inspecting CSV outputs
 
-**Step 3 — Open the project from a WSL terminal.**
-Not Windows Explorer, not `code` from PowerShell — both drop you into local-Windows mode and the rest will not work.
+**Delta 3 — Open the project from a WSL bash terminal, not Windows Explorer or PowerShell.**
+Vestal's *File → New Project → choose folder* in PyCharm has no equivalent here. The `code` command launched from PowerShell or by double-clicking the folder in Windows Explorer drops VS Code into local-Windows mode, and the rest of these steps will silently fail.
 
 ```bash
 cd ~/projects/FinTech533/FinalProject_FinTech533
@@ -195,10 +201,11 @@ code .
 
 Verify the bottom-left status bar reads `WSL: <distro>`. If it reads anything else, close and reopen via `code .` from WSL.
 
-**Step 4 — Keep the project on the WSL filesystem.**
-`/home/<user>/...` is fine. `/mnt/c/...` is slow enough to stall Jupyter kernels and pip installs. (HW5 lived at `/home/mht120/projects/FinTech533/FinTech533/Homeworks/HW5`, with the venv one directory up at `Homeworks/.venv`. That nested layout worked fine. The simpler equivalent for this repo is `.venv` at the project root.)
+**Delta 4 — Keep the project on the WSL filesystem.**
+PyCharm's file paths sit on the same OS as the editor. VS Code over WSL crosses a boundary every file read. `/home/<user>/...` is fine. `/mnt/c/...` is slow enough to stall Jupyter kernels and pip installs.
 
-**Step 5 — Create the venv inside WSL:**
+**Delta 5 — Create the venv inside WSL by hand.**
+PyCharm's New Project flow auto-creates `.venv/` and configures the interpreter. VS Code does not. From the WSL terminal:
 
 ```bash
 python3 -m venv .venv
@@ -206,17 +213,34 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-**Step 6 — Pick the interpreter manually via the command palette.**
-This is the step that PyCharm autodetects and VS Code does not. Press `Ctrl+Shift+P` → *Python: Select Interpreter* → choose `.venv/bin/python` from this project. VS Code's auto-pick will frequently land on system Python (`/bin/python`) or some other venv it found first; the manual selection is what makes it stick.
+**Delta 6 — Pick the interpreter manually via the command palette.**
+The single biggest difference from PyCharm. PyCharm autodetects `.venv/bin/python`; VS Code does not, and its auto-pick frequently lands on system Python (`/bin/python`) or some other venv it found first.
 
-**Step 7 — Pin the Jupyter kernel per notebook.**
-For every `.ipynb` you open, click the kernel selector in the top-right (it defaults to something like "Python 3.12.x"), and pick the same `.venv` interpreter. VS Code remembers the choice per-notebook after that. Without this step, the notebook executes against whatever kernel the Jupyter extension found, which is usually wrong.
+`Ctrl+Shift+P` → *Python: Select Interpreter* → choose `.venv/bin/python` from this project. The active interpreter has a star next to it, and the path should end in `FinalProject_FinTech533/.venv/bin/python`.
 
-**Step 8 — Use the WSL bash terminal, not PowerShell.**
-`Ctrl+\`` opens whatever terminal VS Code used last. If the integrated terminal opens PowerShell, change the default profile in *Terminal → Configure Terminal Profiles* to bash. Without bash, `ip route show default` fails and the Windows host IP discovery in `scripts/tws_debug.py` breaks.
+**Delta 7 — Pin the Jupyter kernel per notebook.**
+PyCharm Pro auto-binds the venv kernel to every notebook in the project. VS Code's Jupyter extension defaults to whatever kernel it found first, which is usually wrong. For every `.ipynb` you open: click the kernel selector in the top-right and pick the same `.venv` interpreter. VS Code remembers the choice per-notebook after that.
 
-**Step 9 — Run `scripts/tws_debug.py` from the activated venv.**
-If the script reports `RECEIVED N bytes` (N > 0) in section 3, the VS Code setup matches the working HW5 setup and any future TWS issue is genuinely on the TWS side.
+**Delta 8 — Use the WSL bash terminal inside VS Code, not PowerShell.**
+PyCharm's terminal inherits the project's interpreter and shell. VS Code's `Ctrl+\`` opens whatever terminal it used last; on a fresh Windows VS Code install that defaults to PowerShell. Change the default profile in *Terminal → Configure Terminal Profiles* to bash. Without bash, `ip route show default` fails and the Windows host IP discovery in `scripts/tws_debug.py` breaks.
+
+**Delta 9 — In your code, replace `host='127.0.0.1'` with the WSL gateway IP.**
+This is the one delta that is not VS Code setup at all but a code-level change. Vestal's hello-world uses `host='127.0.0.1', port=7497, client_id=10742`. From WSL, `127.0.0.1` is the WSL distro's loopback, not Windows', so it cannot reach TWS. You must pass the Windows host gateway IP instead. Discover it dynamically:
+
+```python
+import subprocess
+WIN_HOST = subprocess.check_output(
+    "ip route show default | awk '{print $3}'", shell=True, text=True
+).strip()
+
+# Then in every shinybroker call:
+sb.fetch_historical_data(..., host=WIN_HOST, port=7497, client_id=100)
+```
+
+Hardcoding the IP works too, but it changes on most WSL reboots, so dynamic discovery is the durable pattern. This applies to *every* shinybroker call — its default `host='127.0.0.1'` is always wrong from WSL.
+
+**Final check — run `scripts/tws_debug.py` from the activated venv.**
+If the script reports `RECEIVED N bytes` (N > 0) in section 3, the VS Code-on-WSL setup matches the working HW5 setup and any future TWS issue is genuinely on the TWS side.
 
 ### Plain terminal / Jupyter Lab
 
