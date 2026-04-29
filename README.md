@@ -8,7 +8,7 @@
 
 ## TL;DR
 
-We sell XSP put credit spreads to harvest the volatility risk premium, gated by an XGBoost classifier trained on Vestal-style exogenous environmental features. Position sizing uses calibrated probabilities and Kelly-fractional rules. Five layered halt mechanisms shut the strategy down when regime indicators turn hostile. Live performance is monitored via Hoeffding bounds and block-bootstrap confidence intervals. Theoretical foundation grounded in Merton 1973 (variance risk premium, put-call parity, down-and-out barrier framework as halt analog) and Black-Scholes 1973 (theta decay).
+We sell XSP put credit spreads to harvest the volatility risk premium, gated by an XGBoost classifier trained on Vestal-style exogenous environmental features. Position sizing uses calibrated probabilities and Kelly-fractional rules. Five layered halt mechanisms shut the strategy down when regime indicators turn hostile. Live performance is monitored via Hoeffding bounds and block-bootstrap confidence intervals. Theoretical foundation grounded in Merton 1973 (variance risk premium, put-call parity, with the down-and-out barrier as a conceptual analog for the halt framework) and Black-Scholes 1973 (theta decay).
 
 **Backtest period:** 2010-2024 (in-sample 2010-2017, OOS 2018-2024)
 **Universe:** XSP (S&P 500 Mini, cash-settled, European exercise, Section 1256 taxed)
@@ -190,9 +190,11 @@ Rationale: All-four conjunction prevents premature resumption during dead-cat-bo
 
 ### The theoretical analog: Merton's down-and-out option
 
-The halt framework is conceptually a barrier strategy. The strategy is "alive" while regime indicators are above the barrier and "dies" when they cross it. This maps directly onto Merton 1973, Section 9 (Down-and-Out Call Option). Merton derives the price of options that become worthless if the underlying crosses a stated barrier. The mathematical structure of "value while above barrier, zero if barrier touched" is the same structure as our halt logic.
+The halt framework is conceptually a *barrier strategy*: the strategy is "alive" while regime indicators sit above their barriers and stops out when one is crossed. This is structurally analogous to Merton 1973, Section 9 (Down-and-Out Call Option), where an option's value is positive while the underlying remains above a barrier and becomes zero if the barrier is touched.
 
-This connection is unique to this project. Most retail vol-selling backtests have ad-hoc halt rules with no formal grounding. Ours derives from rigorous options theory.
+We claim only the analogy, not the math. Merton derives a closed-form price for a financial instrument with a fixed barrier on the underlying under GBM; our halts are stop conditions on a live trade with empirically-calibrated barriers on multiple regime indicators (VIX, term structure, credit spreads, realized drawdown). The thresholds are 99.5th-percentile-style cutoffs from 2010-2017 training data, not optimized inside a barrier-pricing framework. The Merton parallel is the conceptual frame we used to organize the halt design; it is not a derivation of the thresholds.
+
+What we believe is genuinely uncommon in retail vol-selling backtests is the explicit barrier framing combined with pre-committed thresholds and ablation attribution, not the use of options theory itself.
 
 ---
 
@@ -243,6 +245,12 @@ Every feature value used to make a decision for trade execution on day t is comp
 ---
 
 ## Model Architecture
+
+### A note on model capacity vs sample size
+
+The 2010-2017 in-sample period contains roughly 400 weekly trade signals. With a target win rate of approximately 75%, the minority (loss) class has on the order of 100 examples. Against this, we are fitting XGBoost with 16 features, eight tunable hyperparameters, 50 Optuna trials per fold, and 5-fold inner cross-validation: a meaningful number of degrees of freedom relative to the data.
+
+We treat this asymmetry seriously. The elastic net benchmark below is not a methodological courtesy — it is a real fallback. If elastic net OOS log-loss on the 2010-2017 training folds is competitive with or better than XGBoost, the simpler model is selected as primary and the writeup says so. We expect XGBoost to be at the edge of its capacity for this sample size, and we have pre-committed (in PRE_COMMITMENT.md and in the ablation interpretation rule) to reporting honestly if either the gradient-boosted layer or the ML gate as a whole fails to add value.
 
 ### Primary classifier: XGBoost
 
@@ -498,17 +506,19 @@ Theta decay is the mechanism by which the static premium (variance risk premium)
 
 The relationship f(S, tau, E) - g(S, tau, E) = S - E*P(tau) must hold for European options on non-dividend-paying assets. Used to validate every options chain pulled from IBKR. If parity does not hold within a few cents, the data has a problem (stale quote, wrong timestamp, data error). This catches data quality issues before they contaminate the backtest.
 
-### 4. High-contact condition
+### 4. High-contact condition (referenced as conceptual frame, not derivation)
 
 **Citation:** Merton 1973, Section 7.
 
-The optimality condition for early exercise of American options: W'(C[tau], tau, E) = 1. While XSP options are European-style, the spirit of the condition (assignment risk becomes material when delta approaches 1) justifies our delta-based emergency exit at delta > 0.50.
+The optimality condition for early exercise of American options is W'(C[tau], tau, E) = 1. We do *not* claim this theorem applies to XSP, which is European-style and cannot be early-exercised. We cite it only because the underlying intuition — that the original payoff structure of a short option position breaks down once delta approaches 1 — informed our delta-based emergency exit at delta > 0.50. The exit threshold itself is a risk-management convention from systematic put-writing literature, not a derivation from Merton.
 
 ### 5. Down-and-out option as halt-rule analog
 
 **Citation:** Merton 1973, Section 9.
 
-This is the most distinctive theoretical move in the project. Merton derives the price of options that become worthless if the underlying crosses a stated barrier. The mathematical structure of "value while above barrier, zero if barrier touched" maps directly onto our halt logic. The strategy is "alive" while regime indicators are above the barrier and "dies" when they cross. Most retail vol-selling backtests have ad-hoc halt rules with no formal grounding. Ours derives from rigorous options theory.
+This is the most distinctive *conceptual* framing in the project. Merton derives a closed-form price for an option that becomes worthless if the underlying crosses a stated barrier. Our halt logic shares the same structural shape ("value while above barrier, zero if barrier touched") but applies it to a live trading strategy whose barriers are regime indicators (VIX, term structure inversion, HYG-LQD spread, drawdown depth) rather than the underlying price.
+
+We use the analogy to organize and justify the halt framework's existence; we do not use Merton's pricing formula to set thresholds. Halt thresholds are calibrated from 2010-2017 training data using percentile cutoffs and pre-committed quantitative rules. The Merton reference is the conceptual lineage, not the source of the numbers.
 
 ### Additional references
 
@@ -649,13 +659,19 @@ cd website && quarto render
 
 These are targets, not guarantees. The OOS test reports what actually happens.
 
-- Annualized return (after taxes): 12 to 18%
-- Sharpe ratio: 0.8 to 1.2
-- Max drawdown: 8 to 15% if halts work, 25 to 40% if they fail (the test of the halt framework)
-- Win rate: 70 to 80%
-- Capacity at retail size: $5M+
+The natural benchmark for systematic SPX put-writing is the **CBOE PUT and PutWrite indices**. Both run a similar mechanic (rolling 30-day ATM/near-ATM short puts on SPX) and have published 2010-2024 performance: roughly 6 to 9% annualized return, Sharpe approximately 0.5 to 0.7, and max drawdown approximately 30% during March 2020. We pre-commit to evaluating against PUT/PutWrite as the primary benchmark, not against absolute targets.
 
-The strategy survives February-March 2020 with less than 15% drawdown OR the strategy is broken. That is the single most important test.
+**Pre-committed targets, OOS 2018-2024:**
+
+- **Net annualized return:** match or exceed PUT/PutWrite
+- **Sharpe ratio:** at least 100 to 200 bps higher than PUT/PutWrite over the same period
+- **Max drawdown:** materially smaller than PUT/PutWrite during the COVID stress event (the test of the halt framework). PUT lost approximately 24% in March 2020 alone; we target less than 15%
+- **Win rate:** 70 to 80% (mechanical consequence of 1-sigma OTM short strikes and 50% profit-target exit, not a Sharpe-relevant target)
+- **Capacity at retail size:** $5M+
+
+If after-tax annualized return lands in the 12 to 18% range and Sharpe lands in 0.8 to 1.2, that would represent a substantial improvement over the benchmark. We do not pre-commit to those absolute numbers because the published put-writing literature does not support them as a reasonable expectation absent the ML/halt stack adding real edge — and whether the stack adds edge is exactly what the ablation table will tell us.
+
+**The single most important test:** halt rules fire BEFORE the worst of February-March 2020, not during, AND the `full` mode's COVID drawdown is materially smaller than `naked` mode's. If halts cannot demonstrate defensive value on the one major stress event in the OOS period, the framework is decorative and we will say so.
 
 ---
 
