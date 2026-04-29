@@ -1,0 +1,30 @@
+# Data and IBKR
+shinybroker>=0.3.0
+pandas>=2.0
+numpy>=1.24
+pyarrow>=14.0
+
+# Modeling
+xgboost>=2.0
+scikit-learn>=1.3
+optuna>=3.4
+hmmlearn>=0.3
+
+# Stats
+scipy>=1.11
+statsmodels>=0.14
+
+# Notebook and writeup
+jupyter>=1.0
+jupyterlab>=4.0
+ipykernel>=6.25
+plotly>=5.18
+matplotlib>=3.8
+
+# Testing
+pytest>=7.4
+pytest-cov>=4.1
+
+# Tooling
+ruff>=0.1
+black>=23.10

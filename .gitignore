@@ -1,0 +1,62 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# IBKR data cache (large, regenerable)
+data/equities/*.parquet
+data/vol_indices/*.parquet
+data/yields/*.parquet
+data/options_chains/*.parquet
+data/options_chains/*/
+*.parquet
+*.pkl
+*.feather
+
+# Backtest outputs
+output/
+results/
+artifacts/
+*.csv
+!tests/**/*.csv
+!website/assets/**/*.csv
+
+# Quarto build
+website/_freeze/
+website/.quarto/
+website/site_libs/
+docs/
+
+# IDE / OS
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
+
+# Secrets and local config
+.env
+.env.*
+!.env.example
+secrets.json
+*credentials*.json
+.config/
+
+# Logs
+*.log
+logs/
