@@ -620,8 +620,10 @@ pip install -r requirements.txt
 
 1. Install TWS or IB Gateway, log in with paper trading account
 2. Enable API access: Configure, then API, then Settings, then check "Enable ActiveX and Socket Clients"
-3. Set socket port to 7497, allow localhost connections
-4. Confirm connection: `python -c "import shinybroker as sb; print(sb.req_current_time())"`
+3. Set socket port to 7497. **Uncheck "Allow connections from localhost only"** (required for WSL access).
+4. Confirm connection: `.venv/bin/python scripts/tws_debug.py` — section 3 should print `RECEIVED N bytes` with N > 0.
+
+For the full WSL + VS Code (and PyCharm) setup walkthrough, including the three failure modes that have actually bitten this project, see [TWS_CONNECTION.md](TWS_CONNECTION.md). Read it before setting up VS Code on this repo for the first time.
 
 ### Data Pull
 
