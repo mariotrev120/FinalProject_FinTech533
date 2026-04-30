@@ -99,11 +99,11 @@ def build_features() -> pd.DataFrame:
     # Load all closes
     closes = pd.concat(
         [load_close(s) for s in
-         ["VIX", "VIX3M", "VVIX", "SPY", "TLT", "GLD", "HYG", "LQD",
+         ["VIX", "VIX3M", "VVIX", "SPY", "GLD", "HYG", "LQD",
           "IRX", "FVX", "TNX", "TYX"]],
-        axis=1,
+        axis=1, sort=False,
     )
-    closes.columns = ["VIX", "VIX3M", "VVIX", "SPY", "TLT", "GLD", "HYG", "LQD",
+    closes.columns = ["VIX", "VIX3M", "VVIX", "SPY", "GLD", "HYG", "LQD",
                       "IRX", "FVX", "TNX", "TYX"]
 
     feat = pd.DataFrame(index=closes.index)
@@ -127,10 +127,15 @@ def build_features() -> pd.DataFrame:
     feat = feat.join(yc)
 
     # Group 4: cross-asset stress
+    # SPY-TLT corr is the canonical stocks-vs-Treasuries indicator, but TWS
+    # paper caps TLT history at 2016-02-03. To preserve a 2011-05 start, we
+    # use the 10Y yield (TNX) change as a Treasury proxy: when SPY and TNX
+    # changes correlate positively, both stocks are selling off and yields
+    # are rising, the same regime signal as positive SPY-TLT correlation.
     spy_ret = closes["SPY"].pct_change()
-    tlt_ret = closes["TLT"].pct_change()
+    tnx_chg = closes["TNX"].diff()
     gld_ret = closes["GLD"].pct_change()
-    feat["spy_tlt_corr_20d"] = spy_ret.rolling(20).corr(tlt_ret)
+    feat["spy_tnx_corr_20d"] = spy_ret.rolling(20).corr(tnx_chg)
     feat["spy_gld_corr_20d"] = spy_ret.rolling(20).corr(gld_ret)
     feat["hyg_lqd_spread"] = closes["HYG"] - closes["LQD"]
 

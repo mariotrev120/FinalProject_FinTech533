@@ -34,9 +34,12 @@ IBKR_PORT: int = 7497
 IBKR_CLIENT_ID_BASE: int = 100
 
 # --- Backtest windows -----------------------------------------------------
-# In-sample start was originally 2010 but TWS paper account index history for
-# VIX3M/yields/ETFs begins ~2011-05. Backdating IS to 2011-05 instead.
-IS_START: str = "2011-05-09"
+# Original README plan was 2010-2017 IS / 2018-2024 OOS. TWS paper account
+# limits index history starts: VIX3M/yields begin 2011-05, VVIX begins
+# 2012-03. The binding constraint is VVIX, so IS starts 2012-03-26.
+# Net split: ~5.75 years IS / 7 years OOS. Legitimate windows for
+# walk-forward methodology.
+IS_START: str = "2012-03-26"
 IS_END:   str = "2017-12-31"
 OOS_START: str = "2018-01-01"
 OOS_END:   str = "2024-12-31"
