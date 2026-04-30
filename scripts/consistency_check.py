@@ -73,6 +73,31 @@ def assert_trade_count_consistent_with_metrics(result, label: str) -> None:
     )
 
 
+def assert_strict_artifact_equality(result, label: str) -> None:
+    """Tier 4 strict-equality regression guard.
+
+    Asserts:
+      - blotter has unique trade_ids
+      - every closed trade's exit_date is present in the equity curve index
+        (so no trade is silently 'closed' on a day the curve doesn't record)
+      - per-trade entry_date <= exit_date
+    """
+    closed_trade_ids = [t.trade_id for t in result.trades if t.pnl_per_spread is not None]
+    assert len(set(closed_trade_ids)) == len(closed_trade_ids), \
+        f"[{label}] duplicate trade_ids in blotter"
+    eq_dates = set(result.equity_curve.index.normalize())
+    for t in result.trades:
+        if t.exit_date is not None:
+            d = pd.Timestamp(t.exit_date).normalize()
+            assert d in eq_dates, (
+                f"[{label}] trade {t.trade_id} exit_date {d.date()} "
+                f"not present in equity curve index"
+            )
+            assert pd.Timestamp(t.entry_date) <= pd.Timestamp(t.exit_date), (
+                f"[{label}] trade {t.trade_id} entry > exit"
+            )
+
+
 def assert_date_range_in_window(result, label: str, start: str, end: str) -> None:
     s = pd.Timestamp(start)
     e = pd.Timestamp(end)
@@ -128,6 +153,7 @@ def main() -> int:
                 ("no_silent_filtering", assert_no_silent_filtering),
                 ("no_nan_inf",          assert_no_nan_inf),
                 ("trade_count_metrics", assert_trade_count_consistent_with_metrics),
+                ("strict_artifact_equality", assert_strict_artifact_equality),
             ]:
                 try:
                     fn(r, tag)

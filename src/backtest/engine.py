@@ -223,6 +223,10 @@ def run_backtest(
                 ba_per_share = _bid_ask_estimate_per_share(vix_t)
                 slip = slippage_dollars_per_share(ba_per_share, vix_t)
                 exit_debit_per_share = decision["exit_debit"] + slip
+            # Bug guard: exit debit cannot exceed the spread width either
+            # (max economic loss is the width). Quotes implying more are
+            # stale/anomalous OptionMetrics rows.
+            exit_debit_per_share = min(exit_debit_per_share, float(SPREAD_WIDTH_PTS))
             exit_debit_per_spread = exit_debit_per_share * 100.0
             commish = round_trip_commissions(t.contracts) / 2.0
             credit_per_spread = t.entry_credit_per_spread
@@ -338,11 +342,30 @@ def run_backtest(
                     ba_per_share = _bid_ask_estimate_per_share(vix_t)
                     slip = slippage_dollars_per_share(ba_per_share, vix_t, gap_pct=gap)
                     entry_credit_per_share_after_friction = max(theoretical_credit_per_share - slip, 0.0)
+
+                # Bug guard: a put credit spread's max economic value is
+                # spread_width per share. Quotes that imply credit > width
+                # are stale / inverted / cross-quoted ticks in OptionMetrics
+                # and would produce nonsense P&L. Cap at width minus a
+                # small floor (1 cent) so max_loss_per_spread can't go
+                # below $1, which would cause sizer.contracts to explode.
+                MAX_CREDIT_PER_SHARE = SPREAD_WIDTH_PTS - 0.01
+                if entry_credit_per_share_after_friction > MAX_CREDIT_PER_SHARE:
+                    log.warning("date=%s: capping entry credit %.4f -> %.4f (> spread width %d)",
+                                today.date(), entry_credit_per_share_after_friction,
+                                MAX_CREDIT_PER_SHARE, SPREAD_WIDTH_PTS)
+                    entry_credit_per_share_after_friction = MAX_CREDIT_PER_SHARE
                 entry_credit_per_spread = entry_credit_per_share_after_friction * 100.0
 
                 # Sizing: max win = credit, max loss = (width - credit) * 100
                 max_win_per_spread = entry_credit_per_spread
-                max_loss_per_spread = max(SPREAD_WIDTH_PTS * 100.0 - entry_credit_per_spread, 1.0)
+                # Floor max_loss at 1pt of width = $100. Prevents the case
+                # where (rare) credit ≈ width gives ~$0 max_loss and the
+                # sizer divides the risk budget by ~0 → unbounded contracts.
+                max_loss_per_spread = max(
+                    SPREAD_WIDTH_PTS * 100.0 - entry_credit_per_spread,
+                    100.0,
+                )
 
                 # ML probability for sizing (Kelly): use 0.5 if ML disabled.
                 if use_ml and inputs.ml_probability is not None:

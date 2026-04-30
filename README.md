@@ -14,18 +14,26 @@ We sell SPX put credit spreads to harvest the variance risk premium, gated by an
 **Universe:** SPX (S&P 500 Index Options, cash-settled, European exercise, Section 1256 taxed)
 **Data sources:** OptionMetrics IvyDB US for SPX option chains (via WRDS); IBKR TWS via shinybroker for index, yield, and ETF history.
 
-**Headline OOS results (2018-2024, real OPRA quotes, post-bugfix):**
+**Headline OOS results (2018-2024, real OPRA quotes, all bug fixes applied):**
 
-| Mode | Trades | Win Rate | Annualized Return | Sharpe (trade) | Max DD |
-|---|---|---|---|---|---|
-| naked | 272 | 64.0% | +16.69% | 0.447 [-0.15, 0.97] | 2.73% |
-| ml_only | 272 | 64.0% | +16.69% | 0.447 [-0.15, 0.97] | 2.73% |
-| halts_only | 7 | 57.1% | -0.02% | -1.81 [-7.24, -0.74] | 0.21% |
-| full | 7 | 57.1% | -0.02% | -1.81 [-7.24, -0.74] | 0.21% |
+| Mode | Trades | Win Rate | Ann Return | Ann Vol | Ann Sharpe | Max DD |
+|---|---|---|---|---|---|---|
+| naked | 270 | 63.7% | +2.46% | 0.90% | 0.142 | 2.16% |
+| ml_only | 270 | 63.7% | +2.46% | 0.90% | 0.142 | 2.16% |
+| halts_only | 127 | 68.5% | +2.35% | 0.40% | 0.058 | 0.59% |
+| full | 127 | 68.5% | +2.35% | 0.40% | 0.058 | 0.59% |
 
-(Square brackets are 90% block-bootstrap CIs. CIs that cross zero indicate the trade-level Sharpe is not strictly positive at 90% confidence.)
+Annualized Sharpe = (annualized return − annualized risk-free) / annualized vol, with risk-free taken from the 3M T-bill (CBOE IRX) averaged over the OOS window. Equity earns daily T-bill interest on the full balance, ACT/360 convention.
 
-**Pre-committed interpretation rule fires:** the OOS Sharpe gap between `ml_only` and `naked` is **+0.000** — the two modes produce *identical* trade-by-trade output. After fixing a 1-trading-day feature look-ahead leak (see Bug Audit section), the ML model's predictions on Friday-close features no longer have an artificial edge over the unfiltered baseline. Every OOS Monday passes the 0.55 calibrated-probability threshold, so the gate is fully inert in OOS. The XGBoost layer adds zero economic value beyond annotation. The XGBoost gate does NOT add material value over the unfiltered baseline. The structural variance risk premium edge (and the friction model that captures it) is the entire source of OOS profitability. The halt framework, calibrated on 2012-2017 IS data, is too aggressive on OOS — it kept the strategy out of nearly every trade and missed the bull-market premium. The honest result is that the simple, ungated baseline is the most profitable mode in the OOS period.
+**Pre-committed interpretation rule fires:** OOS annualized Sharpe gap between `ml_only` and `naked` is **+0.000** — the two modes produce identical trade-by-trade output once the feature look-ahead leak is fixed (see Bug Audit). Every OOS Monday passes the 0.55 ML threshold, so the gate is fully inert. **The XGBoost layer adds zero economic value beyond annotation.**
+
+**Benchmark comparison (PUTW ETF — WisdomTree CBOE S&P 500 PutWrite Strategy Fund, OOS 2018-2024):** PUTW returned +1.84% annualized at vol 14.7%, Sharpe −0.033, max DD 32.3%. Our naked strategy: +2.46% / 0.90% vol / Sharpe +0.142 / max DD 2.16%. Strategy beats PUTW on **return (+0.61pp), Sharpe (+0.175), and max drawdown (−30pp)** in OOS. The advantage comes from being a thin overlay on a t-bill-bearing account (most cash idle, modest VRP edge per trade) instead of a fully-invested put-writing ETF — different return profile, different risk profile.
+
+**Honest read on the harvested premium:** with the OOS risk-free rate at 2.33% and our naked annualized return at 2.46%, the strategy generates roughly **+0.13pp above cash**. The structural VRP edge is real but tiny after realistic friction. At 16-delta, 30-45 DTE, 50% PT / 200% SL / 21-DTE-exit and the OptionMetrics-derived bid-ask costs, the strategy is essentially "park cash in t-bills, sell occasional put spreads for marginal pickup." A practitioner would correctly conclude this strategy at this configuration is not commercially competitive.
+
+**Paired bootstrap on (ml_only − naked) trade returns:** all 270 OOS trades produce exactly zero per-trade difference. There is no need to bootstrap a CI — the difference is identically zero. ML adds zero economic value, definitively.
+
+This is the honest scientific result, after correcting four substantive bugs identified during a methodical post-build audit (see Bug Audit section). The XGBoost gate does NOT add material value over the unfiltered baseline. The structural variance risk premium edge (and the friction model that captures it) is the entire source of OOS profitability. The halt framework, calibrated on 2012-2017 IS data, is too aggressive on OOS — it kept the strategy out of nearly every trade and missed the bull-market premium. The honest result is that the simple, ungated baseline is the most profitable mode in the OOS period.
 
 We report this finding directly. The pre-commitment to disclose negative ML attribution was the right discipline; it is now the honest centerpiece of this writeup.
 
@@ -349,6 +357,18 @@ Four modes, identical blotter logic, only the gates differ:
 > **OOS Sharpe(`ml_only`) - Sharpe(`naked`) = +0.023.** This is within the 0.1 threshold the README pre-committed. By that rule, **the ML filter is decorative.** The XGBoost gate does not add material value over the unfiltered baseline.
 
 We report this directly per the methodological discipline. The structural variance risk premium edge captured by the friction model and the strict 16-delta / 30-45 DTE / 50%-profit / 200%-stop / 21-DTE-exit mechanics is the entire source of OOS profitability. The XGBoost layer remains in the architecture as documentation of the Vestal-style exogenous-features methodology and as a regime-drift diagnostic for live monitoring, but it is not credited with strategy performance.
+
+### Bug Audit
+
+A systematic audit of the pipeline (per a Tier-1 / Tier-2 / Tier-3 priority list) surfaced four substantive bugs that materially altered the OOS numbers. We document them here in order of severity. Pre-fix results were materially better than post-fix because each bug was a thumb on the scale.
+
+**Bug #1 — Feature look-ahead leak of one trading day.** Before the fix, `walk_forward_predict` joined feature rows by Monday entry date. The features.parquet row at a Monday is computed at Monday's close — meaning predictions used 6.5 hours of post-decision intraday market activity. Verified empirically: all 15 features at a sample Monday differed from the Friday before, with `ma50_above_ma200` literally flipping 0→1 between the two timestamps. Fix: pair every Monday with the prior trading day's feature row at both training and prediction time.
+
+**Bug #2 — Friction model used a synthetic bid-ask estimate.** The engine computed `ba_per_share = max(0.10, 0.02 * vix)` and applied the README's VIX-conditional fraction to it — instead of using the real `best_bid` and `best_offer` from each contract row in OptionMetrics. Tracing one trade: real per-spread bid-ask was $0.60, our estimate was $0.27. Fix: pricer exposes `quote_put()` returning the real bid/ask, engine computes realistic execution as `mid ± frac × combined_half_spread` using observed quotes.
+
+**Bug #3 — No filter on illiquid chain rows.** ~325k of 4.21M SPX rows (7.71%) had `best_bid <= 0` or `delta is NaN` (illiquid contracts that never had a buyer side or for which IV could not be computed). The pricer's nearest-strike snap could pick these and produce phantom mid prices. Fix: drop them at ingestion. Drop distribution by year is logged on every run.
+
+**Bug #4 — No cap on credit / debit when a quote is anomalous.** Found via vol-anomaly investigation: a single trade on 2022-03-07 reported entry credit of $5.25/share on a 5-point spread (max economic value is $5/share). The bug guard `max_loss_per_spread = max(width − credit, $1.00)` then floored max_loss at $1, and the sizer divided the $420 risk budget by $1 to size **420 contracts**. That single trade returned $201,600 in P&L (200% of starting equity), which inflated the equity curve to $345k by year end and drove annualized vol to 74.8% (vs realistic 0.90%). Fix: cap entry credit at `width − 0.01` per share, cap exit debit at `width`, and floor `max_loss_per_spread` at $100 (1pt of width) so the sizer cannot explode.
 
 ### Halts: anti-signal in OOS (audit-confirmed)
 
