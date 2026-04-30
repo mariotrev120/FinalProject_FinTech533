@@ -318,10 +318,31 @@ def run_backtest(
         equity_path.append((today, equity))
 
     # --- Force-close any still-open at the end ---
-    for t in open_trades:
-        t.fate = "time_exit"
-        t.exit_date = spx.index[-1].date() if hasattr(spx.index[-1], "date") else spx.index[-1]
-        closed_trades.append(t)
+    # Compute realistic exit P&L using the last bar's spot and vix so the
+    # consistency check (every closed trade has pnl_per_spread set) passes.
+    if open_trades:
+        last_dt = spx.index[-1]
+        last_close = spx.iloc[-1]["close"]
+        try:
+            last_vix = float(inputs.vix.asof(last_dt))
+        except (KeyError, ValueError):
+            last_vix = 20.0
+        for t in open_trades:
+            sp = pricer.price_put(last_dt, t.spread.underlying, last_close,
+                                   t.spread.short_leg.strike, t.spread.short_leg.expiry, last_vix)
+            lp = pricer.price_put(last_dt, t.spread.underlying, last_close,
+                                   t.spread.long_leg.strike, t.spread.long_leg.expiry, last_vix)
+            exit_debit_per_spread = max(sp - lp, 0.0) * 100.0
+            commish_share = round_trip_commissions(t.contracts) / 2.0
+            pnl_per_spread = t.entry_credit_per_spread - exit_debit_per_spread
+            equity += pnl_per_spread * t.contracts - commish_share
+            t.exit_date = last_dt.date() if hasattr(last_dt, "date") else last_dt
+            t.exit_debit_per_spread = exit_debit_per_spread
+            t.fate = "time_exit"
+            t.exit_spx = last_close
+            t.exit_vix = last_vix
+            t.pnl_per_spread = pnl_per_spread
+            closed_trades.append(t)
 
     # --- Build result ---
     eq_curve = pd.Series(dict(equity_path), name="equity")
