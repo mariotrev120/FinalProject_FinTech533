@@ -30,6 +30,9 @@ def load_inputs() -> BacktestInputs:
     tnx_chg = tnx.diff()
     spy_treasury_corr = spy_ret.rolling(20).corr(tnx_chg)
 
+    # 3M T-bill yield index for daily risk-free accrual
+    irx = pd.read_parquet(DATA_RAW_DIR / "IRX.parquet")["close"]
+
     ml_path = DATA_PROCESSED_DIR / "ml_probabilities.parquet"
     if ml_path.exists():
         ml_prob = pd.read_parquet(ml_path)["p_calibrated"]
@@ -44,6 +47,7 @@ def load_inputs() -> BacktestInputs:
         spy_treasury_corr=spy_treasury_corr,
         ml_probability=ml_prob,
         is_winrate_baseline=0.75,
+        risk_free_curve=irx,
     )
 
 

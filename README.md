@@ -14,16 +14,18 @@ We sell SPX put credit spreads to harvest the variance risk premium, gated by an
 **Universe:** SPX (S&P 500 Index Options, cash-settled, European exercise, Section 1256 taxed)
 **Data sources:** OptionMetrics IvyDB US for SPX option chains (via WRDS); IBKR TWS via shinybroker for index, yield, and ETF history.
 
-**Headline OOS results (2018-2024, real OPRA quotes):**
+**Headline OOS results (2018-2024, real OPRA quotes, post-bugfix):**
 
-| Mode | Trades | Win Rate | Annualized Return | Sharpe | Max DD |
+| Mode | Trades | Win Rate | Annualized Return | Sharpe (trade) | Max DD |
 |---|---|---|---|---|---|
-| naked | 283 | 62.2% | +16.45% | 0.44 | 1.87% |
-| ml_only | 257 | 62.6% | +16.50% | 0.47 | 1.95% |
-| halts_only | 8 | 50.0% | -0.03% | -1.88 | 0.35% |
-| full | 8 | 50.0% | -0.03% | -1.88 | 0.35% |
+| naked | 272 | 64.0% | +16.69% | 0.447 [-0.15, 0.97] | 2.73% |
+| ml_only | 272 | 64.0% | +16.69% | 0.447 [-0.15, 0.97] | 2.73% |
+| halts_only | 7 | 57.1% | -0.02% | -1.81 [-7.24, -0.74] | 0.21% |
+| full | 7 | 57.1% | -0.02% | -1.81 [-7.24, -0.74] | 0.21% |
 
-**Pre-committed interpretation rule fires:** the OOS Sharpe gap between `ml_only` and `naked` is +0.023 — within the 0.1 threshold the README pre-committed for the ML filter to be considered "decorative." The XGBoost gate does NOT add material value over the unfiltered baseline. The structural variance risk premium edge (and the friction model that captures it) is the entire source of OOS profitability. The halt framework, calibrated on 2012-2017 IS data, is too aggressive on OOS — it kept the strategy out of nearly every trade and missed the bull-market premium. The honest result is that the simple, ungated baseline is the most profitable mode in the OOS period.
+(Square brackets are 90% block-bootstrap CIs. CIs that cross zero indicate the trade-level Sharpe is not strictly positive at 90% confidence.)
+
+**Pre-committed interpretation rule fires:** the OOS Sharpe gap between `ml_only` and `naked` is **+0.000** — the two modes produce *identical* trade-by-trade output. After fixing a 1-trading-day feature look-ahead leak (see Bug Audit section), the ML model's predictions on Friday-close features no longer have an artificial edge over the unfiltered baseline. Every OOS Monday passes the 0.55 calibrated-probability threshold, so the gate is fully inert in OOS. The XGBoost layer adds zero economic value beyond annotation. The XGBoost gate does NOT add material value over the unfiltered baseline. The structural variance risk premium edge (and the friction model that captures it) is the entire source of OOS profitability. The halt framework, calibrated on 2012-2017 IS data, is too aggressive on OOS — it kept the strategy out of nearly every trade and missed the bull-market premium. The honest result is that the simple, ungated baseline is the most profitable mode in the OOS period.
 
 We report this finding directly. The pre-commitment to disclose negative ML attribution was the right discipline; it is now the honest centerpiece of this writeup.
 
@@ -348,11 +350,22 @@ Four modes, identical blotter logic, only the gates differ:
 
 We report this directly per the methodological discipline. The structural variance risk premium edge captured by the friction model and the strict 16-delta / 30-45 DTE / 50%-profit / 200%-stop / 21-DTE-exit mechanics is the entire source of OOS profitability. The XGBoost layer remains in the architecture as documentation of the Vestal-style exogenous-features methodology and as a regime-drift diagnostic for live monitoring, but it is not credited with strategy performance.
 
-### Halts: too aggressive on OOS
+### Halts: anti-signal in OOS (audit-confirmed)
 
-The halt framework, calibrated on the relatively-calm 2012-2017 IS period, fired so often during 2018-2024 that only 8 trades passed through `halts_only` and `full` modes. The OOS bull market (interrupted by Volmageddon, COVID, and 2022's bear) was net positive for naked vol-sellers, and the halts kept us out of essentially the entire run. The halt framework's defensive value is real (see Stress Event Survival below), but in an OOS period dominated by recoveries the cost of being out of the market exceeded the benefit of avoiding tail events.
+A formal precision audit of every halt activation in OOS 2018-2024:
 
-This is the honest scientific result. The pre-committed halt thresholds did exactly what they were designed to do — fire whenever regime indicators looked like the IS-period stress profile — but the OOS regime profile differed enough from IS that the mapping over-fit. We acknowledge this rather than retroactively re-tuning.
+- **42 distinct halt activation events** (top triggers: drawdown 17, term_inversion_hard 8, vix_spike+term_inversion 5)
+- **19.0% (8/42)** of halt firings were followed by a SPX ≥5% drawdown within 30 days
+- **Base rate** (any OOS day → ≥5% SPX drawdown in next 30 days) = **27.7%**
+- **Precision lift vs base rate: −8.7 percentage points (NEGATIVE)**
+
+In other words: the halts fire **less often** before real stress events than a random day would. They are not noisy true-positive detectors with high false-positive rates — they are *systematically anti-correlated* with subsequent stress, at least over the OOS window. As a defensive system, the halt framework provided **no measurable lift** over the base rate of "do nothing."
+
+We considered the COVID-March-2020 single-event "halts fired 28 days before peak" finding before doing this audit. That was a real timing observation but cherry-picked across a single event. Across all 42 OOS activations the framework underperforms the base rate.
+
+This is the honest scientific result. The pre-committed halt thresholds did exactly what they were designed to do — fire whenever regime indicators looked like the IS-period stress profile — but that profile didn't generalize. The OOS regime that mattered was a long bull market interrupted by short shocks, and the halts spent most of their time over-reacting to the long bull. We acknowledge this finding rather than retroactively re-tuning.
+
+A practitioner taking this strategy live would *remove* the halt framework, not refine it.
 
 ---
 

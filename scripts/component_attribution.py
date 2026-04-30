@@ -41,8 +41,11 @@ def run_one(mode: Mode, start: str, end: str) -> BacktestResult:
     return run_backtest(inputs, pricer, mode=mode, start=start, end=end)
 
 
-def attribution_row(result: BacktestResult, mode: Mode, label: str) -> dict:
-    metrics = combined_metrics(result.trades, result.equity_curve, starting_equity=100_000.0)
+def attribution_row(result: BacktestResult, mode: Mode, label: str,
+                     risk_free_curve=None) -> dict:
+    metrics = combined_metrics(result.trades, result.equity_curve,
+                                starting_equity=100_000.0,
+                                risk_free_curve=risk_free_curve)
     rets = trade_returns(result.trades, starting_equity=100_000.0)
     sharpe_ci = bootstrap_ci(rets, sharpe_stat, block_size=3, n_resamples=5_000)
     wr_ci = bootstrap_ci(rets, winrate_stat, block_size=3, n_resamples=5_000)
@@ -55,7 +58,9 @@ def attribution_row(result: BacktestResult, mode: Mode, label: str) -> dict:
         "win_rate_ci_hi": wr_ci["upper"],
         "expected_return_per_trade_pct": metrics["expected_return_per_trade_pct"],
         "annualized_return_pct": metrics["annualized_return_pct"],
-        "sharpe_daily": metrics["sharpe_daily"],
+        "annualized_rf_pct": metrics["annualized_rf_pct"],
+        "annualized_vol_pct": metrics["annualized_vol_pct"],
+        "sharpe_annualized": metrics["sharpe_annualized"],
         "sharpe_trade": metrics["sharpe_trade_level"],
         "sharpe_trade_ci_lo": sharpe_ci["lower"],
         "sharpe_trade_ci_hi": sharpe_ci["upper"],
@@ -76,6 +81,8 @@ def main() -> int:
     ]
     modes: list[Mode] = ["naked", "ml_only", "halts_only", "full"]
 
+    # Risk-free curve from inputs (so all rows use the same convention)
+    rf_curve = load_inputs().risk_free_curve
     for win_label, start, end in windows:
         for mode in modes:
             log.info("[%s] mode=%s on %s -> %s", win_label, mode, start, end)
@@ -84,7 +91,7 @@ def main() -> int:
             except Exception as e:
                 log.error("[%s] mode=%s failed: %s", win_label, mode, e)
                 continue
-            rows.append(attribution_row(r, mode, label=win_label))
+            rows.append(attribution_row(r, mode, label=win_label, risk_free_curve=rf_curve))
 
     df = pd.DataFrame(rows)
     out_path = DATA_PROCESSED_DIR / "component_attribution.parquet"
@@ -98,20 +105,20 @@ def main() -> int:
     print(f"COMPONENT ATTRIBUTION — ML decision threshold p >= {ML_DECISION_THRESHOLD}")
     print("=" * 80)
     cols = ["label", "mode", "n_trades", "win_rate",
-            "annualized_return_pct", "sharpe_trade", "sharpe_trade_ci_lo",
-            "sharpe_trade_ci_hi", "max_drawdown_pct"]
+            "annualized_return_pct", "annualized_vol_pct", "sharpe_annualized",
+            "max_drawdown_pct"]
     print(df[cols].round(3).to_string(index=False))
 
-    # OOS-specific interpretation
+    # OOS-specific interpretation, ANNUALIZED Sharpe (not trade-level)
     oos = df[df.label == "OOS"].set_index("mode")
     if "naked" in oos.index and "ml_only" in oos.index:
-        delta = oos.loc["ml_only", "sharpe_trade"] - oos.loc["naked", "sharpe_trade"]
-        print(f"\nOOS Sharpe[ml_only] - Sharpe[naked] = {delta:+.3f}")
+        delta = oos.loc["ml_only", "sharpe_annualized"] - oos.loc["naked", "sharpe_annualized"]
+        print(f"\nOOS annualized Sharpe[ml_only] - Sharpe[naked] = {delta:+.3f}")
         if abs(delta) < 0.1:
             print("  >>> ML filter is DECORATIVE (within 0.1 of naked).")
             print("  >>> Writeup must state this explicitly per PRE_COMMITMENT.md.")
         else:
-            print(f"  >>> ML filter contributes {delta:+.3f} Sharpe over naked.")
+            print(f"  >>> ML filter contributes {delta:+.3f} annualized Sharpe over naked.")
 
     return 0
 

@@ -27,12 +27,12 @@ import numpy as np
 import pandas as pd
 
 from src.config import (
-    DTE_MIN, IS_END, IS_START, ML_DECISION_THRESHOLD, OOS_END, OOS_START,
-    SPREAD_WIDTH_PTS, STRESS_CORR_THRESHOLD,
+    DTE_MIN, GAP_SLIPPAGE_THRESHOLD_PCT, IS_END, IS_START, ML_DECISION_THRESHOLD,
+    OOS_END, OOS_START, SPREAD_WIDTH_PTS, STRESS_CORR_THRESHOLD,
 )
 from src.strategy.exits import evaluate_exit
 from src.strategy.friction import (
-    round_trip_commissions, slippage_dollars_per_share,
+    round_trip_commissions, slippage_dollars_per_share, slippage_pct_at_vix,
     should_skip_entry_due_to_gap,
 )
 from src.strategy.halts import HaltDecision, evaluate_halts
@@ -68,6 +68,7 @@ class BacktestInputs:
     ml_probability: Optional[pd.Series] = None
     is_winrate_baseline: float = 0.75
     initial_equity: float = 100_000.0
+    risk_free_curve: Optional[pd.Series] = None  # TNX or IRX in tenths-of-percent
 
 
 @dataclass
@@ -150,6 +151,21 @@ def run_backtest(
         if idx == 0:
             equity_path.append((today, equity))
             continue
+
+        # Daily risk-free interest accrual on full equity. ACT/360 convention.
+        # Using 3M T-bill (IRX) when supplied; fall back to 4% if not.
+        if inputs.risk_free_curve is not None:
+            try:
+                rf_pct = float(inputs.risk_free_curve.asof(today)) / 10.0 / 100.0
+                if np.isnan(rf_pct):
+                    rf_pct = 0.04
+            except (KeyError, ValueError):
+                rf_pct = 0.04
+        else:
+            rf_pct = 0.04
+        prior_dt = spx.index[idx - 1]
+        days = max((today - prior_dt).days, 0)
+        equity *= (1.0 + rf_pct * days / 360.0)
         spx_today_close = row_spx["close"]
         spx_today_open = row_spx["open"]
         spx_yday_close = spx.iloc[idx - 1]["close"]
@@ -178,11 +194,36 @@ def run_backtest(
             if decision is None:
                 still_open.append(t)
                 continue
-            # Apply exit friction
-            ba_per_share = _bid_ask_estimate_per_share(vix_t)
-            slip = slippage_dollars_per_share(ba_per_share, vix_t)
-            exit_debit_per_share_after_friction = decision["exit_debit"] + slip
-            exit_debit_per_spread = exit_debit_per_share_after_friction * 100.0
+            # Bug #2 fix: realistic exit execution using REAL bid-ask spread
+            # from the pricer, scaled by the README's VIX-conditional fraction.
+            # Round-trip mechanics: closing a credit spread means buying back
+            # the short leg (paying somewhere between mid and ASK) and selling
+            # the long leg (receiving between BID and mid). At fraction f:
+            #   exit_debit = mid_debit + f * (combined_half_spread)
+            # where combined_half_spread = (full_short + full_long) / 2.
+            # f=1.0 means touching the bid-ask boundary (worst case);
+            # f=0 means executing at mid (best case). README schedule: 0.30 to 1.00.
+            short_q = pricer.quote_put(today, t.spread.underlying,
+                                        t.spread.short_leg.strike,
+                                        t.spread.short_leg.expiry) \
+                if hasattr(pricer, "quote_put") else None
+            long_q = pricer.quote_put(today, t.spread.underlying,
+                                       t.spread.long_leg.strike,
+                                       t.spread.long_leg.expiry) \
+                if hasattr(pricer, "quote_put") else None
+            if short_q is not None and long_q is not None:
+                full_short = short_q.ask - short_q.bid
+                full_long = long_q.ask - long_q.bid
+                combined_half = (full_short + full_long) / 2.0
+                frac = slippage_pct_at_vix(vix_t)
+                mid_debit = max(short_q.mid - long_q.mid, 0.0)
+                exit_debit_per_share = mid_debit + frac * combined_half
+            else:
+                # BS pricer fallback: use mid + heuristic slippage
+                ba_per_share = _bid_ask_estimate_per_share(vix_t)
+                slip = slippage_dollars_per_share(ba_per_share, vix_t)
+                exit_debit_per_share = decision["exit_debit"] + slip
+            exit_debit_per_spread = exit_debit_per_share * 100.0
             commish = round_trip_commissions(t.contracts) / 2.0
             credit_per_spread = t.entry_credit_per_spread
             pnl_per_spread = credit_per_spread - exit_debit_per_spread
@@ -265,10 +306,38 @@ def run_backtest(
                     equity_path.append((today, equity))
                     continue
 
-                # Apply entry friction (slippage)
-                ba_per_share = _bid_ask_estimate_per_share(vix_t)
-                slip = slippage_dollars_per_share(ba_per_share, vix_t, gap_pct=gap)
-                entry_credit_per_share_after_friction = max(theoretical_credit_per_share - slip, 0.0)
+                # Bug #2 fix: realistic entry execution using REAL bid-ask
+                # spread from the pricer, scaled by README's VIX fraction.
+                # Selling a credit spread:
+                #   credit = mid_credit - f * combined_half_spread
+                # f=0.30 at VIX<20 means trader saves 70% of the half-spread
+                # vs touching the bid-ask boundary (typical SPX execution
+                # better than the boundary).
+                if hasattr(pricer, "quote_put"):
+                    short_q = pricer.quote_put(today, underlying,
+                                                spread.short_leg.strike,
+                                                spread.short_leg.expiry)
+                    long_q = pricer.quote_put(today, underlying,
+                                               spread.long_leg.strike,
+                                               spread.long_leg.expiry)
+                    if short_q is None or long_q is None:
+                        skipped.append({"date": today, "reason": "quote_lookup_miss", "mode": mode})
+                        equity_path.append((today, equity))
+                        continue
+                    full_short = short_q.ask - short_q.bid
+                    full_long = long_q.ask - long_q.bid
+                    combined_half = (full_short + full_long) / 2.0
+                    frac = slippage_pct_at_vix(vix_t)
+                    if abs(gap) >= GAP_SLIPPAGE_THRESHOLD_PCT:
+                        frac *= 1.5    # gap penalty per README
+                    mid_credit = max(short_q.mid - long_q.mid, 0.0)
+                    realistic_credit_per_share = max(mid_credit - frac * combined_half, 0.0)
+                    entry_credit_per_share_after_friction = realistic_credit_per_share
+                else:
+                    # BS pricer fallback
+                    ba_per_share = _bid_ask_estimate_per_share(vix_t)
+                    slip = slippage_dollars_per_share(ba_per_share, vix_t, gap_pct=gap)
+                    entry_credit_per_share_after_friction = max(theoretical_credit_per_share - slip, 0.0)
                 entry_credit_per_spread = entry_credit_per_share_after_friction * 100.0
 
                 # Sizing: max win = credit, max loss = (width - credit) * 100

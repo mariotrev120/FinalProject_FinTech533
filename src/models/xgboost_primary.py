@@ -80,6 +80,36 @@ def predict_calibrated(
     return pd.Series(cal, index=X.index, name="p_calibrated")
 
 
+def _prior_trading_day_features(
+    features: pd.DataFrame, target_dates: pd.DatetimeIndex,
+) -> pd.DataFrame:
+    """For each target date, return the feature row at the most recent
+    trading day STRICTLY BEFORE that date.
+
+    Implements the Bug #1 fix: features used to predict for Monday-morning
+    entry must come from Friday close, not from Monday close (which would
+    leak Monday's intraday market activity into the decision).
+
+    Uses the features.index as the trading-day calendar, so weekends and
+    holidays are handled automatically. The result is indexed by the
+    *target* dates (Mondays) with values from prior-trading-day features —
+    so downstream callers can still key by target date but consume safely
+    point-in-time inputs.
+    """
+    out_rows = []
+    out_index = []
+    for d in target_dates:
+        prior_pos = features.index.searchsorted(d, side="left") - 1
+        if prior_pos < 0:
+            continue
+        prior_date = features.index[prior_pos]
+        out_rows.append(features.iloc[prior_pos].values)
+        out_index.append(d)
+    if not out_rows:
+        return pd.DataFrame(columns=features.columns)
+    return pd.DataFrame(out_rows, index=pd.DatetimeIndex(out_index), columns=features.columns)
+
+
 def walk_forward_predict(
     features: pd.DataFrame, labels: pd.DataFrame,
     fold_starts: list[pd.Timestamp],
@@ -87,10 +117,17 @@ def walk_forward_predict(
     seed: int = SEED,
 ) -> pd.Series:
     """For each annual fold, train on labelled trades up to fold_start,
-    predict probabilities for every Monday feature row in the fold.
+    predict probabilities for every Monday in the fold using PRIOR-TRADING-
+    DAY feature values (Bug #1 fix).
 
-    Returns a single concatenated Series of calibrated probabilities indexed
-    by Monday date covering the union of all folds.
+    Both training and prediction use features at the prior trading day:
+      - Training: each label's features are from the trading day before its
+        entry_date. Pairs (Friday-close-features, Monday-trade-outcome).
+      - Prediction: for each Monday in the fold, use features from the
+        most recent trading day strictly before that Monday.
+
+    Returns a single concatenated Series of calibrated probabilities
+    indexed by Monday date covering the union of all folds.
     """
     out = []
     for i, fs in enumerate(fold_starts):
@@ -108,13 +145,24 @@ def walk_forward_predict(
             log.warning("fold %s: only %d training labels; skipping",
                         fs.date(), len(train_labels))
             continue
-        X_train = features.reindex(train_labels.index).dropna()
-        y_train = train_labels.loc[X_train.index]["win"]
 
-        # Predict set: every Monday feature row in [fs, fe)
-        mondays = features.loc[fs:fe - pd.Timedelta(days=1)]
-        mondays = mondays[mondays.index.dayofweek == 0]
-        if len(mondays) == 0:
+        # Bug #1 fix: pair each Monday-entry label with PRIOR-TRADING-DAY
+        # features (Friday close). features.reindex(train_labels.index)
+        # would have used Monday-close features — a 1-trading-day leak.
+        X_train = _prior_trading_day_features(features, train_labels.index)
+        # Align labels to whatever training rows survived (some Mondays may
+        # be missing prior-day features at the very start of the index)
+        common = X_train.index.intersection(train_labels.index)
+        X_train = X_train.loc[common]
+        y_train = train_labels.loc[common]["win"]
+
+        # Predict set: every Monday in [fs, fe), using prior-trading-day features
+        mondays_in_fold = features.loc[fs:fe - pd.Timedelta(days=1)]
+        mondays_in_fold = mondays_in_fold[mondays_in_fold.index.dayofweek == 0]
+        if len(mondays_in_fold) == 0:
+            continue
+        X_pred = _prior_trading_day_features(features, mondays_in_fold.index)
+        if len(X_pred) == 0:
             continue
 
         try:
@@ -122,9 +170,9 @@ def walk_forward_predict(
         except Exception as e:
             log.error("fold %s training failed: %s", fs.date(), e)
             continue
-        preds = predict_calibrated(model, iso, mondays)
+        preds = predict_calibrated(model, iso, X_pred)
         out.append(preds)
-        log.info("fold %s -> %s: trained on %d, predicted %d Mondays",
+        log.info("fold %s -> %s: trained on %d (prior-day features), predicted %d Mondays",
                  fs.date(), fe.date(), len(X_train), len(preds))
 
     if not out:
