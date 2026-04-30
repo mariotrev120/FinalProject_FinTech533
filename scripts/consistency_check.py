@@ -33,7 +33,7 @@ from src.config import (
     DATA_PROCESSED_DIR, IS_END, IS_START, OOS_END, OOS_START,
 )
 from src.metrics.performance import combined_metrics
-from src.strategy.black_scholes import make_default_pricer
+from src.backtest.loader import load_default_pricer as make_default_pricer
 
 
 log = logging.getLogger(__name__)

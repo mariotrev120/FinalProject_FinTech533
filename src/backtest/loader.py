@@ -12,6 +12,7 @@ import pandas as pd
 
 from src.backtest.engine import BacktestInputs, BacktestResult
 from src.config import DATA_PROCESSED_DIR, DATA_RAW_DIR
+from src.strategy.optionmetrics_pricer import make_optionmetrics_pricer
 
 
 def load_inputs() -> BacktestInputs:
@@ -44,6 +45,15 @@ def load_inputs() -> BacktestInputs:
         ml_probability=ml_prob,
         is_winrate_baseline=0.75,
     )
+
+
+def load_default_pricer(underlying: str = "SPX"):
+    """Default pricer for the project: real OptionMetrics IvyDB quotes.
+
+    Pre-loads ~6M rows into an in-memory index. Subsequent backtest runs
+    against this pricer reuse the same instance for performance.
+    """
+    return make_optionmetrics_pricer(underlying=underlying)
 
 
 def summarize(result: BacktestResult, mode: str) -> dict:

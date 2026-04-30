@@ -31,7 +31,7 @@ import pandas as pd
 from src.backtest.engine import BacktestResult, run_backtest
 from src.backtest.loader import load_inputs
 from src.config import DATA_PROCESSED_DIR
-from src.strategy.black_scholes import make_default_pricer
+from src.backtest.loader import load_default_pricer as make_default_pricer
 from src.strategy.types import Mode
 
 

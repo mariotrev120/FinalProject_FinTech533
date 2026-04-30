@@ -24,7 +24,7 @@ from src.backtest.loader import load_inputs
 from src.backtest.walkforward import annual_walk_forward_xgb
 from src.config import DATA_PROCESSED_DIR, IS_START, OOS_END, SEED
 from src.models.label_trades import label_trades_dataframe
-from src.strategy.black_scholes import make_default_pricer
+from src.backtest.loader import load_default_pricer as make_default_pricer
 
 
 log = logging.getLogger(__name__)

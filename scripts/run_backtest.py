@@ -17,7 +17,7 @@ import logging
 from src.backtest.engine import run_backtest
 from src.backtest.loader import load_inputs, summarize
 from src.config import IS_START, OOS_END
-from src.strategy.black_scholes import make_default_pricer
+from src.backtest.loader import load_default_pricer as make_default_pricer
 
 
 log = logging.getLogger(__name__)

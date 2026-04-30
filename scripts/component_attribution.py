@@ -28,7 +28,7 @@ from src.metrics.bootstrap import bootstrap_ci, sharpe_stat, winrate_stat
 from src.metrics.performance import (
     combined_metrics, equity_curve_metrics, summarize_blotter, trade_returns,
 )
-from src.strategy.black_scholes import make_default_pricer
+from src.backtest.loader import load_default_pricer as make_default_pricer
 from src.strategy.types import Mode
 
 

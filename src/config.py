@@ -34,11 +34,11 @@ IBKR_PORT: int = 7497
 IBKR_CLIENT_ID_BASE: int = 100
 
 # --- Backtest windows -----------------------------------------------------
-# Original README plan was 2010-2017 IS / 2018-2024 OOS. TWS paper account
-# limits index history starts: VIX3M/yields begin 2011-05, VVIX begins
-# 2012-03. The binding constraint is VVIX, so IS starts 2012-03-26.
-# Net split: ~5.75 years IS / 7 years OOS. Legitimate windows for
-# walk-forward methodology.
+# Original README plan: 2010-2017 IS / 2018-2024 OOS.
+# Binding constraint: VVIX (TWS) starts 2012-03-26 (vol-of-vol feature).
+# SPX option chain (OptionMetrics IvyDB) covers 2012-01-03 onward — exceeds
+# the IS window without compromise.
+# Net split: ~5.75 years IS / 7 years OOS.
 IS_START: str = "2012-03-26"
 IS_END:   str = "2017-12-31"
 OOS_START: str = "2018-01-01"

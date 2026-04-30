@@ -33,6 +33,11 @@ output/
 results/
 artifacts/
 *.csv
+*.csv.gz
+*.csv.bz2
+*.csv.zip
+data/raw/
+data/processed/
 !tests/**/*.csv
 !website/assets/**/*.csv
 
