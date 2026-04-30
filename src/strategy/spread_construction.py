@@ -1,13 +1,17 @@
 """
-Entry-side spread construction.
+Entry-side spread construction for XSP put credit spreads.
 
 Given an entry date, the underlying spot, current VIX, and a pricing provider,
 build the put credit spread we want to sell that day:
 
-  - Short strike: nearest 5-pt strike whose BS delta is closest to -0.16
-                  (1-sigma OTM)
-  - Long strike: short_strike - 5
+  - Short strike: nearest grid strike whose BS delta is closest to -0.16
+                  (1-sigma OTM, 16-delta convention)
+  - Long strike: short_strike - SPREAD_WIDTH_PTS
   - Expiry: first Friday at least DTE_MIN days out, capped at DTE_MAX
+
+The strike grid depends on the underlying:
+  - SPX: 5-point grid (SPX strikes near the money are every 5 pts)
+  - XSP: 1-point grid (XSP is 1/10 SPX, so 1 XSP pt = 10 SPX pts)
 
 Returns a fully-formed `Spread` plus the per-share credit and the short-leg
 delta at entry. Friction is applied separately in the engine, so the credit
@@ -25,7 +29,7 @@ from src.strategy.pricer import PricingProvider
 from src.strategy.types import OptionContract, Spread
 
 
-STRIKE_INCREMENT: int = 5      # SPX strikes near the money are typically every 5 pts
+STRIKE_INCREMENT_BY_UNDERLYING: dict[str, int] = {"SPX": 5, "XSP": 1}
 
 
 def _next_friday(d: date) -> date:
@@ -45,7 +49,7 @@ def select_expiry(entry_date: date, dte_min: int = DTE_MIN, dte_max: int = DTE_M
     return candidate - timedelta(days=7)
 
 
-def _round_to_strike(price: float, increment: int = STRIKE_INCREMENT) -> int:
+def _round_to_strike(price: float, increment: int) -> int:
     return int(round(price / increment) * increment)
 
 
@@ -59,18 +63,18 @@ def select_short_strike(
     target_delta: float = ENTRY_DELTA_TARGET,
     search_pct: float = 0.20,
 ) -> tuple[int, float]:
-    """Find the strike (rounded to STRIKE_INCREMENT) whose BS put delta
-    magnitude is closest to target_delta. Search a band of `search_pct`
-    below spot.
+    """Find the strike whose BS put delta magnitude is closest to target_delta.
 
-    Returns (strike, achieved_abs_delta).
+    Search a band `search_pct` below spot, stepping by the underlying's strike
+    increment. Returns (strike, achieved_abs_delta).
     """
-    lo = _round_to_strike(spot * (1 - search_pct), STRIKE_INCREMENT)
-    hi = _round_to_strike(spot * 0.999, STRIKE_INCREMENT)   # stay OTM
+    inc = STRIKE_INCREMENT_BY_UNDERLYING.get(underlying, 5)
+    lo = _round_to_strike(spot * (1 - search_pct), inc)
+    hi = _round_to_strike(spot * 0.999, inc)   # stay OTM
     best_strike = hi
     best_diff = float("inf")
     best_abs_delta = 0.0
-    for k in range(lo, hi + 1, STRIKE_INCREMENT):
+    for k in range(lo, hi + 1, inc):
         d = abs(pricer.implied_delta(as_of, underlying, spot, k, expiry, vix))
         diff = abs(d - target_delta)
         if diff < best_diff:

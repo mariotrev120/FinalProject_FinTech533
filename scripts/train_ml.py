@@ -3,47 +3,31 @@ End-to-end ML training pipeline.
 
   1. Load processed features.
   2. Run naked-mode backtest over the IS+OOS window to generate trade labels.
-  3. Walk-forward refit XGBoost (annual cadence) using IS labels through
-     each fold boundary.
+  3. Walk-forward refit XGBoost (annual cadence, harness in
+     src/backtest/walkforward.py) using IS labels through each fold boundary.
   4. Save the calibrated probability series for use in ml_only / full modes.
 
 Output: data/processed/ml_probabilities.parquet — a Series indexed by
 Monday date, value = calibrated XGBoost p(win).
 
 Usage:
-    PYTHONPATH=. .venv/bin/python -m src.models.train
+    PYTHONPATH=. .venv/bin/python scripts/train_ml.py
 """
 from __future__ import annotations
 
 import logging
-from pathlib import Path
 
 import pandas as pd
 
 from src.backtest.engine import run_backtest
-from src.backtest.run import load_inputs
-from src.config import (
-    DATA_PROCESSED_DIR, IS_END, IS_START, OOS_END, OOS_START, SEED,
-)
+from src.backtest.loader import load_inputs
+from src.backtest.walkforward import annual_walk_forward_xgb
+from src.config import DATA_PROCESSED_DIR, IS_START, OOS_END, SEED
 from src.models.label_trades import label_trades_dataframe
-from src.models.xgboost_primary import walk_forward_predict
 from src.strategy.black_scholes import make_default_pricer
 
 
 log = logging.getLogger(__name__)
-
-
-def annual_fold_starts(start: str, end: str) -> list[pd.Timestamp]:
-    """Year-end boundaries between [start, end]. Each fold predicts the year
-    after a boundary."""
-    s = pd.Timestamp(start)
-    e = pd.Timestamp(end)
-    out = []
-    yr = s.year + 1   # first fold predicts year (s.year+1)
-    while pd.Timestamp(f"{yr}-01-01") <= e:
-        out.append(pd.Timestamp(f"{yr}-01-01"))
-        yr += 1
-    return out
 
 
 def main() -> int:
@@ -62,15 +46,10 @@ def main() -> int:
     log.info("labelled %d trades, win rate %.1f%%",
              len(labels), 100 * labels["win"].mean())
 
-    # Step 2: annual walk-forward, predicting OOS years (2018+)
-    fold_starts = annual_fold_starts(IS_START, OOS_END)
-    log.info("annual fold boundaries: %s", [f.date().isoformat() for f in fold_starts])
-
-    probs = walk_forward_predict(
+    # Step 2: annual walk-forward (harness in src/backtest/walkforward.py)
+    probs = annual_walk_forward_xgb(
         features=features, labels=labels,
-        fold_starts=fold_starts,
-        fold_end=pd.Timestamp(OOS_END),
-        seed=SEED,
+        is_start=IS_START, oos_end=OOS_END, seed=SEED,
     )
     log.info("predictions: %d Mondays, mean=%.3f, median=%.3f",
              len(probs), probs.mean(), probs.median())
@@ -79,7 +58,6 @@ def main() -> int:
     probs.to_frame("p_calibrated").to_parquet(out_path)
     log.info("saved probabilities to %s", out_path)
 
-    # Also save labels
     labels_path = DATA_PROCESSED_DIR / "naked_labels.parquet"
     labels.to_parquet(labels_path)
     log.info("saved labels to %s", labels_path)

@@ -53,10 +53,14 @@ def _bs_put(spot: float, strike: float, T: float, r: float, sigma: float) -> tup
 
 @dataclass
 class BlackScholesPricer:
-    """Default fallback pricer.
+    """BS reconstruction with optional IV and SKEW overlays.
 
     risk_free_curve: pd.Series of TNX yield (in tenths of percent, e.g. 43.96
         for 4.396%) indexed by trading date. Used as r in BS.
+    iv_curve: pd.Series of SPX option-implied volatility (decimal, e.g. 0.16
+        for 16% IV) pulled via TWS whatToShow=OPTION_IMPLIED_VOLATILITY.
+        When provided, this is used as the ATM IV input — much closer to the
+        market-observed IV than VIX/100. When None, falls back to vix/100.
     skew_index: pd.Series of CBOE SKEW Index values indexed by trading date,
         or None to disable the skew adjustment.
     skew_slope_per_sigma: how much extra IV (in vol points) to add per 1 sigma
@@ -64,6 +68,7 @@ class BlackScholesPricer:
         4 vol-points of additional IV at the average historical skew.
     """
     risk_free_curve: pd.Series
+    iv_curve: Optional[pd.Series] = None
     skew_index: Optional[pd.Series] = None
     skew_slope_per_sigma: float = 4.0
     skew_baseline: float = 130.0   # CBOE SKEW long-run mean
@@ -78,17 +83,30 @@ class BlackScholesPricer:
             rate_pct = 0.04
         return rate_pct
 
+    def _atm_iv_for(self, as_of: pd.Timestamp, vix: float) -> float:
+        """Return the ATM IV (decimal) to use as the BS sigma. Prefers the
+        real observed IV curve when available; falls back to vix/100."""
+        if self.iv_curve is not None:
+            try:
+                v = float(self.iv_curve.asof(as_of))
+                if not np.isnan(v) and v > 0:
+                    return v
+            except (KeyError, ValueError):
+                pass
+        return max(vix / 100.0, 1e-4)
+
     def _iv_for(
         self, as_of: pd.Timestamp, spot: float, strike: float, T: float, vix: float,
     ) -> float:
         """Compute IV to use, including optional skew adjustment.
 
-        Sigma_atm = vix / 100. If a SKEW provider is attached and the strike
-        is OTM (strike < spot for puts), bump sigma by skew_slope * |sigma_offset|
-        where sigma_offset = (spot - strike) / (spot * sigma_atm * sqrt(T))
-        is the strike's distance from spot in standard deviations.
+        Sigma_atm comes from the real IV curve if available, else vix/100.
+        If a SKEW provider is attached and the strike is OTM (strike < spot
+        for puts), bump sigma by skew_slope * |sigma_offset| where
+        sigma_offset = (spot - strike) / (spot * sigma_atm * sqrt(T)) is the
+        strike's distance from spot in standard deviations.
         """
-        sigma_atm = max(vix / 100.0, 1e-4)
+        sigma_atm = self._atm_iv_for(as_of, vix)
         if self.skew_index is None or T <= 0:
             return sigma_atm
         try:
@@ -134,12 +152,33 @@ class BlackScholesPricer:
         return delta
 
 
-def make_default_pricer() -> BlackScholesPricer:
-    """Construct a pricer with TNX as the risk-free curve and SKEW for the
-    skew adjustment, both loaded from data/raw/."""
+def make_default_pricer(use_spx_iv: bool = False) -> BlackScholesPricer:
+    """Construct a pricer with:
+      - TNX 10Y yield as the risk-free curve
+      - VIX/100 as the ATM IV (default), or SPX_IV if explicitly requested
+      - CBOE SKEW Index for the strike-skew adjustment
+
+    Why VIX is the default ATM proxy and not SPX_IV:
+    SPX_IV from TWS (whatToShow=OPTION_IMPLIED_VOLATILITY on SPX as IND) is a
+    model-derived ATM IV that does NOT include the skew weighting baked into
+    VIX. VIX is computed from a strip of OTM options and is therefore higher
+    than pure ATM IV, which makes it a better proxy for the IV at the strikes
+    we actually care about (16-delta OTM puts). Using SPX_IV as ATM + skew
+    risks under-pricing OTM puts because the skew adjustment is calibrated
+    relative to a VIX-grade starting point.
+
+    SPX_IV is still pulled and stored at data/raw/SPX_IV.parquet for feature
+    use and external validation, but is NOT the default pricer input.
+    """
     tnx = pd.read_parquet(DATA_RAW_DIR / "TNX.parquet")["close"]
     try:
         skew = pd.read_parquet(DATA_RAW_DIR / "SKEW.parquet")["close"]
     except FileNotFoundError:
         skew = None
-    return BlackScholesPricer(risk_free_curve=tnx, skew_index=skew)
+    iv = None
+    if use_spx_iv:
+        try:
+            iv = pd.read_parquet(DATA_RAW_DIR / "SPX_IV.parquet")["close"]
+        except FileNotFoundError:
+            iv = None
+    return BlackScholesPricer(risk_free_curve=tnx, iv_curve=iv, skew_index=skew)

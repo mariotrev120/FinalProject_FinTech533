@@ -29,7 +29,7 @@ import numpy as np
 import pandas as pd
 
 from src.backtest.engine import BacktestResult, run_backtest
-from src.backtest.run import load_inputs
+from src.backtest.loader import load_inputs
 from src.config import DATA_PROCESSED_DIR
 from src.strategy.black_scholes import make_default_pricer
 from src.strategy.types import Mode

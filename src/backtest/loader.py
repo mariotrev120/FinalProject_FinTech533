@@ -1,28 +1,22 @@
 """
-End-to-end runner. Loads raw data, builds engine inputs, runs all four
-ablation modes, prints a summary.
+Shared backtest helpers: load raw + processed data into a `BacktestInputs`
+struct, and summarize a `BacktestResult` into a one-row dict.
 
-Usage:
-    PYTHONPATH=. .venv/bin/python -m src.backtest.run
-    PYTHONPATH=. .venv/bin/python -m src.backtest.run --mode naked --start 2018-01-01
+These live in `src/` (importable) rather than `scripts/` (CLI entry points)
+because multiple scripts and notebooks consume them.
 """
 from __future__ import annotations
-
-import argparse
-import logging
 
 import numpy as np
 import pandas as pd
 
-from src.backtest.engine import BacktestInputs, BacktestResult, run_backtest
-from src.config import DATA_RAW_DIR, IS_END, IS_START, OOS_END, OOS_START
-from src.strategy.black_scholes import make_default_pricer
-
-
-log = logging.getLogger(__name__)
+from src.backtest.engine import BacktestInputs, BacktestResult
+from src.config import DATA_PROCESSED_DIR, DATA_RAW_DIR
 
 
 def load_inputs() -> BacktestInputs:
+    """Load all raw bars + (optional) ML probability series into a
+    BacktestInputs ready to feed run_backtest()."""
     spx = pd.read_parquet(DATA_RAW_DIR / "SPX.parquet")
     vix = pd.read_parquet(DATA_RAW_DIR / "VIX.parquet")["close"]
     vix3m = pd.read_parquet(DATA_RAW_DIR / "VIX3M.parquet")["close"]
@@ -35,8 +29,6 @@ def load_inputs() -> BacktestInputs:
     tnx_chg = tnx.diff()
     spy_treasury_corr = spy_ret.rolling(20).corr(tnx_chg)
 
-    # Load ML probabilities if present (set by src.models.train)
-    from src.config import DATA_PROCESSED_DIR
     ml_path = DATA_PROCESSED_DIR / "ml_probabilities.parquet"
     if ml_path.exists():
         ml_prob = pd.read_parquet(ml_path)["p_calibrated"]
@@ -55,6 +47,8 @@ def load_inputs() -> BacktestInputs:
 
 
 def summarize(result: BacktestResult, mode: str) -> dict:
+    """One-row text summary of a BacktestResult — used by the run script
+    and a few other diagnostic callers."""
     n = len(result.trades)
     wins = sum(1 for t in result.trades if t.pnl_per_spread is not None and t.pnl_per_spread > 0)
     losses = sum(1 for t in result.trades if t.pnl_per_spread is not None and t.pnl_per_spread <= 0)
@@ -85,45 +79,3 @@ def summarize(result: BacktestResult, mode: str) -> dict:
         "fates": fates,
         "skipped": len(result.skipped_entries),
     }
-
-
-def main() -> int:
-    p = argparse.ArgumentParser()
-    p.add_argument("--mode", choices=["naked", "ml_only", "halts_only", "full", "all"], default="all")
-    p.add_argument("--start", default=IS_START)
-    p.add_argument("--end", default=OOS_END)
-    p.add_argument("-v", "--verbose", action="store_true")
-    args = p.parse_args()
-
-    logging.basicConfig(
-        level=logging.DEBUG if args.verbose else logging.INFO,
-        format="%(asctime)s %(levelname)s %(message)s",
-    )
-
-    inputs = load_inputs()
-    pricer = make_default_pricer()
-
-    modes = ["naked", "ml_only", "halts_only", "full"] if args.mode == "all" else [args.mode]
-    summaries = []
-    for m in modes:
-        if m in ("ml_only", "full") and inputs.ml_probability is None:
-            print(f"[skip {m}] no ML probability series wired in yet")
-            continue
-        log.info("running mode=%s on %s -> %s", m, args.start, args.end)
-        result = run_backtest(inputs, pricer, mode=m, start=args.start, end=args.end)
-        s = summarize(result, m)
-        summaries.append(s)
-        print(f"\n=== mode={m} ===")
-        for k, v in s.items():
-            if k == "fates":
-                print(f"  {k}: {v}")
-            elif isinstance(v, float):
-                print(f"  {k}: {v:.4f}")
-            else:
-                print(f"  {k}: {v}")
-
-    return 0
-
-
-if __name__ == "__main__":
-    raise SystemExit(main())

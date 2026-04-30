@@ -103,20 +103,35 @@ def run_backtest(
     inputs: BacktestInputs,
     pricer: PricingProvider,
     mode: Mode,
-    underlying: str = "SPX",
+    underlying: str = "XSP",          # the committed instrument per README
     start: Optional[str] = None,
     end: Optional[str] = None,
 ) -> BacktestResult:
+    """Run the backtest in one of four modes.
+
+    Underlying defaults to "XSP" — the strategy's committed instrument
+    (Section 1256 60/40 tax, European exercise, cash-settled, retail-sized
+    1/10 SPX notional). XSP and SPX are mechanically equivalent up to a
+    /10 scale, so the SPX bars in inputs.bars_spx are converted on the fly:
+    XSP_spot = SPX_close / 10, XSP_strike grid is in 1-point increments
+    (vs SPX's 5-pt). Section 1256 tax treatment applies to XSP only.
+    """
     use_ml = mode in ("ml_only", "full")
     use_halts = mode in ("halts_only", "full")
 
     if use_ml and inputs.ml_probability is None:
         raise ValueError(f"mode={mode} requires inputs.ml_probability")
 
-    spx = inputs.bars_spx
+    spx_bars = inputs.bars_spx
     if start is None: start = IS_START
     if end is None:   end = OOS_END
-    spx = spx.loc[start:end]
+    spx_bars = spx_bars.loc[start:end]
+
+    # Convert SPX bars -> XSP scale (XSP = SPX / 10) when trading XSP.
+    # SPX bars are kept under hood because they have deeper history; the
+    # XSP-scale derived bars are what the strategy actually sees.
+    scale = 10.0 if underlying == "XSP" else 1.0
+    spx = spx_bars / scale if scale != 1.0 else spx_bars
 
     equity = inputs.initial_equity
     equity_path = []

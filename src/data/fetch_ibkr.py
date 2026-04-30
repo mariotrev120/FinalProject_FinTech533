@@ -64,6 +64,15 @@ UNIVERSE: list[Symbol] = [
     Symbol("LQD",   "STK", "SMART"),
 ]
 
+# Auxiliary IV / RV series — same SPX index contract, different whatToShow
+# These are pulled separately with whatToShow=OPTION_IMPLIED_VOLATILITY and
+# HISTORICAL_VOLATILITY. TWS paper accounts return ~15 years (2011-05+) of
+# both series, which is the actual ATM IV and realized vol the market was
+# pricing/observing — much better than using VIX/100 as a synthetic proxy.
+IV_HV_SYMBOLS: list[Symbol] = [
+    Symbol("SPX",   "IND", "CBOE"),
+]
+
 
 def make_contract(s: Symbol):
     if s.sec_type == "IND":
@@ -73,8 +82,10 @@ def make_contract(s: Symbol):
     raise ValueError(f"unsupported sec_type {s.sec_type} for {s.name}")
 
 
-def fetch_one(ib: IB, s: Symbol, duration_str: str) -> pd.DataFrame:
-    """Pull daily TRADES bars for a single symbol, return as DataFrame.
+def fetch_one(
+    ib: IB, s: Symbol, duration_str: str, whatToShow: str = "TRADES",
+) -> pd.DataFrame:
+    """Pull daily bars for a single symbol, return as DataFrame.
 
     endDateTime="" means "now" — TWS returns bars ending today, going back the
     full duration_str. We accept the ib_async limitation that explicit historical
@@ -86,7 +97,7 @@ def fetch_one(ib: IB, s: Symbol, duration_str: str) -> pd.DataFrame:
         endDateTime="",
         durationStr=duration_str,
         barSizeSetting="1 day",
-        whatToShow="TRADES",
+        whatToShow=whatToShow,
         useRTH=True,
         formatDate=1,
     )
@@ -119,7 +130,7 @@ def fetch_all(duration_str: str = "15 Y") -> dict[str, pd.DataFrame]:
     try:
         for s in UNIVERSE:
             try:
-                df = fetch_one(ib, s, duration_str)
+                df = fetch_one(ib, s, duration_str, whatToShow="TRADES")
             except Exception as e:
                 log.error("FAIL %-6s %s: %s", s.name, type(e).__name__, str(e)[:120])
                 continue
@@ -128,6 +139,23 @@ def fetch_all(duration_str: str = "15 Y") -> dict[str, pd.DataFrame]:
             log.info("OK   %-6s %5d bars %s -> %s saved %s",
                      s.name, len(df), df.index.min().date(), df.index.max().date(),
                      path.name)
+
+        # Auxiliary IV / RV series — same SPX index contract pulled with
+        # different whatToShow values. Save with suffixed names.
+        for s in IV_HV_SYMBOLS:
+            for wts, suffix in [("OPTION_IMPLIED_VOLATILITY", "IV"),
+                                 ("HISTORICAL_VOLATILITY", "HV")]:
+                try:
+                    df = fetch_one(ib, s, duration_str, whatToShow=wts)
+                except Exception as e:
+                    log.error("FAIL %s_%s %s: %s", s.name, suffix, type(e).__name__, str(e)[:120])
+                    continue
+                key = f"{s.name}_{suffix}"
+                path = save(df, key, DATA_RAW_DIR)
+                results[key] = df
+                log.info("OK   %-8s %5d bars %s -> %s saved %s",
+                         key, len(df), df.index.min().date(), df.index.max().date(),
+                         path.name)
     finally:
         ib.disconnect()
         log.info("disconnected")

@@ -20,7 +20,7 @@ import numpy as np
 import pandas as pd
 
 from src.backtest.engine import BacktestResult, run_backtest
-from src.backtest.run import load_inputs
+from src.backtest.loader import load_inputs
 from src.config import (
     DATA_PROCESSED_DIR, IS_END, IS_START, ML_DECISION_THRESHOLD, OOS_END, OOS_START,
 )

@@ -22,6 +22,7 @@ def label_trades_dataframe(result: BacktestResult) -> pd.DataFrame:
             continue
         rows.append({
             "entry_date": pd.Timestamp(t.entry_date),
+            "exit_date": pd.Timestamp(t.exit_date) if t.exit_date is not None else pd.NaT,
             "win": int(t.pnl_per_spread > 0),
             "pnl_per_spread": float(t.pnl_per_spread),
             "fate": t.fate,

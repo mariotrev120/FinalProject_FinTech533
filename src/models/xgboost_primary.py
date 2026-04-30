@@ -4,8 +4,8 @@ XGBoost primary classifier with isotonic calibration.
 Walk-forward refit:
   - Each fold trains on all data with entry_date < fold_start
   - Out-of-fold predictions on the fold's data form the predict series
-  - Isotonic calibration is fit on training-fold OOF preds, then applied to
-    fold predictions
+  - Isotonic calibration is fit on training-fold OOF preds (helpers live in
+    src/models/calibration.py), then applied to fold predictions
 
 Pre-committed per src/config.py SEED. Hyperparameters use sensible defaults
 (not Optuna-tuned in this minimal build — the README's nested-CV + 50 Optuna
@@ -20,12 +20,12 @@ from typing import Optional
 
 import numpy as np
 import pandas as pd
-from sklearn.calibration import CalibratedClassifierCV
 from sklearn.isotonic import IsotonicRegression
 from sklearn.model_selection import TimeSeriesSplit
 from xgboost import XGBClassifier
 
 from src.config import SEED
+from src.models.calibration import apply_isotonic, fit_isotonic_on_oof
 
 
 log = logging.getLogger(__name__)
@@ -63,14 +63,8 @@ def fit_xgb_with_isotonic(
         m.fit(X_train.iloc[tr_idx], y_train.iloc[tr_idx])
         oof[val_idx] = m.predict_proba(X_train.iloc[val_idx])[:, 1]
 
-    # Fit isotonic on OOF preds
-    valid = ~np.isnan(oof)
-    iso = IsotonicRegression(out_of_bounds="clip")
-    if valid.sum() < 20 or len(np.unique(y_train[valid])) < 2:
-        # Degenerate fallback: identity calibration
-        iso.fit(np.array([0.0, 1.0]), np.array([0.0, 1.0]))
-    else:
-        iso.fit(oof[valid], y_train.iloc[np.where(valid)[0]])
+    # Fit isotonic on OOF preds (helper in src/models/calibration.py)
+    iso = fit_isotonic_on_oof(oof, y_train)
 
     # Refit XGBoost on all data
     final = XGBClassifier(**_xgb_params(seed))
@@ -82,7 +76,7 @@ def predict_calibrated(
     model: XGBClassifier, iso: IsotonicRegression, X: pd.DataFrame,
 ) -> pd.Series:
     raw = model.predict_proba(X)[:, 1]
-    cal = iso.predict(raw)
+    cal = apply_isotonic(iso, raw)
     return pd.Series(cal, index=X.index, name="p_calibrated")
 
 
@@ -102,8 +96,14 @@ def walk_forward_predict(
     for i, fs in enumerate(fold_starts):
         fe = fold_starts[i + 1] if i + 1 < len(fold_starts) else (fold_end or features.index.max())
 
-        # Training data: labelled trades before fs, joined with features at entry_date
-        train_labels = labels.loc[:fs - pd.Timedelta(days=1)]
+        # Training data: trades whose ENTRY AND EXIT both happened before
+        # fs. Filtering by entry_date alone would leak post-fs price data
+        # via labels of trades that entered just before fs but exited after.
+        if "exit_date" in labels.columns:
+            mask = (labels.index < fs) & (labels["exit_date"] < fs)
+            train_labels = labels[mask]
+        else:
+            train_labels = labels.loc[:fs - pd.Timedelta(days=1)]
         if len(train_labels) < 30:
             log.warning("fold %s: only %d training labels; skipping",
                         fs.date(), len(train_labels))
