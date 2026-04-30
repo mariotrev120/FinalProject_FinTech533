@@ -142,6 +142,84 @@ Apply → OK. Most changes take effect immediately; some only after a TWS restar
 
 ---
 
+## Data-layer gotchas (learned the hard way during the April 2026 probe)
+
+These are not connection bugs — TWS is up and accepting handshakes — but they look like connection bugs and ate hours of debugging time. Documenting so Robert and any future grader running this repo do not repeat them.
+
+### Zombie Python processes hold TWS connections
+
+A Python script that hangs on `fetch_historical_data` (because TWS is silently not responding) does not release its TWS connection when you `Ctrl+C` it or close the parent shell. The next session runs into the dead client_id and the new request hangs too. Symptom: a brand-new diagnostic that should take 5 seconds sits forever on the first call.
+
+Before running any data pull, sweep:
+
+```bash
+ps -ef | grep -E "python.*shinybroker|python.*ib_async|python.*fetch" | grep -v grep
+pkill -9 -f "shinybroker" 2>/dev/null
+```
+
+In the worst case found during the probe, a 24-hour-old Python process from yesterday's first pull was still attached to TWS and blocking every new request silently. Always sweep first.
+
+### `shinybroker` has parsing bugs; use `ib_async` for contract qualification
+
+Specifically: `sb.fetch_contract_details` on a current SPX option throws `KeyError: 'liquidHours'` inside shinybroker's own response parser. The TWS response is fine; shinybroker just can't decode it. The workaround is to use `ib_async`'s `IB.qualifyContracts(contract)` for option contract resolution and conId discovery, then pass the qualified contract back into shinybroker for historical bar pulls if needed.
+
+```python
+from ib_async import IB, Option
+ib = IB(); ib.connect("172.29.208.1", 7497, clientId=1)
+ib.reqMarketDataType(3)  # see "Always set delayed market data type" below
+qualified = ib.qualifyContracts(Option("SPX","20260618",5500,"P","CBOE",multiplier="100",currency="USD",tradingClass="SPXW"))
+print(qualified[0].conId)  # 846739350 — use this with downstream calls
+```
+
+### `ib_async` rejects historical `endDateTime` strings; use `shinybroker` for those
+
+Conversely, `ib_async.IB.reqHistoricalData(..., endDateTime="20180601 23:59:59 US/Eastern")` errors with `Error 10314: End Date/Time format is invalid` even though that format matches `ib_async`'s own error-message example. Cause: ib_async runs a stricter pre-validation than TWS itself. `endDateTime=""` (defaults to now) works, and so does a `datetime` object — but explicit historical strings do not.
+
+shinybroker passes the same string through to TWS without pre-validating, and it works. So the practical division of labor:
+
+- `ib_async` → contract qualification (`qualifyContracts`), connection probes, anything that exercises shinybroker's known parsing bugs.
+- `shinybroker` → historical bar pulls with explicit historical `endDateTime` strings.
+
+### Indices: use `whatToShow="TRADES"`, never `MIDPOINT`
+
+Indices (SPX, VIX, VIX3M, VVIX, treasury yields like ^TNX) are computed values, not traded contracts. Asking TWS for `MIDPOINT` bars on `secType="IND"` returns `Error 162: No historical market data for SPX/IND@CBOE MidPoint 1d`. `TRADES` returns the index level series correctly. This is the opposite of options where `MIDPOINT` is often what you want.
+
+### Always call `reqMarketDataType(3)` before any paper-account request
+
+TWS paper accounts default to live market data, which the account isn't actually subscribed to. Set `reqMarketDataType(3)` (delayed feed) on every connection before the first historical request — without it some calls silently return zero bars or hang. With ib_async:
+
+```python
+ib.reqMarketDataType(3)
+```
+
+shinybroker has no equivalent helper; you'd send the raw message via `ib_socket` or just stick to `ib_async` for the connection initialization step.
+
+### The hard wall: paper accounts cannot pull historical option bars
+
+This was the conclusive finding of the April 2026 probe. Across both `shinybroker` and `ib_async`, against current and expired option contracts, against SPX and SPY, against SMART/CBOE/BEST routing, with every `whatToShow` value (TRADES, MIDPOINT, BID_ASK), TWS paper returned exactly the same error:
+
+```
+No data of type EODChart is available for the exchange '<X>' and the security type 'Option' and '<dur>' and '1 day'
+```
+
+This is a market-data-subscription wall, not a code bug. A funded IBKR account with the OPRA Top of Book subscription (~$12/month) is required for historical option EOD bars. Paper accounts cannot fetch them at any duration, any whatToShow, any exchange.
+
+Equally definitive: paper accounts return `No security definition has been found for the request` for any option contract whose expiry is in the past, even with `includeExpired=True` set on the Contract object — `includeExpired` works for funded accounts only.
+
+What paper accounts *can* do for an options-strategy backtest:
+- Pull SPX, VIX, VIX3M, VVIX index history (TRADES, daily bars, multi-year lookback). ✓
+- Pull SPY/TLT/GLD/HYG/LQD equity ETF history. ✓
+- Pull current option chain *definitions* via `fetch_sec_def_opt_params` (forward expirations and strike grid). ✓
+- Resolve current option *conIds* via `qualifyContracts`. ✓
+
+What paper accounts cannot do:
+- Pull historical option bars (current or expired). ✗
+- Resolve expired option contracts via symbol/strike/expiry lookup. ✗
+
+The implication for any options-strategy backtest on a paper account: you need either an external historical option price source (yfinance has none for European-style index options, ORATS / OptionMetrics / CBOE LiveVol cost real money) or you reconstruct synthetic option prices analytically from the index level + implied volatility (Black-Scholes from VIX). The latter is the path this project takes; the synthetic-pricing limitation is disclosed in the writeup as a primary risk.
+
+---
+
 ## Things that looked like the bug but were not
 
 - `ib_insync` (retired). Always use **`ib_async`**.
