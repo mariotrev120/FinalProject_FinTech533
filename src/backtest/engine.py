@@ -184,7 +184,11 @@ def run_backtest(
         open_trades = still_open
 
         # --- Drawdown bookkeeping ---
-        if equity > high_water:
+        # Strictly-below-high-water counts as underwater. Equality (e.g. on
+        # no-trade days when equity sits unchanged at the prior high) does
+        # NOT increment underwater_days; otherwise an idle account would
+        # accumulate fake underwater days indefinitely.
+        if equity >= high_water:
             high_water = equity
             underwater_days = 0
             current_dd_frac = 0.0
@@ -270,6 +274,14 @@ def run_backtest(
                 except (KeyError, ValueError):
                     treas_corr = 0.0
 
+                # Sizing: ML probability is a binary gate (already filtered
+                # above), not a Kelly weight. Kelly evaluates to 0 for credit
+                # spreads at typical p values (loss/win ratio ~6:1 requires
+                # p > 0.86 for positive Kelly), which would zero out every
+                # ML-gated trade. Treat sizing as cap-based across all modes
+                # and report Kelly as a diagnostic only. This is consistent
+                # with the README's pre-committed interpretation rule:
+                # "if ml_only Sharpe is within 0.1 of naked, ML is decorative."
                 size = size_position(
                     equity=equity,
                     p_calibrated=p_for_sizing,
@@ -277,7 +289,7 @@ def run_backtest(
                     max_loss_per_spread=max_loss_per_spread,
                     vix=vix_t,
                     spy_treasury_corr=treas_corr,
-                    use_kelly=use_ml,
+                    use_kelly=False,
                 )
 
                 if size.contracts < 1:

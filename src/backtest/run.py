@@ -35,13 +35,21 @@ def load_inputs() -> BacktestInputs:
     tnx_chg = tnx.diff()
     spy_treasury_corr = spy_ret.rolling(20).corr(tnx_chg)
 
+    # Load ML probabilities if present (set by src.models.train)
+    from src.config import DATA_PROCESSED_DIR
+    ml_path = DATA_PROCESSED_DIR / "ml_probabilities.parquet"
+    if ml_path.exists():
+        ml_prob = pd.read_parquet(ml_path)["p_calibrated"]
+    else:
+        ml_prob = None
+
     return BacktestInputs(
         bars_spx=spx[["open", "high", "low", "close"]].copy(),
         vix=vix,
         vix3m=vix3m,
         hyg_minus_lqd=(hyg - lqd),
         spy_treasury_corr=spy_treasury_corr,
-        ml_probability=None,                  # filled by ML layer when present
+        ml_probability=ml_prob,
         is_winrate_baseline=0.75,
     )
 
