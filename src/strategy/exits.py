@@ -17,9 +17,7 @@ from typing import Optional, TypedDict
 
 import pandas as pd
 
-from src.config import (
-    EMERGENCY_DELTA, PROFIT_TARGET_FRAC, STOP_LOSS_MULT, TIME_EXIT_DTE,
-)
+import src.config as cfg
 from src.strategy.pricer import PricingProvider
 from src.strategy.types import Fate, Spread
 
@@ -70,18 +68,16 @@ def evaluate_exit(
     ))
 
     # Emergency
-    if short_delta_abs > EMERGENCY_DELTA:
+    if short_delta_abs > cfg.EMERGENCY_DELTA:
         return {"fate": "emergency", "exit_debit": today_debit,
                 "exit_short_delta": short_delta_abs}
 
-    # Profit target: debit shrunk to (1 - PROFIT_TARGET_FRAC) * credit
-    pt_level = entry_credit_per_share * (1.0 - PROFIT_TARGET_FRAC)
+    pt_level = entry_credit_per_share * (1.0 - cfg.PROFIT_TARGET_FRAC)
     if today_debit <= pt_level:
         return {"fate": "profit_target", "exit_debit": today_debit,
                 "exit_short_delta": short_delta_abs}
 
-    # Stop loss: debit blown out to STOP_LOSS_MULT * credit
-    stop_level = entry_credit_per_share * STOP_LOSS_MULT
+    stop_level = entry_credit_per_share * cfg.STOP_LOSS_MULT
     if today_debit >= stop_level:
         # Gap-aware: realized exit is whichever is worse for the seller
         # (i.e. higher debit) between the stop level and the morning gap.
@@ -93,9 +89,8 @@ def evaluate_exit(
         return {"fate": "stop_loss", "exit_debit": realized_debit,
                 "exit_short_delta": short_delta_abs}
 
-    # Time exit: close at TIME_EXIT_DTE
     dte = (spread.short_leg.expiry - as_of.date()).days
-    if dte <= TIME_EXIT_DTE:
+    if dte <= cfg.TIME_EXIT_DTE:
         return {"fate": "time_exit", "exit_debit": today_debit,
                 "exit_short_delta": short_delta_abs}
 

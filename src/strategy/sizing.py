@@ -30,12 +30,16 @@ def kelly_fraction(p: float, max_win: float, max_loss: float) -> float:
 
 
 def vol_multiplier(vix: float) -> float:
-    if vix <= 0:
+    import math
+    if math.isnan(vix) or vix <= 0:
         return 1.0
     return VOL_SCALE_PIVOT / vix
 
 
 def stress_multiplier(spy_treasury_corr: float) -> float:
+    import math
+    if math.isnan(spy_treasury_corr):
+        return 1.0
     return STRESS_MULTIPLIER if spy_treasury_corr > STRESS_CORR_THRESHOLD else 1.0
 
 

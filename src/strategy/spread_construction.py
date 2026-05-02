@@ -24,7 +24,7 @@ from typing import Optional
 
 import pandas as pd
 
-from src.config import DTE_MAX, DTE_MIN, ENTRY_DELTA_TARGET, SPREAD_WIDTH_PTS
+import src.config as cfg
 from src.strategy.pricer import PricingProvider
 from src.strategy.types import OptionContract, Spread
 
@@ -37,15 +37,19 @@ def _next_friday(d: date) -> date:
     return d + timedelta(days=days_ahead or 7)
 
 
-def select_expiry(entry_date: date, dte_min: int = DTE_MIN, dte_max: int = DTE_MAX) -> date:
+def select_expiry(entry_date: date, dte_min: Optional[int] = None, dte_max: Optional[int] = None) -> date:
     """Pick the first Friday at least dte_min days out, no later than dte_max.
 
     Returns the first valid Friday. If none fits, returns the closest Friday
-    inside the window."""
+    inside the window. Defaults pulled from config at call time so sensitivity
+    sweeps that monkey-patch cfg.DTE_MIN/DTE_MAX take effect."""
+    if dte_min is None:
+        dte_min = cfg.DTE_MIN
+    if dte_max is None:
+        dte_max = cfg.DTE_MAX
     candidate = _next_friday(entry_date + timedelta(days=dte_min))
     if (candidate - entry_date).days <= dte_max:
         return candidate
-    # Step back one week if we overshot
     return candidate - timedelta(days=7)
 
 
@@ -60,7 +64,7 @@ def select_short_strike(
     spot: float,
     expiry: date,
     vix: float,
-    target_delta: float = ENTRY_DELTA_TARGET,
+    target_delta: Optional[float] = None,
     search_pct: float = 0.20,
 ) -> tuple[int, float]:
     """Find the strike whose BS put delta magnitude is closest to target_delta.
@@ -68,6 +72,8 @@ def select_short_strike(
     Search a band `search_pct` below spot, stepping by the underlying's strike
     increment. Returns (strike, achieved_abs_delta).
     """
+    if target_delta is None:
+        target_delta = cfg.ENTRY_DELTA_TARGET
     inc = STRIKE_INCREMENT_BY_UNDERLYING.get(underlying, 5)
     lo = _round_to_strike(spot * (1 - search_pct), inc)
     hi = _round_to_strike(spot * 0.999, inc)   # stay OTM
@@ -102,7 +108,7 @@ def build_spread(
     short_strike, abs_delta = select_short_strike(
         pricer, as_of, underlying, spot, expiry, vix
     )
-    long_strike = short_strike - SPREAD_WIDTH_PTS
+    long_strike = short_strike - cfg.SPREAD_WIDTH_PTS
     short_leg = OptionContract(underlying, expiry, short_strike, "P")
     long_leg = OptionContract(underlying, expiry, long_strike, "P")
     spread = Spread(short_leg=short_leg, long_leg=long_leg)

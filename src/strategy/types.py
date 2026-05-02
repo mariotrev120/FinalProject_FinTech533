@@ -13,7 +13,7 @@ from typing import Literal, Optional
 
 
 Right = Literal["P", "C"]
-Fate = Literal["profit_target", "stop_loss", "time_exit", "emergency", "open"]
+Fate = Literal["profit_target", "stop_loss", "time_exit", "emergency", "eos_force", "open"]
 Mode = Literal["naked", "ml_only", "halts_only", "full"]
 
 

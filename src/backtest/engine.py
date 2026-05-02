@@ -446,7 +446,7 @@ def run_backtest(
             equity += pnl_per_spread * t.contracts - commish_share
             t.exit_date = last_dt.date() if hasattr(last_dt, "date") else last_dt
             t.exit_debit_per_spread = exit_debit_per_spread
-            t.fate = "time_exit"
+            t.fate = "eos_force"
             t.exit_spx = last_close
             t.exit_vix = last_vix
             t.pnl_per_spread = pnl_per_spread

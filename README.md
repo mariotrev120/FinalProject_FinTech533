@@ -294,7 +294,7 @@ Thresholds set from the 95th and 99th percentiles of weekend SPX gap magnitudes 
 
 ### Tax treatment
 
-Section 1256: 60% long-term capital gains and 40% short-term capital gains rate, applied to aggregate annual P&L. No carry-forwards modeled.
+Section 1256: 60% long-term capital gains and 40% short-term capital gains rate. The function `section_1256_tax(annual_pnl, ltcg_rate, stcg_rate)` is implemented in `src/strategy/friction.py` and applies the 60/40 split to *aggregate annual* P&L (not per trade — applying per trade would double-count short-term gains). It is **not invoked in the headline numbers**, which are reported gross of tax for direct comparability against CBOE PUT/PutWrite (also gross). At a representative bracket (LTCG 15%, STCG 37%), Section 1256 lifts after-tax retained returns by ≈13 percentage points relative to all-STCG treatment. No carry-forwards modeled.
 
 ### Margin
 
@@ -336,25 +336,52 @@ Four modes, identical blotter logic, only the gates differ:
 
 | Mode | Trades | Win Rate | Annualized Return | Sharpe (trade-level) | Max DD |
 |---|---|---|---|---|---|
-| naked | 237 | 68.8% | +0.54% | 1.86 [1.02, 2.85] | 1.06% |
-| ml_only | 130 | 71.5% | +0.23% | 1.80 [0.62, 3.18] | 0.57% |
-| halts_only | 90 | 63.3% | +0.33% | 2.59 [1.34, 4.16] | 0.25% |
-| full | 28 | 60.7% | +0.04% | 1.74 [-1.28, 5.56] | 0.25% |
+| naked | 198 | 66.7% | -0.05% | -0.37 [-1.29, +0.65] | 3.12% |
+| ml_only | 77 | 54.5% | -0.12% | -2.22 [-3.59, -0.95] | 1.92% |
+| halts_only | 43 | 74.4% | +0.24% | +0.28 [-1.48, +2.46] | 0.55% |
+| full | 32 | 65.6% | +0.19% | -0.60 [-2.91, +2.21] | 0.35% |
 
-(Square brackets are 90% block-bootstrap CIs.)
+(Square brackets are 90% block-bootstrap CIs. The IS window is rough on every mode because the 2012-2017 risk-free rate was ~0% and credit-spread VRP harvesting, after friction, barely cleared the rate. The OOS window — with rates near 4% — gave a truer picture.)
 
 ### OOS results (2018-01-01 to 2024-12-31)
 
-| Mode | Trades | Win Rate | Annualized Return | Sharpe (trade-level) | Max DD |
-|---|---|---|---|---|---|
-| naked | 283 | 62.2% | **+16.45%** | 0.44 [0.12, 1.27] | 1.87% |
-| ml_only | 257 | 62.6% | **+16.50%** | 0.47 [0.27, 1.36] | 1.95% |
-| halts_only | 8 | 50.0% | -0.03% | -1.88 [-5.10, -2.39] | 0.35% |
-| full | 8 | 50.0% | -0.03% | -1.88 [-5.10, -2.39] | 0.35% |
+| Mode | Trades | Win Rate | Annualized Return | Sharpe (annualized) | Sharpe (trade-level) | Max DD |
+|---|---|---|---|---|---|---|
+| naked | 270 | 63.7% | +2.46% | +0.142 | +0.282 [-0.535, +0.871] | 2.16% |
+| ml_only | 270 | 63.7% | +2.46% | +0.142 | +0.282 [-0.535, +0.871] | 2.16% |
+| halts_only | 127 | 68.5% | +2.35% | +0.058 | +0.162 [-0.800, +1.484] | 0.59% |
+| full | 127 | 68.5% | +2.35% | +0.058 | +0.162 [-0.800, +1.484] | 0.59% |
+
+(Numbers from `data/processed/component_attribution.csv`. The naked / ml_only and halts_only / full pairings are *exactly identical* because in OOS the ML gate filtered zero trades and halts subsumed the ML gate where they fired.)
 
 ### Pre-committed interpretation rule fires
 
-> **OOS Sharpe(`ml_only`) - Sharpe(`naked`) = +0.023.** This is within the 0.1 threshold the README pre-committed. By that rule, **the ML filter is decorative.** The XGBoost gate does not add material value over the unfiltered baseline.
+> **OOS Sharpe(`ml_only`) - Sharpe(`naked`) = +0.000** (the two blotters are byte-identical — ML gate fires zero filters in OOS). This is *well* within the 0.1 threshold the README pre-committed. By that rule, **the ML filter is decorative.** The XGBoost gate does not add material value over the unfiltered baseline.
+
+The seed-stability audit (5 seeds: 42, 7, 100, 2024, 77) shows OOS Sharpe in [0.089, 0.150] across seeds — three seeds reproduce 0.142 exactly, one underperforms (0.089), one marginally outperforms (0.150). Sharpe spread 0.061 < 0.10 decorative threshold. The decorative finding is robust to seed choice.
+
+### Parameter sensitivity (144-config grid)
+
+A second post-attribution audit ran the naked OOS backtest under every combination of `profit_target_frac ∈ {0.30, 0.40, 0.50, 0.60}`, `stop_loss_mult ∈ {1.5, 2.0, 2.5, 3.0}`, `dte_window ∈ {(25,40), (30,45), (35,50)}`, and `entry_delta_target ∈ {0.12, 0.16, 0.20}` — 144 distinct configurations, all executed under the post-bug-fix pipeline. (The first attempt produced 144 byte-identical outputs because the audit script monkey-patched `cfg.X` while the consumer modules had bound the values at import time. Both consumer modules — `src/strategy/exits.py` and `src/strategy/spread_construction.py` — were refactored to read `cfg.X` at call time so monkey-patches actually propagate; headline backtest reproduces exactly.)
+
+**Headline configuration result** (pt=0.50, sl=2.0, dte=(30,45), delta=0.16): n=270, Sharpe=0.142 (annualized) — **at the median** of the 144-config distribution.
+
+**Distribution across the grid:**
+
+- Sharpe range: **−1.21 to +1.65** (range 2.85). The strategy is *not* parameter-robust at the global level.
+- Annualized return range: 1.31% to 3.64% (within a tighter 2.3 pp band).
+- Top 5 configurations all use `stop_loss_mult=3.0` and `delta_target=0.20`; bottom 5 all use `stop_loss_mult=1.5`.
+
+**Marginal sensitivity** (range of group-mean Sharpe across one parameter, holding others uniform):
+
+| Parameter | Range of group means | Interpretation |
+|---|---|---|
+| `stop_loss_mult` | **1.30** | dominant driver — `1.5x → −0.64`, `3.0x → +0.66` |
+| `profit_target_frac` | 0.50 | higher PT → higher Sharpe (modestly) |
+| `delta_target` | 0.18 | secondary driver (deeper OTM helps when paired with looser stop) |
+| `dte_min` | 0.15 | nearly irrelevant — (25,40) and (30,45) often round to the same Friday |
+
+The strategy is **stop-loss-sensitive**: a 200%-of-credit stop blows out frequently in OOS vol regimes, and the configuration band that gives best Sharpe (sl=3.0, pt=0.6, delta=0.20) does so by riding through more drawdowns to PT-exit at 60% of credit. The pre-committed configuration sits squarely at the median of the grid — neither tuned nor pessimal. This is an honest "we picked the methodologically defensible parameters BEFORE seeing OOS data, and they happen to land at typical-not-best." A real-money allocator should regard the +0.142 Sharpe as a sample from a wide distribution, not a robust point estimate.
 
 We report this directly per the methodological discipline. The structural variance risk premium edge captured by the friction model and the strict 16-delta / 30-45 DTE / 50%-profit / 200%-stop / 21-DTE-exit mechanics is the entire source of OOS profitability. The XGBoost layer remains in the architecture as documentation of the Vestal-style exogenous-features methodology and as a regime-drift diagnostic for live monitoring, but it is not credited with strategy performance.
 
@@ -370,22 +397,39 @@ A systematic audit of the pipeline (per a Tier-1 / Tier-2 / Tier-3 priority list
 
 **Bug #4 — No cap on credit / debit when a quote is anomalous.** Found via vol-anomaly investigation: a single trade on 2022-03-07 reported entry credit of $5.25/share on a 5-point spread (max economic value is $5/share). The bug guard `max_loss_per_spread = max(width − credit, $1.00)` then floored max_loss at $1, and the sizer divided the $420 risk budget by $1 to size **420 contracts**. That single trade returned $201,600 in P&L (200% of starting equity), which inflated the equity curve to $345k by year end and drove annualized vol to 74.8% (vs realistic 0.90%). Fix: cap entry credit at `width − 0.01` per share, cap exit debit at `width`, and floor `max_loss_per_spread` at $100 (1pt of width) so the sizer cannot explode.
 
-### Halts: anti-signal in OOS (audit-confirmed)
+### Halts: anti-signal in aggregate, but the diagnosis is more interesting than that
 
-A formal precision audit of every halt activation in OOS 2018-2024:
+A formal precision audit of every halt activation in OOS 2018-2024 against next-30-day SPX drawdowns:
 
 - **42 distinct halt activation events** (top triggers: drawdown 17, term_inversion_hard 8, vix_spike+term_inversion 5)
 - **19.0% (8/42)** of halt firings were followed by a SPX ≥5% drawdown within 30 days
 - **Base rate** (any OOS day → ≥5% SPX drawdown in next 30 days) = **27.7%**
-- **Precision lift vs base rate: −8.7 percentage points (NEGATIVE)**
+- **Precision lift vs base rate: −8.7 percentage points (NEGATIVE)** — at the framework level
 
-In other words: the halts fire **less often** before real stress events than a random day would. They are not noisy true-positive detectors with high false-positive rates — they are *systematically anti-correlated* with subsequent stress, at least over the OOS window. As a defensive system, the halt framework provided **no measurable lift** over the base rate of "do nothing."
+In aggregate the halts fire **less often** before real stress events than a random day would. But the aggregate hides a sharp internal disagreement once we disaggregate. The post-attribution audit re-ran the analysis with a sharper test: for each halt-blocked day, what was the actual outcome of the naked trade that would have entered? A halt is "correct" if the naked trade was a loser. Aggregating per layer and per individual trigger:
 
-We considered the COVID-March-2020 single-event "halts fired 28 days before peak" finding before doing this audit. That was a real timing observation but cherry-picked across a single event. Across all 42 OOS activations the framework underperforms the base rate.
+| Layer | n blocked | Precision (loser rate) | Lift vs naked-base | Verdict |
+|---|---|---|---|---|
+| `drawdown_halt` | 55 | **58.2%** | **+21.9 pp** | **Useful** |
+| `hard_halt` | 2 | 50.0% | +13.7 pp | Too few |
+| `soft_halt` | 22 | 40.9% | +4.6 pp | Borderline |
+| `slow_halt` | 65 | 26.2% | **−10.1 pp** | **Anti-signal** |
 
-This is the honest scientific result. The pre-committed halt thresholds did exactly what they were designed to do — fire whenever regime indicators looked like the IS-period stress profile — but that profile didn't generalize. The OOS regime that mattered was a long bull market interrupted by short shocks, and the halts spent most of their time over-reacting to the long bull. We acknowledge this finding rather than retroactively re-tuning.
+| Trigger | n | Precision | Lift | $ blocked from naked |
+|---|---|---|---|---|
+| `term_inversion_soft_2d` | 4 | **100.0%** | **+63.7 pp** | −$223 (saved) |
+| `drawdown` | 55 | 58.2% | +21.9 pp | −$207 (saved) |
+| `term_inversion_hard` | 2 | 50.0% | +13.7 pp | +$50 (cost) |
+| `hyg_lqd_spread_2sd` | 22 | 27.3% | −9.0 pp | +$413 (cost) |
+| `winrate_below_baseline` | 65 | 26.2% | −10.1 pp | **+$1,233 (cost)** |
 
-A practitioner taking this strategy live would *remove* the halt framework, not refine it.
+The aggregate anti-signal is driven almost entirely by the **slow_halt** layer (`winrate_below_baseline`, 65 firings, $1,233 of profitable trades blocked). The drawdown halt and term-inversion-soft signals are *correctly* identifying loser days — the framework's failure is the reactive layers that fire on rolling-window underperformance. Those layers fire during transient drawdowns that turn out to be PCS-favorable mean-reversion setups, then get unwound.
+
+Halt-period regime characterization confirms this: across the 934 halt-active OOS days, the mean forward 21d SPX return was **+1.54%** (median +2.01%), versus **+0.48%** (median +1.49%) for the 826 non-halt days. Halt periods were *systematically more bullish* — exactly the regime where short-vol PCS strategies make money.
+
+This is the honest scientific result. The pre-committed halt thresholds did exactly what they were designed to do — fire whenever regime indicators looked like the IS-period stress profile — but that profile didn't generalize. The OOS regime that mattered was a long bull market interrupted by short shocks, and the reactive layers spent most of their time over-reacting to the long bull. We acknowledge this finding rather than retroactively re-tuning.
+
+A practitioner taking this strategy live would *remove* the slow_halt layer (or replace `winrate_below_baseline` with a forward-looking signal) but **keep** the drawdown halt, term-inversion-soft, and hard-halt layers. That refined framework would be a separate research thread; for the pre-committed deliverable, we report the framework as designed.
 
 ---
 
@@ -393,15 +437,17 @@ A practitioner taking this strategy live would *remove* the halt framework, not 
 
 For each event, we report the number of days before the event peak that the halt rules first fired (in `full` and `halts_only` modes), plus the per-mode trade count and P&L through the window.
 
-| Event | Halt fire (days before peak) | Naked P&L | Halts_only P&L |
-|---|---|---|---|
-| Aug 2015 China devaluation | 49 days before | TBD | TBD |
-| Feb 2018 Volmageddon | 0 days before (same-day) | TBD | TBD |
-| Q4 2018 selloff | 75 days before | TBD | TBD |
-| **March 2020 COVID** | **28 days before peak** | $+83 (1 trade, gap-skip rules engaged) | $0 (halts active) |
-| March 2023 banking crisis | not fired | TBD | TBD |
+| Event | Halt fire (days before peak) | Naked P&L (n trades) | Halts_only P&L (n trades) | Halts savings |
+|---|---|---|---|---|
+| Aug 2015 China devaluation | 49 days before (IS) | -$453 (9) | -$298 (7) | +$155 |
+| Feb 2018 Volmageddon | 0 days before (same-day) | -$219 (5) | -$189 (4) | +$30 |
+| Q4 2018 selloff | 75 days before | -$879 (12) | -$696 (8) | +$183 |
+| **March 2020 COVID** | **28 days before peak** | **+$80 (1 trade, gap-skip rules engaged)** | **$0 (halts active, blocked entry)** | **−$80** |
+| March 2023 banking crisis | not fired | +$109 (2) | +$109 (2) | $0 |
 
 The single most important pre-committed test was: halts must fire before the worst of February-March 2020. **Halts fired 28 days before the COVID peak in `halts_only` and `full` modes.** The defensive structure works on the most severe stress event in OOS — the cost is that it ALSO fired in many environments that turned out not to be stress events.
+
+Notice the COVID row: naked actually *won* its single COVID-window trade ($+80), so halts cost us money on that event. The honest read is that the gap-skip filter (which all four modes share) was the binding constraint during COVID — naked only entered 1 of 10 Mondays because the post-Feb-25 gap days hit the 2% threshold. The halt framework's COVID "save" was a save against a counterfactual that gap-skip already prevented. Stress-event narrative survival of `halts_only` over `naked` aggregates to +$288 across the four pre-COVID events but is more than offset on the COVID and banking crisis events combined; on net the halts saved $288 before COVID and cost $80 during COVID, so the *defensive* value is real even though the *aggregate* halt framework remains anti-signal across the full OOS window (see Component Attribution).
 
 ---
 
