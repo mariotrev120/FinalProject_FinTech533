@@ -11,7 +11,11 @@
     "contracts": 1,
     "short_strike": 159.0,
     "long_strike": 154.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 44.150000000000006,
+    "close_debit": 28.800000000000004,
+    "net_pnl": 15.350000000000001,
+    "dte": 11
   },
   {
     "ticker": "AAPL",
@@ -25,7 +29,11 @@
     "contracts": 1,
     "short_strike": 162.0,
     "long_strike": 157.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 48.199999999999996,
+    "close_debit": 106.04999999999998,
+    "net_pnl": -57.84999999999999,
+    "dte": 3
   },
   {
     "ticker": "AAPL",
@@ -39,7 +47,11 @@
     "contracts": 1,
     "short_strike": 152.0,
     "long_strike": 147.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 61.25000000000003,
+    "close_debit": 201.375,
+    "net_pnl": -140.12499999999997,
+    "dte": 7
   },
   {
     "ticker": "AAPL",
@@ -53,7 +65,11 @@
     "contracts": 1,
     "short_strike": 172.0,
     "long_strike": 167.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 45.449999999999996,
+    "close_debit": 22.199999999999996,
+    "net_pnl": 23.25,
+    "dte": 3
   },
   {
     "ticker": "AAPL",
@@ -67,7 +83,11 @@
     "contracts": 1,
     "short_strike": 178.0,
     "long_strike": 173.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 60.4,
+    "close_debit": 20.950000000000003,
+    "net_pnl": 39.449999999999996,
+    "dte": 9
   },
   {
     "ticker": "AAPL",
@@ -81,7 +101,11 @@
     "contracts": 1,
     "short_strike": 177.0,
     "long_strike": 172.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 40.800000000000004,
+    "close_debit": 17.599999999999998,
+    "net_pnl": 23.200000000000006,
+    "dte": 11
   },
   {
     "ticker": "AAPL",
@@ -95,7 +119,11 @@
     "contracts": 1,
     "short_strike": 174.0,
     "long_strike": 169.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 52.2,
+    "close_debit": 8.200000000000001,
+    "net_pnl": 44.0,
+    "dte": 2
   },
   {
     "ticker": "AAPL",
@@ -109,7 +137,11 @@
     "contracts": 1,
     "short_strike": 197.0,
     "long_strike": 192.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 41.14999999999999,
+    "close_debit": 14.900000000000002,
+    "net_pnl": 26.24999999999999,
+    "dte": 10
   },
   {
     "ticker": "AAPL",
@@ -123,7 +155,11 @@
     "contracts": 1,
     "short_strike": 197.0,
     "long_strike": 192.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 41.45,
+    "close_debit": 13.149999999999999,
+    "net_pnl": 28.300000000000004,
+    "dte": 4
   },
   {
     "ticker": "AAPL",
@@ -137,7 +173,11 @@
     "contracts": 1,
     "short_strike": 202.0,
     "long_strike": 197.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 37.70000000000001,
+    "close_debit": 13.3,
+    "net_pnl": 24.40000000000001,
+    "dte": 7
   },
   {
     "ticker": "AAPL",
@@ -151,7 +191,11 @@
     "contracts": 1,
     "short_strike": 207.0,
     "long_strike": 202.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 46.149999999999984,
+    "close_debit": 24.499999999999996,
+    "net_pnl": 21.649999999999988,
+    "dte": 8
   },
   {
     "ticker": "AAPL",
@@ -165,7 +209,11 @@
     "contracts": 1,
     "short_strike": 202.0,
     "long_strike": 197.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 54.149999999999984,
+    "close_debit": 17.54999999999999,
+    "net_pnl": 36.599999999999994,
+    "dte": 3
   },
   {
     "ticker": "AAPL",
@@ -179,7 +227,11 @@
     "contracts": 1,
     "short_strike": 198.0,
     "long_strike": 193.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 42.75000000000001,
+    "close_debit": 7.949999999999995,
+    "net_pnl": 34.80000000000001,
+    "dte": 7
   },
   {
     "ticker": "AAPL",
@@ -193,7 +245,11 @@
     "contracts": 1,
     "short_strike": 204.0,
     "long_strike": 199.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 41.49999999999999,
+    "close_debit": 19.5,
+    "net_pnl": 21.999999999999993,
+    "dte": 4
   },
   {
     "ticker": "AAPL",
@@ -207,7 +263,11 @@
     "contracts": 1,
     "short_strike": 209.0,
     "long_strike": 204.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 53.49999999999998,
+    "close_debit": 159.99999999999991,
+    "net_pnl": -106.49999999999994,
+    "dte": 9
   },
   {
     "ticker": "AAPL",
@@ -221,7 +281,11 @@
     "contracts": 1,
     "short_strike": 202.0,
     "long_strike": 197.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 53.2,
+    "close_debit": 132.49999999999994,
+    "net_pnl": -79.29999999999994,
+    "dte": 3
   },
   {
     "ticker": "AAPL",
@@ -235,7 +299,11 @@
     "contracts": 1,
     "short_strike": 159.0,
     "long_strike": 154.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 58.10000000000001,
+    "close_debit": 31.900000000000002,
+    "net_pnl": 26.200000000000006,
+    "dte": 11
   },
   {
     "ticker": "AAPL",
@@ -249,7 +317,11 @@
     "contracts": 1,
     "short_strike": 158.0,
     "long_strike": 153.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 66.7,
+    "close_debit": 20.950000000000003,
+    "net_pnl": 45.75,
+    "dte": 8
   },
   {
     "ticker": "AAPL",
@@ -263,7 +335,11 @@
     "contracts": 1,
     "short_strike": 164.0,
     "long_strike": 159.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 56.45,
+    "close_debit": 56.54999999999999,
+    "net_pnl": -0.09999999999998721,
+    "dte": 11
   },
   {
     "ticker": "AAPL",
@@ -277,7 +353,11 @@
     "contracts": 1,
     "short_strike": 164.0,
     "long_strike": 159.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 44.099999999999994,
+    "close_debit": 15.6,
+    "net_pnl": 28.499999999999993,
+    "dte": 8
   },
   {
     "ticker": "AAPL",
@@ -291,7 +371,11 @@
     "contracts": 1,
     "short_strike": 167.0,
     "long_strike": 162.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 42.74999999999999,
+    "close_debit": 17.250000000000004,
+    "net_pnl": 25.49999999999999,
+    "dte": 3
   },
   {
     "ticker": "AAPL",
@@ -305,7 +389,11 @@
     "contracts": 1,
     "short_strike": 187.0,
     "long_strike": 182.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 53.15,
+    "close_debit": 13.199999999999996,
+    "net_pnl": 39.95,
+    "dte": 2
   },
   {
     "ticker": "AAPL",
@@ -319,7 +407,11 @@
     "contracts": 1,
     "short_strike": 194.0,
     "long_strike": 189.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 53.449999999999996,
+    "close_debit": 119.30000000000001,
+    "net_pnl": -65.85000000000002,
+    "dte": 1
   },
   {
     "ticker": "AAPL",
@@ -333,7 +425,11 @@
     "contracts": 1,
     "short_strike": 167.0,
     "long_strike": 162.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 85.1,
+    "close_debit": 93.5,
+    "net_pnl": -8.400000000000006,
+    "dte": 11
   },
   {
     "ticker": "AAPL",
@@ -347,7 +443,11 @@
     "contracts": 1,
     "short_strike": 184.0,
     "long_strike": 179.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 53.49999999999998,
+    "close_debit": 18.54999999999999,
+    "net_pnl": 34.94999999999999,
+    "dte": 8
   },
   {
     "ticker": "AAPL",
@@ -361,7 +461,11 @@
     "contracts": 1,
     "short_strike": 184.0,
     "long_strike": 179.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 56.54999999999997,
+    "close_debit": 34.199999999999996,
+    "net_pnl": 22.349999999999973,
+    "dte": 11
   },
   {
     "ticker": "AAPL",
@@ -375,7 +479,11 @@
     "contracts": 1,
     "short_strike": 182.0,
     "long_strike": 177.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 55.95000000000001,
+    "close_debit": 27.750000000000007,
+    "net_pnl": 28.200000000000003,
+    "dte": 7
   },
   {
     "ticker": "AAPL",
@@ -389,7 +497,11 @@
     "contracts": 1,
     "short_strike": 188.0,
     "long_strike": 183.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 60.45,
+    "close_debit": 28.950000000000003,
+    "net_pnl": 31.5,
+    "dte": 8
   },
   {
     "ticker": "AAPL",
@@ -403,7 +515,11 @@
     "contracts": 1,
     "short_strike": 189.0,
     "long_strike": 184.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 52.149999999999984,
+    "close_debit": 17.49999999999999,
+    "net_pnl": 34.64999999999999,
+    "dte": 9
   },
   {
     "ticker": "AAPL",
@@ -417,7 +533,11 @@
     "contracts": 1,
     "short_strike": 192.0,
     "long_strike": 187.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 50.95000000000002,
+    "close_debit": 198.75,
+    "net_pnl": -147.79999999999998,
+    "dte": 7
   },
   {
     "ticker": "AAPL",
@@ -431,7 +551,11 @@
     "contracts": 1,
     "short_strike": 249.0,
     "long_strike": 244.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 44.39999999999999,
+    "close_debit": 30.599999999999994,
+    "net_pnl": 13.799999999999997,
+    "dte": 11
   },
   {
     "ticker": "AAPL",
@@ -445,7 +569,11 @@
     "contracts": 1,
     "short_strike": 249.0,
     "long_strike": 244.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 47.54999999999999,
+    "close_debit": 20.599999999999994,
+    "net_pnl": 26.949999999999996,
+    "dte": 11
   },
   {
     "ticker": "AAPL",
@@ -459,7 +587,11 @@
     "contracts": 1,
     "short_strike": 247.0,
     "long_strike": 242.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 49.5,
+    "close_debit": 24.149999999999995,
+    "net_pnl": 25.350000000000005,
+    "dte": 4
   },
   {
     "ticker": "AAPL",
@@ -473,7 +605,11 @@
     "contracts": 1,
     "short_strike": 247.0,
     "long_strike": 242.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 41.85,
+    "close_debit": 16.2,
+    "net_pnl": 25.650000000000002,
+    "dte": 4
   },
   {
     "ticker": "AAPL",
@@ -487,7 +623,11 @@
     "contracts": 1,
     "short_strike": 263.0,
     "long_strike": 258.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 56.75,
+    "close_debit": 19.949999999999996,
+    "net_pnl": 36.800000000000004,
+    "dte": 7
   },
   {
     "ticker": "AAPL",
@@ -501,7 +641,11 @@
     "contracts": 1,
     "short_strike": 267.0,
     "long_strike": 262.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 48.15,
+    "close_debit": 24.54999999999999,
+    "net_pnl": 23.60000000000001,
+    "dte": 8
   },
   {
     "ticker": "AAPL",
@@ -515,7 +659,11 @@
     "contracts": 1,
     "short_strike": 267.0,
     "long_strike": 262.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 61.95,
+    "close_debit": 24.499999999999996,
+    "net_pnl": 37.45,
+    "dte": 9
   },
   {
     "ticker": "AAPL",
@@ -529,7 +677,11 @@
     "contracts": 1,
     "short_strike": 274.0,
     "long_strike": 269.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 66.95000000000006,
+    "close_debit": 25.2,
+    "net_pnl": 41.75000000000006,
+    "dte": 7
   },
   {
     "ticker": "AAPL",
@@ -543,7 +695,11 @@
     "contracts": 1,
     "short_strike": 287.0,
     "long_strike": 282.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 61.60000000000001,
+    "close_debit": 50.449999999999996,
+    "net_pnl": 11.150000000000013,
+    "dte": 11
   },
   {
     "ticker": "AAPL",
@@ -557,7 +713,11 @@
     "contracts": 1,
     "short_strike": 120.0,
     "long_strike": 115.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 54.09999999999998,
+    "close_debit": 21.599999999999998,
+    "net_pnl": 32.499999999999986,
+    "dte": 11
   },
   {
     "ticker": "AAPL",
@@ -571,7 +731,11 @@
     "contracts": 1,
     "short_strike": 123.0,
     "long_strike": 118.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 46.4,
+    "close_debit": 23.299999999999997,
+    "net_pnl": 23.1,
+    "dte": 10
   },
   {
     "ticker": "AAPL",
@@ -585,7 +749,11 @@
     "contracts": 1,
     "short_strike": 117.0,
     "long_strike": 112.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 37.4,
+    "close_debit": 17.950000000000006,
+    "net_pnl": 19.449999999999992,
+    "dte": 4
   },
   {
     "ticker": "AAPL",
@@ -599,7 +767,11 @@
     "contracts": 1,
     "short_strike": 118.0,
     "long_strike": 113.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 27.700000000000003,
+    "close_debit": 7.299999999999998,
+    "net_pnl": 20.400000000000006,
+    "dte": 7
   },
   {
     "ticker": "AAPL",
@@ -613,7 +785,11 @@
     "contracts": 1,
     "short_strike": 125.0,
     "long_strike": 120.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 42.75000000000001,
+    "close_debit": 18.29999999999999,
+    "net_pnl": 24.450000000000017,
+    "dte": 4
   },
   {
     "ticker": "AAPL",
@@ -627,7 +803,11 @@
     "contracts": 1,
     "short_strike": 133.0,
     "long_strike": 128.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 50.75000000000001,
+    "close_debit": 17.95,
+    "net_pnl": 32.80000000000001,
+    "dte": 11
   },
   {
     "ticker": "AAPL",
@@ -641,7 +821,11 @@
     "contracts": 1,
     "short_strike": 138.0,
     "long_strike": 133.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 40.7,
+    "close_debit": 86.00000000000001,
+    "net_pnl": -45.30000000000001,
+    "dte": 2
   },
   {
     "ticker": "AAPL",
@@ -655,7 +839,11 @@
     "contracts": 1,
     "short_strike": 142.0,
     "long_strike": 137.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 37.75,
+    "close_debit": 72.5,
+    "net_pnl": -34.75,
+    "dte": 11
   },
   {
     "ticker": "AAPL",
@@ -669,7 +857,11 @@
     "contracts": 1,
     "short_strike": 136.0,
     "long_strike": 131.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 50.69999999999999,
+    "close_debit": 12.950000000000003,
+    "net_pnl": 37.749999999999986,
+    "dte": 10
   },
   {
     "ticker": "AAPL",
@@ -683,7 +875,11 @@
     "contracts": 1,
     "short_strike": 138.0,
     "long_strike": 133.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 46.75000000000001,
+    "close_debit": 24.45,
+    "net_pnl": 22.300000000000008,
+    "dte": 3
   },
   {
     "ticker": "AAPL",
@@ -697,7 +893,11 @@
     "contracts": 1,
     "short_strike": 139.0,
     "long_strike": 134.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 37.75,
+    "close_debit": 18.95,
+    "net_pnl": 18.8,
+    "dte": 11
   },
   {
     "ticker": "AAPL",
@@ -711,7 +911,11 @@
     "contracts": 1,
     "short_strike": 141.0,
     "long_strike": 136.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 47.10000000000001,
+    "close_debit": 18.95,
+    "net_pnl": 28.15000000000001,
+    "dte": 9
   },
   {
     "ticker": "AAPL",
@@ -725,7 +929,11 @@
     "contracts": 1,
     "short_strike": 138.0,
     "long_strike": 133.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 43.05,
+    "close_debit": 15.949999999999998,
+    "net_pnl": 27.1,
+    "dte": 3
   },
   {
     "ticker": "AAPL",
@@ -739,7 +947,11 @@
     "contracts": 1,
     "short_strike": 148.0,
     "long_strike": 143.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 41.699999999999996,
+    "close_debit": 17.95,
+    "net_pnl": 23.749999999999996,
+    "dte": 11
   },
   {
     "ticker": "AAPL",
@@ -753,7 +965,11 @@
     "contracts": 1,
     "short_strike": 148.0,
     "long_strike": 143.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 42.100000000000016,
+    "close_debit": 6.950000000000001,
+    "net_pnl": 35.15000000000001,
+    "dte": 11
   },
   {
     "ticker": "AAPL",
@@ -767,7 +983,11 @@
     "contracts": 1,
     "short_strike": 153.0,
     "long_strike": 148.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 45.099999999999994,
+    "close_debit": 16.299999999999997,
+    "net_pnl": 28.799999999999997,
+    "dte": 4
   },
   {
     "ticker": "AAPL",
@@ -781,7 +1001,11 @@
     "contracts": 1,
     "short_strike": 168.0,
     "long_strike": 163.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 58.750000000000014,
+    "close_debit": 18.950000000000003,
+    "net_pnl": 39.80000000000001,
+    "dte": 7
   },
   {
     "ticker": "AAPL",
@@ -795,7 +1019,11 @@
     "contracts": 1,
     "short_strike": 173.0,
     "long_strike": 168.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 51.75000000000001,
+    "close_debit": 18.95,
+    "net_pnl": 32.80000000000001,
+    "dte": 10
   },
   {
     "ticker": "AAPL",
@@ -809,7 +1037,11 @@
     "contracts": 1,
     "short_strike": 173.0,
     "long_strike": 168.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 46.8,
+    "close_debit": 23.250000000000004,
+    "net_pnl": 23.549999999999994,
+    "dte": 3
   },
   {
     "ticker": "AAPL",
@@ -823,7 +1055,11 @@
     "contracts": 1,
     "short_strike": 178.0,
     "long_strike": 173.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 46.749999999999986,
+    "close_debit": 53.6,
+    "net_pnl": -6.850000000000016,
+    "dte": 11
   },
   {
     "ticker": "AAPL",
@@ -837,7 +1073,11 @@
     "contracts": 1,
     "short_strike": 173.0,
     "long_strike": 168.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 50.09999999999999,
+    "close_debit": 17.95,
+    "net_pnl": 32.14999999999999,
+    "dte": 7
   },
   {
     "ticker": "AAPL",
@@ -851,7 +1091,11 @@
     "contracts": 1,
     "short_strike": 178.0,
     "long_strike": 173.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 41.699999999999996,
+    "close_debit": 16.299999999999997,
+    "net_pnl": 25.4,
+    "dte": 11
   },
   {
     "ticker": "AAPL",
@@ -865,7 +1109,11 @@
     "contracts": 1,
     "short_strike": 178.0,
     "long_strike": 173.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 51.749999999999986,
+    "close_debit": 146.89999999999998,
+    "net_pnl": -95.14999999999999,
+    "dte": 11
   },
   {
     "ticker": "AAPL",
@@ -879,7 +1127,11 @@
     "contracts": 1,
     "short_strike": 183.0,
     "long_strike": 178.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 63.75000000000003,
+    "close_debit": 249.75,
+    "net_pnl": -185.99999999999997,
+    "dte": 4
   },
   {
     "ticker": "AAPL",
@@ -893,7 +1145,11 @@
     "contracts": 1,
     "short_strike": 163.0,
     "long_strike": 158.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 32.699999999999996,
+    "close_debit": 16.299999999999997,
+    "net_pnl": 16.4,
+    "dte": 7
   },
   {
     "ticker": "AAPL",
@@ -907,7 +1163,11 @@
     "contracts": 1,
     "short_strike": 168.0,
     "long_strike": 163.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 52.69999999999998,
+    "close_debit": 110.94999999999997,
+    "net_pnl": -58.24999999999999,
+    "dte": 3
   },
   {
     "ticker": "AAPL",
@@ -921,7 +1181,11 @@
     "contracts": 1,
     "short_strike": 163.0,
     "long_strike": 158.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 45.70000000000002,
+    "close_debit": 19.300000000000004,
+    "net_pnl": 26.400000000000013,
+    "dte": 2
   },
   {
     "ticker": "AAPL",
@@ -935,7 +1199,11 @@
     "contracts": 1,
     "short_strike": 168.0,
     "long_strike": 163.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 49.699999999999974,
+    "close_debit": 24.3,
+    "net_pnl": 25.399999999999974,
+    "dte": 1
   },
   {
     "ticker": "AAPL",
@@ -949,7 +1217,11 @@
     "contracts": 1,
     "short_strike": 168.0,
     "long_strike": 163.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 59.70000000000001,
+    "close_debit": 91.25,
+    "net_pnl": -31.54999999999999,
+    "dte": 11
   },
   {
     "ticker": "AAPL",
@@ -963,7 +1235,11 @@
     "contracts": 1,
     "short_strike": 167.0,
     "long_strike": 162.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 45.699999999999996,
+    "close_debit": 109.60000000000004,
+    "net_pnl": -63.90000000000004,
+    "dte": 8
   },
   {
     "ticker": "AAPL",
@@ -977,7 +1253,11 @@
     "contracts": 1,
     "short_strike": 163.0,
     "long_strike": 158.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 55.749999999999986,
+    "close_debit": 27.599999999999998,
+    "net_pnl": 28.149999999999988,
+    "dte": 11
   },
   {
     "ticker": "AAPL",
@@ -991,7 +1271,11 @@
     "contracts": 1,
     "short_strike": 158.0,
     "long_strike": 153.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 53.749999999999986,
+    "close_debit": 22.299999999999997,
+    "net_pnl": 31.44999999999999,
+    "dte": 7
   },
   {
     "ticker": "AAPL",
@@ -1005,7 +1289,11 @@
     "contracts": 1,
     "short_strike": 163.0,
     "long_strike": 158.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 49.1,
+    "close_debit": 93.74999999999997,
+    "net_pnl": -44.64999999999997,
+    "dte": 11
   },
   {
     "ticker": "AAPL",
@@ -1019,7 +1307,11 @@
     "contracts": 1,
     "short_strike": 163.0,
     "long_strike": 158.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 53.69999999999998,
+    "close_debit": 139.0,
+    "net_pnl": -85.30000000000001,
+    "dte": 10
   },
   {
     "ticker": "AAPL",
@@ -1033,7 +1325,11 @@
     "contracts": 1,
     "short_strike": 168.0,
     "long_strike": 163.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 54.09999999999998,
+    "close_debit": 26.950000000000003,
+    "net_pnl": 27.149999999999977,
+    "dte": 2
   },
   {
     "ticker": "AAPL",
@@ -1047,7 +1343,11 @@
     "contracts": 1,
     "short_strike": 173.0,
     "long_strike": 168.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 47.70000000000002,
+    "close_debit": 21.3,
+    "net_pnl": 26.400000000000016,
+    "dte": 2
   },
   {
     "ticker": "AAPL",
@@ -1061,7 +1361,11 @@
     "contracts": 1,
     "short_strike": 178.0,
     "long_strike": 173.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 27.750000000000004,
+    "close_debit": 16.299999999999997,
+    "net_pnl": 11.450000000000006,
+    "dte": 11
   },
   {
     "ticker": "AAPL",
@@ -1075,7 +1379,11 @@
     "contracts": 1,
     "short_strike": 178.0,
     "long_strike": 173.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 33.75,
+    "close_debit": 15.299999999999997,
+    "net_pnl": 18.450000000000003,
+    "dte": 8
   },
   {
     "ticker": "AAPL",
@@ -1089,7 +1397,11 @@
     "contracts": 1,
     "short_strike": 178.0,
     "long_strike": 173.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 40.4,
+    "close_debit": 15.950000000000003,
+    "net_pnl": 24.449999999999996,
+    "dte": 3
   },
   {
     "ticker": "AAPL",
@@ -1103,7 +1415,11 @@
     "contracts": 1,
     "short_strike": 183.0,
     "long_strike": 178.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 51.75000000000001,
+    "close_debit": 20.599999999999994,
+    "net_pnl": 31.150000000000013,
+    "dte": 2
   },
   {
     "ticker": "AAPL",
@@ -1117,7 +1433,11 @@
     "contracts": 1,
     "short_strike": 187.0,
     "long_strike": 182.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 49.699999999999996,
+    "close_debit": 68.29999999999998,
+    "net_pnl": -18.599999999999987,
+    "dte": 11
   },
   {
     "ticker": "AAPL",
@@ -1131,7 +1451,11 @@
     "contracts": 1,
     "short_strike": 173.0,
     "long_strike": 168.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 64.45,
+    "close_debit": 22.299999999999997,
+    "net_pnl": 42.150000000000006,
+    "dte": 11
   },
   {
     "ticker": "AAPL",
@@ -1145,7 +1469,11 @@
     "contracts": 1,
     "short_strike": 178.0,
     "long_strike": 173.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 42.699999999999996,
+    "close_debit": 90.6,
+    "net_pnl": -47.9,
+    "dte": 8
   },
   {
     "ticker": "AAPL",
@@ -1159,7 +1487,11 @@
     "contracts": 1,
     "short_strike": 178.0,
     "long_strike": 173.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 63.09999999999999,
+    "close_debit": 134.75,
+    "net_pnl": -71.65,
+    "dte": 2
   },
   {
     "ticker": "AAPL",
@@ -1173,7 +1505,11 @@
     "contracts": 1,
     "short_strike": 173.0,
     "long_strike": 168.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 34.400000000000006,
+    "close_debit": 61.95000000000002,
+    "net_pnl": -27.55000000000001,
+    "dte": 11
   },
   {
     "ticker": "AAPL",
@@ -1187,7 +1523,11 @@
     "contracts": 1,
     "short_strike": 173.0,
     "long_strike": 168.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 33.4,
+    "close_debit": 74.6,
+    "net_pnl": -41.199999999999996,
+    "dte": 4
   },
   {
     "ticker": "AAPL",
@@ -1201,7 +1541,11 @@
     "contracts": 1,
     "short_strike": 163.0,
     "long_strike": 158.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 48.699999999999996,
+    "close_debit": 105.14999999999999,
+    "net_pnl": -56.449999999999996,
+    "dte": 1
   },
   {
     "ticker": "AAPL",
@@ -1215,7 +1559,11 @@
     "contracts": 1,
     "short_strike": 158.0,
     "long_strike": 153.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 31.4,
+    "close_debit": 11.299999999999999,
+    "net_pnl": 20.1,
+    "dte": 8
   },
   {
     "ticker": "AAPL",
@@ -1229,7 +1577,11 @@
     "contracts": 1,
     "short_strike": 162.0,
     "long_strike": 157.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 39.75,
+    "close_debit": 12.3,
+    "net_pnl": 27.45,
+    "dte": 2
   },
   {
     "ticker": "AAPL",
@@ -1243,7 +1595,11 @@
     "contracts": 1,
     "short_strike": 158.0,
     "long_strike": 153.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 39.45,
+    "close_debit": 36.25000000000001,
+    "net_pnl": 3.1999999999999957,
+    "dte": 11
   },
   {
     "ticker": "AAPL",
@@ -1257,7 +1613,11 @@
     "contracts": 1,
     "short_strike": 158.0,
     "long_strike": 153.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 66.75000000000001,
+    "close_debit": 28.59999999999999,
+    "net_pnl": 38.15000000000002,
+    "dte": 10
   },
   {
     "ticker": "AAPL",
@@ -1271,7 +1631,11 @@
     "contracts": 1,
     "short_strike": 153.0,
     "long_strike": 148.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 43.39999999999999,
+    "close_debit": 17.299999999999997,
+    "net_pnl": 26.099999999999994,
+    "dte": 3
   },
   {
     "ticker": "AAPL",
@@ -1285,7 +1649,11 @@
     "contracts": 1,
     "short_strike": 158.0,
     "long_strike": 153.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 61.050000000000004,
+    "close_debit": 131.15000000000003,
+    "net_pnl": -70.10000000000002,
+    "dte": 4
   },
   {
     "ticker": "AAPL",
@@ -1299,7 +1667,11 @@
     "contracts": 1,
     "short_strike": 153.0,
     "long_strike": 148.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 70.75000000000001,
+    "close_debit": 26.299999999999997,
+    "net_pnl": 44.45000000000002,
+    "dte": 7
   },
   {
     "ticker": "AAPL",
@@ -1313,7 +1685,11 @@
     "contracts": 1,
     "short_strike": 158.0,
     "long_strike": 153.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 54.449999999999996,
+    "close_debit": 4.949999999999999,
+    "net_pnl": 49.5,
+    "dte": 4
   },
   {
     "ticker": "AAPL",
@@ -1327,7 +1703,11 @@
     "contracts": 1,
     "short_strike": 168.0,
     "long_strike": 163.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 31.049999999999994,
+    "close_debit": 13.599999999999996,
+    "net_pnl": 17.449999999999996,
+    "dte": 3
   },
   {
     "ticker": "AAPL",
@@ -1341,7 +1721,11 @@
     "contracts": 1,
     "short_strike": 173.0,
     "long_strike": 168.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 44.74999999999999,
+    "close_debit": 20.249999999999993,
+    "net_pnl": 24.5,
+    "dte": 2
   },
   {
     "ticker": "AAPL",
@@ -1355,7 +1739,11 @@
     "contracts": 1,
     "short_strike": 182.0,
     "long_strike": 177.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 54.40000000000001,
+    "close_debit": 50.2,
+    "net_pnl": 4.20000000000001,
+    "dte": 11
   },
   {
     "ticker": "AAPL",
@@ -1369,7 +1757,11 @@
     "contracts": 1,
     "short_strike": 178.0,
     "long_strike": 173.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 34.44999999999999,
+    "close_debit": 16.950000000000003,
+    "net_pnl": 17.499999999999986,
+    "dte": 4
   },
   {
     "ticker": "AAPL",
@@ -1383,7 +1775,11 @@
     "contracts": 1,
     "short_strike": 178.0,
     "long_strike": 173.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 32.00000000000001,
+    "close_debit": 7.6,
+    "net_pnl": 24.400000000000006,
+    "dte": 1
   },
   {
     "ticker": "AAPL",
@@ -1397,7 +1793,11 @@
     "contracts": 1,
     "short_strike": 203.0,
     "long_strike": 198.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 63.80000000000001,
+    "close_debit": 129.2,
+    "net_pnl": -65.39999999999998,
+    "dte": 3
   },
   {
     "ticker": "AAPL",
@@ -1411,7 +1811,11 @@
     "contracts": 1,
     "short_strike": 193.0,
     "long_strike": 188.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 41.050000000000004,
+    "close_debit": 17.9,
+    "net_pnl": 23.150000000000006,
+    "dte": 2
   },
   {
     "ticker": "AAPL",
@@ -1425,7 +1829,11 @@
     "contracts": 1,
     "short_strike": 198.0,
     "long_strike": 193.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 45.150000000000006,
+    "close_debit": 16.249999999999996,
+    "net_pnl": 28.90000000000001,
+    "dte": 4
   },
   {
     "ticker": "AAPL",
@@ -1439,7 +1847,11 @@
     "contracts": 1,
     "short_strike": 208.0,
     "long_strike": 203.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 45.800000000000004,
+    "close_debit": 21.599999999999998,
+    "net_pnl": 24.200000000000006,
+    "dte": 8
   },
   {
     "ticker": "AAPL",
@@ -1453,7 +1865,11 @@
     "contracts": 1,
     "short_strike": 213.0,
     "long_strike": 208.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 50.05000000000002,
+    "close_debit": 117.09999999999998,
+    "net_pnl": -67.04999999999995,
+    "dte": 3
   },
   {
     "ticker": "AAPL",
@@ -1467,7 +1883,11 @@
     "contracts": 1,
     "short_strike": 203.0,
     "long_strike": 198.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 47.80000000000001,
+    "close_debit": 68.74999999999997,
+    "net_pnl": -20.94999999999996,
+    "dte": 11
   },
   {
     "ticker": "AAPL",
@@ -1481,7 +1901,11 @@
     "contracts": 1,
     "short_strike": 198.0,
     "long_strike": 193.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 56.50000000000001,
+    "close_debit": 130.00000000000006,
+    "net_pnl": -73.50000000000006,
+    "dte": 7
   },
   {
     "ticker": "AAPL",
@@ -1495,7 +1919,11 @@
     "contracts": 1,
     "short_strike": 208.0,
     "long_strike": 203.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 40.75,
+    "close_debit": 19.950000000000003,
+    "net_pnl": 20.799999999999997,
+    "dte": 3
   },
   {
     "ticker": "AAPL",
@@ -1509,7 +1937,11 @@
     "contracts": 1,
     "short_strike": 214.0,
     "long_strike": 209.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 50.4,
+    "close_debit": 16.95,
+    "net_pnl": 33.45,
+    "dte": 7
   },
   {
     "ticker": "AAPL",
@@ -1523,7 +1955,11 @@
     "contracts": 1,
     "short_strike": 218.0,
     "long_strike": 213.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 40.19999999999999,
+    "close_debit": 18.850000000000005,
+    "net_pnl": 21.349999999999984,
+    "dte": 4
   },
   {
     "ticker": "AAPL",
@@ -1537,7 +1973,11 @@
     "contracts": 1,
     "short_strike": 228.0,
     "long_strike": 223.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 58.50000000000001,
+    "close_debit": 29.199999999999992,
+    "net_pnl": 29.300000000000015,
+    "dte": 4
   },
   {
     "ticker": "AAPL",
@@ -1551,7 +1991,11 @@
     "contracts": 1,
     "short_strike": 233.0,
     "long_strike": 228.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 45.249999999999986,
+    "close_debit": 17.55,
+    "net_pnl": 27.699999999999985,
+    "dte": 8
   },
   {
     "ticker": "AAPL",
@@ -1565,7 +2009,11 @@
     "contracts": 1,
     "short_strike": 238.0,
     "long_strike": 233.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 58.75,
+    "close_debit": 22.900000000000006,
+    "net_pnl": 35.849999999999994,
+    "dte": 7
   },
   {
     "ticker": "MSFT",
@@ -1579,7 +2027,11 @@
     "contracts": 1,
     "short_strike": 83.0,
     "long_strike": 78.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 40.099999999999994,
+    "close_debit": 23.5,
+    "net_pnl": 16.599999999999994,
+    "dte": 11
   },
   {
     "ticker": "MSFT",
@@ -1593,7 +2045,11 @@
     "contracts": 1,
     "short_strike": 85.0,
     "long_strike": 80.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 34.449999999999996,
+    "close_debit": 9.4,
+    "net_pnl": 25.049999999999997,
+    "dte": 10
   },
   {
     "ticker": "MSFT",
@@ -1607,7 +2063,11 @@
     "contracts": 1,
     "short_strike": 85.0,
     "long_strike": 80.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 40.3,
+    "close_debit": 17.0,
+    "net_pnl": 23.299999999999997,
+    "dte": 3
   },
   {
     "ticker": "MSFT",
@@ -1621,7 +2081,11 @@
     "contracts": 1,
     "short_strike": 90.0,
     "long_strike": 85.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 38.449999999999996,
+    "close_debit": 18.85,
+    "net_pnl": 19.599999999999994,
+    "dte": 3
   },
   {
     "ticker": "MSFT",
@@ -1635,7 +2099,11 @@
     "contracts": 1,
     "short_strike": 92.0,
     "long_strike": 87.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 37.050000000000004,
+    "close_debit": 16.95,
+    "net_pnl": 20.100000000000005,
+    "dte": 9
   },
   {
     "ticker": "MSFT",
@@ -1649,7 +2117,11 @@
     "contracts": 1,
     "short_strike": 93.0,
     "long_strike": 88.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 34.599999999999994,
+    "close_debit": 9.25,
+    "net_pnl": 25.349999999999994,
+    "dte": 11
   },
   {
     "ticker": "MSFT",
@@ -1663,7 +2135,11 @@
     "contracts": 1,
     "short_strike": 98.0,
     "long_strike": 93.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 35.449999999999996,
+    "close_debit": 13.849999999999998,
+    "net_pnl": 21.599999999999998,
+    "dte": 3
   },
   {
     "ticker": "MSFT",
@@ -1677,7 +2153,11 @@
     "contracts": 1,
     "short_strike": 102.0,
     "long_strike": 97.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 33.449999999999996,
+    "close_debit": 17.799999999999997,
+    "net_pnl": 15.649999999999999,
+    "dte": 3
   },
   {
     "ticker": "MSFT",
@@ -1691,7 +2171,11 @@
     "contracts": 1,
     "short_strike": 102.0,
     "long_strike": 97.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 27.050000000000008,
+    "close_debit": 10.5,
+    "net_pnl": 16.550000000000008,
+    "dte": 11
   },
   {
     "ticker": "MSFT",
@@ -1705,7 +2189,11 @@
     "contracts": 1,
     "short_strike": 101.0,
     "long_strike": 96.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 28.050000000000004,
+    "close_debit": 13.249999999999998,
+    "net_pnl": 14.800000000000006,
+    "dte": 4
   },
   {
     "ticker": "MSFT",
@@ -1719,7 +2207,11 @@
     "contracts": 1,
     "short_strike": 104.0,
     "long_strike": 99.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 29.099999999999998,
+    "close_debit": 48.85000000000001,
+    "net_pnl": -19.75000000000001,
+    "dte": 11
   },
   {
     "ticker": "MSFT",
@@ -1733,7 +2225,11 @@
     "contracts": 1,
     "short_strike": 103.0,
     "long_strike": 98.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 39.45,
+    "close_debit": 17.200000000000003,
+    "net_pnl": 22.25,
+    "dte": 3
   },
   {
     "ticker": "MSFT",
@@ -1747,7 +2243,11 @@
     "contracts": 1,
     "short_strike": 103.0,
     "long_strike": 98.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 46.1,
+    "close_debit": 22.25,
+    "net_pnl": 23.85,
+    "dte": 3
   },
   {
     "ticker": "MSFT",
@@ -1761,7 +2261,11 @@
     "contracts": 1,
     "short_strike": 106.0,
     "long_strike": 101.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 41.550000000000004,
+    "close_debit": 28.749999999999996,
+    "net_pnl": 12.800000000000008,
+    "dte": 8
   },
   {
     "ticker": "MSFT",
@@ -1775,7 +2279,11 @@
     "contracts": 1,
     "short_strike": 108.0,
     "long_strike": 103.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 38.79999999999999,
+    "close_debit": 84.19999999999999,
+    "net_pnl": -45.4,
+    "dte": 3
   },
   {
     "ticker": "MSFT",
@@ -1789,7 +2297,11 @@
     "contracts": 1,
     "short_strike": 102.0,
     "long_strike": 97.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 52.449999999999996,
+    "close_debit": 139.50000000000003,
+    "net_pnl": -87.05000000000004,
+    "dte": 2
   },
   {
     "ticker": "MSFT",
@@ -1803,7 +2315,11 @@
     "contracts": 1,
     "short_strike": 98.0,
     "long_strike": 93.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 17.949999999999992,
+    "close_debit": 11.849999999999994,
+    "net_pnl": 6.099999999999998,
+    "dte": 4
   },
   {
     "ticker": "MSFT",
@@ -1817,7 +2333,11 @@
     "contracts": 1,
     "short_strike": 97.0,
     "long_strike": 92.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 38.7,
+    "close_debit": 15.299999999999999,
+    "net_pnl": 23.400000000000006,
+    "dte": 4
   },
   {
     "ticker": "MSFT",
@@ -1831,7 +2351,11 @@
     "contracts": 1,
     "short_strike": 105.0,
     "long_strike": 100.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 35.150000000000006,
+    "close_debit": 35.85,
+    "net_pnl": -0.6999999999999957,
+    "dte": 11
   },
   {
     "ticker": "MSFT",
@@ -1845,7 +2369,11 @@
     "contracts": 1,
     "short_strike": 105.0,
     "long_strike": 100.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 33.5,
+    "close_debit": 17.550000000000004,
+    "net_pnl": 15.949999999999996,
+    "dte": 8
   },
   {
     "ticker": "MSFT",
@@ -1859,7 +2387,11 @@
     "contracts": 1,
     "short_strike": 106.0,
     "long_strike": 101.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 31.149999999999995,
+    "close_debit": 14.850000000000001,
+    "net_pnl": 16.299999999999994,
+    "dte": 4
   },
   {
     "ticker": "MSFT",
@@ -1873,7 +2405,11 @@
     "contracts": 1,
     "short_strike": 123.0,
     "long_strike": 118.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 39.5,
+    "close_debit": 95.50000000000001,
+    "net_pnl": -56.000000000000014,
+    "dte": 3
   },
   {
     "ticker": "MSFT",
@@ -1887,7 +2423,11 @@
     "contracts": 1,
     "short_strike": 120.0,
     "long_strike": 115.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 39.099999999999994,
+    "close_debit": 87.50000000000001,
+    "net_pnl": -48.40000000000002,
+    "dte": 1
   },
   {
     "ticker": "MSFT",
@@ -1901,7 +2441,11 @@
     "contracts": 1,
     "short_strike": 117.0,
     "long_strike": 112.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 60.75000000000001,
+    "close_debit": 80.24999999999999,
+    "net_pnl": -19.49999999999998,
+    "dte": 11
   },
   {
     "ticker": "MSFT",
@@ -1915,7 +2459,11 @@
     "contracts": 1,
     "short_strike": 128.0,
     "long_strike": 123.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 44.49999999999999,
+    "close_debit": 92.69999999999999,
+    "net_pnl": -48.199999999999996,
+    "dte": 1
   },
   {
     "ticker": "MSFT",
@@ -1929,7 +2477,11 @@
     "contracts": 1,
     "short_strike": 126.0,
     "long_strike": 121.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 43.49999999999999,
+    "close_debit": 20.900000000000002,
+    "net_pnl": 22.59999999999999,
+    "dte": 10
   },
   {
     "ticker": "MSFT",
@@ -1943,7 +2495,11 @@
     "contracts": 1,
     "short_strike": 128.0,
     "long_strike": 123.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 46.150000000000006,
+    "close_debit": 22.550000000000004,
+    "net_pnl": 23.6,
+    "dte": 11
   },
   {
     "ticker": "MSFT",
@@ -1957,7 +2513,11 @@
     "contracts": 1,
     "short_strike": 128.0,
     "long_strike": 123.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 53.05,
+    "close_debit": 12.950000000000001,
+    "net_pnl": 40.099999999999994,
+    "dte": 7
   },
   {
     "ticker": "MSFT",
@@ -1971,7 +2531,11 @@
     "contracts": 1,
     "short_strike": 130.0,
     "long_strike": 125.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 33.8,
+    "close_debit": 13.25,
+    "net_pnl": 20.549999999999997,
+    "dte": 4
   },
   {
     "ticker": "MSFT",
@@ -1985,7 +2549,11 @@
     "contracts": 1,
     "short_strike": 133.0,
     "long_strike": 128.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 36.1,
+    "close_debit": 107.54999999999998,
+    "net_pnl": -71.44999999999999,
+    "dte": 2
   },
   {
     "ticker": "MSFT",
@@ -1999,7 +2567,11 @@
     "contracts": 1,
     "short_strike": 142.0,
     "long_strike": 137.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 35.7,
+    "close_debit": 16.299999999999997,
+    "net_pnl": 19.400000000000006,
+    "dte": 8
   },
   {
     "ticker": "MSFT",
@@ -2013,7 +2585,11 @@
     "contracts": 1,
     "short_strike": 144.0,
     "long_strike": 139.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 37.45,
+    "close_debit": 20.900000000000002,
+    "net_pnl": 16.55,
+    "dte": 11
   },
   {
     "ticker": "MSFT",
@@ -2027,7 +2603,11 @@
     "contracts": 1,
     "short_strike": 141.0,
     "long_strike": 136.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 37.75000000000001,
+    "close_debit": 17.249999999999993,
+    "net_pnl": 20.500000000000014,
+    "dte": 9
   },
   {
     "ticker": "MSFT",
@@ -2041,7 +2621,11 @@
     "contracts": 1,
     "short_strike": 143.0,
     "long_strike": 138.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 38.45,
+    "close_debit": 14.500000000000002,
+    "net_pnl": 23.950000000000003,
+    "dte": 4
   },
   {
     "ticker": "MSFT",
@@ -2055,7 +2639,11 @@
     "contracts": 1,
     "short_strike": 148.0,
     "long_strike": 143.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 53.05,
+    "close_debit": 16.299999999999997,
+    "net_pnl": 36.75,
+    "dte": 7
   },
   {
     "ticker": "MSFT",
@@ -2069,7 +2657,11 @@
     "contracts": 1,
     "short_strike": 149.0,
     "long_strike": 144.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 30.900000000000006,
+    "close_debit": 16.700000000000003,
+    "net_pnl": 14.200000000000003,
+    "dte": 10
   },
   {
     "ticker": "MSFT",
@@ -2083,7 +2675,11 @@
     "contracts": 1,
     "short_strike": 147.0,
     "long_strike": 142.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 40.199999999999996,
+    "close_debit": 19.85,
+    "net_pnl": 20.349999999999994,
+    "dte": 10
   },
   {
     "ticker": "MSFT",
@@ -2097,7 +2693,11 @@
     "contracts": 1,
     "short_strike": 148.0,
     "long_strike": 143.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 43.85000000000001,
+    "close_debit": 22.75,
+    "net_pnl": 21.10000000000001,
+    "dte": 7
   },
   {
     "ticker": "MSFT",
@@ -2111,7 +2711,11 @@
     "contracts": 1,
     "short_strike": 152.0,
     "long_strike": 147.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 46.199999999999996,
+    "close_debit": 36.900000000000006,
+    "net_pnl": 9.29999999999999,
+    "dte": 11
   },
   {
     "ticker": "MSFT",
@@ -2125,7 +2729,11 @@
     "contracts": 1,
     "short_strike": 237.0,
     "long_strike": 232.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 51.59999999999999,
+    "close_debit": 23.049999999999983,
+    "net_pnl": 28.550000000000004,
+    "dte": 11
   },
   {
     "ticker": "MSFT",
@@ -2139,7 +2747,11 @@
     "contracts": 1,
     "short_strike": 237.0,
     "long_strike": 232.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 63.59999999999999,
+    "close_debit": 41.70000000000002,
+    "net_pnl": 21.89999999999997,
+    "dte": 11
   },
   {
     "ticker": "MSFT",
@@ -2153,7 +2765,11 @@
     "contracts": 1,
     "short_strike": 237.0,
     "long_strike": 232.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 40.350000000000016,
+    "close_debit": 20.450000000000003,
+    "net_pnl": 19.900000000000013,
+    "dte": 4
   },
   {
     "ticker": "MSFT",
@@ -2167,7 +2783,11 @@
     "contracts": 1,
     "short_strike": 243.0,
     "long_strike": 238.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 45.449999999999996,
+    "close_debit": 20.949999999999992,
+    "net_pnl": 24.500000000000004,
+    "dte": 7
   },
   {
     "ticker": "MSFT",
@@ -2181,7 +2801,11 @@
     "contracts": 1,
     "short_strike": 249.0,
     "long_strike": 244.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 46.54999999999999,
+    "close_debit": 20.150000000000006,
+    "net_pnl": 26.399999999999984,
+    "dte": 4
   },
   {
     "ticker": "MSFT",
@@ -2195,7 +2819,11 @@
     "contracts": 1,
     "short_strike": 257.0,
     "long_strike": 252.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 43.30000000000002,
+    "close_debit": 18.199999999999992,
+    "net_pnl": 25.100000000000026,
+    "dte": 10
   },
   {
     "ticker": "MSFT",
@@ -2209,7 +2837,11 @@
     "contracts": 1,
     "short_strike": 273.0,
     "long_strike": 268.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 34.449999999999996,
+    "close_debit": 12.3,
+    "net_pnl": 22.149999999999995,
+    "dte": 7
   },
   {
     "ticker": "MSFT",
@@ -2223,7 +2855,11 @@
     "contracts": 1,
     "short_strike": 283.0,
     "long_strike": 278.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 33.550000000000004,
+    "close_debit": 74.74999999999999,
+    "net_pnl": -41.19999999999998,
+    "dte": 11
   },
   {
     "ticker": "MSFT",
@@ -2237,7 +2873,11 @@
     "contracts": 1,
     "short_strike": 284.0,
     "long_strike": 279.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 45.44999999999998,
+    "close_debit": 8.600000000000001,
+    "net_pnl": 36.84999999999998,
+    "dte": 9
   },
   {
     "ticker": "MSFT",
@@ -2251,7 +2891,11 @@
     "contracts": 1,
     "short_strike": 283.0,
     "long_strike": 278.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 45.250000000000014,
+    "close_debit": 29.400000000000006,
+    "net_pnl": 15.850000000000009,
+    "dte": 2
   },
   {
     "ticker": "MSFT",
@@ -2265,7 +2909,11 @@
     "contracts": 1,
     "short_strike": 308.0,
     "long_strike": 303.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 50.45000000000002,
+    "close_debit": 26.1,
+    "net_pnl": 24.350000000000016,
+    "dte": 7
   },
   {
     "ticker": "MSFT",
@@ -2279,7 +2927,11 @@
     "contracts": 1,
     "short_strike": 313.0,
     "long_strike": 308.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 43.99999999999998,
+    "close_debit": 17.850000000000005,
+    "net_pnl": 26.149999999999974,
+    "dte": 11
   },
   {
     "ticker": "MSFT",
@@ -2293,7 +2945,11 @@
     "contracts": 1,
     "short_strike": 313.0,
     "long_strike": 308.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 50.89999999999998,
+    "close_debit": 26.8,
+    "net_pnl": 24.099999999999977,
+    "dte": 4
   },
   {
     "ticker": "MSFT",
@@ -2307,7 +2963,11 @@
     "contracts": 1,
     "short_strike": 263.0,
     "long_strike": 258.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 63.44999999999998,
+    "close_debit": 20.599999999999994,
+    "net_pnl": 42.84999999999999,
+    "dte": 9
   },
   {
     "ticker": "MSFT",
@@ -2321,7 +2981,11 @@
     "contracts": 1,
     "short_strike": 253.0,
     "long_strike": 248.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 50.54999999999998,
+    "close_debit": 16.900000000000006,
+    "net_pnl": 33.64999999999998,
+    "dte": 2
   },
   {
     "ticker": "MSFT",
@@ -2335,7 +2999,11 @@
     "contracts": 1,
     "short_strike": 283.0,
     "long_strike": 278.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 50.2,
+    "close_debit": 21.249999999999996,
+    "net_pnl": 28.950000000000006,
+    "dte": 9
   },
   {
     "ticker": "MSFT",
@@ -2349,7 +3017,11 @@
     "contracts": 1,
     "short_strike": 313.0,
     "long_strike": 308.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 44.250000000000014,
+    "close_debit": 126.19999999999997,
+    "net_pnl": -81.94999999999996,
+    "dte": 2
   },
   {
     "ticker": "MSFT",
@@ -2363,7 +3035,11 @@
     "contracts": 1,
     "short_strike": 308.0,
     "long_strike": 303.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 43.94999999999998,
+    "close_debit": 17.699999999999992,
+    "net_pnl": 26.24999999999999,
+    "dte": 3
   },
   {
     "ticker": "MSFT",
@@ -2377,7 +3053,11 @@
     "contracts": 1,
     "short_strike": 298.0,
     "long_strike": 293.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 49.00000000000001,
+    "close_debit": 25.4,
+    "net_pnl": 23.60000000000001,
+    "dte": 4
   },
   {
     "ticker": "MSFT",
@@ -2391,7 +3071,11 @@
     "contracts": 1,
     "short_strike": 308.0,
     "long_strike": 303.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 50.59999999999998,
+    "close_debit": 37.500000000000014,
+    "net_pnl": 13.099999999999966,
+    "dte": 11
   },
   {
     "ticker": "MSFT",
@@ -2405,7 +3089,11 @@
     "contracts": 1,
     "short_strike": 303.0,
     "long_strike": 298.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 65.70000000000003,
+    "close_debit": 33.79999999999998,
+    "net_pnl": 31.90000000000005,
+    "dte": 4
   },
   {
     "ticker": "MSFT",
@@ -2419,7 +3107,11 @@
     "contracts": 1,
     "short_strike": 313.0,
     "long_strike": 308.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 57.84999999999998,
+    "close_debit": 39.90000000000001,
+    "net_pnl": 17.949999999999967,
+    "dte": 11
   },
   {
     "ticker": "MSFT",
@@ -2433,7 +3125,11 @@
     "contracts": 1,
     "short_strike": 313.0,
     "long_strike": 308.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 67.75000000000003,
+    "close_debit": 100.99999999999996,
+    "net_pnl": -33.24999999999993,
+    "dte": 11
   },
   {
     "ticker": "MSFT",
@@ -2447,7 +3143,11 @@
     "contracts": 1,
     "short_strike": 308.0,
     "long_strike": 303.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 50.59999999999998,
+    "close_debit": 107.05,
+    "net_pnl": -56.45000000000002,
+    "dte": 9
   },
   {
     "ticker": "MSFT",
@@ -2461,7 +3161,11 @@
     "contracts": 1,
     "short_strike": 303.0,
     "long_strike": 298.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 50.2,
+    "close_debit": 103.75000000000001,
+    "net_pnl": -53.55000000000001,
+    "dte": 11
   },
   {
     "ticker": "MSFT",
@@ -2475,7 +3179,11 @@
     "contracts": 1,
     "short_strike": 298.0,
     "long_strike": 293.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 57.450000000000045,
+    "close_debit": 29.250000000000004,
+    "net_pnl": 28.200000000000042,
+    "dte": 11
   },
   {
     "ticker": "MSFT",
@@ -2489,7 +3197,11 @@
     "contracts": 1,
     "short_strike": 298.0,
     "long_strike": 293.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 62.550000000000026,
+    "close_debit": 25.900000000000002,
+    "net_pnl": 36.65000000000002,
+    "dte": 8
   },
   {
     "ticker": "MSFT",
@@ -2503,7 +3215,11 @@
     "contracts": 1,
     "short_strike": 298.0,
     "long_strike": 293.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 49.50000000000003,
+    "close_debit": 23.9,
+    "net_pnl": 25.60000000000003,
+    "dte": 4
   },
   {
     "ticker": "MSFT",
@@ -2517,7 +3233,11 @@
     "contracts": 1,
     "short_strike": 318.0,
     "long_strike": 313.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 63.85000000000003,
+    "close_debit": 191.25,
+    "net_pnl": -127.39999999999998,
+    "dte": 9
   },
   {
     "ticker": "MSFT",
@@ -2531,7 +3251,11 @@
     "contracts": 1,
     "short_strike": 307.0,
     "long_strike": 302.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 53.749999999999986,
+    "close_debit": 128.0,
+    "net_pnl": -74.25000000000001,
+    "dte": 4
   },
   {
     "ticker": "MSFT",
@@ -2545,7 +3269,11 @@
     "contracts": 1,
     "short_strike": 288.0,
     "long_strike": 283.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 58.950000000000024,
+    "close_debit": 25.2,
+    "net_pnl": 33.75000000000003,
+    "dte": 11
   },
   {
     "ticker": "MSFT",
@@ -2559,7 +3287,11 @@
     "contracts": 1,
     "short_strike": 293.0,
     "long_strike": 288.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 61.949999999999996,
+    "close_debit": 28.249999999999993,
+    "net_pnl": 33.7,
+    "dte": 9
   },
   {
     "ticker": "MSFT",
@@ -2573,7 +3305,11 @@
     "contracts": 1,
     "short_strike": 298.0,
     "long_strike": 293.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 54.600000000000016,
+    "close_debit": 64.99999999999999,
+    "net_pnl": -10.39999999999997,
+    "dte": 11
   },
   {
     "ticker": "MSFT",
@@ -2587,7 +3323,11 @@
     "contracts": 1,
     "short_strike": 303.0,
     "long_strike": 298.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 59.850000000000016,
+    "close_debit": 14.500000000000007,
+    "net_pnl": 45.35000000000001,
+    "dte": 9
   },
   {
     "ticker": "MSFT",
@@ -2601,7 +3341,11 @@
     "contracts": 1,
     "short_strike": 333.0,
     "long_strike": 328.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 52.900000000000006,
+    "close_debit": 21.099999999999994,
+    "net_pnl": 31.80000000000001,
+    "dte": 4
   },
   {
     "ticker": "MSFT",
@@ -2615,7 +3359,11 @@
     "contracts": 1,
     "short_strike": 343.0,
     "long_strike": 338.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 58.44999999999998,
+    "close_debit": 25.950000000000014,
+    "net_pnl": 32.49999999999997,
+    "dte": 3
   },
   {
     "ticker": "MSFT",
@@ -2629,7 +3377,11 @@
     "contracts": 1,
     "short_strike": 353.0,
     "long_strike": 348.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 53.59999999999998,
+    "close_debit": 22.849999999999994,
+    "net_pnl": 30.749999999999986,
+    "dte": 8
   },
   {
     "ticker": "MSFT",
@@ -2643,7 +3395,11 @@
     "contracts": 1,
     "short_strike": 358.0,
     "long_strike": 353.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 57.549999999999976,
+    "close_debit": 59.54999999999999,
+    "net_pnl": -2.000000000000014,
+    "dte": 11
   },
   {
     "ticker": "MSFT",
@@ -2657,7 +3413,11 @@
     "contracts": 1,
     "short_strike": 348.0,
     "long_strike": 343.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 59.95,
+    "close_debit": 24.55,
+    "net_pnl": 35.400000000000006,
+    "dte": 8
   },
   {
     "ticker": "MSFT",
@@ -2671,7 +3431,11 @@
     "contracts": 1,
     "short_strike": 348.0,
     "long_strike": 343.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 49.55,
+    "close_debit": 27.900000000000002,
+    "net_pnl": 21.649999999999995,
+    "dte": 11
   },
   {
     "ticker": "MSFT",
@@ -2685,7 +3449,11 @@
     "contracts": 1,
     "short_strike": 352.0,
     "long_strike": 347.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 57.15000000000001,
+    "close_debit": 29.250000000000004,
+    "net_pnl": 27.90000000000001,
+    "dte": 11
   },
   {
     "ticker": "MSFT",
@@ -2699,7 +3467,11 @@
     "contracts": 1,
     "short_strike": 348.0,
     "long_strike": 343.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 68.50000000000006,
+    "close_debit": 34.15,
+    "net_pnl": 34.35000000000006,
+    "dte": 4
   },
   {
     "ticker": "MSFT",
@@ -2713,7 +3485,11 @@
     "contracts": 1,
     "short_strike": 368.0,
     "long_strike": 363.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 67.19999999999997,
+    "close_debit": 18.500000000000007,
+    "net_pnl": 48.69999999999997,
+    "dte": 10
   },
   {
     "ticker": "MSFT",
@@ -2727,7 +3503,11 @@
     "contracts": 1,
     "short_strike": 378.0,
     "long_strike": 373.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 66.70000000000003,
+    "close_debit": 28.800000000000004,
+    "net_pnl": 37.90000000000003,
+    "dte": 4
   },
   {
     "ticker": "MSFT",
@@ -2741,7 +3521,11 @@
     "contracts": 1,
     "short_strike": 383.0,
     "long_strike": 378.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 61.4,
+    "close_debit": 20.899999999999995,
+    "net_pnl": 40.5,
+    "dte": 4
   },
   {
     "ticker": "MSFT",
@@ -2755,7 +3539,11 @@
     "contracts": 1,
     "short_strike": 388.0,
     "long_strike": 383.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 52.799999999999955,
+    "close_debit": 34.25,
+    "net_pnl": 18.549999999999955,
+    "dte": 11
   },
   {
     "ticker": "MSFT",
@@ -2769,7 +3557,11 @@
     "contracts": 1,
     "short_strike": 393.0,
     "long_strike": 388.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 62.1,
+    "close_debit": 149.00000000000006,
+    "net_pnl": -86.90000000000006,
+    "dte": 1
   },
   {
     "ticker": "MSFT",
@@ -2783,7 +3575,11 @@
     "contracts": 1,
     "short_strike": 378.0,
     "long_strike": 373.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 53.69999999999998,
+    "close_debit": 25.8,
+    "net_pnl": 27.89999999999998,
+    "dte": 1
   },
   {
     "ticker": "MSFT",
@@ -2797,7 +3593,11 @@
     "contracts": 1,
     "short_strike": 393.0,
     "long_strike": 388.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 63.300000000000054,
+    "close_debit": 32.449999999999996,
+    "net_pnl": 30.85000000000006,
+    "dte": 2
   },
   {
     "ticker": "MSFT",
@@ -2811,7 +3611,11 @@
     "contracts": 1,
     "short_strike": 393.0,
     "long_strike": 388.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 42.400000000000034,
+    "close_debit": 44.95,
+    "net_pnl": -2.5499999999999687,
+    "dte": 11
   },
   {
     "ticker": "MSFT",
@@ -2825,7 +3629,11 @@
     "contracts": 1,
     "short_strike": 393.0,
     "long_strike": 388.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 53.75000000000002,
+    "close_debit": 79.70000000000002,
+    "net_pnl": -25.949999999999996,
+    "dte": 11
   },
   {
     "ticker": "MSFT",
@@ -2839,7 +3647,11 @@
     "contracts": 1,
     "short_strike": 393.0,
     "long_strike": 388.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 64.95,
+    "close_debit": 171.00000000000006,
+    "net_pnl": -106.05000000000005,
+    "dte": 10
   },
   {
     "ticker": "MSFT",
@@ -2853,7 +3665,11 @@
     "contracts": 1,
     "short_strike": 378.0,
     "long_strike": 373.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 67.00000000000001,
+    "close_debit": 18.499999999999982,
+    "net_pnl": 48.50000000000003,
+    "dte": 11
   },
   {
     "ticker": "MSFT",
@@ -2867,7 +3683,11 @@
     "contracts": 1,
     "short_strike": 363.0,
     "long_strike": 358.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 55.50000000000006,
+    "close_debit": 20.200000000000006,
+    "net_pnl": 35.300000000000054,
+    "dte": 4
   },
   {
     "ticker": "MSFT",
@@ -2881,7 +3701,11 @@
     "contracts": 1,
     "short_strike": 373.0,
     "long_strike": 368.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 53.70000000000004,
+    "close_debit": 122.50000000000003,
+    "net_pnl": -68.79999999999998,
+    "dte": 1
   },
   {
     "ticker": "MSFT",
@@ -2895,7 +3719,11 @@
     "contracts": 1,
     "short_strike": 388.0,
     "long_strike": 383.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 56.55,
+    "close_debit": 12.45,
+    "net_pnl": 44.099999999999994,
+    "dte": 9
   },
   {
     "ticker": "MSFT",
@@ -2909,7 +3737,11 @@
     "contracts": 1,
     "short_strike": 388.0,
     "long_strike": 383.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 54.25,
+    "close_debit": 20.150000000000006,
+    "net_pnl": 34.099999999999994,
+    "dte": 2
   },
   {
     "ticker": "MSFT",
@@ -2923,7 +3755,11 @@
     "contracts": 1,
     "short_strike": 404.0,
     "long_strike": 399.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 57.54999999999999,
+    "close_debit": 116.14999999999999,
+    "net_pnl": -58.6,
+    "dte": 11
   },
   {
     "ticker": "MSFT",
@@ -2937,7 +3773,11 @@
     "contracts": 1,
     "short_strike": 388.0,
     "long_strike": 383.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 46.64999999999999,
+    "close_debit": 22.449999999999996,
+    "net_pnl": 24.199999999999996,
+    "dte": 2
   },
   {
     "ticker": "MSFT",
@@ -2951,7 +3791,11 @@
     "contracts": 1,
     "short_strike": 403.0,
     "long_strike": 398.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 43.35000000000001,
+    "close_debit": 17.600000000000012,
+    "net_pnl": 25.749999999999996,
+    "dte": 2
   },
   {
     "ticker": "MSFT",
@@ -2965,7 +3809,11 @@
     "contracts": 1,
     "short_strike": 423.0,
     "long_strike": 418.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 54.25,
+    "close_debit": 21.749999999999996,
+    "net_pnl": 32.5,
+    "dte": 7
   },
   {
     "ticker": "MSFT",
@@ -2979,7 +3827,11 @@
     "contracts": 1,
     "short_strike": 418.0,
     "long_strike": 413.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 54.79999999999997,
+    "close_debit": 33.24999999999998,
+    "net_pnl": 21.54999999999999,
+    "dte": 3
   },
   {
     "ticker": "MSFT",
@@ -2993,7 +3845,11 @@
     "contracts": 1,
     "short_strike": 423.0,
     "long_strike": 418.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 54.05,
+    "close_debit": 83.45000000000003,
+    "net_pnl": -29.400000000000034,
+    "dte": 11
   },
   {
     "ticker": "MSFT",
@@ -3007,7 +3863,11 @@
     "contracts": 1,
     "short_strike": 433.0,
     "long_strike": 428.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 59.34999999999998,
+    "close_debit": 127.49999999999993,
+    "net_pnl": -68.14999999999995,
+    "dte": 4
   },
   {
     "ticker": "MSFT",
@@ -3021,7 +3881,11 @@
     "contracts": 1,
     "short_strike": 418.0,
     "long_strike": 413.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 60.74999999999996,
+    "close_debit": 137.75000000000003,
+    "net_pnl": -77.00000000000007,
+    "dte": 4
   },
   {
     "ticker": "MSFT",
@@ -3035,7 +3899,11 @@
     "contracts": 1,
     "short_strike": 408.0,
     "long_strike": 403.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 58.950000000000024,
+    "close_debit": 138.75000000000003,
+    "net_pnl": -79.80000000000001,
+    "dte": 2
   },
   {
     "ticker": "MSFT",
@@ -3049,7 +3917,11 @@
     "contracts": 1,
     "short_strike": 388.0,
     "long_strike": 383.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 66.2,
+    "close_debit": 224.37500000000003,
+    "net_pnl": -158.175,
+    "dte": 7
   },
   {
     "ticker": "MSFT",
@@ -3063,7 +3935,11 @@
     "contracts": 1,
     "short_strike": 393.0,
     "long_strike": 388.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 57.24999999999998,
+    "close_debit": 30.10000000000001,
+    "net_pnl": 27.14999999999997,
+    "dte": 3
   },
   {
     "ticker": "MSFT",
@@ -3077,7 +3953,11 @@
     "contracts": 1,
     "short_strike": 388.0,
     "long_strike": 383.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 50.849999999999994,
+    "close_debit": 25.2,
+    "net_pnl": 25.649999999999995,
+    "dte": 7
   },
   {
     "ticker": "MSFT",
@@ -3091,7 +3971,11 @@
     "contracts": 1,
     "short_strike": 393.0,
     "long_strike": 388.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 41.40000000000002,
+    "close_debit": 35.89999999999999,
+    "net_pnl": 5.500000000000028,
+    "dte": 2
   },
   {
     "ticker": "MSFT",
@@ -3105,7 +3989,11 @@
     "contracts": 1,
     "short_strike": 408.0,
     "long_strike": 403.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 49.349999999999994,
+    "close_debit": 20.750000000000004,
+    "net_pnl": 28.59999999999999,
+    "dte": 3
   },
   {
     "ticker": "MSFT",
@@ -3119,7 +4007,11 @@
     "contracts": 1,
     "short_strike": 423.0,
     "long_strike": 418.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 51.10000000000001,
+    "close_debit": 24.450000000000006,
+    "net_pnl": 26.650000000000002,
+    "dte": 8
   },
   {
     "ticker": "MSFT",
@@ -3133,7 +4025,11 @@
     "contracts": 1,
     "short_strike": 428.0,
     "long_strike": 423.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 59.54999999999999,
+    "close_debit": 148.74999999999991,
+    "net_pnl": -89.19999999999993,
+    "dte": 2
   },
   {
     "ticker": "WMT",
@@ -3147,7 +4043,11 @@
     "contracts": 1,
     "short_strike": 97.0,
     "long_strike": 92.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 35.6,
+    "close_debit": 17.849999999999998,
+    "net_pnl": 17.750000000000004,
+    "dte": 9
   },
   {
     "ticker": "WMT",
@@ -3161,7 +4061,11 @@
     "contracts": 1,
     "short_strike": 99.0,
     "long_strike": 94.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 43.400000000000006,
+    "close_debit": 26.49999999999999,
+    "net_pnl": 16.900000000000016,
+    "dte": 4
   },
   {
     "ticker": "WMT",
@@ -3175,7 +4079,11 @@
     "contracts": 1,
     "short_strike": 101.0,
     "long_strike": 96.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 53.949999999999996,
+    "close_debit": 117.40000000000002,
+    "net_pnl": -63.450000000000024,
+    "dte": 4
   },
   {
     "ticker": "WMT",
@@ -3189,7 +4097,11 @@
     "contracts": 1,
     "short_strike": 73.0,
     "long_strike": 68.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 22.45,
+    "close_debit": 0.8999999999999999,
+    "net_pnl": 21.55,
+    "dte": 9
   },
   {
     "ticker": "WMT",
@@ -3203,7 +4115,11 @@
     "contracts": 1,
     "short_strike": 77.0,
     "long_strike": 72.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 40.699999999999996,
+    "close_debit": 11.249999999999998,
+    "net_pnl": 29.449999999999996,
+    "dte": 7
   },
   {
     "ticker": "WMT",
@@ -3217,7 +4133,11 @@
     "contracts": 1,
     "short_strike": 80.0,
     "long_strike": 75.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 33.15,
+    "close_debit": 33.20000000000001,
+    "net_pnl": -0.05000000000001137,
+    "dte": 11
   },
   {
     "ticker": "WMT",
@@ -3231,7 +4151,11 @@
     "contracts": 1,
     "short_strike": 83.0,
     "long_strike": 78.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 41.099999999999994,
+    "close_debit": 22.850000000000005,
+    "net_pnl": 18.24999999999999,
+    "dte": 11
   },
   {
     "ticker": "WMT",
@@ -3245,7 +4169,11 @@
     "contracts": 1,
     "short_strike": 83.0,
     "long_strike": 78.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 21.95,
+    "close_debit": 0.8999999999999999,
+    "net_pnl": 21.05,
+    "dte": 10
   },
   {
     "ticker": "WMT",
@@ -3259,7 +4187,11 @@
     "contracts": 1,
     "short_strike": 84.0,
     "long_strike": 79.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 34.55,
+    "close_debit": 2.2500000000000004,
+    "net_pnl": 32.3,
+    "dte": 3
   },
   {
     "ticker": "WMT",
@@ -3273,7 +4205,11 @@
     "contracts": 1,
     "short_strike": 92.0,
     "long_strike": 87.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 34.75,
+    "close_debit": 17.299999999999997,
+    "net_pnl": 17.450000000000003,
+    "dte": 10
   },
   {
     "ticker": "WMT",
@@ -3287,7 +4223,11 @@
     "contracts": 1,
     "short_strike": 90.0,
     "long_strike": 85.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 23.2,
+    "close_debit": 10.899999999999997,
+    "net_pnl": 12.300000000000002,
+    "dte": 3
   },
   {
     "ticker": "WMT",
@@ -3301,7 +4241,11 @@
     "contracts": 1,
     "short_strike": 92.0,
     "long_strike": 87.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 24.8,
+    "close_debit": 19.150000000000002,
+    "net_pnl": 5.649999999999999,
+    "dte": 11
   },
   {
     "ticker": "WMT",
@@ -3315,7 +4259,11 @@
     "contracts": 1,
     "short_strike": 89.0,
     "long_strike": 84.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 39.4,
+    "close_debit": 20.550000000000004,
+    "net_pnl": 18.849999999999994,
+    "dte": 8
   },
   {
     "ticker": "WMT",
@@ -3329,7 +4277,11 @@
     "contracts": 1,
     "short_strike": 90.0,
     "long_strike": 85.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 35.8,
+    "close_debit": 60.54999999999999,
+    "net_pnl": -24.749999999999993,
+    "dte": 11
   },
   {
     "ticker": "WMT",
@@ -3343,7 +4295,11 @@
     "contracts": 1,
     "short_strike": 90.0,
     "long_strike": 85.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 38.45,
+    "close_debit": 49.0,
+    "net_pnl": -10.549999999999997,
+    "dte": 11
   },
   {
     "ticker": "WMT",
@@ -3357,7 +4313,11 @@
     "contracts": 1,
     "short_strike": 89.0,
     "long_strike": 84.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 29.000000000000004,
+    "close_debit": 12.850000000000003,
+    "net_pnl": 16.15,
+    "dte": 9
   },
   {
     "ticker": "WMT",
@@ -3371,7 +4331,11 @@
     "contracts": 1,
     "short_strike": 87.0,
     "long_strike": 82.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 58.29999999999998,
+    "close_debit": 31.05,
+    "net_pnl": 27.249999999999982,
+    "dte": 1
   },
   {
     "ticker": "WMT",
@@ -3385,7 +4349,11 @@
     "contracts": 1,
     "short_strike": 87.0,
     "long_strike": 82.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 38.05,
+    "close_debit": 16.600000000000005,
+    "net_pnl": 21.449999999999992,
+    "dte": 4
   },
   {
     "ticker": "WMT",
@@ -3399,7 +4367,11 @@
     "contracts": 1,
     "short_strike": 92.0,
     "long_strike": 87.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 21.14999999999999,
+    "close_debit": 12.400000000000004,
+    "net_pnl": 8.749999999999988,
+    "dte": 1
   },
   {
     "ticker": "WMT",
@@ -3413,7 +4385,11 @@
     "contracts": 1,
     "short_strike": 94.0,
     "long_strike": 89.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 34.199999999999996,
+    "close_debit": 44.5,
+    "net_pnl": -10.300000000000004,
+    "dte": 11
   },
   {
     "ticker": "WMT",
@@ -3427,7 +4403,11 @@
     "contracts": 1,
     "short_strike": 93.0,
     "long_strike": 88.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 8.200000000000001,
+    "close_debit": 23.800000000000004,
+    "net_pnl": -15.600000000000003,
+    "dte": 1
   },
   {
     "ticker": "WMT",
@@ -3441,7 +4421,11 @@
     "contracts": 1,
     "short_strike": 94.0,
     "long_strike": 89.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 22.850000000000005,
+    "close_debit": 50.79999999999999,
+    "net_pnl": -27.949999999999985,
+    "dte": 9
   },
   {
     "ticker": "WMT",
@@ -3455,7 +4439,11 @@
     "contracts": 1,
     "short_strike": 95.0,
     "long_strike": 90.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 42.45,
+    "close_debit": 14.099999999999998,
+    "net_pnl": 28.350000000000005,
+    "dte": 10
   },
   {
     "ticker": "WMT",
@@ -3469,7 +4457,11 @@
     "contracts": 1,
     "short_strike": 96.0,
     "long_strike": 91.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 30.4,
+    "close_debit": 27.9,
+    "net_pnl": 2.5,
+    "dte": 11
   },
   {
     "ticker": "WMT",
@@ -3483,7 +4475,11 @@
     "contracts": 1,
     "short_strike": 106.0,
     "long_strike": 101.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 34.099999999999994,
+    "close_debit": 16.250000000000004,
+    "net_pnl": 17.84999999999999,
+    "dte": 8
   },
   {
     "ticker": "WMT",
@@ -3497,7 +4493,11 @@
     "contracts": 1,
     "short_strike": 106.0,
     "long_strike": 101.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 31.149999999999995,
+    "close_debit": 14.450000000000001,
+    "net_pnl": 16.699999999999996,
+    "dte": 2
   },
   {
     "ticker": "WMT",
@@ -3511,7 +4511,11 @@
     "contracts": 1,
     "short_strike": 107.0,
     "long_strike": 102.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 22.35,
+    "close_debit": 6.499999999999997,
+    "net_pnl": 15.850000000000005,
+    "dte": 4
   },
   {
     "ticker": "WMT",
@@ -3525,7 +4529,11 @@
     "contracts": 1,
     "short_strike": 103.0,
     "long_strike": 98.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 28.1,
+    "close_debit": 22.9,
+    "net_pnl": 5.200000000000003,
+    "dte": 11
   },
   {
     "ticker": "WMT",
@@ -3539,7 +4547,11 @@
     "contracts": 1,
     "short_strike": 105.0,
     "long_strike": 100.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 38.85,
+    "close_debit": 88.54999999999998,
+    "net_pnl": -49.69999999999998,
+    "dte": 10
   },
   {
     "ticker": "WMT",
@@ -3553,7 +4565,11 @@
     "contracts": 1,
     "short_strike": 104.0,
     "long_strike": 99.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 37.15,
+    "close_debit": 83.35000000000001,
+    "net_pnl": -46.20000000000001,
+    "dte": 3
   },
   {
     "ticker": "WMT",
@@ -3567,7 +4583,11 @@
     "contracts": 1,
     "short_strike": 114.0,
     "long_strike": 109.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 38.050000000000004,
+    "close_debit": 29.25,
+    "net_pnl": 8.800000000000004,
+    "dte": 11
   },
   {
     "ticker": "WMT",
@@ -3581,7 +4601,11 @@
     "contracts": 1,
     "short_strike": 113.0,
     "long_strike": 108.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 29.849999999999998,
+    "close_debit": 17.749999999999996,
+    "net_pnl": 12.100000000000001,
+    "dte": 9
   },
   {
     "ticker": "WMT",
@@ -3595,7 +4619,11 @@
     "contracts": 1,
     "short_strike": 113.0,
     "long_strike": 108.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 32.99999999999999,
+    "close_debit": 17.150000000000002,
+    "net_pnl": 15.84999999999999,
+    "dte": 4
   },
   {
     "ticker": "WMT",
@@ -3609,7 +4637,11 @@
     "contracts": 1,
     "short_strike": 114.0,
     "long_strike": 109.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 36.74999999999999,
+    "close_debit": 14.95,
+    "net_pnl": 21.799999999999994,
+    "dte": 4
   },
   {
     "ticker": "WMT",
@@ -3623,7 +4655,11 @@
     "contracts": 1,
     "short_strike": 114.0,
     "long_strike": 109.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 0.0,
+    "close_debit": 21.700000000000003,
+    "net_pnl": -21.700000000000003,
+    "dte": 1
   },
   {
     "ticker": "WMT",
@@ -3637,7 +4673,11 @@
     "contracts": 1,
     "short_strike": 113.0,
     "long_strike": 108.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 25.05,
+    "close_debit": 11.950000000000001,
+    "net_pnl": 13.1,
+    "dte": 11
   },
   {
     "ticker": "WMT",
@@ -3651,7 +4691,11 @@
     "contracts": 1,
     "short_strike": 114.0,
     "long_strike": 109.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 31.749999999999996,
+    "close_debit": 65.2,
+    "net_pnl": -33.45,
+    "dte": 9
   },
   {
     "ticker": "WMT",
@@ -3665,7 +4709,11 @@
     "contracts": 1,
     "short_strike": 112.0,
     "long_strike": 107.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 32.15,
+    "close_debit": 13.999999999999998,
+    "net_pnl": 18.15,
+    "dte": 3
   },
   {
     "ticker": "WMT",
@@ -3679,7 +4727,11 @@
     "contracts": 1,
     "short_strike": 111.0,
     "long_strike": 106.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 17.849999999999998,
+    "close_debit": 41.54999999999999,
+    "net_pnl": -23.699999999999992,
+    "dte": 2
   },
   {
     "ticker": "WMT",
@@ -3693,7 +4745,11 @@
     "contracts": 1,
     "short_strike": 133.0,
     "long_strike": 128.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 41.6,
+    "close_debit": 20.25,
+    "net_pnl": 21.35,
+    "dte": 4
   },
   {
     "ticker": "WMT",
@@ -3707,7 +4763,11 @@
     "contracts": 1,
     "short_strike": 135.0,
     "long_strike": 130.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 30.900000000000006,
+    "close_debit": 36.3,
+    "net_pnl": -5.3999999999999915,
+    "dte": 7
   },
   {
     "ticker": "WMT",
@@ -3721,7 +4781,11 @@
     "contracts": 1,
     "short_strike": 133.0,
     "long_strike": 128.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 40.050000000000004,
+    "close_debit": 94.24999999999999,
+    "net_pnl": -54.19999999999998,
+    "dte": 2
   },
   {
     "ticker": "WMT",
@@ -3735,7 +4799,11 @@
     "contracts": 1,
     "short_strike": 132.0,
     "long_strike": 127.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 31.449999999999996,
+    "close_debit": 34.5,
+    "net_pnl": -3.0500000000000043,
+    "dte": 2
   },
   {
     "ticker": "WMT",
@@ -3749,7 +4817,11 @@
     "contracts": 1,
     "short_strike": 133.0,
     "long_strike": 128.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 30.75000000000001,
+    "close_debit": 20.749999999999996,
+    "net_pnl": 10.000000000000014,
+    "dte": 2
   },
   {
     "ticker": "WMT",
@@ -3763,7 +4835,11 @@
     "contracts": 1,
     "short_strike": 138.0,
     "long_strike": 133.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 28.050000000000004,
+    "close_debit": 11.300000000000002,
+    "net_pnl": 16.75,
+    "dte": 4
   },
   {
     "ticker": "WMT",
@@ -3777,7 +4853,11 @@
     "contracts": 1,
     "short_strike": 141.0,
     "long_strike": 136.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 36.50000000000001,
+    "close_debit": 18.499999999999996,
+    "net_pnl": 18.00000000000001,
+    "dte": 4
   },
   {
     "ticker": "WMT",
@@ -3791,7 +4871,11 @@
     "contracts": 1,
     "short_strike": 141.0,
     "long_strike": 136.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 42.449999999999996,
+    "close_debit": 35.5,
+    "net_pnl": 6.949999999999996,
+    "dte": 11
   },
   {
     "ticker": "WMT",
@@ -3805,7 +4889,11 @@
     "contracts": 1,
     "short_strike": 140.0,
     "long_strike": 135.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 50.44999999999998,
+    "close_debit": 53.2,
+    "net_pnl": -2.7500000000000213,
+    "dte": 11
   },
   {
     "ticker": "WMT",
@@ -3819,7 +4907,11 @@
     "contracts": 1,
     "short_strike": 133.0,
     "long_strike": 128.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 38.05,
+    "close_debit": 9.6,
+    "net_pnl": 28.449999999999996,
+    "dte": 7
   },
   {
     "ticker": "WMT",
@@ -3833,7 +4925,11 @@
     "contracts": 1,
     "short_strike": 138.0,
     "long_strike": 133.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 47.449999999999996,
+    "close_debit": 12.3,
+    "net_pnl": 35.14999999999999,
+    "dte": 7
   },
   {
     "ticker": "WMT",
@@ -3847,7 +4943,11 @@
     "contracts": 1,
     "short_strike": 143.0,
     "long_strike": 138.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 43.150000000000006,
+    "close_debit": 50.40000000000001,
+    "net_pnl": -7.250000000000007,
+    "dte": 11
   },
   {
     "ticker": "WMT",
@@ -3861,7 +4961,11 @@
     "contracts": 1,
     "short_strike": 142.0,
     "long_strike": 137.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 40.900000000000006,
+    "close_debit": 37.15000000000001,
+    "net_pnl": 3.749999999999993,
+    "dte": 11
   },
   {
     "ticker": "WMT",
@@ -3875,7 +4979,11 @@
     "contracts": 1,
     "short_strike": 143.0,
     "long_strike": 138.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 32.849999999999994,
+    "close_debit": 15.250000000000002,
+    "net_pnl": 17.599999999999994,
+    "dte": 4
   },
   {
     "ticker": "WMT",
@@ -3889,7 +4997,11 @@
     "contracts": 1,
     "short_strike": 148.0,
     "long_strike": 143.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 39.39999999999999,
+    "close_debit": 17.549999999999997,
+    "net_pnl": 21.849999999999994,
+    "dte": 3
   },
   {
     "ticker": "WMT",
@@ -3903,7 +5015,11 @@
     "contracts": 1,
     "short_strike": 149.0,
     "long_strike": 144.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 32.449999999999996,
+    "close_debit": 16.850000000000005,
+    "net_pnl": 15.59999999999999,
+    "dte": 4
   },
   {
     "ticker": "WMT",
@@ -3917,7 +5033,11 @@
     "contracts": 1,
     "short_strike": 152.0,
     "long_strike": 147.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 33.50000000000001,
+    "close_debit": 115.75,
+    "net_pnl": -82.25,
+    "dte": 4
   },
   {
     "ticker": "WMT",
@@ -3931,7 +5051,11 @@
     "contracts": 1,
     "short_strike": 148.0,
     "long_strike": 143.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 37.5,
+    "close_debit": 14.950000000000003,
+    "net_pnl": 22.549999999999997,
+    "dte": 10
   },
   {
     "ticker": "WMT",
@@ -3945,7 +5069,11 @@
     "contracts": 1,
     "short_strike": 143.0,
     "long_strike": 138.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 41.05,
+    "close_debit": 20.6,
+    "net_pnl": 20.449999999999996,
+    "dte": 4
   },
   {
     "ticker": "WMT",
@@ -3959,7 +5087,11 @@
     "contracts": 1,
     "short_strike": 148.0,
     "long_strike": 143.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 44.15,
+    "close_debit": 51.49999999999999,
+    "net_pnl": -7.349999999999994,
+    "dte": 11
   },
   {
     "ticker": "WMT",
@@ -3973,7 +5105,11 @@
     "contracts": 1,
     "short_strike": 148.0,
     "long_strike": 143.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 38.84999999999999,
+    "close_debit": 32.550000000000004,
+    "net_pnl": 6.299999999999983,
+    "dte": 11
   },
   {
     "ticker": "WMT",
@@ -3987,7 +5123,11 @@
     "contracts": 1,
     "short_strike": 148.0,
     "long_strike": 143.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 41.150000000000006,
+    "close_debit": 23.250000000000004,
+    "net_pnl": 17.900000000000002,
+    "dte": 11
   },
   {
     "ticker": "WMT",
@@ -4001,7 +5141,11 @@
     "contracts": 1,
     "short_strike": 148.0,
     "long_strike": 143.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 46.4,
+    "close_debit": 15.950000000000003,
+    "net_pnl": 30.449999999999996,
+    "dte": 7
   },
   {
     "ticker": "WMT",
@@ -4015,7 +5159,11 @@
     "contracts": 1,
     "short_strike": 148.0,
     "long_strike": 143.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 32.800000000000004,
+    "close_debit": 10.3,
+    "net_pnl": 22.500000000000004,
+    "dte": 8
   },
   {
     "ticker": "WMT",
@@ -4029,7 +5177,11 @@
     "contracts": 1,
     "short_strike": 148.0,
     "long_strike": 143.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 21.449999999999996,
+    "close_debit": 9.500000000000002,
+    "net_pnl": 11.949999999999994,
+    "dte": 3
   },
   {
     "ticker": "WMT",
@@ -4043,7 +5195,11 @@
     "contracts": 1,
     "short_strike": 153.0,
     "long_strike": 148.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 18.500000000000004,
+    "close_debit": 25.200000000000006,
+    "net_pnl": -6.700000000000003,
+    "dte": 11
   },
   {
     "ticker": "WMT",
@@ -4057,7 +5213,11 @@
     "contracts": 1,
     "short_strike": 157.0,
     "long_strike": 152.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 38.75,
+    "close_debit": 80.90000000000002,
+    "net_pnl": -42.15000000000002,
+    "dte": 11
   },
   {
     "ticker": "WMT",
@@ -4071,7 +5231,11 @@
     "contracts": 1,
     "short_strike": 153.0,
     "long_strike": 148.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 31.199999999999996,
+    "close_debit": 73.1,
+    "net_pnl": -41.9,
+    "dte": 8
   },
   {
     "ticker": "WMT",
@@ -4085,7 +5249,11 @@
     "contracts": 1,
     "short_strike": 143.0,
     "long_strike": 138.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 30.499999999999993,
+    "close_debit": 15.850000000000003,
+    "net_pnl": 14.64999999999999,
+    "dte": 3
   },
   {
     "ticker": "WMT",
@@ -4099,7 +5267,11 @@
     "contracts": 1,
     "short_strike": 148.0,
     "long_strike": 143.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 38.45,
+    "close_debit": 14.599999999999996,
+    "net_pnl": 23.85000000000001,
+    "dte": 8
   },
   {
     "ticker": "WMT",
@@ -4113,7 +5285,11 @@
     "contracts": 1,
     "short_strike": 153.0,
     "long_strike": 148.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 48.15000000000001,
+    "close_debit": 22.650000000000002,
+    "net_pnl": 25.50000000000001,
+    "dte": 9
   },
   {
     "ticker": "WMT",
@@ -4127,7 +5303,11 @@
     "contracts": 1,
     "short_strike": 153.0,
     "long_strike": 148.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 29.400000000000006,
+    "close_debit": 129.55,
+    "net_pnl": -100.15,
+    "dte": 3
   },
   {
     "ticker": "WMT",
@@ -4141,7 +5321,11 @@
     "contracts": 1,
     "short_strike": 148.0,
     "long_strike": 143.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 47.199999999999996,
+    "close_debit": 16.600000000000005,
+    "net_pnl": 30.59999999999999,
+    "dte": 8
   },
   {
     "ticker": "WMT",
@@ -4155,7 +5339,11 @@
     "contracts": 1,
     "short_strike": 148.0,
     "long_strike": 143.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 31.149999999999995,
+    "close_debit": 73.55000000000001,
+    "net_pnl": -42.40000000000002,
+    "dte": 10
   },
   {
     "ticker": "WMT",
@@ -4169,7 +5357,11 @@
     "contracts": 1,
     "short_strike": 143.0,
     "long_strike": 138.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 38.14999999999999,
+    "close_debit": 17.95,
+    "net_pnl": 20.199999999999992,
+    "dte": 2
   },
   {
     "ticker": "WMT",
@@ -4183,7 +5375,11 @@
     "contracts": 1,
     "short_strike": 143.0,
     "long_strike": 138.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 20.449999999999996,
+    "close_debit": 13.249999999999998,
+    "net_pnl": 7.1999999999999975,
+    "dte": 11
   },
   {
     "ticker": "WMT",
@@ -4197,7 +5393,11 @@
     "contracts": 1,
     "short_strike": 149.0,
     "long_strike": 144.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 38.75,
+    "close_debit": 15.950000000000003,
+    "net_pnl": 22.799999999999997,
+    "dte": 9
   },
   {
     "ticker": "WMT",
@@ -4211,7 +5411,11 @@
     "contracts": 1,
     "short_strike": 148.0,
     "long_strike": 143.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 24.250000000000004,
+    "close_debit": 13.8,
+    "net_pnl": 10.450000000000003,
+    "dte": 2
   },
   {
     "ticker": "WMT",
@@ -4225,7 +5429,11 @@
     "contracts": 1,
     "short_strike": 153.0,
     "long_strike": 148.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 55.54999999999999,
+    "close_debit": 23.9,
+    "net_pnl": 31.64999999999999,
+    "dte": 10
   },
   {
     "ticker": "WMT",
@@ -4239,7 +5447,11 @@
     "contracts": 1,
     "short_strike": 153.0,
     "long_strike": 148.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 40.849999999999994,
+    "close_debit": 20.900000000000002,
+    "net_pnl": 19.949999999999992,
+    "dte": 8
   },
   {
     "ticker": "WMT",
@@ -4253,7 +5465,11 @@
     "contracts": 1,
     "short_strike": 158.0,
     "long_strike": 153.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 54.899999999999984,
+    "close_debit": 50.7,
+    "net_pnl": 4.1999999999999815,
+    "dte": 11
   },
   {
     "ticker": "WMT",
@@ -4267,7 +5483,11 @@
     "contracts": 1,
     "short_strike": 158.0,
     "long_strike": 153.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 49.50000000000001,
+    "close_debit": 7.250000000000001,
+    "net_pnl": 42.25000000000001,
+    "dte": 8
   },
   {
     "ticker": "WMT",
@@ -4281,7 +5501,11 @@
     "contracts": 1,
     "short_strike": 56.0,
     "long_strike": 51.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 19.05,
+    "close_debit": 6.950000000000001,
+    "net_pnl": 12.1,
+    "dte": 7
   },
   {
     "ticker": "WMT",
@@ -4295,7 +5519,11 @@
     "contracts": 1,
     "short_strike": 58.0,
     "long_strike": 53.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 20.700000000000003,
+    "close_debit": 9.3,
+    "net_pnl": 11.400000000000002,
+    "dte": 8
   },
   {
     "ticker": "WMT",
@@ -4309,7 +5537,11 @@
     "contracts": 1,
     "short_strike": 58.0,
     "long_strike": 53.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 16.7,
+    "close_debit": 17.3,
+    "net_pnl": -0.6000000000000014,
+    "dte": 14
   },
   {
     "ticker": "WMT",
@@ -4323,7 +5555,11 @@
     "contracts": 1,
     "short_strike": 58.0,
     "long_strike": 53.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 15.749999999999996,
+    "close_debit": 33.95,
+    "net_pnl": -18.200000000000006,
+    "dte": 8
   },
   {
     "ticker": "WMT",
@@ -4337,7 +5573,11 @@
     "contracts": 1,
     "short_strike": 58.0,
     "long_strike": 53.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 24.05,
+    "close_debit": 11.600000000000001,
+    "net_pnl": 12.45,
+    "dte": 9
   },
   {
     "ticker": "WMT",
@@ -4351,7 +5591,11 @@
     "contracts": 1,
     "short_strike": 57.0,
     "long_strike": 52.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 15.55,
+    "close_debit": 17.6,
+    "net_pnl": -2.0500000000000007,
+    "dte": 11
   },
   {
     "ticker": "WMT",
@@ -4365,7 +5609,11 @@
     "contracts": 1,
     "short_strike": 56.0,
     "long_strike": 51.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 27.099999999999998,
+    "close_debit": 24.95,
+    "net_pnl": 2.1499999999999986,
+    "dte": 11
   },
   {
     "ticker": "WMT",
@@ -4379,7 +5627,11 @@
     "contracts": 1,
     "short_strike": 56.0,
     "long_strike": 51.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 23.75,
+    "close_debit": 16.250000000000004,
+    "net_pnl": 7.4999999999999964,
+    "dte": 11
   },
   {
     "ticker": "WMT",
@@ -4393,7 +5645,11 @@
     "contracts": 1,
     "short_strike": 57.0,
     "long_strike": 52.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 0.0,
+    "close_debit": 39.199999999999996,
+    "net_pnl": -39.199999999999996,
+    "dte": 1
   },
   {
     "ticker": "WMT",
@@ -4407,7 +5663,11 @@
     "contracts": 1,
     "short_strike": 56.0,
     "long_strike": 51.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 31.800000000000004,
+    "close_debit": 30.750000000000004,
+    "net_pnl": 1.0500000000000007,
+    "dte": 10
   },
   {
     "ticker": "WMT",
@@ -4421,7 +5681,11 @@
     "contracts": 1,
     "short_strike": 62.0,
     "long_strike": 57.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 17.7,
+    "close_debit": 7.300000000000001,
+    "net_pnl": 10.399999999999999,
+    "dte": 4
   },
   {
     "ticker": "WMT",
@@ -4435,7 +5699,11 @@
     "contracts": 1,
     "short_strike": 63.0,
     "long_strike": 58.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 14.450000000000001,
+    "close_debit": 6.2,
+    "net_pnl": 8.25,
+    "dte": 2
   },
   {
     "ticker": "WMT",
@@ -4449,7 +5717,11 @@
     "contracts": 1,
     "short_strike": 64.0,
     "long_strike": 59.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 11.15,
+    "close_debit": 5.25,
+    "net_pnl": 5.9,
+    "dte": 10
   },
   {
     "ticker": "WMT",
@@ -4463,7 +5735,11 @@
     "contracts": 1,
     "short_strike": 65.0,
     "long_strike": 60.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 20.05,
+    "close_debit": 6.300000000000002,
+    "net_pnl": 13.75,
+    "dte": 7
   },
   {
     "ticker": "WMT",
@@ -4477,7 +5753,11 @@
     "contracts": 1,
     "short_strike": 66.0,
     "long_strike": 61.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 14.05,
+    "close_debit": 37.6,
+    "net_pnl": -23.55,
+    "dte": 1
   },
   {
     "ticker": "WMT",
@@ -4491,7 +5771,11 @@
     "contracts": 1,
     "short_strike": 65.0,
     "long_strike": 60.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 16.25,
+    "close_debit": 4.9,
+    "net_pnl": 11.35,
+    "dte": 4
   },
   {
     "ticker": "WMT",
@@ -4505,7 +5789,11 @@
     "contracts": 1,
     "short_strike": 67.0,
     "long_strike": 62.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 9.500000000000002,
+    "close_debit": 22.250000000000004,
+    "net_pnl": -12.750000000000002,
+    "dte": 3
   },
   {
     "ticker": "WMT",
@@ -4519,7 +5807,11 @@
     "contracts": 1,
     "short_strike": 64.0,
     "long_strike": 59.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 32.05,
+    "close_debit": 15.900000000000002,
+    "net_pnl": 16.149999999999995,
+    "dte": 7
   },
   {
     "ticker": "WMT",
@@ -4533,7 +5825,11 @@
     "contracts": 1,
     "short_strike": 66.0,
     "long_strike": 61.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 35.8,
+    "close_debit": 81.5,
+    "net_pnl": -45.7,
+    "dte": 11
   },
   {
     "ticker": "WMT",
@@ -4547,7 +5843,11 @@
     "contracts": 1,
     "short_strike": 65.0,
     "long_strike": 60.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 34.55,
+    "close_debit": 97.87499999999999,
+    "net_pnl": -63.32499999999999,
+    "dte": 7
   },
   {
     "ticker": "WMT",
@@ -4561,7 +5861,11 @@
     "contracts": 1,
     "short_strike": 78.0,
     "long_strike": 73.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 36.699999999999996,
+    "close_debit": 23.450000000000003,
+    "net_pnl": 13.249999999999993,
+    "dte": 1
   },
   {
     "ticker": "WMT",
@@ -4575,7 +5879,11 @@
     "contracts": 1,
     "short_strike": 77.0,
     "long_strike": 72.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 26.25,
+    "close_debit": 6.25,
+    "net_pnl": 20.0,
+    "dte": 1
   },
   {
     "ticker": "WMT",
@@ -4589,7 +5897,11 @@
     "contracts": 1,
     "short_strike": 85.0,
     "long_strike": 80.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 36.75,
+    "close_debit": 18.9,
+    "net_pnl": 17.85,
+    "dte": 1
   },
   {
     "ticker": "WMT",
@@ -4603,7 +5915,11 @@
     "contracts": 1,
     "short_strike": 88.0,
     "long_strike": 83.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 34.099999999999994,
+    "close_debit": 13.450000000000001,
+    "net_pnl": 20.64999999999999,
+    "dte": 3
   },
   {
     "ticker": "WMT",
@@ -4617,7 +5933,11 @@
     "contracts": 1,
     "short_strike": 89.0,
     "long_strike": 84.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 36.95,
+    "close_debit": 20.400000000000002,
+    "net_pnl": 16.55,
+    "dte": 7
   },
   {
     "ticker": "WMT",
@@ -4631,7 +5951,11 @@
     "contracts": 1,
     "short_strike": 89.0,
     "long_strike": 84.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 40.150000000000006,
+    "close_debit": 41.9,
+    "net_pnl": -1.749999999999993,
+    "dte": 11
   },
   {
     "ticker": "GLD",
@@ -4645,7 +5969,11 @@
     "contracts": 1,
     "short_strike": 122.0,
     "long_strike": 117.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 28.749999999999996,
+    "close_debit": 13.249999999999998,
+    "net_pnl": 15.499999999999998,
+    "dte": 4
   },
   {
     "ticker": "GLD",
@@ -4659,7 +5987,11 @@
     "contracts": 1,
     "short_strike": 123.0,
     "long_strike": 118.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 25.399999999999995,
+    "close_debit": 12.9,
+    "net_pnl": 12.499999999999995,
+    "dte": 2
   },
   {
     "ticker": "GLD",
@@ -4673,7 +6005,11 @@
     "contracts": 1,
     "short_strike": 123.0,
     "long_strike": 118.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 24.099999999999998,
+    "close_debit": 62.74999999999999,
+    "net_pnl": -38.64999999999999,
+    "dte": 9
   },
   {
     "ticker": "GLD",
@@ -4687,7 +6023,11 @@
     "contracts": 1,
     "short_strike": 121.0,
     "long_strike": 116.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 20.1,
+    "close_debit": 50.6,
+    "net_pnl": -30.5,
+    "dte": 8
   },
   {
     "ticker": "GLD",
@@ -4701,7 +6041,11 @@
     "contracts": 1,
     "short_strike": 121.0,
     "long_strike": 116.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 24.7,
+    "close_debit": 65.3,
+    "net_pnl": -40.599999999999994,
+    "dte": 1
   },
   {
     "ticker": "GLD",
@@ -4715,7 +6059,11 @@
     "contracts": 1,
     "short_strike": 119.0,
     "long_strike": 114.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 23.05,
+    "close_debit": 8.3,
+    "net_pnl": 14.75,
+    "dte": 3
   },
   {
     "ticker": "GLD",
@@ -4729,7 +6077,11 @@
     "contracts": 1,
     "short_strike": 113.0,
     "long_strike": 108.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 30.049999999999997,
+    "close_debit": 39.95,
+    "net_pnl": -9.900000000000006,
+    "dte": 11
   },
   {
     "ticker": "GLD",
@@ -4743,7 +6095,11 @@
     "contracts": 1,
     "short_strike": 111.0,
     "long_strike": 106.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 24.4,
+    "close_debit": 102.55000000000001,
+    "net_pnl": -78.15,
+    "dte": 9
   },
   {
     "ticker": "GLD",
@@ -4757,7 +6113,11 @@
     "contracts": 1,
     "short_strike": 109.0,
     "long_strike": 104.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 17.75,
+    "close_debit": 47.2,
+    "net_pnl": -29.450000000000003,
+    "dte": 2
   },
   {
     "ticker": "GLD",
@@ -4771,7 +6131,11 @@
     "contracts": 1,
     "short_strike": 109.0,
     "long_strike": 104.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 26.05,
+    "close_debit": 10.3,
+    "net_pnl": 15.75,
+    "dte": 4
   },
   {
     "ticker": "GLD",
@@ -4785,7 +6149,11 @@
     "contracts": 1,
     "short_strike": 111.0,
     "long_strike": 106.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 24.05,
+    "close_debit": 28.950000000000003,
+    "net_pnl": -4.900000000000002,
+    "dte": 11
   },
   {
     "ticker": "GLD",
@@ -4799,7 +6167,11 @@
     "contracts": 1,
     "short_strike": 110.0,
     "long_strike": 105.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 25.05,
+    "close_debit": 12.949999999999998,
+    "net_pnl": 12.100000000000003,
+    "dte": 2
   },
   {
     "ticker": "GLD",
@@ -4813,7 +6185,11 @@
     "contracts": 1,
     "short_strike": 110.0,
     "long_strike": 105.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 18.7,
+    "close_debit": 16.3,
+    "net_pnl": 2.3999999999999986,
+    "dte": 11
   },
   {
     "ticker": "GLD",
@@ -4827,7 +6203,11 @@
     "contracts": 1,
     "short_strike": 110.0,
     "long_strike": 105.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 18.05,
+    "close_debit": 10.300000000000002,
+    "net_pnl": 7.749999999999998,
+    "dte": 11
   },
   {
     "ticker": "GLD",
@@ -4841,7 +6221,11 @@
     "contracts": 1,
     "short_strike": 109.0,
     "long_strike": 104.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 15.049999999999997,
+    "close_debit": 4.499999999999999,
+    "net_pnl": 10.549999999999997,
+    "dte": 10
   },
   {
     "ticker": "GLD",
@@ -4855,7 +6239,11 @@
     "contracts": 1,
     "short_strike": 109.0,
     "long_strike": 104.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 24.05,
+    "close_debit": 7.999999999999999,
+    "net_pnl": 16.05,
+    "dte": 3
   },
   {
     "ticker": "GLD",
@@ -4869,7 +6257,11 @@
     "contracts": 1,
     "short_strike": 121.0,
     "long_strike": 116.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 21.400000000000002,
+    "close_debit": 5.949999999999999,
+    "net_pnl": 15.450000000000003,
+    "dte": 11
   },
   {
     "ticker": "GLD",
@@ -4883,7 +6275,11 @@
     "contracts": 1,
     "short_strike": 121.0,
     "long_strike": 116.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 25.7,
+    "close_debit": 10.3,
+    "net_pnl": 15.399999999999999,
+    "dte": 4
   },
   {
     "ticker": "GLD",
@@ -4897,7 +6293,11 @@
     "contracts": 1,
     "short_strike": 122.0,
     "long_strike": 117.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 18.7,
+    "close_debit": 106.94999999999999,
+    "net_pnl": -88.24999999999999,
+    "dte": 4
   },
   {
     "ticker": "GLD",
@@ -4911,7 +6311,11 @@
     "contracts": 1,
     "short_strike": 118.0,
     "long_strike": 113.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 4.699999999999999,
+    "close_debit": 15.950000000000003,
+    "net_pnl": -11.250000000000004,
+    "dte": 3
   },
   {
     "ticker": "GLD",
@@ -4925,7 +6329,11 @@
     "contracts": 1,
     "short_strike": 119.0,
     "long_strike": 114.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 21.7,
+    "close_debit": 8.3,
+    "net_pnl": 13.399999999999999,
+    "dte": 2
   },
   {
     "ticker": "GLD",
@@ -4939,7 +6347,11 @@
     "contracts": 1,
     "short_strike": 118.0,
     "long_strike": 113.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 21.7,
+    "close_debit": 7.95,
+    "net_pnl": 13.75,
+    "dte": 11
   },
   {
     "ticker": "GLD",
@@ -4953,7 +6365,11 @@
     "contracts": 1,
     "short_strike": 118.0,
     "long_strike": 113.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 21.7,
+    "close_debit": 6.250000000000002,
+    "net_pnl": 15.449999999999998,
+    "dte": 7
   },
   {
     "ticker": "GLD",
@@ -4967,7 +6383,11 @@
     "contracts": 1,
     "short_strike": 126.0,
     "long_strike": 121.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 32.05,
+    "close_debit": 11.950000000000003,
+    "net_pnl": 20.099999999999994,
+    "dte": 1
   },
   {
     "ticker": "GLD",
@@ -4981,7 +6401,11 @@
     "contracts": 1,
     "short_strike": 129.0,
     "long_strike": 124.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 46.400000000000006,
+    "close_debit": 45.24999999999999,
+    "net_pnl": 1.1500000000000128,
+    "dte": 11
   },
   {
     "ticker": "GLD",
@@ -4995,7 +6419,11 @@
     "contracts": 1,
     "short_strike": 127.0,
     "long_strike": 122.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 24.05,
+    "close_debit": 8.950000000000001,
+    "net_pnl": 15.1,
+    "dte": 2
   },
   {
     "ticker": "GLD",
@@ -5009,7 +6437,11 @@
     "contracts": 1,
     "short_strike": 129.0,
     "long_strike": 124.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 35.7,
+    "close_debit": 14.95,
+    "net_pnl": 20.750000000000004,
+    "dte": 3
   },
   {
     "ticker": "GLD",
@@ -5023,7 +6455,11 @@
     "contracts": 1,
     "short_strike": 130.0,
     "long_strike": 125.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 33.050000000000004,
+    "close_debit": 16.950000000000003,
+    "net_pnl": 16.1,
+    "dte": 7
   },
   {
     "ticker": "GLD",
@@ -5037,7 +6473,11 @@
     "contracts": 1,
     "short_strike": 131.0,
     "long_strike": 126.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 38.4,
+    "close_debit": 10.500000000000002,
+    "net_pnl": 27.9,
+    "dte": 7
   },
   {
     "ticker": "GLD",
@@ -5051,7 +6491,11 @@
     "contracts": 1,
     "short_strike": 135.0,
     "long_strike": 130.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 31.05,
+    "close_debit": 27.3,
+    "net_pnl": 3.75,
+    "dte": 11
   },
   {
     "ticker": "GLD",
@@ -5065,7 +6509,11 @@
     "contracts": 1,
     "short_strike": 133.0,
     "long_strike": 128.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 17.4,
+    "close_debit": 9.250000000000002,
+    "net_pnl": 8.149999999999997,
+    "dte": 4
   },
   {
     "ticker": "GLD",
@@ -5079,7 +6527,11 @@
     "contracts": 1,
     "short_strike": 134.0,
     "long_strike": 129.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 19.75,
+    "close_debit": 7.95,
+    "net_pnl": 11.8,
+    "dte": 9
   },
   {
     "ticker": "GLD",
@@ -5093,7 +6545,11 @@
     "contracts": 1,
     "short_strike": 134.0,
     "long_strike": 129.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 25.4,
+    "close_debit": 12.900000000000004,
+    "net_pnl": 12.499999999999995,
+    "dte": 2
   },
   {
     "ticker": "GLD",
@@ -5107,7 +6563,11 @@
     "contracts": 1,
     "short_strike": 135.0,
     "long_strike": 130.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 19.7,
+    "close_debit": 9.3,
+    "net_pnl": 10.399999999999999,
+    "dte": 7
   },
   {
     "ticker": "GLD",
@@ -5121,7 +6581,11 @@
     "contracts": 1,
     "short_strike": 136.0,
     "long_strike": 131.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 19.7,
+    "close_debit": 9.950000000000001,
+    "net_pnl": 9.749999999999998,
+    "dte": 3
   },
   {
     "ticker": "GLD",
@@ -5135,7 +6599,11 @@
     "contracts": 1,
     "short_strike": 139.0,
     "long_strike": 134.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 32.7,
+    "close_debit": 7.3,
+    "net_pnl": 25.400000000000002,
+    "dte": 4
   },
   {
     "ticker": "GLD",
@@ -5149,7 +6617,11 @@
     "contracts": 1,
     "short_strike": 143.0,
     "long_strike": 138.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 40.75,
+    "close_debit": 23.3,
+    "net_pnl": 17.45,
+    "dte": 11
   },
   {
     "ticker": "GLD",
@@ -5163,7 +6635,11 @@
     "contracts": 1,
     "short_strike": 142.0,
     "long_strike": 137.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 27.049999999999997,
+    "close_debit": 13.95,
+    "net_pnl": 13.099999999999998,
+    "dte": 8
   },
   {
     "ticker": "GLD",
@@ -5177,7 +6653,11 @@
     "contracts": 1,
     "short_strike": 156.0,
     "long_strike": 151.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 42.75000000000001,
+    "close_debit": 20.249999999999996,
+    "net_pnl": 22.50000000000001,
+    "dte": 3
   },
   {
     "ticker": "GLD",
@@ -5191,7 +6671,11 @@
     "contracts": 1,
     "short_strike": 171.0,
     "long_strike": 166.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 40.7,
+    "close_debit": 90.9,
+    "net_pnl": -50.2,
+    "dte": 8
   },
   {
     "ticker": "GLD",
@@ -5205,7 +6689,11 @@
     "contracts": 1,
     "short_strike": 167.0,
     "long_strike": 162.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 34.400000000000006,
+    "close_debit": 72.6,
+    "net_pnl": -38.19999999999999,
+    "dte": 2
   },
   {
     "ticker": "GLD",
@@ -5219,7 +6707,11 @@
     "contracts": 1,
     "short_strike": 159.0,
     "long_strike": 154.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 35.4,
+    "close_debit": 15.950000000000001,
+    "net_pnl": 19.449999999999996,
+    "dte": 9
   },
   {
     "ticker": "GLD",
@@ -5233,7 +6725,11 @@
     "contracts": 1,
     "short_strike": 162.0,
     "long_strike": 157.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 40.75,
+    "close_debit": 26.950000000000003,
+    "net_pnl": 13.799999999999997,
+    "dte": 11
   },
   {
     "ticker": "GLD",
@@ -5247,7 +6743,11 @@
     "contracts": 1,
     "short_strike": 160.0,
     "long_strike": 155.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 40.050000000000004,
+    "close_debit": 20.3,
+    "net_pnl": 19.750000000000004,
+    "dte": 8
   },
   {
     "ticker": "GLD",
@@ -5261,7 +6761,11 @@
     "contracts": 1,
     "short_strike": 162.0,
     "long_strike": 157.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 36.75,
+    "close_debit": 38.0,
+    "net_pnl": -1.25,
+    "dte": 11
   },
   {
     "ticker": "GLD",
@@ -5275,7 +6779,11 @@
     "contracts": 1,
     "short_strike": 167.0,
     "long_strike": 162.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 46.05,
+    "close_debit": 118.25000000000003,
+    "net_pnl": -72.20000000000003,
+    "dte": 7
   },
   {
     "ticker": "GLD",
@@ -5289,7 +6797,11 @@
     "contracts": 1,
     "short_strike": 178.0,
     "long_strike": 173.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 47.75,
+    "close_debit": 32.949999999999996,
+    "net_pnl": 14.800000000000004,
+    "dte": 11
   },
   {
     "ticker": "GLD",
@@ -5303,7 +6815,11 @@
     "contracts": 1,
     "short_strike": 178.0,
     "long_strike": 173.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 49.1,
+    "close_debit": 15.950000000000001,
+    "net_pnl": 33.15,
+    "dte": 9
   },
   {
     "ticker": "GLD",
@@ -5317,7 +6833,11 @@
     "contracts": 1,
     "short_strike": 177.0,
     "long_strike": 172.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 46.099999999999994,
+    "close_debit": 19.25,
+    "net_pnl": 26.849999999999994,
+    "dte": 2
   },
   {
     "ticker": "GLD",
@@ -5331,7 +6851,11 @@
     "contracts": 1,
     "short_strike": 176.0,
     "long_strike": 171.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 38.74999999999999,
+    "close_debit": 22.95,
+    "net_pnl": 15.799999999999994,
+    "dte": 11
   },
   {
     "ticker": "GLD",
@@ -5345,7 +6869,11 @@
     "contracts": 1,
     "short_strike": 176.0,
     "long_strike": 171.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 43.75,
+    "close_debit": 90.24999999999997,
+    "net_pnl": -46.49999999999997,
+    "dte": 10
   },
   {
     "ticker": "GLD",
@@ -5359,7 +6887,11 @@
     "contracts": 1,
     "short_strike": 173.0,
     "long_strike": 168.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 40.4,
+    "close_debit": 19.3,
+    "net_pnl": 21.099999999999998,
+    "dte": 11
   },
   {
     "ticker": "GLD",
@@ -5373,7 +6905,11 @@
     "contracts": 1,
     "short_strike": 173.0,
     "long_strike": 168.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 34.4,
+    "close_debit": 9.3,
+    "net_pnl": 25.099999999999998,
+    "dte": 9
   },
   {
     "ticker": "GLD",
@@ -5387,7 +6923,11 @@
     "contracts": 1,
     "short_strike": 173.0,
     "long_strike": 168.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 33.05,
+    "close_debit": 14.950000000000003,
+    "net_pnl": 18.099999999999994,
+    "dte": 2
   },
   {
     "ticker": "GLD",
@@ -5401,7 +6941,11 @@
     "contracts": 1,
     "short_strike": 176.0,
     "long_strike": 171.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 35.699999999999996,
+    "close_debit": 12.3,
+    "net_pnl": 23.399999999999995,
+    "dte": 9
   },
   {
     "ticker": "GLD",
@@ -5415,7 +6959,11 @@
     "contracts": 1,
     "short_strike": 177.0,
     "long_strike": 172.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 36.05,
+    "close_debit": 76.9,
+    "net_pnl": -40.85000000000001,
+    "dte": 2
   },
   {
     "ticker": "GLD",
@@ -5429,7 +6977,11 @@
     "contracts": 1,
     "short_strike": 176.0,
     "long_strike": 171.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 37.05,
+    "close_debit": 35.949999999999996,
+    "net_pnl": 1.1000000000000014,
+    "dte": 11
   },
   {
     "ticker": "GLD",
@@ -5443,7 +6995,11 @@
     "contracts": 1,
     "short_strike": 175.0,
     "long_strike": 170.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 40.400000000000006,
+    "close_debit": 85.60000000000002,
+    "net_pnl": -45.20000000000002,
+    "dte": 8
   },
   {
     "ticker": "GLD",
@@ -5457,7 +7013,11 @@
     "contracts": 1,
     "short_strike": 170.0,
     "long_strike": 165.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 33.05,
+    "close_debit": 16.3,
+    "net_pnl": 16.749999999999996,
+    "dte": 2
   },
   {
     "ticker": "GLD",
@@ -5471,7 +7031,11 @@
     "contracts": 1,
     "short_strike": 172.0,
     "long_strike": 167.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 35.699999999999996,
+    "close_debit": 18.95,
+    "net_pnl": 16.749999999999996,
+    "dte": 11
   },
   {
     "ticker": "GLD",
@@ -5485,7 +7049,11 @@
     "contracts": 1,
     "short_strike": 173.0,
     "long_strike": 168.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 34.699999999999996,
+    "close_debit": 16.3,
+    "net_pnl": 18.399999999999995,
+    "dte": 2
   },
   {
     "ticker": "GLD",
@@ -5499,7 +7067,11 @@
     "contracts": 1,
     "short_strike": 174.0,
     "long_strike": 169.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 35.699999999999996,
+    "close_debit": 17.3,
+    "net_pnl": 18.399999999999995,
+    "dte": 9
   },
   {
     "ticker": "GLD",
@@ -5513,7 +7085,11 @@
     "contracts": 1,
     "short_strike": 175.0,
     "long_strike": 170.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 35.699999999999996,
+    "close_debit": 87.94999999999999,
+    "net_pnl": -52.24999999999999,
+    "dte": 8
   },
   {
     "ticker": "GLD",
@@ -5527,7 +7103,11 @@
     "contracts": 1,
     "short_strike": 173.0,
     "long_strike": 168.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 30.050000000000004,
+    "close_debit": 102.89999999999999,
+    "net_pnl": -72.85,
+    "dte": 2
   },
   {
     "ticker": "GLD",
@@ -5541,7 +7121,11 @@
     "contracts": 1,
     "short_strike": 164.0,
     "long_strike": 159.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 34.05,
+    "close_debit": 16.3,
+    "net_pnl": 17.749999999999996,
+    "dte": 7
   },
   {
     "ticker": "GLD",
@@ -5555,7 +7139,11 @@
     "contracts": 1,
     "short_strike": 167.0,
     "long_strike": 162.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 43.050000000000004,
+    "close_debit": 12.9,
+    "net_pnl": 30.150000000000006,
+    "dte": 4
   },
   {
     "ticker": "GLD",
@@ -5569,7 +7157,11 @@
     "contracts": 1,
     "short_strike": 172.0,
     "long_strike": 167.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 45.70000000000001,
+    "close_debit": 18.750000000000004,
+    "net_pnl": 26.950000000000006,
+    "dte": 3
   },
   {
     "ticker": "GLD",
@@ -5583,7 +7175,11 @@
     "contracts": 1,
     "short_strike": 178.0,
     "long_strike": 173.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 41.400000000000006,
+    "close_debit": 85.6,
+    "net_pnl": -44.19999999999999,
+    "dte": 2
   },
   {
     "ticker": "GLD",
@@ -5597,7 +7193,11 @@
     "contracts": 1,
     "short_strike": 175.0,
     "long_strike": 170.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 46.050000000000004,
+    "close_debit": 11.300000000000002,
+    "net_pnl": 34.75,
+    "dte": 3
   },
   {
     "ticker": "GLD",
@@ -5611,7 +7211,11 @@
     "contracts": 1,
     "short_strike": 178.0,
     "long_strike": 173.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 35.699999999999996,
+    "close_debit": 17.3,
+    "net_pnl": 18.399999999999995,
+    "dte": 4
   },
   {
     "ticker": "GLD",
@@ -5625,7 +7229,11 @@
     "contracts": 1,
     "short_strike": 181.0,
     "long_strike": 176.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 33.699999999999996,
+    "close_debit": 16.95,
+    "net_pnl": 16.749999999999996,
+    "dte": 2
   },
   {
     "ticker": "GLD",
@@ -5639,7 +7247,11 @@
     "contracts": 1,
     "short_strike": 181.0,
     "long_strike": 176.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 41.449999999999996,
+    "close_debit": 18.6,
+    "net_pnl": 22.849999999999994,
+    "dte": 9
   },
   {
     "ticker": "GLD",
@@ -5653,7 +7265,11 @@
     "contracts": 1,
     "short_strike": 178.0,
     "long_strike": 173.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 41.75,
+    "close_debit": 10.95,
+    "net_pnl": 30.8,
+    "dte": 2
   },
   {
     "ticker": "GLD",
@@ -5667,7 +7283,11 @@
     "contracts": 1,
     "short_strike": 182.0,
     "long_strike": 177.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 35.699999999999996,
+    "close_debit": 10.299999999999997,
+    "net_pnl": 25.4,
+    "dte": 8
   },
   {
     "ticker": "GLD",
@@ -5681,7 +7301,11 @@
     "contracts": 1,
     "short_strike": 182.0,
     "long_strike": 177.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 36.05,
+    "close_debit": 15.6,
+    "net_pnl": 20.449999999999996,
+    "dte": 4
   },
   {
     "ticker": "GLD",
@@ -5695,7 +7319,11 @@
     "contracts": 1,
     "short_strike": 182.0,
     "long_strike": 177.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 36.75,
+    "close_debit": 16.95,
+    "net_pnl": 19.8,
+    "dte": 8
   },
   {
     "ticker": "GLD",
@@ -5709,7 +7337,11 @@
     "contracts": 1,
     "short_strike": 183.0,
     "long_strike": 178.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 37.05,
+    "close_debit": 19.250000000000004,
+    "net_pnl": 17.799999999999994,
+    "dte": 3
   },
   {
     "ticker": "GLD",
@@ -5723,7 +7355,11 @@
     "contracts": 1,
     "short_strike": 182.0,
     "long_strike": 177.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 34.05,
+    "close_debit": 74.25,
+    "net_pnl": -40.2,
+    "dte": 1
   },
   {
     "ticker": "GLD",
@@ -5737,7 +7373,11 @@
     "contracts": 1,
     "short_strike": 182.0,
     "long_strike": 177.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 32.4,
+    "close_debit": 28.95,
+    "net_pnl": 3.4499999999999993,
+    "dte": 11
   },
   {
     "ticker": "GLD",
@@ -5751,7 +7391,11 @@
     "contracts": 1,
     "short_strike": 190.0,
     "long_strike": 185.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 38.75,
+    "close_debit": 18.950000000000003,
+    "net_pnl": 19.799999999999997,
+    "dte": 2
   },
   {
     "ticker": "GLD",
@@ -5765,7 +7409,11 @@
     "contracts": 1,
     "short_strike": 195.0,
     "long_strike": 190.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 45.74999999999999,
+    "close_debit": 21.6,
+    "net_pnl": 24.14999999999999,
+    "dte": 9
   },
   {
     "ticker": "GLD",
@@ -5779,7 +7427,11 @@
     "contracts": 1,
     "short_strike": 194.0,
     "long_strike": 189.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 44.05,
+    "close_debit": 21.6,
+    "net_pnl": 22.449999999999996,
+    "dte": 2
   },
   {
     "ticker": "GLD",
@@ -5793,7 +7445,11 @@
     "contracts": 1,
     "short_strike": 196.0,
     "long_strike": 191.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 43.400000000000006,
+    "close_debit": 15.6,
+    "net_pnl": 27.800000000000004,
+    "dte": 3
   },
   {
     "ticker": "GLD",
@@ -5807,7 +7463,11 @@
     "contracts": 1,
     "short_strike": 200.0,
     "long_strike": 195.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 41.75,
+    "close_debit": 15.950000000000001,
+    "net_pnl": 25.799999999999997,
+    "dte": 2
   },
   {
     "ticker": "GLD",
@@ -5821,7 +7481,11 @@
     "contracts": 1,
     "short_strike": 207.0,
     "long_strike": 202.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 51.1,
+    "close_debit": 23.599999999999998,
+    "net_pnl": 27.500000000000004,
+    "dte": 8
   },
   {
     "ticker": "GLD",
@@ -5835,7 +7499,11 @@
     "contracts": 1,
     "short_strike": 208.0,
     "long_strike": 203.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 56.10000000000001,
+    "close_debit": 31.95,
+    "net_pnl": 24.15000000000001,
+    "dte": 11
   },
   {
     "ticker": "GLD",
@@ -5849,7 +7517,11 @@
     "contracts": 1,
     "short_strike": 207.0,
     "long_strike": 202.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 49.1,
+    "close_debit": 101.2,
+    "net_pnl": -52.1,
+    "dte": 1
   },
   {
     "ticker": "GLD",
@@ -5863,7 +7535,11 @@
     "contracts": 1,
     "short_strike": 207.0,
     "long_strike": 202.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 59.10000000000001,
+    "close_debit": 60.90000000000001,
+    "net_pnl": -1.8000000000000043,
+    "dte": 11
   },
   {
     "ticker": "GLD",
@@ -5877,7 +7553,11 @@
     "contracts": 1,
     "short_strike": 207.0,
     "long_strike": 202.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 50.75000000000001,
+    "close_debit": 22.599999999999998,
+    "net_pnl": 28.15000000000001,
+    "dte": 4
   },
   {
     "ticker": "GLD",
@@ -5891,7 +7571,11 @@
     "contracts": 1,
     "short_strike": 207.0,
     "long_strike": 202.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 47.4,
+    "close_debit": 18.6,
+    "net_pnl": 28.799999999999997,
+    "dte": 2
   },
   {
     "ticker": "GLD",
@@ -5905,7 +7589,11 @@
     "contracts": 1,
     "short_strike": 214.0,
     "long_strike": 209.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 45.75,
+    "close_debit": 172.25000000000003,
+    "net_pnl": -126.50000000000003,
+    "dte": 3
   },
   {
     "ticker": "GLD",
@@ -5919,7 +7607,11 @@
     "contracts": 1,
     "short_strike": 209.0,
     "long_strike": 204.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 54.39999999999999,
+    "close_debit": 147.5,
+    "net_pnl": -93.10000000000001,
+    "dte": 4
   },
   {
     "ticker": "GLD",
@@ -5933,7 +7625,11 @@
     "contracts": 1,
     "short_strike": 204.0,
     "long_strike": 199.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 50.1,
+    "close_debit": 20.600000000000005,
+    "net_pnl": 29.499999999999996,
+    "dte": 8
   },
   {
     "ticker": "GLD",
@@ -5947,7 +7643,11 @@
     "contracts": 1,
     "short_strike": 203.0,
     "long_strike": 198.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 35.05,
+    "close_debit": 16.95,
+    "net_pnl": 18.099999999999998,
+    "dte": 3
   },
   {
     "ticker": "GLD",
@@ -5961,7 +7661,11 @@
     "contracts": 1,
     "short_strike": 207.0,
     "long_strike": 202.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 41.400000000000006,
+    "close_debit": 13.600000000000001,
+    "net_pnl": 27.800000000000004,
+    "dte": 9
   },
   {
     "ticker": "GLD",
@@ -5975,7 +7679,11 @@
     "contracts": 1,
     "short_strike": 207.0,
     "long_strike": 202.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 39.05,
+    "close_debit": 10.95,
+    "net_pnl": 28.099999999999998,
+    "dte": 4
   },
   {
     "ticker": "GLD",
@@ -5989,7 +7697,11 @@
     "contracts": 1,
     "short_strike": 209.0,
     "long_strike": 204.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 41.75,
+    "close_debit": 13.3,
+    "net_pnl": 28.45,
+    "dte": 3
   },
   {
     "ticker": "GLD",
@@ -6003,7 +7715,11 @@
     "contracts": 1,
     "short_strike": 216.0,
     "long_strike": 211.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 54.75,
+    "close_debit": 26.3,
+    "net_pnl": 28.45,
+    "dte": 1
   },
   {
     "ticker": "GLD",
@@ -6017,7 +7733,11 @@
     "contracts": 1,
     "short_strike": 212.0,
     "long_strike": 207.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 40.1,
+    "close_debit": 13.25,
+    "net_pnl": 26.85,
+    "dte": 9
   },
   {
     "ticker": "GLD",
@@ -6031,7 +7751,11 @@
     "contracts": 1,
     "short_strike": 212.0,
     "long_strike": 207.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 53.400000000000006,
+    "close_debit": 17.900000000000006,
+    "net_pnl": 35.5,
+    "dte": 2
   },
   {
     "ticker": "GLD",
@@ -6045,7 +7769,11 @@
     "contracts": 1,
     "short_strike": 233.0,
     "long_strike": 228.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 54.05,
+    "close_debit": 111.90000000000002,
+    "net_pnl": -57.85000000000002,
+    "dte": 3
   },
   {
     "ticker": "GLD",
@@ -6059,7 +7787,11 @@
     "contracts": 1,
     "short_strike": 231.0,
     "long_strike": 226.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 49.4,
+    "close_debit": 20.6,
+    "net_pnl": 28.799999999999997,
+    "dte": 3
   },
   {
     "ticker": "GLD",
@@ -6073,7 +7805,11 @@
     "contracts": 1,
     "short_strike": 232.0,
     "long_strike": 227.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 49.749999999999986,
+    "close_debit": 23.9,
+    "net_pnl": 25.849999999999987,
+    "dte": 4
   },
   {
     "ticker": "GLD",
@@ -6087,7 +7823,11 @@
     "contracts": 1,
     "short_strike": 234.0,
     "long_strike": 229.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 50.1,
+    "close_debit": 25.6,
+    "net_pnl": 24.5,
+    "dte": 7
   },
   {
     "ticker": "GLD",
@@ -6101,7 +7841,11 @@
     "contracts": 1,
     "short_strike": 236.0,
     "long_strike": 231.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 48.400000000000006,
+    "close_debit": 20.55,
+    "net_pnl": 27.850000000000005,
+    "dte": 2
   },
   {
     "ticker": "GLD",
@@ -6115,6 +7859,10 @@
     "contracts": 1,
     "short_strike": 236.0,
     "long_strike": 231.0,
-    "spread_width": 5.0
+    "spread_width": 5.0,
+    "open_credit": 51.050000000000004,
+    "close_debit": 122.50000000000001,
+    "net_pnl": -71.45000000000002,
+    "dte": 2
   }
 ]

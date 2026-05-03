@@ -47,6 +47,14 @@ The 0.371 excess Sharpe is the result of a tight volatility denominator, not a l
 
 The strategy ships with a **Hoeffding trader-application bound** that quantifies, in real time, the probability the underlying win-rate has shifted away from the OOS baseline of μ = 0.730. Threshold semantics (50% / 25% / 10% probability bound) trigger reduce-size, freeze, and shut-down actions respectively. See [Live Monitoring](monitoring.qmd) for the full framework and worked example on the headline basket.
 
+### How will you know the strategy is performing as expected?
+
+A rolling 60-trade window of the realized win rate is compared against the OOS baseline of μ = 0.730. While the Hoeffding bound on the gap stays at or above 50%, the strategy is performing within its modeled regime and trading continues at full size.
+
+### How will you quantify when the strategy stops working?
+
+The same Hoeffding bound. When it crosses below 25%, position size is reduced. When it crosses below 10%, entries are halted entirely and the strategy is reviewed. The thresholds are pre-set, distribution-free, and apply uniformly across the 4-instrument basket. Backtested over the 2018-2024 OOS sample, the framework registered no critical signal across 1,760 trading days.
+
 ## What was tested but not used
 
 The headline is one of six configurations tested. The other five (SPX-only put-credit-spread, 3-ETF basket, full 6-instrument book, and iron condor variants on the 3-instrument cluster and SPX-only) underperformed the SPX baseline. They are reported transparently on the [Variants](ablations.qmd) page; the iron-condor variant is particularly informative because adding the call wing systematically lost in the 2018-2024 trending-equity regime.

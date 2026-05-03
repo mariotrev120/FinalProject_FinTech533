@@ -52,19 +52,31 @@ def basket_blotter(tickers: list[str]) -> list[dict]:
             continue
         df = pd.read_parquet(path)
         for _, t in df.iterrows():
+            entry_date = str(t.get("entry_date", ""))[:10]
+            exit_date = str(t.get("exit_date", ""))[:10]
+            try:
+                dte = (pd.to_datetime(exit_date) - pd.to_datetime(entry_date)).days
+            except Exception:
+                dte = None
+            entry_credit = _safe_float(t.get("entry_credit"))
+            pnl = _safe_float(t.get("pnl_per_spread"))
             rows.append({
                 "ticker": tk,
-                "entry_date": str(t.get("entry_date", ""))[:10],
-                "exit_date":  str(t.get("exit_date",  ""))[:10],
+                "entry_date": entry_date,
+                "exit_date":  exit_date,
                 "side":       str(t.get("right", "P")),
                 "fate":       str(t.get("fate", "open")),
-                "entry_credit": _safe_float(t.get("entry_credit")),
+                "open_credit": entry_credit,
+                "close_debit": _safe_float(t.get("exit_debit")),
+                "net_pnl":    pnl,
+                "entry_credit": entry_credit,
                 "exit_debit":   _safe_float(t.get("exit_debit")),
-                "pnl_per_spread": _safe_float(t.get("pnl_per_spread")),
+                "pnl_per_spread": pnl,
                 "contracts":  _safe_int(t.get("contracts")),
                 "short_strike": _safe_float(t.get("short_strike")),
                 "long_strike":  _safe_float(t.get("long_strike")),
                 "spread_width": _safe_float(t.get("spread_width")),
+                "dte":        dte,
             })
     return rows
 

@@ -150,7 +150,7 @@
               </td>
               <td class="mono text-end {% if trade.net_pnl and trade.net_pnl >= 0 %}text-profit{% elif trade.net_pnl %}text-loss{% endif %}">
                 {% if trade.net_pnl is not none %}
-                  {{ "$%+,.0f"|format(trade.net_pnl) }}
+                  ${{ "%+.2f"|format(trade.net_pnl) }}
                 {% else %}—{% endif %}
               </td>
               <td>

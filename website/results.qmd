@@ -265,4 +265,12 @@ The `trd_prd` index encodes year + ISO week as a single decimal. Entries on the 
 
 *Showing 10 of 437 trades. Full blotter at `website/data/blotter.json`.*
 
+## How will you know the strategy is performing as expected?
+
+A rolling 60-trade window of the realized win rate is compared against the OOS baseline of μ = 0.730. The Hoeffding inequality bounds the probability that observed underperformance is due to chance: while the bound stays at or above 50%, the strategy is operating within its modeled regime and trading continues at full size. Backtested over the 2018-2024 OOS sample, the bound was at or above 50% on 88% of post-warmup trades.
+
+## How will you quantify when the strategy stops working?
+
+The same Hoeffding bound. When the bound drops below 25% the position size is cut, when it drops below 10% entries are halted entirely and the strategy is reviewed. The thresholds are pre-set, distribution-free, and apply uniformly across the 4-instrument basket. The OOS sample produced no critical signal across 1,760 trading days; full bound-trace and worked example on the [Live Monitoring](monitoring.qmd) page.
+
 For the data sources behind these numbers, see [Data and Sources](data_and_literature.qmd).
