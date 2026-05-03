@@ -83,6 +83,20 @@ XGBoost regression on:
 
 The aggregate count (≥ 7 of 9) is for narrative classification of the result, not for an aggregate-metric pass/fail. Each name's fallback decision is independent.
 
+#### §2.1 Layer 3 methodological gap — daily-RV vs 5-minute intraday RV
+
+**Source:** Bollerslev/Tauchen/Zhou 2009 Section 3.2.1 ("Old" variance measures).
+
+The HAR-RV forecaster's input components (1d, 5d, 22d realized variance) are computed from **daily** close-to-close returns of each underlying. BTZ §3.2.1 explicitly cautions that this is a weaker realization measure than 5-minute intraday-summed squared returns:
+
+> "Estimation of the same predictive regressions based on the traditional Black–Scholes implied variances and/or realized variances constructed from lower frequency daily data does not give rise to nearly as significant results."
+
+BTZ's preferred specification uses 78 within-day 5-minute squared returns (9:30am–4:00pm) plus close-to-open overnight return, totaling n = 22 × 78 = 1716 5-minute returns per typical trading month. Their R² gain from intraday vs daily is meaningful: the high-frequency-RV variant produces stronger empirical predictability than the daily-RV variant in their Tables.
+
+**Disclosure:** Layer 3's HAR-RV forecaster may underperform what the literature could achieve with intraday data. Acquiring 5-minute intraday data for the 9-name basket over 2012–2024 is out of scope for the capstone (would require a separate data pipeline and ~9 × 12 years × 252 days × ~78 bars = ~2M rows per name). We document this gap honestly per BTZ's own caveat. The acceptance criterion (Layer 3 forecaster must beat HAR baseline OOS RMSE per name) remains; we expect lower absolute RMSE-improvement magnitudes than BTZ's intraday baseline.
+
+**Impact on the writeup:** Limitations section explicitly cites BTZ §3.2.1 and states that Layer 3 results are upper-bounded by the daily-frequency input granularity. A future-work item is to re-run Layer 3 with intraday data when accessible.
+
 ### Layer 4 — earnings-aware management
 
 | Window | Behavior |
