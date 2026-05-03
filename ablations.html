@@ -402,7 +402,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="ml-overlays-evaluated" class="level2">
 <h2 class="anchored" data-anchor-id="ml-overlays-evaluated">ML overlays evaluated</h2>
-<p>Three calibrated XGBoost overlays were evaluated. One is activated in the headline; two are not.</p>
+<p>Two calibrated XGBoost overlays were evaluated. One is activated in the headline; the other is not.</p>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 25%">
@@ -430,12 +430,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>Pooled XGBoost predicting probability of a stress event in the next quarter (63 trading days)</td>
 <td>Out-of-sample Brier 0.1079 vs naive baseline 0.1256, a <strong>14.1% reduction</strong>, well above the 5% acceptance gate</td>
 <td style="text-align: center;">✓ (applied as <code>(1 − p_stress)</code> book-exposure scaler)</td>
-</tr>
-<tr class="odd">
-<td>Skew-direction model</td>
-<td>XGBoost picking which side of an iron condor will hurt more, used to dynamically tilt delta</td>
-<td>Not applicable, the headline architecture is put-only</td>
-<td style="text-align: center;">✗ (not applicable)</td>
 </tr>
 </tbody>
 </table>
@@ -1164,33 +1158,32 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb1-57"><a href="#cb1-57" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-58"><a href="#cb1-58" aria-hidden="true" tabindex="-1"></a><span class="fu">## ML overlays evaluated</span></span>
 <span id="cb1-59"><a href="#cb1-59" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-60"><a href="#cb1-60" aria-hidden="true" tabindex="-1"></a>Three calibrated XGBoost overlays were evaluated. One is activated in the headline; two are not.</span>
+<span id="cb1-60"><a href="#cb1-60" aria-hidden="true" tabindex="-1"></a>Two calibrated XGBoost overlays were evaluated. One is activated in the headline; the other is not.</span>
 <span id="cb1-61"><a href="#cb1-61" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-62"><a href="#cb1-62" aria-hidden="true" tabindex="-1"></a>| Overlay | What it does | Result | Activated in headline? |</span>
 <span id="cb1-63"><a href="#cb1-63" aria-hidden="true" tabindex="-1"></a>|---|---|---|:-:|</span>
 <span id="cb1-64"><a href="#cb1-64" aria-hidden="true" tabindex="-1"></a>| Per-trade quality classifier | Per-instrument XGBoost predicting whether a trade closes at profit-target | Out-of-sample log-loss worse than majority-class baseline on 4 of 4 tickers (margins 0.002 to 0.016) | ✗ (not activated, base sizing used) |</span>
 <span id="cb1-65"><a href="#cb1-65" aria-hidden="true" tabindex="-1"></a>| **Regime-stress overlay** | Pooled XGBoost predicting probability of a stress event in the next quarter (63 trading days) | Out-of-sample Brier 0.1079 vs naive baseline 0.1256, a **14.1% reduction**, well above the 5% acceptance gate | ✓ (applied as <span class="in">`(1 − p_stress)`</span> book-exposure scaler) |</span>
-<span id="cb1-66"><a href="#cb1-66" aria-hidden="true" tabindex="-1"></a>| Skew-direction model | XGBoost picking which side of an iron condor will hurt more, used to dynamically tilt delta | Not applicable, the headline architecture is put-only | ✗ (not applicable) |</span>
-<span id="cb1-67"><a href="#cb1-67" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-68"><a href="#cb1-68" aria-hidden="true" tabindex="-1"></a>The per-trade quality classifier did not beat the majority-class baseline because the base win rate of 64-71% per instrument leaves the "always predict win" baseline log-loss already low. The features available do not predict per-trade outcomes with enough resolution to improve on it.</span>
-<span id="cb1-69"><a href="#cb1-69" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-70"><a href="#cb1-70" aria-hidden="true" tabindex="-1"></a>The regime-stress overlay passes because cross-asset macro features (volatility indices, yield curve, credit-stress proxies) are diagnostic of upcoming regime breaks at the basket-day level. The model learns those associations.</span>
-<span id="cb1-71"><a href="#cb1-71" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-72"><a href="#cb1-72" aria-hidden="true" tabindex="-1"></a><span class="fu">## Robustness checks</span></span>
-<span id="cb1-73"><a href="#cb1-73" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-74"><a href="#cb1-74" aria-hidden="true" tabindex="-1"></a>| Item | Value |</span>
-<span id="cb1-75"><a href="#cb1-75" aria-hidden="true" tabindex="-1"></a>|---|---:|</span>
-<span id="cb1-76"><a href="#cb1-76" aria-hidden="true" tabindex="-1"></a>| Raw trials tested across all variants | 12 (single-stock × 9 + ETF × 3) |</span>
-<span id="cb1-77"><a href="#cb1-77" aria-hidden="true" tabindex="-1"></a>| Average pairwise return correlation (ρ̄) | 0.261 |</span>
-<span id="cb1-78"><a href="#cb1-78" aria-hidden="true" tabindex="-1"></a>| Implied independent trials (N̂) | 9 |</span>
-<span id="cb1-79"><a href="#cb1-79" aria-hidden="true" tabindex="-1"></a>| Headline DSR (PSR) | 1.0000 |</span>
-<span id="cb1-80"><a href="#cb1-80" aria-hidden="true" tabindex="-1"></a>| Headline PBO via CSCV (S=16, 12,870 logits) | 0.0402 |</span>
-<span id="cb1-81"><a href="#cb1-81" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-82"><a href="#cb1-82" aria-hidden="true" tabindex="-1"></a>Both gates pass (DSR ≥ 0.95, PBO ≤ 0.30).</span>
-<span id="cb1-83"><a href="#cb1-83" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-84"><a href="#cb1-84" aria-hidden="true" tabindex="-1"></a><span class="fu">## Summary</span></span>
-<span id="cb1-85"><a href="#cb1-85" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-86"><a href="#cb1-86" aria-hidden="true" tabindex="-1"></a>Six basket configurations were tested across put-only and iron-condor architectures, with the halt framework engaged and disengaged, and with and without the ML overlay. The headline is the strongest configuration across these tests.</span></code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
+<span id="cb1-66"><a href="#cb1-66" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-67"><a href="#cb1-67" aria-hidden="true" tabindex="-1"></a>The per-trade quality classifier did not beat the majority-class baseline because the base win rate of 64-71% per instrument leaves the "always predict win" baseline log-loss already low. The features available do not predict per-trade outcomes with enough resolution to improve on it.</span>
+<span id="cb1-68"><a href="#cb1-68" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-69"><a href="#cb1-69" aria-hidden="true" tabindex="-1"></a>The regime-stress overlay passes because cross-asset macro features (volatility indices, yield curve, credit-stress proxies) are diagnostic of upcoming regime breaks at the basket-day level. The model learns those associations.</span>
+<span id="cb1-70"><a href="#cb1-70" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-71"><a href="#cb1-71" aria-hidden="true" tabindex="-1"></a><span class="fu">## Robustness checks</span></span>
+<span id="cb1-72"><a href="#cb1-72" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-73"><a href="#cb1-73" aria-hidden="true" tabindex="-1"></a>| Item | Value |</span>
+<span id="cb1-74"><a href="#cb1-74" aria-hidden="true" tabindex="-1"></a>|---|---:|</span>
+<span id="cb1-75"><a href="#cb1-75" aria-hidden="true" tabindex="-1"></a>| Raw trials tested across all variants | 12 (single-stock × 9 + ETF × 3) |</span>
+<span id="cb1-76"><a href="#cb1-76" aria-hidden="true" tabindex="-1"></a>| Average pairwise return correlation (ρ̄) | 0.261 |</span>
+<span id="cb1-77"><a href="#cb1-77" aria-hidden="true" tabindex="-1"></a>| Implied independent trials (N̂) | 9 |</span>
+<span id="cb1-78"><a href="#cb1-78" aria-hidden="true" tabindex="-1"></a>| Headline DSR (PSR) | 1.0000 |</span>
+<span id="cb1-79"><a href="#cb1-79" aria-hidden="true" tabindex="-1"></a>| Headline PBO via CSCV (S=16, 12,870 logits) | 0.0402 |</span>
+<span id="cb1-80"><a href="#cb1-80" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-81"><a href="#cb1-81" aria-hidden="true" tabindex="-1"></a>Both gates pass (DSR ≥ 0.95, PBO ≤ 0.30).</span>
+<span id="cb1-82"><a href="#cb1-82" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-83"><a href="#cb1-83" aria-hidden="true" tabindex="-1"></a><span class="fu">## Summary</span></span>
+<span id="cb1-84"><a href="#cb1-84" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-85"><a href="#cb1-85" aria-hidden="true" tabindex="-1"></a>Six basket configurations were tested across put-only and iron-condor architectures, with the halt framework engaged and disengaged, and with and without the ML overlay. The headline is the strongest configuration across these tests.</span></code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
 <footer class="footer">

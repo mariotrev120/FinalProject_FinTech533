@@ -332,7 +332,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tr class="odd">
 <td><strong>VVIX</strong> (CBOE)</td>
 <td>TWS feed</td>
-<td>Vol-of-vol, Layer 1 hard halt threshold input</td>
+<td>Vol-of-vol, tail-event halt threshold input</td>
 </tr>
 <tr class="even">
 <td><strong>SKEW</strong> (CBOE)</td>
@@ -352,7 +352,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tr class="odd">
 <td><strong>HYG − LQD spread</strong></td>
 <td>TWS feeds</td>
-<td>Credit-stress proxy, Layer 1 hard halt input</td>
+<td>Credit-stress proxy, tail-event halt input</td>
 </tr>
 <tr class="even">
 <td><strong>SPY × Treasury rolling 20-day correlation</strong></td>
@@ -362,7 +362,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tr class="odd">
 <td><strong>SPX bars (open / close)</strong></td>
 <td>TWS feed</td>
-<td>Market-wide gap-skip signal (Monday gap ≥ 3% → skip all entries that day); Layer 1 hard halt move thresholds</td>
+<td>Market-wide gap-skip signal (Monday gap ≥ 3% → skip all entries that day); tail-event halt move thresholds</td>
 </tr>
 <tr class="even">
 <td><strong>Per-ticker bars</strong> (4 underlyings)</td>
@@ -377,45 +377,31 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="halt-framework-3-active-layers">Halt framework, 3 active layers</h2>
 <table class="caption-top table">
 <colgroup>
-<col style="width: 33%">
-<col style="width: 33%">
-<col style="width: 33%">
+<col style="width: 50%">
+<col style="width: 50%">
 </colgroup>
 <thead>
 <tr class="header">
 <th>Layer</th>
 <th>What it does</th>
-<th>Status</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td><strong>Layer 1</strong> Hard tail-event</td>
-<td>Halt on extreme single-day market shocks (VIX +50%/d, VVIX &gt; 150, HYG-LQD &gt; 3 SD, SPX one-day move beyond threshold)</td>
-<td><strong>Active</strong></td>
+<td><strong>Tail-event halt</strong></td>
+<td>Halt on extreme single-day market shocks: VIX up 50% or more in a day, VVIX above 150, HYG-LQD spread breaching 3 standard deviations, or SPX moving beyond a single-day threshold.</td>
 </tr>
 <tr class="even">
-<td>Layer 2 Soft halt</td>
-<td>Dropped post-v1 audit (-9.0pp Sharpe lift, $413 of profitable trades blocked)</td>
-<td>Removed</td>
+<td><strong>Drawdown halt</strong></td>
+<td>Halt when the basket has been underwater for more than 90 days OR drawdown exceeds 15% within a trailing 90-day window.</td>
 </tr>
 <tr class="odd">
-<td>Layer 3 Slow halt</td>
-<td>Dropped post-v1 audit (-10.1pp Sharpe lift, $1,233 of profitable trades blocked)</td>
-<td>Removed</td>
-</tr>
-<tr class="even">
-<td><strong>Layer 4</strong> Drawdown halt</td>
-<td>Halt on &gt;90 days underwater OR &gt;15% drawdown, measured in <strong>trailing 90-day window</strong></td>
-<td><strong>Active</strong></td>
-</tr>
-<tr class="odd">
-<td><strong>Layer 5</strong> Auto-resume</td>
-<td>Lift halt when 3 market-regime conditions clear simultaneously OR 60-trading-day time fallback fires</td>
-<td><strong>Active</strong></td>
+<td><strong>Auto-resume</strong></td>
+<td>Lift halt when three market-regime conditions clear simultaneously OR a 60-trading-day time fallback fires.</td>
 </tr>
 </tbody>
 </table>
+<p>Two earlier halt layers were tested in development and dropped after audit; details available in the source repository.</p>
 </section>
 <section id="per-trade-sizing" class="level2">
 <h2 class="anchored" data-anchor-id="per-trade-sizing">Per-trade sizing</h2>
@@ -1185,26 +1171,26 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a>|---|---|---|</span>
 <span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a>| **VIX** (CBOE) | TWS feed | Slippage scaling (per-VIX-bucket bid-ask half-spread fraction); vol-multiplier in sizing |</span>
 <span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a>| **VIX3M** (CBOE) | TWS feed | Vol-term-structure context for regime classification |</span>
-<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a>| **VVIX** (CBOE) | TWS feed | Vol-of-vol, Layer 1 hard halt threshold input |</span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a>| **VVIX** (CBOE) | TWS feed | Vol-of-vol, tail-event halt threshold input |</span>
 <span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a>| **SKEW** (CBOE) | TWS feed | Tail-risk indicator |</span>
 <span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a>| **IRX** (3M T-bill yield) | FRED via TWS feed | Risk-free baseline for daily cash accrual + Sharpe denominator |</span>
 <span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a>| **TNX** (10Y Treasury yield) | FRED via TWS feed | Term-structure curvature context |</span>
-<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a>| **HYG − LQD spread** | TWS feeds | Credit-stress proxy, Layer 1 hard halt input |</span>
+<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a>| **HYG − LQD spread** | TWS feeds | Credit-stress proxy, tail-event halt input |</span>
 <span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a>| **SPY × Treasury rolling 20-day correlation** | computed from SPY + TNX | Stress-multiplier in sizing when correlation regime shifts (risk-off pattern: equity-down, rates-down both moving) |</span>
-<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a>| **SPX bars (open / close)** | TWS feed | Market-wide gap-skip signal (Monday gap ≥ 3% → skip all entries that day); Layer 1 hard halt move thresholds |</span>
+<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a>| **SPX bars (open / close)** | TWS feed | Market-wide gap-skip signal (Monday gap ≥ 3% → skip all entries that day); tail-event halt move thresholds |</span>
 <span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a>| **Per-ticker bars** (4 underlyings) | OptionMetrics IvyDB Securities | Strike selection; entry/exit price recording; wing computation |</span>
 <span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a>The headline result is **conditioned on the entire macro context above**, not just the option chains for AAPL/MSFT/WMT/GLD. The engine reads each series asof the trade-decision timestamp via <span class="in">`pd.Series.asof(today)`</span>.</span>
 <span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a><span class="fu">## Halt framework, 3 active layers</span></span>
 <span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-56"><a href="#cb1-56" aria-hidden="true" tabindex="-1"></a>| Layer | What it does | Status |</span>
-<span id="cb1-57"><a href="#cb1-57" aria-hidden="true" tabindex="-1"></a>|---|---|---|</span>
-<span id="cb1-58"><a href="#cb1-58" aria-hidden="true" tabindex="-1"></a>| **Layer 1** Hard tail-event | Halt on extreme single-day market shocks (VIX +50%/d, VVIX &gt; 150, HYG-LQD &gt; 3 SD, SPX one-day move beyond threshold) | **Active** |</span>
-<span id="cb1-59"><a href="#cb1-59" aria-hidden="true" tabindex="-1"></a>| Layer 2 Soft halt | Dropped post-v1 audit (-9.0pp Sharpe lift, $413 of profitable trades blocked) | Removed |</span>
-<span id="cb1-60"><a href="#cb1-60" aria-hidden="true" tabindex="-1"></a>| Layer 3 Slow halt | Dropped post-v1 audit (-10.1pp Sharpe lift, $1,233 of profitable trades blocked) | Removed |</span>
-<span id="cb1-61"><a href="#cb1-61" aria-hidden="true" tabindex="-1"></a>| **Layer 4** Drawdown halt | Halt on &gt;90 days underwater OR &gt;15% drawdown, measured in **trailing 90-day window** | **Active** |</span>
-<span id="cb1-62"><a href="#cb1-62" aria-hidden="true" tabindex="-1"></a>| **Layer 5** Auto-resume | Lift halt when 3 market-regime conditions clear simultaneously OR 60-trading-day time fallback fires | **Active** |</span>
+<span id="cb1-56"><a href="#cb1-56" aria-hidden="true" tabindex="-1"></a>| Layer | What it does |</span>
+<span id="cb1-57"><a href="#cb1-57" aria-hidden="true" tabindex="-1"></a>|---|---|</span>
+<span id="cb1-58"><a href="#cb1-58" aria-hidden="true" tabindex="-1"></a>| **Tail-event halt** | Halt on extreme single-day market shocks: VIX up 50% or more in a day, VVIX above 150, HYG-LQD spread breaching 3 standard deviations, or SPX moving beyond a single-day threshold. |</span>
+<span id="cb1-59"><a href="#cb1-59" aria-hidden="true" tabindex="-1"></a>| **Drawdown halt** | Halt when the basket has been underwater for more than 90 days OR drawdown exceeds 15% within a trailing 90-day window. |</span>
+<span id="cb1-60"><a href="#cb1-60" aria-hidden="true" tabindex="-1"></a>| **Auto-resume** | Lift halt when three market-regime conditions clear simultaneously OR a 60-trading-day time fallback fires. |</span>
+<span id="cb1-61"><a href="#cb1-61" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-62"><a href="#cb1-62" aria-hidden="true" tabindex="-1"></a>Two earlier halt layers were tested in development and dropped after audit; details available in the source repository.</span>
 <span id="cb1-63"><a href="#cb1-63" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-64"><a href="#cb1-64" aria-hidden="true" tabindex="-1"></a><span class="fu">## Per-trade sizing</span></span>
 <span id="cb1-65"><a href="#cb1-65" aria-hidden="true" tabindex="-1"></a></span>
