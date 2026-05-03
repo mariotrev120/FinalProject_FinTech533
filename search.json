@@ -144,7 +144,7 @@
     "href": "results.html#variants-tested-iron-condor-architecture",
     "title": "Results",
     "section": "Variants tested: iron condor architecture",
-    "text": "Variants tested: iron condor architecture\nWe tested both architectures on the same engine and underlying universe. Iron condor (put + call wings on the same expiry) underperforms put-only across every comparable comparison in OOS 2018-2024:\n\n\n\n\n\n\n\n\n\n\nMode\nUniverse\nSharpe (excess)\nΔ vs anchor\nNotes\n\n\n\n\nIron condor, SPX only\n1 inst\n-1.882\n-2.168\nCall wing destroyed by post-2020 SPX rally\n\n\nIron condor, 3-instrument cluster\nSPX/TLT/GLD\n-2.292\n-2.578\nSame pattern across all three IC instruments\n\n\nPut-only, SPX\n1 inst\n-0.347\n-0.633\nSame engine, IC removed\n\n\nPut-only, 3-instrument cluster\nSPX/TLT/GLD\n-0.369\n-0.655\nSame engine, IC removed\n\n\n\nIron condor underperforms put-only in every comparison. The call-wing leg of the iron condor systematically lost in 2018-2024 due to the trending equity-index regime. Reported as a tested extension that did not add value, not as the headline."
+    "text": "Variants tested: iron condor architecture\nWe tested both architectures on the same engine and underlying universe. Iron condor (put + call wings on the same expiry) underperforms put-only across every comparable comparison in OOS 2018-2024:\n\n\n\n\n\n\n\n\n\n\nMode\nUniverse\nSharpe (excess)\nΔ vs SPX baseline\nNotes\n\n\n\n\nIron condor, SPX only\n1 inst\n-1.882\n-2.168\nCall wing destroyed by post-2020 SPX rally\n\n\nIron condor, 3-instrument cluster\nSPX/TLT/GLD\n-2.292\n-2.578\nSame pattern across all three IC instruments\n\n\nPut-only, SPX\n1 inst\n-0.347\n-0.633\nSame engine, IC removed\n\n\nPut-only, 3-instrument cluster\nSPX/TLT/GLD\n-0.369\n-0.655\nSame engine, IC removed\n\n\n\nIron condor underperforms put-only in every comparison. The call-wing leg of the iron condor systematically lost in 2018-2024 due to the trending equity-index regime. Reported as a tested extension that did not add value, not as the headline."
   },
   {
     "objectID": "results.html#halts-engaged-vs-disengaged",
@@ -263,7 +263,7 @@
     "href": "thesis.html#what-youll-find-in-the-rest-of-the-writeup",
     "title": "Thesis: Why Variance Risk Premium",
     "section": "What you’ll find in the rest of the writeup",
-    "text": "What you’ll find in the rest of the writeup\n\nMechanics: exact entry/exit logic, halt framework, ML stack, sizing\nResults: headline OOS numbers, blotter, ledger, multiple-testing correction\nAblations: basket variants, iron-condor vs put-only, naked vs halts\nLive monitoring: how to know it works, how to know it stopped\nLimitations: what this strategy cannot promise\nData and Literature: data sources and reference reading"
+    "text": "What you’ll find in the rest of the writeup\n\nMechanics: exact entry/exit logic, halt framework, ML stack, sizing\nResults: headline OOS numbers, blotter, ledger, multiple-testing correction\nVariants: basket variants, iron-condor vs put-only, halts engaged vs disengaged\nLive monitoring: how to know it works, how to know it stopped\nLimitations: what this strategy cannot promise\nData and Literature: data sources and reference reading"
   },
   {
     "objectID": "data_and_literature.html",
@@ -382,7 +382,7 @@
     "href": "mechanics.html#entry-construction",
     "title": "Strategy Mechanics",
     "section": "Entry construction",
-    "text": "Entry construction\n\nStructure: Defined-risk put credit spread (short put + long put protection). No call wing, the iron-condor variant tested separately and underperformed (see Ablations).\nShort put delta target: −0.16 (one-sigma OTM, BS-Greek-defined via OptionMetrics IV when available; BS pricer fallback when IV missing)\nWing widths: 5 strike points (per-instrument strike-grid specified above)\nDTE at entry: 30 to 45 calendar days; selected expiry is the chain whose DTE is closest to 35\nEntry frequency: weekly Monday open per instrument (skipped if Monday is a holiday; defer to next session)\nOne structure per name per week: no overlapping spreads in the same instrument"
+    "text": "Entry construction\n\nStructure: Defined-risk put credit spread (short put + long put protection). No call wing, the iron-condor variant tested separately and underperformed (see Variants).\nShort put delta target: −0.16 (one-sigma OTM, BS-Greek-defined via OptionMetrics IV when available; BS pricer fallback when IV missing)\nWing widths: 5 strike points (per-instrument strike-grid specified above)\nDTE at entry: 30 to 45 calendar days; selected expiry is the chain whose DTE is closest to 35\nEntry frequency: weekly Monday open per instrument (skipped if Monday is a holiday; defer to next session)\nOne structure per name per week: no overlapping spreads in the same instrument"
   },
   {
     "objectID": "mechanics.html#exit-logic-five-fates",

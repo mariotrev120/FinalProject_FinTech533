@@ -257,7 +257,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="entry-construction" class="level2">
 <h2 class="anchored" data-anchor-id="entry-construction">Entry construction</h2>
 <ul>
-<li><strong>Structure:</strong> Defined-risk put credit spread (short put + long put protection). No call wing, the iron-condor variant tested separately and underperformed (see <a href="./ablations.html">Ablations</a>).</li>
+<li><strong>Structure:</strong> Defined-risk put credit spread (short put + long put protection). No call wing, the iron-condor variant tested separately and underperformed (see <a href="./ablations.html">Variants</a>).</li>
 <li><strong>Short put delta target:</strong> −0.16 (one-sigma OTM, BS-Greek-defined via OptionMetrics IV when available; BS pricer fallback when IV missing)</li>
 <li><strong>Wing widths:</strong> 5 strike points (per-instrument strike-grid specified above)</li>
 <li><strong>DTE at entry:</strong> 30 to 45 calendar days; selected expiry is the chain whose DTE is closest to 35</li>
@@ -1146,7 +1146,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="fu">## Entry construction</span></span>
 <span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Structure:** Defined-risk put credit spread (short put + long put protection). No call wing, the iron-condor variant tested separately and underperformed (see <span class="co">[</span><span class="ot">Ablations</span><span class="co">](ablations.qmd)</span>).</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Structure:** Defined-risk put credit spread (short put + long put protection). No call wing, the iron-condor variant tested separately and underperformed (see <span class="co">[</span><span class="ot">Variants</span><span class="co">](ablations.qmd)</span>).</span>
 <span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Short put delta target:** −0.16 (one-sigma OTM, BS-Greek-defined via OptionMetrics IV when available; BS pricer fallback when IV missing)</span>
 <span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Wing widths:** 5 strike points (per-instrument strike-grid specified above)</span>
 <span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**DTE at entry:** 30 to 45 calendar days; selected expiry is the chain whose DTE is closest to 35</span>
