@@ -52,9 +52,9 @@ The strategy and writeup are grounded in the following published references. Non
 
 | Limitation | Where the writeup acknowledges it |
 |---|---|
-| OptionMetrics has 7-15% NaN on Greeks at deep-OTM/ITM strikes | [Limitations §9](limitations.qmd) |
-| Per-instrument bars from a separate WRDS query (not from the chain file itself) | [Limitations §14](limitations.qmd) |
-| TWS-sourced macro factors are point-in-time but not as-of-decision-time stamped | [Limitations §13](limitations.qmd) |
-| Daily-frequency RV in the engine, not 5-minute intraday | [Limitations §7](limitations.qmd) |
-| OOS sample only 7 years long | [Limitations §3](limitations.qmd) |
-| RUT and NDX dropped because their underlying OHLC was not available locally | [Limitations](limitations.qmd#data-limitations) |
+| OptionMetrics has 7-15% NaN on Greeks at deep-OTM/ITM strikes | [Limitations](limitations.qmd) |
+| Per-instrument bars from a separate WRDS query (not from the chain file itself) | [Limitations](limitations.qmd) |
+| TWS-sourced macro factors are point-in-time but not as-of-decision-time stamped | [Limitations](limitations.qmd) |
+| Daily-frequency RV in the engine, not 5-minute intraday | [Limitations](limitations.qmd) |
+| OOS sample only 7 years long | [Limitations](limitations.qmd) |
+| RUT and NDX dropped because their underlying OHLC was not available locally | [Limitations](limitations.qmd) |

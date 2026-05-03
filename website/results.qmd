@@ -21,7 +21,6 @@ Acceptance gates we set:
 
 - DSR (PSR threshold) ≥ 0.95 against the implied-independent-trials benchmark
 - PBO via CSCV ≤ 0.30 on the per-instrument return matrix
-- Reproducibility: same commit, same data, same seed → byte-identical equity curve
 
 ## Headline {#headline}
 
@@ -183,7 +182,7 @@ Trade-level summary statistics:
 
 ## Blotter
 
-Random sample of 10 trades from the 437-row blotter (seed=42), styled to match the HW3/HW4 trade-log convention: entry/exit timestamps, qty, entry/exit prices, fate, P&L, return %, success flag.
+Random sample of 10 trades from the 437-row blotter (seed=42).
 
 | trd_prd | Entry | Exit | Ticker | Side | Qty | Entry credit | Exit debit | Fate | P&L | Return % | Success |
 |---|---|---|:-:|:-:|---:|---:|---:|---|---:|---:|:-:|
@@ -198,7 +197,7 @@ Random sample of 10 trades from the 437-row blotter (seed=42), styled to match t
 | 2024.23 | 2024-06-03 | 2024-06-07 | GLD | P | 1 | $54.40 | $147.50 | stop_loss | $-93.10 | -171.1% | False |
 | 2024.23 | 2024-06-03 | 2024-06-05 | WMT | P | 1 | $14.45 | $6.20 | profit_target | $+8.25 | +57.1% | True |
 
-The `trd_prd` index encodes year + ISO week as a single decimal (matches HW2/HW3 trade-period convention). Entries on the same Monday share the same `trd_prd`.
+The `trd_prd` index encodes year + ISO week as a single decimal. Entries on the same Monday share the same `trd_prd`.
 
 *Showing 10 of 437 trades. Full blotter at `website/data/blotter.json`.*
 

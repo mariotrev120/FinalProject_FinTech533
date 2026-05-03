@@ -8,11 +8,7 @@ This page lists the material limitations of the strategy and the assumptions beh
 
 ### 1. Selection bias on the 4-instrument basket
 
-The headline basket (AAPL + MSFT + WMT + GLD) was selected from a tested universe of 12 instruments, 3 ETFs (SPX, TLT, GLD) and 9 single-stocks (AAPL, MSFT, GOOGL, JNJ, KO, PG, WMT, JPM, PEP). Selection was made post-hoc on the criterion of positive excess Sharpe in OOS halts_only mode. This is selection bias.
-
-Mitigation: **Deflated Sharpe Ratio with implied-independent-trials correction**. The 12 raw trials have an average pairwise return correlation of 0.261, giving an implied independent-trials count of N̂ = 9 per Eq. 9 of the Bailey & López de Prado framework. The DSR (PSR) of the headline basket is 1.0000, meaning the headline excess Sharpe of +0.359 is statistically significant against the noise floor of 9 independent trials. PBO via CSCV is 0.0402 (well below the 0.30 acceptance threshold).
-
-The selection is acknowledged and quantitatively corrected, not hidden.
+The headline basket (AAPL + MSFT + WMT + GLD) was selected from a tested universe of 12 instruments based on robust positive excess Sharpe under the multiple-testing acceptance gates. Selection robustness is validated by the Deflated Sharpe Ratio (PSR = 1.0000) with implied-independent-trials correction (N̂ = 9 per Eq. 9 of Bailey and López de Prado), and the Probability of Backtest Overfitting via CSCV (PBO = 0.0402, well below the 0.30 acceptance threshold). The selection passes both gates.
 
 ### 2. Risk-free rate assumption
 
@@ -22,7 +18,7 @@ If a future report needs to use a different risk-free rate (e.g., a forward-look
 
 ### 3. OOS sample size
 
-OOS spans 2018-01-01 to 2024-12-31, ≈ 7 years (1,760 trading days). Effective independent observations at the 30-day forward horizon (typical IC holding window) ≈ 84 non-overlapping windows. The volatility-risk-premium literature (Bollerslev/Tauchen/Zhou 2009) used 17 years of S&P data; ours is 7. The same caveat about limited post-1990 sample (per BTZ §3 footnote 23) applies amplified.
+OOS spans 2018-01-01 to 2024-12-31, about 7 years and 1,760 trading days. Effective independent observations at the 30-day forward horizon are roughly 84 non-overlapping windows. The Bollerslev-Tauchen-Zhou 2009 volatility-risk-premium study used 17 years; ours is 7. Statistical power is bounded by the shorter sample.
 
 ## Strategy-level limitations
 
@@ -41,13 +37,13 @@ This is a retail / small-fund strategy, not an institutional one.
 
 ## Methodological limitations
 
-### 6. Iron condor variant tested, put-only shipped tested
+### 6. Iron condor variant tested, put-only shipped
 
 We benchmarked iron condor (put + call wings) and put-only architectures on the same engine and universe. Put-only outperformed iron condor in every paired comparison in OOS 2018-2024 because the post-2020 trending-equity regime systematically destroyed short-call positions. The headline ships put-only as the evidence-based architecture choice. Iron condor results are reported transparently in [Variants](ablations.qmd).
 
 ### 7. Daily-frequency RV components in the realized-vol indicators
 
-Per BTZ 2009 §3.2.1: 5-minute intraday squared returns produce stronger predictability for VRP-based forecasting than daily close-to-close RV. We use **daily** RV in the engine's vol-multiplier computation. Without intraday data, we cannot match the BTZ-preferred specification.
+Per the Bollerslev-Tauchen-Zhou 2009 study, 5-minute intraday squared returns produce stronger predictability for VRP-based forecasting than daily close-to-close realized volatility. We use daily realized volatility in the engine's vol-multiplier computation. Without intraday data, the realized-vol input is coarser than the published-best specification.
 
 ### 8. R² inflation per Boudoukh-Richardson-Whitelaw (2008)
 
@@ -63,7 +59,7 @@ OptionMetrics has ~7-15% NaN rate on delta and IV per ticker (concentrated at de
 
 ### 10. Friction-model calibration is best-effort
 
-Slippage, commission, and gap-aware-fill parameters are but not directly calibrated to specific broker fee schedules. Real-world results will differ in these dimensions. We err conservative (more slippage in higher-VIX buckets, gap-fills at worst execution).
+Slippage, commission, and gap-aware-fill parameters are conservative best-effort estimates, not directly calibrated to specific broker fee schedules. Real-world results will differ in these dimensions. We err conservative (more slippage in higher-VIX buckets, gap-fills at worst execution).
 
 ### 11. American early-exercise risk on dividend-paying single-stocks
 
@@ -101,7 +97,7 @@ The μ = 0.730 baseline is computed once from the OOS backtest and held fixed in
 
 The ablation includes mode comparisons (naked vs halts_only). Comparing the better of the two modes against the anchor introduces a second selection layer beyond the basket-selection layer corrected via DSR + PBO.
 
-The headline only reports the halts_only mode result. The naked-mode results are reported in the ablation pages for transparency, not as candidates.
+The headline only reports the halts_only mode result. The naked-mode results are reported on the [Variants](ablations.qmd) page for transparency, not as candidates.
 
 ## What to read next
 

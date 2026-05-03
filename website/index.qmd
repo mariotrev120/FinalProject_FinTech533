@@ -9,11 +9,11 @@ A 4-instrument cross-asset put-credit-spread basket (AAPL, MSFT, WMT, GLD) with 
 
 ## Headline result {#headline}
 
-**Excess Sharpe +0.359** over OOS 2018-2024, beating the v1.5 single-name SPX put-only baseline (+0.286) by 0.073 with cross-asset diversification and 2× the trade sample.
+**Excess Sharpe +0.371** over OOS 2018-2024, beating the v1.5 single-name SPX put-only baseline (+0.286) by 0.085 with cross-asset diversification and 2× the trade sample.
 
 | Metric | Value |
 |---|---:|
-| **Sharpe (excess of risk-free)** | **+0.359** |
+| **Sharpe (excess of risk-free, with Head 2 ML overlay)** | **+0.371** |
 | Risk-free baseline (avg IRX 2018-2024) | 2.33% |
 | Annualized return | +2.41% |
 | Max drawdown over 7 years | -0.13% |
@@ -39,20 +39,3 @@ The strategy ships with a **Hoeffding trader-application bound** that quantifies
 
 The headline is one of five baskets tested. The four others (SPX-only put-credit-spread, ETF-3 cluster, full 6-instrument book, iron condor variants on the 3-instrument cluster) underperformed the v1.5 anchor. They are reported transparently in the [Ablations](ablations.qmd) page, the iron condor variant is particularly informative: adding the call wing systematically lost in the 2018-2024 trending-equity regime.
 
-## Reproducibility
-
-Single-command reproduction from a fresh checkout:
-
-```bash
-git clone <repo>
-cd FinalProject_FinTech533
-python -m venv .venv && source .venv/bin/activate
-pip install -r requirements.txt
-PYTHONPATH=. python scripts/convert_optionmetrics_to_parquet.py   # one-time, ~80s
-PYTHONPATH=. python scripts/run_multi_instrument_vrp.py \
-    --tickers AAPL MSFT WMT GLD \
-    --mode halts_only --no-ic \
-    --total-capital 200000
-```
-
-`SEED = 42` is consumed by every stochastic component. Two runs of the same commit produce identical equity curves to floating-point precision. See [Data and Literature](data_and_literature.qmd) for the full data-source list and reference reading.

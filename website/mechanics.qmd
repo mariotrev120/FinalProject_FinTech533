@@ -6,10 +6,10 @@ title: "Strategy Mechanics"
 
 | Ticker | Class | Strike grid (pts) | Wing width (pts) | Capital (equal-weight) |
 |---|---|---:|---:|---:|
-| AAPL | Single-stock equity | 1 | 5 | $50,000 |
-| MSFT | Single-stock equity | 1 | 5 | $50,000 |
-| WMT  | Single-stock equity | 1 | 5 | $50,000 |
-| GLD  | Commodity ETF | 1 | 5 | $50,000 |
+| AAPL | Single-stock equity | $1 | 5 | $50,000 |
+| MSFT | Single-stock equity | $1 | 5 | $50,000 |
+| WMT  | Single-stock equity | $1 | 5 | $50,000 |
+| GLD  | Commodity ETF       | $1 | 5 | $50,000 |
 
 **Basket-level total capital: $200,000.** Cross-asset diversification: 3 single-stocks (idiosyncratic vol) + 1 commodity ETF (cross-asset uncorrelated vol). All positions are put-credit-spreads (defined-risk; long-put protection at short_strike − 5 pts).
 
@@ -82,16 +82,6 @@ The 1% per-trade cap is enforced in dollars; it dominates other sizing inputs at
 | Gap-aware fill | Stop-loss fill = min(stop_level, opening_gap_price) |
 | Monday gap rule | Gap ≥ 1.5% adds 50% slippage; gap ≥ 3% skips entry |
 | Quote source | Real OptionMetrics IvyDB chain bid/ask (not BS pricer) when available; BS pricer fallback if chain row missing |
-
-## Reproducibility
-
-| Determinism source | Mechanism |
-|---|---|
-| `SEED = 42` | Consumed by every stochastic component (XGBoost random_state, isotonic/Platt CV split if used, block-bootstrap resampling) |
-| Engine | Pure-Python single-threaded loop; no `numpy.einsum_path` optimization; no BLAS-threaded sums |
-| Data | Per-ticker parquet snapshots in `data/processed/options_by_ticker/` and `data/raw/`. Frozen at commit time. |
-
-Two runs of the same commit + same data + same seed produce **byte-identical equity curves** to floating-point precision. Verified by `pytest tests/test_seed_stability.py`.
 
 ## ML overlay
 

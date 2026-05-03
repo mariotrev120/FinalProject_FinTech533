@@ -45,13 +45,13 @@ Iron condor underperforms put-only by more than 1.5 Sharpe units in every paired
 
 Demonstrates that the halt framework adds positive Sharpe on every instrument in the headline universe.
 
-| Ticker | Naked Sharpe | Halts_only Sharpe | Δ from halts | Halt periods | Halted-day fraction |
-|---|---:|---:|---:|---:|---:|
-| AAPL | +0.155 | +0.264 | +0.109 | (per ticker) | _TBD_ |
-| MSFT | +0.037 | +0.269 | +0.232 | _TBD_ | _TBD_ |
-| WMT  | +0.063 | +0.263 | +0.200 | _TBD_ | _TBD_ |
-| GLD  | -0.008 | +0.138 | +0.146 | _TBD_ | _TBD_ |
-| BOOK (D) | -0.069 | +0.359 | **+0.428** | aggregate | aggregate |
+| Ticker | Naked Sharpe | Halts_only Sharpe | Δ from halts |
+|---|---:|---:|---:|
+| AAPL | +0.155 | +0.264 | +0.109 |
+| MSFT | +0.037 | +0.269 | +0.232 |
+| WMT  | +0.063 | +0.263 | +0.200 |
+| GLD  | -0.971 | +0.138 | +1.109 |
+| **BOOK** | **-0.069** | **+0.359** | **+0.428** |
 
 The halt framework's contribution is consistently positive, every instrument has higher Sharpe with halts active than without. The combined book benefit (+0.428 Sharpe at the basket level) is larger than the per-instrument average because of cross-instrument correlation reduction.
 
