@@ -189,6 +189,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#trade-return-distribution" id="toc-trade-return-distribution" class="nav-link" data-scroll-target="#trade-return-distribution">Trade-return distribution</a></li>
   <li><a href="#ledger-monthly-pl-sample" id="toc-ledger-monthly-pl-sample" class="nav-link" data-scroll-target="#ledger-monthly-pl-sample">Ledger (monthly P&amp;L sample)</a></li>
   <li><a href="#blotter" id="toc-blotter" class="nav-link" data-scroll-target="#blotter">Blotter</a></li>
+  <li><a href="#how-will-you-know-the-strategy-is-performing-as-expected" id="toc-how-will-you-know-the-strategy-is-performing-as-expected" class="nav-link" data-scroll-target="#how-will-you-know-the-strategy-is-performing-as-expected">How will you know the strategy is performing as expected?</a></li>
+  <li><a href="#how-will-you-quantify-when-the-strategy-stops-working" id="toc-how-will-you-quantify-when-the-strategy-stops-working" class="nav-link" data-scroll-target="#how-will-you-quantify-when-the-strategy-stops-working">How will you quantify when the strategy stops working?</a></li>
   </ul>
 </nav>
     </div>
@@ -1214,6 +1216,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 <p>The <code>trd_prd</code> index encodes year + ISO week as a single decimal. Entries on the same Monday share the same <code>trd_prd</code>.</p>
 <p><em>Showing 10 of 437 trades. Full blotter at <code>website/data/blotter.json</code>.</em></p>
+</section>
+<section id="how-will-you-know-the-strategy-is-performing-as-expected" class="level2">
+<h2 class="anchored" data-anchor-id="how-will-you-know-the-strategy-is-performing-as-expected">How will you know the strategy is performing as expected?</h2>
+<p>A rolling 60-trade window of the realized win rate is compared against the OOS baseline of μ = 0.730. The Hoeffding inequality bounds the probability that observed underperformance is due to chance: while the bound stays at or above 50%, the strategy is operating within its modeled regime and trading continues at full size. Backtested over the 2018-2024 OOS sample, the bound was at or above 50% on 88% of post-warmup trades.</p>
+</section>
+<section id="how-will-you-quantify-when-the-strategy-stops-working" class="level2">
+<h2 class="anchored" data-anchor-id="how-will-you-quantify-when-the-strategy-stops-working">How will you quantify when the strategy stops working?</h2>
+<p>The same Hoeffding bound. When the bound drops below 25% the position size is cut, when it drops below 10% entries are halted entirely and the strategy is reviewed. The thresholds are pre-set, distribution-free, and apply uniformly across the 4-instrument basket. The OOS sample produced no critical signal across 1,760 trading days; full bound-trace and worked example on the <a href="./monitoring.html">Live Monitoring</a> page.</p>
 <p>For the data sources behind these numbers, see <a href="./data_and_literature.html">Data and Sources</a>.</p>
 
 
@@ -2104,7 +2114,15 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb1-265"><a href="#cb1-265" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-266"><a href="#cb1-266" aria-hidden="true" tabindex="-1"></a>*Showing 10 of 437 trades. Full blotter at `website/data/blotter.json`.*</span>
 <span id="cb1-267"><a href="#cb1-267" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-268"><a href="#cb1-268" aria-hidden="true" tabindex="-1"></a>For the data sources behind these numbers, see <span class="co">[</span><span class="ot">Data and Sources</span><span class="co">](data_and_literature.qmd)</span>.</span></code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
+<span id="cb1-268"><a href="#cb1-268" aria-hidden="true" tabindex="-1"></a><span class="fu">## How will you know the strategy is performing as expected?</span></span>
+<span id="cb1-269"><a href="#cb1-269" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-270"><a href="#cb1-270" aria-hidden="true" tabindex="-1"></a>A rolling 60-trade window of the realized win rate is compared against the OOS baseline of μ = 0.730. The Hoeffding inequality bounds the probability that observed underperformance is due to chance: while the bound stays at or above 50%, the strategy is operating within its modeled regime and trading continues at full size. Backtested over the 2018-2024 OOS sample, the bound was at or above 50% on 88% of post-warmup trades.</span>
+<span id="cb1-271"><a href="#cb1-271" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-272"><a href="#cb1-272" aria-hidden="true" tabindex="-1"></a><span class="fu">## How will you quantify when the strategy stops working?</span></span>
+<span id="cb1-273"><a href="#cb1-273" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-274"><a href="#cb1-274" aria-hidden="true" tabindex="-1"></a>The same Hoeffding bound. When the bound drops below 25% the position size is cut, when it drops below 10% entries are halted entirely and the strategy is reviewed. The thresholds are pre-set, distribution-free, and apply uniformly across the 4-instrument basket. The OOS sample produced no critical signal across 1,760 trading days; full bound-trace and worked example on the <span class="co">[</span><span class="ot">Live Monitoring</span><span class="co">](monitoring.qmd)</span> page.</span>
+<span id="cb1-275"><a href="#cb1-275" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-276"><a href="#cb1-276" aria-hidden="true" tabindex="-1"></a>For the data sources behind these numbers, see <span class="co">[</span><span class="ot">Data and Sources</span><span class="co">](data_and_literature.qmd)</span>.</span></code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
 <footer class="footer">
