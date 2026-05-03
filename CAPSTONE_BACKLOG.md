@@ -45,6 +45,7 @@ Single source of truth for FinTech 533 capstone v2 work. Updated as tasks comple
 | C4 | Wire PBO into headline reports | 1h | C3 | PBO computed once on the §11 sensitivity grid (VRP) and §7 grid (wheel); reported in writeup | `[ ]` |
 | C5 | Hoeffding live-monitoring runner per Egger/Vestal trader-application | 3h | B3 | `scripts/hoeffding_monitor.py` reads pre-committed μ from PRE_COMMITMENT_VRP/WHEEL and emits 50%/25%/10% threshold status across rolling 60-trade window. Output: dated alert log. | `[ ]` |
 | C6 | Bootstrap CI on Sharpe + ann return for headline | 2h | B3 | Wraps existing `src/metrics/bootstrap.py` into the report rollup. Block-bootstrap, B=10000, block size by Newey-West heuristic. | `[ ]` |
+| C7 | Hodrick (1992) SE estimator for overlapping forecasts | 1h | — | `src/metrics/hodrick_se.py` implements Hodrick (1992) overlapping-regression standard errors per BTZ 2009 footnote 21 / Ang-Bekaert 2007. Used in Phase F results-page reporting for Head 2 evaluation predictive significance. ~50 LOC. | `[ ]` |
 
 ## PHASE D — ML training (gated by Phase C statistical infrastructure)
 
