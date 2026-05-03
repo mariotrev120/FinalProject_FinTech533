@@ -167,9 +167,10 @@ def run_backtest(
     rv5d_series = spx_returns.rolling(5).std() * np.sqrt(252)
 
     # Latching halt-state machine: persists across the day-loop so Layer 5
-    # auto-resume sees yesterday's halt and can lift it once all four
-    # conditions clear.
+    # auto-resume sees yesterday's halt and can lift it once the market-
+    # regime conditions clear OR the 60-day time fallback fires.
     prior_halt_state: HaltState = "active"
+    days_in_halt: int = 0
 
     for idx, (today, row_spx) in enumerate(spx.iterrows()):
         if idx == 0:
@@ -302,9 +303,15 @@ def run_backtest(
                 prior_state=prior_halt_state,
                 rv5d_today=rv5d_today,
                 rv5d_history_252d=rv5d_hist,
+                days_in_halt=days_in_halt,
             )
             halt_log_rows.append({"date": today, "state": halt_decision.state,
                                   "triggers": ",".join(halt_decision.triggers)})
+            # Increment days_in_halt while halted; reset when active
+            if halt_decision.state == "active":
+                days_in_halt = 0
+            else:
+                days_in_halt += 1
             prior_halt_state = halt_decision.state
 
         # --- Entry pass on Mondays ---

@@ -111,6 +111,9 @@ def test_resume_hyg_lqd_within_band_fail_too_wide():
 
 
 def test_resume_drawdown_recovered_pass():
+    """resume_drawdown_recovered is retained as a primitive helper but is
+    NOT used in auto_resume_ready (per 2026-05-03 design change — see
+    halts.py docstring)."""
     assert resume_drawdown_recovered(0.01)
 
 
@@ -120,7 +123,9 @@ def test_resume_drawdown_recovered_fail():
 
 # --- Composite auto_resume_ready ------------------------------------------
 
-def test_auto_resume_ready_all_four_pass():
+def test_auto_resume_ready_three_market_conds_pass():
+    """v2 design: only the 3 market-regime conditions are required.
+    DD is NOT in this gate (Layer 4's job)."""
     vix3m, vix = _calm_term_history()
     rv5d_today, rv_hist = _calm_rv_history()
     credit_hist = _calm_credit_history()
@@ -134,15 +139,51 @@ def test_auto_resume_ready_all_four_pass():
     )
 
 
-def test_auto_resume_ready_dd_failure_blocks():
+def test_auto_resume_ready_dd_NOT_blocking_anymore():
+    """v2 design change: even with DD elevated, the 3 market-regime
+    conditions clearing is sufficient. Previously this case returned False
+    (caused the Volmageddon catch-22); now returns True."""
     vix3m, vix = _calm_term_history()
     rv5d_today, rv_hist = _calm_rv_history()
     credit_hist = _calm_credit_history()
-    assert not auto_resume_ready(
+    assert auto_resume_ready(
         vix3m_history=vix3m, vix_history=vix,
         rv5d_today=rv5d_today, rv5d_history_252d=rv_hist,
         hyg_lqd_history=credit_hist,
-        current_drawdown_frac=0.10,
+        current_drawdown_frac=0.10,   # 10% DD — would have blocked v1.5
+    )
+
+
+def test_auto_resume_ready_time_fallback_fires():
+    """After 60+ days in halt, auto-resume regardless of market-regime
+    conditions (escape hatch for pathological cases)."""
+    # All three market conditions FAIL
+    bad_vix3m = pd.Series([20.0] * 10)
+    bad_vix = pd.Series([22.0] * 10)
+    rv_hist = pd.Series([18.0] * 30)
+    bad_credit = pd.Series([5.0] * 30)
+    # But days_in_halt >= 60
+    assert auto_resume_ready(
+        vix3m_history=bad_vix3m, vix_history=bad_vix,
+        rv5d_today=30.0, rv5d_history_252d=rv_hist,
+        hyg_lqd_history=bad_credit,
+        current_drawdown_frac=0.20,
+        days_in_halt=60,
+    )
+
+
+def test_auto_resume_ready_time_fallback_just_below_threshold_still_blocks():
+    """At 59 days_in_halt with all market conditions failing, halt holds."""
+    bad_vix3m = pd.Series([20.0] * 10)
+    bad_vix = pd.Series([22.0] * 10)
+    rv_hist = pd.Series([18.0] * 30)
+    bad_credit = pd.Series([5.0] * 30)
+    assert not auto_resume_ready(
+        vix3m_history=bad_vix3m, vix_history=bad_vix,
+        rv5d_today=30.0, rv5d_history_252d=rv_hist,
+        hyg_lqd_history=bad_credit,
+        current_drawdown_frac=0.20,
+        days_in_halt=59,
     )
 
 
@@ -223,16 +264,36 @@ def test_state_machine_halt_to_active_when_resume_ready():
     assert "auto_resumed" in d.triggers
 
 
-def test_state_machine_halt_holds_when_one_condition_fails():
-    """Was drawdown-halted yesterday; today calm except DD still elevated
-    → hold drawdown_halt state with awaiting_resume trigger."""
+def test_state_machine_halt_holds_when_one_market_condition_fails():
+    """v2: state-machine holds while ANY of the 3 market-regime conditions
+    is unsatisfied. DD is no longer in the gate.
+
+    Construction: was hard-halted yesterday; today term still inverted
+    → hold hard_halt with awaiting_resume."""
     kw = _baseline_call_kwargs()
-    kw["current_drawdown_frac"] = 0.10  # still in DD; fresh Layer 4 also fires though
-    # current_dd_frac=0.10 is below HALT_DD_DEPTH_FRAC=0.15 and underwater_days=0
-    # so Layer 4 does NOT fire fresh. But Layer 5 dd_recovered also fails.
-    d = evaluate_halts(prior_state="drawdown_halt", **kw)
-    assert d.state == "drawdown_halt"
+    # Set term to be inverted (vix > vix3m) for the last 5 closes — fails
+    # resume_term_recovered.
+    bad_vix3m = pd.Series([20.0] * 10, index=pd.date_range("2020-01-01", periods=10, freq="B"))
+    bad_vix = pd.Series([22.0] * 10, index=pd.date_range("2020-01-01", periods=10, freq="B"))
+    kw["vix_history"] = bad_vix
+    kw["vix3m_history"] = bad_vix3m
+    d = evaluate_halts(prior_state="hard_halt", **kw)
+    assert d.state == "hard_halt"
     assert "awaiting_resume" in d.triggers
+
+
+def test_state_machine_time_fallback_lifts_halt_after_60_days():
+    """v2: even with all 3 market conditions failing, the 60-day time
+    fallback escape hatch lifts the halt."""
+    kw = _baseline_call_kwargs()
+    bad_vix3m = pd.Series([20.0] * 10, index=pd.date_range("2020-01-01", periods=10, freq="B"))
+    bad_vix = pd.Series([22.0] * 10, index=pd.date_range("2020-01-01", periods=10, freq="B"))
+    kw["vix_history"] = bad_vix
+    kw["vix3m_history"] = bad_vix3m
+    kw["days_in_halt"] = 60
+    d = evaluate_halts(prior_state="hard_halt", **kw)
+    assert d.state == "active"
+    assert "time_fallback_resumed" in d.triggers
 
 
 def test_state_machine_fresh_hard_trigger_overrides_prior():

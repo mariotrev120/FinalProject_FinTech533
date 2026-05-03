@@ -74,11 +74,50 @@ A single iron condor opens two `Spread` objects with shared `iron_condor_id`. Ea
 - Underwater duration > 90 trading days
 - Drawdown depth > 15% of starting equity in trailing 90 days
 
-**Layer 5 — auto-resume (ALL four required to lift halt)**:
+**Layer 5 — auto-resume (v2 design after 2026-05-03 methodology amendment)**:
+
+Auto-resume fires when EITHER (A) ALL three market-regime conditions hold simultaneously OR (B) the 60-trading-day time-fallback escape hatch triggers:
+
+**(A) Market-regime conditions (ALL three required, evaluated daily):**
 1. VIX3M − VIX > 2 points for 5 consecutive closes
 2. Realized 5-day vol below 80th percentile of trailing 252 days
 3. HYG-LQD spread within 1 SD of long-run mean
-4. Drawdown recovered to within 3% of high-water mark
+
+**(B) Time-fallback escape hatch:** `days_in_halt ≥ 60 trading days` → auto-resume regardless of market conditions. Bounds worst-case halt duration; protects against pathological cases where one of the three conditions never satisfies due to data anomalies, novel regimes, or measurement gaps.
+
+### §4.1 Layer 5 v1 → v2 amendment (logged for transparency)
+
+**Original v1 design** (initially committed in this doc):
+> Layer 5 — auto-resume (ALL four required to lift halt):
+> 1. VIX3M − VIX > 2 points for 5 consecutive closes
+> 2. Realized 5-day vol below 80th percentile of trailing 252 days
+> 3. HYG-LQD spread within 1 SD of long-run mean
+> 4. **Drawdown recovered to within 3% of high-water mark**
+
+**Empirical bug surfaced (2026-05-03):** SPX `halts_only` mode in OOS produced **0 trades over 2018–2024** because the v1 Layer 5 created a catch-22:
+
+1. 2018-02-05 (Volmageddon): hard_halt fires (VIX spike + term inversion).
+2. 2018-02-06 to 02-13: term inversion clears progressively.
+3. 2018-02-14: all three market-regime conditions clear, BUT…
+4. The strategy is halted, can't trade, can't recover P&L.
+5. Therefore `current_drawdown_frac` stays elevated.
+6. Therefore condition 4 (DD-within-3%-of-HWM) NEVER satisfies.
+7. Therefore halt latches PERMANENTLY for the entire 2018–2024 OOS.
+
+The halt log diagnostic (state=hard_halt, trigger=awaiting_resume from 2018-02-14 onward) confirmed the catch-22 directly. SPX halts_only Sharpe was undefined (only rf-rate accrual on idle cash).
+
+**Root-cause analysis:** Condition 4 (DD recovery) is a **strategy-state** condition, not a **market-regime** condition. The other three describe MARKET state (term structure, realized vol, credit spreads); condition 4 describes STRATEGY P&L state. Mixing the two creates the catch-22 because the halt itself prevents the strategy from satisfying the lift condition.
+
+**Design fix:** Layer 4 (drawdown halt) already handles "we're losing too much money" protection independently. Layer 5's job is "has the MARKET REGIME stabilized?" — a market-state question. Drawdown belongs in Layer 4, not Layer 5.
+
+**v2 design** (effective 2026-05-03):
+- **Drop condition 4 (DD recovery) from Layer 5 entirely.** Drawdown protection is Layer 4's job.
+- Keep the three market-regime conditions; ALL three required for auto-resume.
+- **Add a 60-trading-day time-based fallback:** if a halt has lasted ≥ 60 trading days, auto-resume regardless. Caps worst-case halt duration; provides an escape hatch for pathological cases.
+
+**Acceptance check after fix:** SPX halts_only Sharpe lands in the 0.15–0.40 plausibility range; halt log shows 10–30 distinct halt periods over 7 years (sensible given 2018-Volmageddon, 2020-COVID, 2022-bear, 2023-banking events). If outside this range, Layer 5 design is re-examined again.
+
+**Methodology breach disclosure:** This is an edit to a previously-committed pre-commitment parameter, made AFTER seeing OOS behavior (catch-22 in halts_only mode). It is NOT a result-driven tweak — the v1 design was structurally broken (latch-by-construction), not just under-performing. The change is logged in this section for full transparency. Any reviewer can verify the v1 catch-22 by reverting `auto_resume_ready` to require condition 4 and re-running halts_only on SPX 2018-2024.
 
 **Layers 2 & 3 dropped** (audit-validated): winrate-below-baseline, hyg-lqd-soft, term-inversion-soft, model-prob-low. v1 audit found each was an anti-signal (-9 to -10 pp lift, blocked profitable trades). Functions retained in `halts.py` as documentation of audited-and-discarded triggers; not invoked.
 

@@ -182,14 +182,45 @@ def auto_resume_ready(
     vix3m_history: pd.Series, vix_history: pd.Series,
     rv5d_today: float, rv5d_history_252d: pd.Series,
     hyg_lqd_history: pd.Series,
-    current_drawdown_frac: float,
+    current_drawdown_frac: float,                 # noqa: ARG001 — kept for sig compat
+    days_in_halt: int = 0,
+    time_fallback_days: int = 60,
 ) -> bool:
-    """ALL four conditions must be simultaneously true."""
+    """Layer 5 auto-resume gate (v2 design).
+
+    METHODOLOGY CHANGE (2026-05-03): condition 4 (drawdown within 3% of
+    HWM) was REMOVED from this gate. The original v1.5 design had a
+    catch-22: when a halt fires after a market shock, the strategy
+    incurs P&L losses, current_drawdown_frac stays elevated, and the
+    DD-recovery condition can never satisfy because the strategy isn't
+    trading to recover. This permanently latched the halt and blocked
+    all subsequent entries — observed empirically in the 2018-02
+    Volmageddon halt log.
+
+    Rationale: drawdown protection is Layer 4's job. Layer 5 should
+    answer "has the MARKET REGIME normalized?", not "has the strategy
+    P&L recovered?" Conflating them creates the catch-22.
+
+    New design — auto-resume fires when EITHER:
+      (A) ALL three MARKET-regime conditions hold:
+          - VIX3M − VIX > RESUME_TERM_BUFFER_PTS for RESUME_TERM_DAYS closes
+          - rv5d_today < RESUME_REALIZED_VOL_PCT-th pctile of trailing 252d
+          - HYG-LQD within RESUME_HYG_LQD_SD SD of long-run mean
+      OR
+      (B) days_in_halt >= time_fallback_days (60 default).
+          Time-based escape hatch for pathological cases where one of
+          the three conditions never satisfies (data anomalies, regime
+          breaks, etc.). Bounded worst-case halt duration.
+
+    `current_drawdown_frac` is retained in the signature for backwards
+    compatibility but is NOT used.
+    """
+    if days_in_halt >= time_fallback_days:
+        return True
     return (
         resume_term_recovered(vix3m_history, vix_history)
         and resume_realized_vol_calmed(rv5d_today, rv5d_history_252d)
         and resume_hyg_lqd_within_band(hyg_lqd_history)
-        and resume_drawdown_recovered(current_drawdown_frac)
     )
 
 
@@ -217,6 +248,8 @@ def evaluate_halts(
     prior_state: HaltState = "active",
     rv5d_today: float = float("nan"),
     rv5d_history_252d: Optional[pd.Series] = None,
+    days_in_halt: int = 0,
+    time_fallback_days: int = 60,
 ) -> HaltDecision:
     """v2 latching halt framework: Layers 1, 4, 5 active. Layers 2 & 3 dropped.
 
@@ -272,8 +305,15 @@ def evaluate_halts(
             rv5d_history_252d=rv5d_hist,
             hyg_lqd_history=hyg_lqd_history,
             current_drawdown_frac=current_drawdown_frac,
+            days_in_halt=days_in_halt,
+            time_fallback_days=time_fallback_days,
         ):
-            return HaltDecision(state="active", triggers=["auto_resumed"])
+            trigger = (
+                "time_fallback_resumed"
+                if days_in_halt >= time_fallback_days
+                else "auto_resumed"
+            )
+            return HaltDecision(state="active", triggers=[trigger])
         return HaltDecision(state=prior_state, triggers=["awaiting_resume"])
 
     return HaltDecision(state="active", triggers=[])
