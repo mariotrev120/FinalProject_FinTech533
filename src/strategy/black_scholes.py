@@ -16,6 +16,22 @@ The skew adjustment is a heuristic — it is NOT a substitute for real OPRA
 quotes. The writeup discloses this as a primary risk; the synthetic-pricing
 limitation is the reason WRDS / Polygon / ORATS data should replace this
 provider before final results are reported.
+
+Theoretical caveat (Black & Scholes 1973, Journal of Political Economy 81:3,
+page 654):
+   The original BS empirical test on 545 OTC option contracts found that
+   the formula systematically OVERVALUES options on high-variance securities
+   and UNDERVALUES on low-variance securities. From their empirical section:
+   "When the variance of returns is high, the formula tends to overvalue
+   options. When the variance is low, the formula tends to undervalue
+   options." This bias is the structural source of the volatility risk
+   premium our strategy harvests. BS assumes constant σ; real markets exhibit
+   stochastic σ (the q_t process formalized in Bollerslev/Tauchen/Zhou 2009),
+   and the bias arises from this misspecification. The fallback path here
+   inherits the original BS biases — when this fallback is taken on a
+   high-RV name, the pricing is biased high; on a low-RV name, biased low.
+   For OTM short puts at our 16-25 delta range, the magnitude of the bias is
+   modest. Disclose in writeup wheel-mechanics section.
 """
 from __future__ import annotations
 
@@ -47,8 +63,23 @@ def _bs_put(spot: float, strike: float, T: float, r: float, sigma: float) -> tup
     d1 = (log(spot / strike) + (r + 0.5 * sigma * sigma) * T) / (sigma * sqrt(T))
     d2 = d1 - sigma * sqrt(T)
     put = strike * exp(-r * T) * norm.cdf(-d2) - spot * norm.cdf(-d1)
-    delta = norm.cdf(d1) - 1.0   # put delta
+    delta = norm.cdf(d1) - 1.0   # put delta (negative)
     return put, delta
+
+
+def _bs_call(spot: float, strike: float, T: float, r: float, sigma: float) -> tuple[float, float]:
+    """Return (call_price, call_delta) using closed-form BS.
+
+    Both values per share. Call delta is positive."""
+    if T <= 0 or sigma <= 0 or spot <= 0 or strike <= 0:
+        intrinsic = max(spot - strike, 0.0)
+        delta = 1.0 if spot > strike else 0.0
+        return intrinsic, delta
+    d1 = (log(spot / strike) + (r + 0.5 * sigma * sigma) * T) / (sigma * sqrt(T))
+    d2 = d1 - sigma * sqrt(T)
+    call = spot * norm.cdf(d1) - strike * exp(-r * T) * norm.cdf(d2)
+    delta = norm.cdf(d1)   # call delta (positive)
+    return call, delta
 
 
 @dataclass
@@ -149,6 +180,36 @@ class BlackScholesPricer:
         r = self._r_for(as_of)
         sigma = self._iv_for(as_of, spot, strike, T, vix)
         _, delta = _bs_put(spot, strike, T, r, sigma)
+        return delta
+
+    def price_call(
+        self,
+        as_of: pd.Timestamp,
+        underlying: str,                      # noqa: ARG002
+        spot: float,
+        strike: float,
+        expiry: date,
+        vix: float,
+    ) -> float:
+        T = _years_to_expiry(as_of, expiry)
+        r = self._r_for(as_of)
+        sigma = self._iv_for(as_of, spot, strike, T, vix)
+        price, _ = _bs_call(spot, strike, T, r, sigma)
+        return price
+
+    def implied_call_delta(
+        self,
+        as_of: pd.Timestamp,
+        underlying: str,                      # noqa: ARG002
+        spot: float,
+        strike: float,
+        expiry: date,
+        vix: float,
+    ) -> float:
+        T = _years_to_expiry(as_of, expiry)
+        r = self._r_for(as_of)
+        sigma = self._iv_for(as_of, spot, strike, T, vix)
+        _, delta = _bs_call(spot, strike, T, r, sigma)
         return delta
 
 
