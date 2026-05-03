@@ -19,6 +19,7 @@ input, so swapping BS for WRDS is a one-arg change in the caller.
 from __future__ import annotations
 
 import logging
+from collections import deque
 from dataclasses import dataclass, field
 from datetime import date, timedelta
 from typing import Callable, Optional
@@ -155,9 +156,17 @@ def run_backtest(
     skipped: list[dict] = []
     next_trade_id = 1
 
-    high_water = inputs.initial_equity
-    underwater_days = 0
-    current_dd_frac = 0.0
+    # Layer 4 drawdown bookkeeping per PRE_COMMITMENT_VRP §4 spec text
+    # ("in trailing 90 days"). Trailing-window max + underwater_days
+    # both computed against a rolling 90-day deque, not since strategy
+    # inception. Catches the v1 catch-22 where halt latched permanently
+    # because all-time HWM never recovered while strategy was halted.
+    DRAWDOWN_LOOKBACK_DAYS = 90   # matches §4 "in trailing 90 days"
+    equity_trailing: deque = deque(maxlen=DRAWDOWN_LOOKBACK_DAYS)
+    underwater_days = 0           # consecutive days below trailing-90 max
+    current_dd_frac = 0.0         # drawdown from trailing-90 max
+    high_water = inputs.initial_equity   # all-time HWM, kept for REPORTING
+                                         # ONLY — NOT used in halt logic.
     next_ic_id = 1
 
     # Precompute 5-day realized vol of SPX (annualized) for Layer 5 resume gate.
@@ -265,17 +274,27 @@ def run_backtest(
         open_trades = still_open
 
         # --- Drawdown bookkeeping ---
-        # Strictly-below-high-water counts as underwater. Equality (e.g. on
-        # no-trade days when equity sits unchanged at the prior high) does
-        # NOT increment underwater_days; otherwise an idle account would
-        # accumulate fake underwater days indefinitely.
-        if equity >= high_water:
-            high_water = equity
+        # Per § 4: drawdown depth and underwater duration are computed
+        # over the TRAILING 90-DAY window. The deque includes today's
+        # equity BEFORE we compare; trailing_high is therefore the max
+        # over [today − 89, today] (inclusive of today). underwater_days
+        # counts consecutive days where equity < trailing_high — equality
+        # (today's equity == trailing_high) resets the counter, which
+        # matches the spec ("recovered to high" → no longer underwater).
+        equity_trailing.append(equity)
+        trailing_high = max(equity_trailing)
+        if equity >= trailing_high:
             underwater_days = 0
             current_dd_frac = 0.0
         else:
             underwater_days += 1
-            current_dd_frac = (high_water - equity) / high_water if high_water > 0 else 0.0
+            current_dd_frac = (
+                (trailing_high - equity) / trailing_high
+                if trailing_high > 0 else 0.0
+            )
+        # Maintain all-time HWM for reporting (NOT used in halt logic).
+        if equity > high_water:
+            high_water = equity
 
         # --- Halt evaluation ---
         halt_decision: Optional[HaltDecision] = None
