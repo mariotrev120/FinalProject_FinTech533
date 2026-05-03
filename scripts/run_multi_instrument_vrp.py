@@ -60,7 +60,7 @@ import numpy as np
 import pandas as pd
 
 from src.backtest.engine import run_backtest
-from src.backtest.loader import load_inputs
+from src.backtest.loader import load_inputs, load_underlying_bars
 from src.config import DATA_PROCESSED_DIR, OOS_END, OOS_START
 from src.strategy.optionmetrics_pricer import _TICKER_DF_CACHE, make_pricer_v2
 
@@ -68,7 +68,7 @@ from src.strategy.optionmetrics_pricer import _TICKER_DF_CACHE, make_pricer_v2
 log = logging.getLogger(__name__)
 
 
-VRP_UNIVERSE: list[str] = ["SPX", "RUT", "NDX", "TLT", "GLD"]
+VRP_UNIVERSE: list[str] = ["SPX", "TLT", "GLD"]
 V1_5_ANCHOR_SHARPE: float = 0.286   # halts_only OOS, single-instrument SPX
 
 
@@ -93,12 +93,16 @@ def run_one_ticker(
              ticker, time.time() - t0,
              len(pricer._by_date_exp_put), len(pricer._by_date_exp_call))
 
-    # Per-ticker inputs: just override initial_equity to per-ticker capital
-    per_inputs = replace(inputs, initial_equity=capital)
+    # Per-ticker inputs: override initial_equity AND wire per-ticker
+    # underlying bars so the engine uses the actual ticker's spot for
+    # strike selection / entry recording / exit, instead of SPX close.
+    underlying_bars = load_underlying_bars(ticker)
+    per_inputs = replace(inputs, initial_equity=capital,
+                         underlying_bars=underlying_bars)
 
     t = time.time()
     result = run_backtest(
-        per_inputs, pricer,
+        per_inputs, pricer, underlying=ticker,
         mode=mode, start=start, end=end,
         use_iron_condor=use_iron_condor,
     )
@@ -127,15 +131,26 @@ def aggregate_book_equity(
     return df.sum(axis=1).rename("book_equity")
 
 
-def quick_metrics(equity: pd.Series, n_trades: int, label: str) -> dict:
-    """Bare-bones metrics computed without external deps. Real metrics
-    via PortfolioReport in the full ablation runner; here we just want
-    the headline numbers."""
+def quick_metrics(equity: pd.Series, n_trades: int, label: str,
+                  risk_free_curve: pd.Series | None = None) -> dict:
+    """Headline metrics. Sharpe is EXCESS-of-risk-free Sharpe (industry
+    standard) — subtracts the realized 3M T-bill rate from daily returns
+    before computing Sharpe. The previous gross-Sharpe formulation
+    over-reported low-vol asset Sharpes by 3-5 units because the cash
+    component drifts up at ~3-4% / yr regardless of strategy P&L."""
     ret = equity.pct_change().dropna()
     if len(ret) < 2 or ret.std() == 0:
-        return {"label": label, "sharpe": float("nan"), "ann_return_pct": float("nan"),
+        return {"label": label, "sharpe": float("nan"), "sharpe_gross": float("nan"),
+                "ann_return_pct": float("nan"),
                 "max_dd_pct": float("nan"), "final_eq": float(equity.iloc[-1])}
-    sharpe = float(ret.mean() / ret.std() * np.sqrt(252))
+    # Daily rf rate from IRX (CBOE 13-week T-bill yield × 10): IRX/10/100/252
+    if risk_free_curve is not None:
+        rf_daily = risk_free_curve.reindex(ret.index, method="ffill").fillna(0) / 10.0 / 100.0 / 252.0
+        excess_ret = ret - rf_daily
+    else:
+        excess_ret = ret
+    sharpe_excess = float(excess_ret.mean() / ret.std() * np.sqrt(252))
+    sharpe_gross = float(ret.mean() / ret.std() * np.sqrt(252))
     total_return = float(equity.iloc[-1] / equity.iloc[0] - 1)
     n_years = (equity.index[-1] - equity.index[0]).days / 365.25
     ann_return = (1 + total_return) ** (1 / max(n_years, 0.01)) - 1
@@ -143,7 +158,8 @@ def quick_metrics(equity: pd.Series, n_trades: int, label: str) -> dict:
     return {
         "label": label,
         "n_trades": n_trades,
-        "sharpe": sharpe,
+        "sharpe": sharpe_excess,        # PRIMARY — excess of rf
+        "sharpe_gross": sharpe_gross,    # gross — kept for diagnostic only
         "ann_return_pct": float(ann_return * 100),
         "max_dd_pct": float(drawdown * 100),
         "final_eq": float(equity.iloc[-1]),
@@ -224,6 +240,13 @@ def main(argv: list[str] | None = None) -> int:
                     entry_date=t.entry_date, exit_date=t.exit_date,
                     fate=t.fate, mode=t.mode,
                     pnl_per_spread=t.pnl_per_spread,
+                    entry_credit=t.entry_credit_per_spread,
+                    exit_debit=t.exit_debit_per_spread,
+                    spread_width=float(t.spread.width),
+                    short_strike=t.spread.short_leg.strike,
+                    long_strike=t.spread.long_leg.strike,
+                    contracts=t.contracts,
+                    entry_spx=t.entry_spx,
                     iron_condor_id=t.iron_condor_id,
                     right=t.spread.right,
                     halt_state=t.halt_state_at_entry,
@@ -238,7 +261,8 @@ def main(argv: list[str] | None = None) -> int:
             result.halt_log.to_parquet(halt_path)
 
         per_ticker_equity[ticker] = result.equity_curve
-        m = quick_metrics(result.equity_curve, len(result.trades), ticker)
+        m = quick_metrics(result.equity_curve, len(result.trades), ticker,
+                          risk_free_curve=inputs.risk_free_curve)
         per_ticker_metrics.append(m)
         log.info(
             "  %s metrics: Sharpe=%.3f, ann_return=%+.2f%%, max_dd=%+.2f%%, "
@@ -264,7 +288,8 @@ def main(argv: list[str] | None = None) -> int:
 
     # Aggregate trades
     total_trades = sum(m["n_trades"] for m in per_ticker_metrics)
-    book_metrics = quick_metrics(book_equity, total_trades, label="BOOK")
+    book_metrics = quick_metrics(book_equity, total_trades, label="BOOK",
+                                 risk_free_curve=inputs.risk_free_curve)
 
     log.info("=" * 70)
     log.info("RESULTS")

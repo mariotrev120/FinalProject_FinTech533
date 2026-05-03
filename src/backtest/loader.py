@@ -51,6 +51,33 @@ def load_inputs() -> BacktestInputs:
     )
 
 
+def load_underlying_bars(ticker: str) -> pd.DataFrame:
+    """Load per-ticker underlying OHLC from data/raw/{TICKER}.parquet.
+
+    Used by run_backtest when running on a non-SPX underlying (TLT, GLD, or
+    any of the wheel names). Sets the engine's spot price source.
+
+    Returns a DataFrame indexed by Timestamp with at least open/high/low/close
+    columns. Raises FileNotFoundError if the file is missing.
+    """
+    from pathlib import Path
+    p = Path(DATA_RAW_DIR) / f"{ticker}.parquet"
+    if not p.exists():
+        raise FileNotFoundError(
+            f"Underlying bars not on disk for {ticker} ({p}). "
+            f"Add to data/raw/ before running multi-instrument backtest."
+        )
+    df = pd.read_parquet(p)
+    if not isinstance(df.index, pd.DatetimeIndex):
+        df.index = pd.to_datetime(df.index)
+    df = df.sort_index()
+    required = {"open", "high", "low", "close"}
+    missing = required - set(df.columns)
+    if missing:
+        raise ValueError(f"{ticker} bars missing required columns: {missing}")
+    return df[["open", "high", "low", "close"]].copy()
+
+
 def load_default_pricer(underlying: str = "SPX"):
     """Default pricer for the project: real OptionMetrics IvyDB quotes.
 

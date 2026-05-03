@@ -24,7 +24,12 @@ import pandas as pd
 
 @runtime_checkable
 class PricingProvider(Protocol):
-    """Anything that can answer mid price for an SPX/XSP put on a given date."""
+    """Anything that can answer mid prices and deltas for option contracts.
+
+    Convention: put deltas are returned NEGATIVE, call deltas POSITIVE.
+    Callers that want the magnitude use abs(...) — the engine and strike
+    selection logic both follow this convention.
+    """
 
     def price_put(
         self,
@@ -35,8 +40,19 @@ class PricingProvider(Protocol):
         expiry: date,
         vix: float,
     ) -> float:
-        """Return the mid price of one put contract (per share, not per
-        100-share contract — i.e. the quoted option premium)."""
+        """Mid price of one put contract (per share)."""
+        ...
+
+    def price_call(
+        self,
+        as_of: pd.Timestamp,
+        underlying: str,
+        spot: float,
+        strike: float,
+        expiry: date,
+        vix: float,
+    ) -> float:
+        """Mid price of one call contract (per share)."""
         ...
 
     def implied_delta(
@@ -48,6 +64,17 @@ class PricingProvider(Protocol):
         expiry: date,
         vix: float,
     ) -> float:
-        """Return the put delta (negative for puts) for the same contract.
-        Used for emergency-exit and entry-strike selection."""
+        """Put delta for the contract at this strike. Negative."""
+        ...
+
+    def implied_call_delta(
+        self,
+        as_of: pd.Timestamp,
+        underlying: str,
+        spot: float,
+        strike: float,
+        expiry: date,
+        vix: float,
+    ) -> float:
+        """Call delta for the contract at this strike. Positive."""
         ...

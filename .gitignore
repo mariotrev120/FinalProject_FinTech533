@@ -65,3 +65,5 @@ secrets.json
 # Logs
 *.log
 logs/
+wheelstrat_data.gz
+strat2.gz

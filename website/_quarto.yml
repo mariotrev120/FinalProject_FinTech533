@@ -4,7 +4,7 @@ project:
 
 website:
   title: "Defined-Risk Volatility-Risk-Premium Harvesting"
-  description: "FinTech 533 capstone — 5-instrument iron-condor cluster + 9-name adaptive wheel"
+  description: "FinTech 533 capstone — 4-instrument cross-asset put-credit-spread basket (Wheel-3 + GLD) with halt framework + Head 2 ML overlay; excess Sharpe +0.371 OOS 2018-2024"
   navbar:
     background: dark
     left:

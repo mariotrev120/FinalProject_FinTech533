@@ -52,7 +52,7 @@ PYTHONPATH=. python scripts/run_multi_instrument_vrp.py --mode naked
 # 5. Multi-instrument halts_only runner (5 VRP tickers, ~10 min)
 PYTHONPATH=. python scripts/run_multi_instrument_vrp.py --mode halts_only
 
-# 6. ML head training (Heads 1, 2, 3 — Heads 1/3 reuse the multi-instrument output;
+# 6. ML head training (Heads 1, 2, 3, Heads 1/3 reuse the multi-instrument output;
 #    Head 2 is independent and uses features.parquet)
 PYTHONPATH=. python scripts/run_head2_regime_stress.py
 PYTHONPATH=. python scripts/train_head1_per_instrument.py
@@ -62,23 +62,51 @@ PYTHONPATH=. python scripts/train_head3_per_instrument.py
 PYTHONPATH=. python scripts/hoeffding_monitor.py
 ```
 
-## Data inputs
+## Data Sources
+
+The strategy reads from three external data providers, all snapshotted to local parquet files at commit time. No live network connections occur during a backtest.
+
+### 1. OptionMetrics IvyDB (option chains)
+
+**File:** `strat2.2.csv.gz` (2.4 GB compressed, 68.4M rows) → split via `scripts/convert_optionmetrics_to_parquet.py` into per-ticker parquets at `data/processed/options_by_ticker/{TICKER}.parquet`.
+
+Provides: daily option chains (date, exdate, cp_flag, strike, best_bid, best_offer, impl_volatility, delta, gamma, vega, theta, volume, open_interest) for 12 tickers spanning 2012-2025. Used by the engine to price entries and exits at real chain quotes (not BS-pricer fallback) wherever available.
+
+### 2. WRDS OptionMetrics IvyDB Securities (per-ticker underlying OHLC)
+
+**File:** `wheelstrat_data.gz` (querying WRDS via Duke subscription) → split via `scripts/convert_wheelstrat_data.py` into per-ticker parquets at `data/raw/{TICKER}.parquet`.
+
+Provides: daily underlying OHLC (open, high, low, close, volume, return, cfadj) for the 4 headline-basket tickers (AAPL, MSFT, WMT, GLD) and 6 other instruments tested in the ablation matrix. Spans 2012-01-03 to 2025-08-29. Same `secid` system as the OptionMetrics chains, ensuring clean joins between underlying spot and option chains for the same security on the same date. Daily closes match published exchange records on spot-checked reference dates (e.g., AAPL 2018-04-16 = $175.82).
+
+### 3. Interactive Brokers TWS feed snapshot (exogenous macro factors)
+
+**Files:** `data/raw/{VIX,VIX3M,VVIX,SKEW,IRX,TNX,HYG,LQD,SPY,SPX}.parquet`. Snapshotted from the Interactive Brokers TWS market-data feed and frozen to local parquet at commit time. No live TWS connection is needed at backtest time.
+
+Provides: macro / regime indicators (CBOE volatility indices, FRED Treasury yields, ETF macro tape, SPX bars for the market-wide gap-skip and Layer 1 hard halt). Spans 2011-05-05 to 2026-04-30 across the various series.
+
+### Per-file inventory
 
 | File | Size | Source | Purpose |
 |---|---:|---|---|
-| `strat2.2.csv.gz` | 2.4 GB | OptionMetrics IvyDB (provided) | Raw options chains 2012–2025, 14 tickers |
-| `data/raw/VIX.parquet` | 95 KB | CBOE | VIX spot, daily |
-| `data/raw/VIX3M.parquet` | 92 KB | CBOE | VIX 3M, daily |
-| `data/raw/VVIX.parquet` | 107 KB | CBOE | Vol-of-VIX |
-| `data/raw/SPY.parquet` | 192 KB | (broker) | SPY OHLC |
-| `data/raw/IRX.parquet` | 76 KB | FRED | 3-month T-bill rate (rf) |
-| `data/raw/HYG.parquet` | 151 KB | (broker) | HYG ETF for HYG-LQD spread |
-| `data/raw/LQD.parquet` | 157 KB | (broker) | LQD ETF for HYG-LQD spread |
-| `data/raw/GLD.parquet` | 180 KB | (broker) | GLD spot |
-| `data/raw/TLT.parquet` | 125 KB | (broker) | TLT spot |
-| `data/raw/SKEW.parquet` | 89 KB | CBOE | Skew index |
-| `data/processed/features.parquet` | 405 KB | computed | 15-column ML feature matrix |
-| `data/processed/hmm_regimes.parquet` | 28 KB | computed | 2-state Gaussian HMM regime tags |
+| `strat2.2.csv.gz` | 2.4 GB | **OptionMetrics IvyDB** | Raw option chains 2012-2025, 12 tickers (split per-ticker on first run) |
+| `wheelstrat_data.gz` | 760 KB | **WRDS OptionMetrics IvyDB Securities** | Per-ticker underlying OHLC, 10 tickers, 2012-2025 |
+| `data/raw/VIX.parquet` | 95 KB | TWS feed (CBOE) | VIX index daily |
+| `data/raw/VIX3M.parquet` | 92 KB | TWS feed (CBOE) | VIX 3-month index daily |
+| `data/raw/VVIX.parquet` | 107 KB | TWS feed (CBOE) | Vol-of-VIX |
+| `data/raw/SKEW.parquet` | 89 KB | TWS feed (CBOE) | Skew index |
+| `data/raw/IRX.parquet` | 76 KB | TWS feed (FRED) | 3-month T-bill rate (risk-free) |
+| `data/raw/TNX.parquet` | 100 KB | TWS feed (FRED) | 10-year Treasury yield |
+| `data/raw/SPY.parquet` | 192 KB | TWS feed | SPY ETF OHLC (for SPY × Treasury rolling correlation) |
+| `data/raw/HYG.parquet` | 151 KB | TWS feed | HYG ETF (credit-spread input) |
+| `data/raw/LQD.parquet` | 157 KB | TWS feed | LQD ETF (credit-spread input) |
+| `data/raw/SPX.parquet` | 146 KB | TWS feed (CBOE) | SPX index OHLC (gap-skip + Layer 1) |
+| `data/raw/AAPL.parquet` | 84 KB | WRDS IvyDB Securities | AAPL underlying OHLC (headline) |
+| `data/raw/MSFT.parquet` | 84 KB | WRDS IvyDB Securities | MSFT underlying OHLC (headline) |
+| `data/raw/WMT.parquet` | 84 KB | WRDS IvyDB Securities | WMT underlying OHLC (headline) |
+| `data/raw/GLD.parquet` | 180 KB | TWS feed | GLD ETF underlying OHLC (headline) |
+| `data/raw/TLT.parquet` | 125 KB | WRDS IvyDB Securities | TLT underlying OHLC (ablation) |
+| `data/processed/features.parquet` | 405 KB | computed (from raw above) | 15-column ML feature matrix for Head 2 |
+| `data/processed/p_stress_head2.parquet` | ~30 KB | computed (Head 2 output) | Calibrated stress probabilities for ML book scaler |
 
 ## Determinism
 
@@ -90,14 +118,14 @@ PYTHONPATH=. python scripts/hoeffding_monitor.py
 - No `time()`-based randomness in the codebase
 - No floating-point reduction non-determinism (we don't use `numpy.einsum_path` optimization or BLAS-threaded sums)
 
-Verification: run any backtest twice on the same machine, save the equity curves, diff them — they should be byte-identical.
+Verification: run any backtest twice on the same machine, save the equity curves, diff them, they should be byte-identical.
 
 ## What's NOT included
 
 - Real broker fee schedules (we use pre-committed $0.65/contract slippage proxy)
 - Intraday tick data (HAR-RV uses daily close-to-close; this is a documented limitation)
 - Live trading deployment scripts (the strategy is paper-tested only)
-- The full sensitivity grid (729 trials) — this is a separate offline computation; instructions in `scripts/run_sensitivity_grid.py` (TBD)
+- The full sensitivity grid (729 trials), this is a separate offline computation; instructions in `scripts/run_sensitivity_grid.py` (TBD)
 
 ## Inspecting results
 

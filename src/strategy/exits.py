@@ -35,16 +35,41 @@ def _spread_debit(
     spread: Spread,
     vix: float,
 ) -> float:
-    """Mid-price debit needed to close (buy back) the spread, per share."""
-    sp = pricer.price_put(
+    """Mid-price debit needed to close (buy back) the spread, per share.
+    Dispatches on spread.right (puts vs calls).
+    """
+    if spread.right == "P":
+        price_fn = pricer.price_put
+    else:   # "C"
+        price_fn = pricer.price_call
+    sp = price_fn(
         as_of, spread.underlying, spot,
         spread.short_leg.strike, spread.short_leg.expiry, vix,
     )
-    lp = pricer.price_put(
+    lp = price_fn(
         as_of, spread.underlying, spot,
         spread.long_leg.strike, spread.long_leg.expiry, vix,
     )
     return max(sp - lp, 0.0)
+
+
+def _short_delta_abs(
+    pricer: PricingProvider,
+    as_of: pd.Timestamp,
+    spot: float,
+    spread: Spread,
+    vix: float,
+) -> float:
+    """|delta| of the short leg, dispatching on spread.right."""
+    if spread.right == "P":
+        return abs(pricer.implied_delta(
+            as_of, spread.underlying, spot,
+            spread.short_leg.strike, spread.short_leg.expiry, vix,
+        ))
+    return abs(pricer.implied_call_delta(
+        as_of, spread.underlying, spot,
+        spread.short_leg.strike, spread.short_leg.expiry, vix,
+    ))
 
 
 def evaluate_exit(
@@ -60,12 +85,12 @@ def evaluate_exit(
     """Decide whether to close this trade today. Returns None to keep open.
 
     Order of checks: emergency > profit_target > stop_loss > time_exit.
+    Works for both put credit spreads (spread.right='P') and call credit
+    spreads (spread.right='C') via _spread_debit and _short_delta_abs
+    dispatching on the side.
     """
     today_debit = _spread_debit(pricer, as_of, spot, spread, vix)
-    short_delta_abs = abs(pricer.implied_delta(
-        as_of, spread.underlying, spot,
-        spread.short_leg.strike, spread.short_leg.expiry, vix,
-    ))
+    short_delta_abs = _short_delta_abs(pricer, as_of, spot, spread, vix)
 
     # Emergency
     if short_delta_abs > cfg.EMERGENCY_DELTA:

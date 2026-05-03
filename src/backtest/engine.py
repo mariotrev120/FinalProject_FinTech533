@@ -29,7 +29,7 @@ import pandas as pd
 
 from src.config import (
     DTE_MIN, GAP_SLIPPAGE_THRESHOLD_PCT, IS_END, IS_START, ML_DECISION_THRESHOLD,
-    OOS_END, OOS_START, SPREAD_WIDTH_PTS, STRESS_CORR_THRESHOLD,
+    OOS_END, OOS_START, STRESS_CORR_THRESHOLD,
 )
 from src.strategy.exits import evaluate_exit
 from src.strategy.friction import (
@@ -72,7 +72,7 @@ class BacktestInputs:
     ml_probability : optional Series of calibrated p (only used in ml_only/full)
     is_winrate_baseline: Hoeffding baseline (computed from IS run)
     """
-    bars_spx: pd.DataFrame      # cols: open, high, low, close
+    bars_spx: pd.DataFrame      # market-wide signal: gap-skip, Layer 1 hard halt
     vix: pd.Series
     vix3m: pd.Series
     hyg_minus_lqd: pd.Series
@@ -81,6 +81,11 @@ class BacktestInputs:
     is_winrate_baseline: float = 0.75
     initial_equity: float = 100_000.0
     risk_free_curve: Optional[pd.Series] = None  # TNX or IRX in tenths-of-percent
+    # Per-ticker underlying OHLC. When None, the engine falls back to bars_spx
+    # (preserves backward compatibility for SPX-only callers). When set, the
+    # engine uses these for spot/gap_spot/entry_spx/exit_spx — i.e. the
+    # per-ticker price feed for whatever underlying is being traded.
+    underlying_bars: Optional[pd.DataFrame] = None
 
 
 @dataclass
@@ -204,6 +209,22 @@ def run_backtest(
         spx_today_open = row_spx["open"]
         spx_yday_close = spx.iloc[idx - 1]["close"]
 
+        # Per-ticker underlying spot. Falls back to SPX close when no
+        # per-ticker bars supplied (single-instrument SPX-only path).
+        if inputs.underlying_bars is not None:
+            try:
+                under_today_close = float(inputs.underlying_bars["close"].asof(today))
+                under_today_open = float(inputs.underlying_bars["open"].asof(today))
+            except (KeyError, ValueError):
+                equity_path.append((today, equity))
+                continue
+            if np.isnan(under_today_close) or np.isnan(under_today_open):
+                equity_path.append((today, equity))
+                continue
+        else:
+            under_today_close = spx_today_close
+            under_today_open = spx_today_open
+
         try:
             vix_t = float(inputs.vix.asof(today))
             vix3m_t = float(inputs.vix3m.asof(today))
@@ -218,8 +239,8 @@ def run_backtest(
             decision = evaluate_exit(
                 pricer=pricer,
                 as_of=today,
-                spot=spx_today_close,
-                open_gap_spot=spx_today_open,
+                spot=under_today_close,
+                open_gap_spot=under_today_open,
                 spread=t.spread,
                 vix=vix_t,
                 entry_credit_per_share=t.entry_credit_per_spread / 100.0,
@@ -255,7 +276,7 @@ def run_backtest(
             # Bug guard: exit debit cannot exceed the spread width either
             # (max economic loss is the width). Quotes implying more are
             # stale/anomalous OptionMetrics rows.
-            exit_debit_per_share = min(exit_debit_per_share, float(SPREAD_WIDTH_PTS))
+            exit_debit_per_share = min(exit_debit_per_share, float(t.spread.width))
             exit_debit_per_spread = exit_debit_per_share * 100.0
             commish = round_trip_commissions(t.contracts) / 2.0
             credit_per_spread = t.entry_credit_per_spread
@@ -265,7 +286,7 @@ def run_backtest(
             t.exit_date = today.date() if hasattr(today, "date") else today
             t.exit_debit_per_spread = exit_debit_per_spread
             t.fate = decision["fate"]
-            t.exit_spx = spx_today_close
+            t.exit_spx = under_today_close
             t.exit_vix = vix_t
             t.exit_short_delta = decision.get("exit_short_delta")
             t.pnl_per_spread = pnl_per_spread
@@ -398,7 +419,8 @@ def run_backtest(
                         entry_credit_per_share = max(side_theoretical_credit - slip, 0.0)
 
                     # Cap at width - $0.01 (Bug guard)
-                    MAX_CREDIT_PER_SHARE = SPREAD_WIDTH_PTS - 0.01
+                    side_width = float(side_spread.width)
+                    MAX_CREDIT_PER_SHARE = side_width - 0.01
                     if entry_credit_per_share > MAX_CREDIT_PER_SHARE:
                         log.warning("date=%s side=%s: capping entry credit %.4f -> %.4f",
                                     today.date(), side_spread.right,
@@ -408,7 +430,7 @@ def run_backtest(
 
                     max_win_per_spread = entry_credit_per_spread
                     max_loss_per_spread = max(
-                        SPREAD_WIDTH_PTS * 100.0 - entry_credit_per_spread, 100.0,
+                        side_width * 100.0 - entry_credit_per_spread, 100.0,
                     )
 
                     size = size_position(
@@ -435,7 +457,7 @@ def run_backtest(
                         entry_date=today.date() if hasattr(today, "date") else today,
                         spread=side_spread, contracts=size.contracts,
                         entry_credit_per_spread=entry_credit_per_spread,
-                        entry_spx=spx_today_close, entry_vix=vix_t,
+                        entry_spx=under_today_close, entry_vix=vix_t,
                         entry_iv=vix_t / 100.0,
                         entry_dte=entry_dte_calc,
                         ml_probability=p_for_sizing if use_ml else None,
@@ -452,7 +474,7 @@ def run_backtest(
                     try:
                         ps, cs, pc, cc, _, _ = build_iron_condor(
                             pricer=pricer, as_of=today, underlying=underlying,
-                            spot=spx_today_close, vix=vix_t,
+                            spot=under_today_close, vix=vix_t,
                         )
                     except Exception as e:
                         log.warning("build_iron_condor failed on %s: %s", today, e)
@@ -471,7 +493,7 @@ def run_backtest(
                     try:
                         spread, theoretical_credit_per_share, _ = build_spread(
                             pricer=pricer, as_of=today, underlying=underlying,
-                            spot=spx_today_close, vix=vix_t,
+                            spot=under_today_close, vix=vix_t,
                         )
                     except Exception as e:
                         log.warning("build_spread failed on %s: %s", today, e)
@@ -491,7 +513,16 @@ def run_backtest(
     # consistency check (every closed trade has pnl_per_spread set) passes.
     if open_trades:
         last_dt = spx.index[-1]
-        last_close = spx.iloc[-1]["close"]
+        # Prefer per-ticker last close when underlying_bars are wired
+        if inputs.underlying_bars is not None:
+            try:
+                last_close = float(inputs.underlying_bars["close"].asof(last_dt))
+            except (KeyError, ValueError):
+                last_close = float(spx.iloc[-1]["close"])
+            if last_close != last_close:    # NaN guard
+                last_close = float(spx.iloc[-1]["close"])
+        else:
+            last_close = float(spx.iloc[-1]["close"])
         try:
             last_vix = float(inputs.vix.asof(last_dt))
         except (KeyError, ValueError):

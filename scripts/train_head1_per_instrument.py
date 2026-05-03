@@ -45,10 +45,12 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
+from dataclasses import replace as dc_replace
+
 from src.backtest.engine import run_backtest
-from src.backtest.loader import load_inputs
+from src.backtest.loader import load_inputs, load_underlying_bars
 from src.config import DATA_PROCESSED_DIR, IS_END, IS_START, OOS_END, OOS_START, SEED
-from src.models.label_trades import label_trades_dataframe
+from src.models.label_trades import label_trades_ic_level
 from src.models.xgboost_primary import (
     fit_xgb_calibrated,
     predict_calibrated_auto,
@@ -59,7 +61,7 @@ from src.strategy.optionmetrics_pricer import _TICKER_DF_CACHE, make_pricer_v2
 log = logging.getLogger(__name__)
 
 
-VRP_UNIVERSE: list[str] = ["SPX", "RUT", "NDX", "TLT", "GLD"]
+VRP_UNIVERSE: list[str] = ["AAPL", "MSFT", "WMT", "GLD"]
 
 
 def majority_class_log_loss(y_true: pd.Series) -> float:
@@ -88,25 +90,34 @@ def label_trades_for_ticker(
 ) -> tuple[pd.DataFrame, dict]:
     """Run a naked-mode IC backtest for `ticker`, return labelled trades
     + summary dict."""
-    log.info("Labelling %s with naked-mode IC backtest...", ticker)
+    log.info("Labelling %s with naked-mode put-credit-spread backtest...", ticker)
     t0 = time.time()
     pricer = make_pricer_v2(ticker)
     log.info("  %s pricer loaded in %.1fs", ticker, time.time() - t0)
 
+    # Per-ticker spot via underlying_bars (post-spot-fix); put-only
+    # to match the headline architecture
+    underlying_bars = load_underlying_bars(ticker)
+    per_inputs = dc_replace(inputs, underlying_bars=underlying_bars)
     t = time.time()
     result = run_backtest(
-        inputs, pricer, mode="naked",
-        start=start, end=end, use_iron_condor=True,
+        per_inputs, pricer, underlying=ticker, mode="naked",
+        start=start, end=end, use_iron_condor=False,
     )
     log.info("  %s naked backtest done in %.1fs (n_trades=%d)",
              ticker, time.time() - t, len(result.trades))
 
-    labels = label_trades_dataframe(result)
+    labels = label_trades_ic_level(result)
     summary = {
         "ticker": ticker,
         "n_trades": len(labels),
         "win_rate": float(labels["win"].mean()) if len(labels) else float("nan"),
     }
+    log.info(
+        "  %s: IC-level dedup → %d unique entry-dates, %d wins (rate %.1f%%)",
+        ticker, len(labels), int(labels["win"].sum()) if len(labels) else 0,
+        100 * summary["win_rate"] if len(labels) else float("nan"),
+    )
 
     # Free the per-ticker DataFrame
     if ticker in _TICKER_DF_CACHE:
@@ -201,11 +212,26 @@ def train_head1_for_ticker(
         )
 
     if not out_preds:
+        # All folds skipped — usually means labels are single-class
+        # (every IC won or every IC lost) for the given ticker. Report
+        # the IS/OOS class breakdown so the caller can interpret why.
+        is_labels = labels.loc[labels.index < fold_starts[0]]
+        oos_labels = labels.loc[labels.index >= fold_starts[0]]
+        is_pos_frac = float(is_labels["win"].mean()) if len(is_labels) else float("nan")
+        oos_pos_frac = float(oos_labels["win"].mean()) if len(oos_labels) else float("nan")
+        log.warning(
+            "  %s: all folds skipped — IS pos-frac=%.3f, OOS pos-frac=%.3f "
+            "(single-class data; XGBoost cannot train; will use base sizing)",
+            ticker, is_pos_frac, oos_pos_frac,
+        )
         return pd.Series(dtype=float, name="p_quality"), {
             "ticker": ticker, "n_oos": 0,
             "log_loss_model": float("nan"),
             "log_loss_baseline": float("nan"),
             "passed": False,
+            "fail_reason": "single_class_labels" if (
+                (is_pos_frac in (0.0, 1.0)) or (oos_pos_frac in (0.0, 1.0))
+            ) else "no_oos_predictions",
         }
 
     p_quality = pd.concat(out_preds).sort_index().rename("p_quality")

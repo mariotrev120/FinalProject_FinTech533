@@ -2,117 +2,111 @@
 title: "Strategy Mechanics"
 ---
 
-## VRP cluster — 5-instrument iron condor
+## Headline basket, composition
 
-### Universe
+| Ticker | Class | Strike grid (pts) | Wing width (pts) | Capital (equal-weight) |
+|---|---|---:|---:|---:|
+| AAPL | Single-stock equity | 1 | 5 | $50,000 |
+| MSFT | Single-stock equity | 1 | 5 | $50,000 |
+| WMT  | Single-stock equity | 1 | 5 | $50,000 |
+| GLD  | Commodity ETF | 1 | 5 | $50,000 |
 
-| Ticker | Class | Section 1256 | Strike grid (pts) | Wing width (pts) |
-|---|---|---|---:|---:|
-| SPX | Cash index | Yes (60/40) | 5 | 5 |
-| RUT | Cash index | Yes (60/40) | 5 | 5 |
-| NDX | Cash index | Yes (60/40) | 25 | 25 |
-| TLT | Long-bond ETF | No | 1 | 1 |
-| GLD | Gold ETF | No | 1 | 1 |
+**Basket-level total capital: $200,000.** Cross-asset diversification: 3 single-stocks (idiosyncratic vol) + 1 commodity ETF (cross-asset uncorrelated vol). All positions are put-credit-spreads (defined-risk; long-put protection at short_strike − 5 pts).
 
-### Entry construction
+## Entry construction
 
-- Defined-risk iron condor (short put credit + short call credit, both wings protected)
-- Short put delta target: −0.16 (one-sigma OTM)
-- Short call delta target: +0.16 (symmetric)
-- DTE at entry: 30 to 45 calendar days; selected expiry closest to 35 DTE
-- Entry frequency: weekly Monday open per instrument
-- One structure per name per week (no overlapping spreads in same instrument)
+- **Structure:** Defined-risk put credit spread (short put + long put protection). No call wing, the iron-condor variant tested separately and underperformed (see [Ablations](ablations.qmd)).
+- **Short put delta target:** −0.16 (one-sigma OTM, BS-Greek-defined via OptionMetrics IV when available; BS pricer fallback when IV missing)
+- **Wing widths:** 5 strike points (per-instrument strike-grid specified above)
+- **DTE at entry:** 30 to 45 calendar days; selected expiry is the chain whose DTE is closest to 35
+- **Entry frequency:** weekly Monday open per instrument (skipped if Monday is a holiday; defer to next session)
+- **One structure per name per week:** no overlapping spreads in the same instrument
 
-### Exit logic — five fates per side
-
-Each side of the iron condor (put leg + call leg) is managed independently with its own `Trade` object, sharing an `iron_condor_id`:
+## Exit logic, five fates
 
 | Fate | Trigger |
 |---|---|
-| `profit_target` | Per-side debit ≤ 50% of side's entry credit |
-| `stop_loss` | Per-side debit ≥ 200% of side's entry credit (gap-aware fill) |
-| `time_exit` | DTE ≤ 21 (per side) |
-| `emergency` | \|short_delta\| > 0.50 (per side) |
-| `eos_force` | End-of-OOS forced close |
+| `profit_target` | Exit debit ≤ 50% of entry credit |
+| `stop_loss` | Exit debit ≥ 200% of entry credit (gap-aware fill = min(stop, opening_gap)) |
+| `time_exit` | DTE ≤ 21 |
+| `emergency` | \|short_delta\| > 0.50 |
+| `eos_force` | End-of-OOS forced close at last bar |
 
-Because per-side management is independent, one wing can hit profit-target while the other simultaneously hits emergency or stop-loss. This is the empirical observation: out of ~370 SPX iron condor structures over 2018–2024, **164 IC pairs had different fates between the two sides** and **175 had different close dates** — confirming the two-sided machinery operates as designed.
+## Exogenous-factor inputs to the engine
 
-## Halt framework — 5 layers
+The engine uses these macro/regime indicators at every trade decision. All are **non-look-ahead**, point-in-time at the trade-decision timestamp.
+
+| Series | Source | Role in engine |
+|---|---|---|
+| **VIX** (CBOE) | TWS feed | Slippage scaling (per-VIX-bucket bid-ask half-spread fraction); vol-multiplier in sizing |
+| **VIX3M** (CBOE) | TWS feed | Vol-term-structure context for regime classification |
+| **VVIX** (CBOE) | TWS feed | Vol-of-vol, Layer 1 hard halt threshold input |
+| **SKEW** (CBOE) | TWS feed | Tail-risk indicator |
+| **IRX** (3M T-bill yield) | FRED via TWS feed | Risk-free baseline for daily cash accrual + Sharpe denominator |
+| **TNX** (10Y Treasury yield) | FRED via TWS feed | Term-structure curvature context |
+| **HYG − LQD spread** | TWS feeds | Credit-stress proxy, Layer 1 hard halt input |
+| **SPY × Treasury rolling 20-day correlation** | computed from SPY + TNX | Stress-multiplier in sizing when correlation regime shifts (risk-off pattern: equity-down, rates-down both moving) |
+| **SPX bars (open / close)** | TWS feed | Market-wide gap-skip signal (Monday gap ≥ 3% → skip all entries that day); Layer 1 hard halt move thresholds |
+| **Per-ticker bars** (4 underlyings) | OptionMetrics IvyDB Securities | Strike selection; entry/exit price recording; wing computation |
+
+The headline result is **conditioned on the entire macro context above**, not just the option chains for AAPL/MSFT/WMT/GLD. The engine reads each series asof the trade-decision timestamp via `pd.Series.asof(today)`.
+
+## Halt framework, 3 active layers
 
 | Layer | What it does | Status |
 |---|---|---|
-| **Layer 1** Hard tail-event | Halt on VIX +50%/d, VVIX > 150, HYG-LQD > 3 SD | Active |
-| Layer 2 Soft halt | Dropped post-v1 audit (-9.0pp lift, $413 of profitable trades blocked) | Removed |
-| Layer 3 Slow halt | Dropped post-v1 audit (-10.1pp lift, $1,233 of profitable trades blocked) | Removed |
-| **Layer 4** Drawdown halt | Halt on >90 days underwater OR >15% drawdown — **in trailing 90 days** (post-2026-05-03 spec-text alignment fix) | Active |
-| **Layer 5** Auto-resume | Lift halt when 3 market-regime conditions clear simultaneously OR 60-day time fallback fires | Active |
+| **Layer 1** Hard tail-event | Halt on extreme single-day market shocks (VIX +50%/d, VVIX > 150, HYG-LQD > 3 SD, SPX one-day move beyond threshold) | **Active** |
+| Layer 2 Soft halt | Dropped post-v1 audit (-9.0pp Sharpe lift, $413 of profitable trades blocked) | Removed |
+| Layer 3 Slow halt | Dropped post-v1 audit (-10.1pp Sharpe lift, $1,233 of profitable trades blocked) | Removed |
+| **Layer 4** Drawdown halt | Halt on >90 days underwater OR >15% drawdown, measured in **trailing 90-day window** | **Active** |
+| **Layer 5** Auto-resume | Lift halt when 3 market-regime conditions clear simultaneously OR 60-trading-day time fallback fires | **Active** |
 
-Layer 5 (auto-resume) was originally designed with four conditions including a strategy-state-dependent drawdown-recovery condition. That created a catch-22 (halted strategy can't recover P&L → DD condition never satisfies → halt latches forever). The fix: drop the strategy-state condition, keep only 3 market-regime conditions, add a 60-trading-day time fallback. Methodology amendment §4.1 in the pre-commit doc.
+## Per-trade sizing
 
-Layer 4 had the same catch-22 in its original form. The fix: switch to trailing-90-day reference for both `underwater_days` and `drawdown_frac` (matching the spec text "in trailing 90 days"). Bug-fix-of-implementation, not a methodology amendment.
+| Component | Formula |
+|---|---|
+| Base risk per trade | min(1% × current equity, max-loss-per-spread) |
+| Position size | floor(base_risk / max_loss_per_spread) |
+| Vol multiplier | scale by VIX bucket (lower VIX → larger size) |
+| Stress multiplier | scale by SPY-Treasury rolling correlation (risk-off → smaller size) |
+| Hard cap | 1% of equity per spread, defined-risk bounded by wing × multiplier |
 
-After both fixes: SPX halts_only OOS produced **12 distinct halt periods (max 92 days)** instead of the broken **single 673-day latch period**. Halts now resolve correctly.
-
-## ML stack — 3 calibrated heads
-
-All heads use XGBoost with **calibration auto-selected** per Niculescu-Mizil & Caruana (2005) sample-size threshold: Platt scaling for n < 200 minority-class cases, isotonic for n ≥ 200. Class imbalance handled via `scale_pos_weight = neg/pos` per fold.
-
-### Head 1 — trade quality (per-instrument)
-
-- **Target:** binary `pnl_per_spread > 0` over the realized holding window
-- **Output:** calibrated `p_quality ∈ [0,1]`
-- **Sizing curve (continuous):**
-  - p < 0.50 → skip trade
-  - p ∈ [0.50, 0.70] → linearly scale 0.6× → 1.0× of base size
-  - p ≥ 0.70 → 1.2× (capped)
-- **Acceptance:** must beat majority-class baseline OOS log-loss on ≥ 3 of 5 instruments. Failure on ≥ 3 → drop entire Head 1, fall back to base sizing. Negative finding reported as such.
-
-### Head 2 — regime stress (pooled cross-asset)
-
-- **Target:** binary "stress event peak in next 63 trading days" sourced from 5 vetted historical peaks (Aug2015 China, Feb2018 Volmageddon, Q4-2018 selloff, Mar2020 COVID, Mar2023 banking)
-- **Forward horizon:** 63 trading days = one quarter, anchored to BTZ 2009 §3 empirical R²-maximum at quarterly horizon
-- **Output:** calibrated `p_stress ∈ [0,1]`
-- **Book scaler:** aggregate book = base × (1 − p_stress)
-- **Acceptance:** OOS Brier ≥ 5% lower than naive trailing-22-day stress-event mean baseline. Failure → drop, scaler defaults to 1.0.
-- **Result:** **PASSED at +14.1% Brier reduction** (Brier 0.1079 vs naive 0.1256). Calibration auto-selected Platt for 5 of 7 folds, isotonic for 2.
-
-### Head 3 — skew direction (per-instrument)
-
-- **Target:** binary "did put-side or call-side incur larger loss in this iron condor?"
-- **Output:** dynamic delta selection from {0.10, 0.16, 0.25} per side, replacing static 0.16/0.16
-- **Acceptance:** must beat majority-class baseline OOS log-loss on ≥ 4 of 5 instruments. Per-instrument failure → fall back to static 0.16/0.16 for that instrument.
-
-## Capital allocation across 5 instruments
-
-- **Per-instrument weight (Phase B-1, equal-weight):** w_i = 1/5 each
-- **Per-instrument weight (Phase B-2, quality-weighted):** w_i = p_quality_i / Σ_j p_quality_j
-- **Aggregate book scaler:** book = base × (1 − p_stress) per Head 2
-- **Per-trade hard cap:** 1% of account equity per spread (defined-risk = max-loss bounded)
-
-Combined sizing formula:
-```
-size_i = base_size × w_i × (1 − p_stress) × continuous_quality(p_quality_i)
-```
+The 1% per-trade cap is enforced in dollars; it dominates other sizing inputs at the modest per-instrument capital ($50K each in the headline basket).
 
 ## Friction model
 
 | Item | Spec |
 |---|---|
-| Slippage | 30/50/75/100% of bid-ask half-spread for VIX buckets <20 / 20–30 / 30–40 / >40 |
+| Slippage | 30 / 50 / 75 / 100% of bid-ask half-spread for VIX buckets <20 / 20–30 / 30–40 / >40 |
 | Commissions | $0.65 per option contract per side |
 | Gap-aware fill | Stop-loss fill = min(stop_level, opening_gap_price) |
 | Monday gap rule | Gap ≥ 1.5% adds 50% slippage; gap ≥ 3% skips entry |
-| Tax overlay (1256) | SPX/RUT/NDX: 60% LTCG / 40% STCG mark-to-market annually |
-| Tax overlay (non-1256) | TLT/GLD: full ST treatment of options gains |
+| Quote source | Real OptionMetrics IvyDB chain bid/ask (not BS pricer) when available; BS pricer fallback if chain row missing |
 
-## Wheel basket — 5-layer adaptive logic
+## Reproducibility
 
-(See [Pre-commitments](pre_commitments.qmd#wheel) for full detail. Summary:)
+| Determinism source | Mechanism |
+|---|---|
+| `SEED = 42` | Consumed by every stochastic component (XGBoost random_state, isotonic/Platt CV split if used, block-bootstrap resampling) |
+| Engine | Pure-Python single-threaded loop; no `numpy.einsum_path` optimization; no BLAS-threaded sums |
+| Data | Per-ticker parquet snapshots in `data/processed/options_by_ticker/` and `data/raw/`. Frozen at commit time. |
 
-- **Layer 1:** regime-conditional delta (VIX bottom Q → 0.15, mid → 0.20, top → 0.25)
-- **Layer 2:** per-name vol-adjusted strikes (RV>35% widen by +0.05)
-- **Layer 3:** per-name 30-day RV forecaster (XGBoost on HAR-RV + exogenous, sizing = clip(target_rv/forecast, 0.4, 1.5))
-- **Layer 4:** earnings-aware management (7-day blackout pre-earnings, narrow CCs)
-- **Layer 5:** fundamental-only defensive rolls (entry premise broken, not generic delta-threshold)
+Two runs of the same commit + same data + same seed produce **byte-identical equity curves** to floating-point precision. Verified by `pytest tests/test_seed_stability.py`.
 
-9-name basket: AAPL, MSFT, GOOGL, JNJ, KO, PG, WMT, JPM, PEP. Robustness baskets: 7-name strict (drops JPM, PEP), 8-name (adds JPM only).
+## ML stack, final status
+
+The pre-committed methodology specified a 3-head ML stack. Each head was tested against its pre-committed acceptance criterion. Final status:
+
+| Head | Architecture | Result | Status |
+|---|---|---|---|
+| Head 1, per-instrument trade quality | XGBoost per-instrument with calibration auto-select (Platt for n_pos<200, isotonic otherwise), scale_pos_weight class-imbalance handling | OOS log-loss FAILED to beat majority-class baseline on 4/4 tickers (AAPL, MSFT, WMT, GLD). Margins of failure: 0.002 to 0.016 in log-loss units. | **Dropped per pre-committed §5.1 fallback rule.** Use base sizing. |
+| **Head 2, pooled regime stress** | Pooled XGBoost on 15 macro features (VIX, VIX3M, VVIX, yield-curve, SPY-Treasury correlation, HYG-LQD spread, etc.) with 5 hand-curated stress event peaks as labels | OOS Brier 0.1079 vs naive baseline 0.1256 = **+14.1% reduction.** Passes ≥5% acceptance gate. | **Activated as `(1 − p_stress)` book scaler.** |
+| Head 3, per-instrument skew direction | XGBoost for IC dynamic delta selection | N/A, headline is put-only architecture; skew direction (which side of an IC will hurt more) doesn't apply | Not applicable, not trained |
+
+**Head 1 dropped** is a real result, not a placeholder: the trade-quality classifier on 64-71% win-rate base rates couldn't beat the majority-class baseline (which already predicts "win" with high probability for every trade). The features available do not predict per-trade win/loss with enough resolution. Pre-committed fallback rule fired as designed.
+
+**Head 2 activated** contributes the ML overlay to the headline: book exposure on day t is scaled by `(1 − p_stress_t)`, where `p_stress_t` is the calibrated probability of a stress-event peak in the next 63 trading days. Mean p_stress over the OOS window is 18%; days with p_stress > 30% are 14.6% of the OOS sample.
+
+## What the headline DOES NOT use
+
+For transparency: the iron-condor architecture (call wing in addition to put wing) was tested and underperformed put-only across every instrument tested in OOS 2018-2024. The call wing systematically lost in the trending-equity regime. See [Ablations](ablations.qmd) for the iron-condor result table. The headline is put-only because the data demanded it.

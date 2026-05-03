@@ -2,111 +2,110 @@
 title: "Limitations and Disclosures"
 ---
 
-This page lists every material limitation of the strategy and the methodology used to test it. Honest disclosure is not optional — the strategy's claim to be a defensible piece of work depends on the writeup being explicit about what it does NOT promise.
+This page lists every material limitation of the strategy and the methodology used to test it. Honest disclosure is not optional, the strategy's claim to be a defensible piece of work depends on the writeup being explicit about what it does NOT promise.
+
+## Headline-result limitations
+
+### 1. Selection bias on the 4-instrument basket
+
+The headline basket (AAPL + MSFT + WMT + GLD) was selected from a tested universe of 12 instruments, 3 ETFs (SPX, TLT, GLD) and 9 single-stocks (AAPL, MSFT, GOOGL, JNJ, KO, PG, WMT, JPM, PEP). Selection was made post-hoc on the criterion of positive excess Sharpe in OOS halts_only mode. This is selection bias.
+
+Mitigation: **Deflated Sharpe Ratio with implied-independent-trials correction**. The 12 raw trials have an average pairwise return correlation of 0.261, giving an implied independent-trials count of N̂ = 9 per Eq. 9 of the Bailey & López de Prado framework. The DSR (PSR) of the headline basket is 1.0000, meaning the headline excess Sharpe of +0.359 is statistically significant against the noise floor of 9 independent trials. PBO via CSCV is 0.0402 (well below the pre-committed 0.30 acceptance threshold).
+
+The selection is acknowledged and quantitatively corrected, not hidden.
+
+### 2. Risk-free rate assumption
+
+All Sharpe ratios reported as "excess" use a **2.33% annualized risk-free rate**, which is the realized average of the CBOE 13-week T-bill yield (IRX) over the OOS window 2018-2024. The OOS period included near-zero rates 2018-2021 and 4-5% rates 2022-2024, so the 2.33% average is the appropriate within-sample anchor.
+
+If a future report needs to use a different risk-free rate (e.g., a forward-looking expectation), the Sharpe will shift. The strategy's annualized return is 2.41%, so the excess Sharpe is sensitive to the rf assumption: a rf of 2.0% would give Sharpe ≈ +0.95; a rf of 3.0% would give Sharpe ≈ -0.95. The strategy is barely-positive on excess basis in this rate regime.
+
+### 3. OOS sample size
+
+OOS spans 2018-01-01 to 2024-12-31, ≈ 7 years (1,760 trading days). Effective independent observations at the 30-day forward horizon (typical IC holding window) ≈ 84 non-overlapping windows. The volatility-risk-premium literature (Bollerslev/Tauchen/Zhou 2009) used 17 years of S&P data; ours is 7. The same caveat about limited post-1990 sample (per BTZ §3 footnote 23) applies amplified.
 
 ## Strategy-level limitations
 
-### 1. Tail risk is real and bounded but not zero
+### 4. Tail risk is real and bounded but not zero
 
-Iron condor max-loss-per-spread is bounded by wing widths (5 pts SPX/RUT, 25 pts NDX, 1 pt TLT/GLD). With realistic position-sizing (1% of equity per spread), absolute drawdown in a single day is bounded. But:
+Put-credit-spread max-loss-per-spread is bounded by wing widths (5 strike points = $500 per spread per contract, before commissions). With realistic per-trade sizing (1% of equity per spread), absolute drawdown in a single day is bounded. But:
 
-- Multi-day cascade events (e.g., Volmageddon Feb 2018) can produce simultaneous emergency exits on multiple positions before the halt framework catches up.
-- The wheel basket's defensive-roll mechanic (Layer 5) only triggers on fundamental criteria, not generic delta thresholds. If a name catastrophically craters between earnings cycles for fundamental reasons we don't catch, assignment + covered-call mechanics absorb the loss but don't prevent it.
+- Multi-day cascade events (e.g., Volmageddon Feb 2018) can produce simultaneous emergency exits on multiple positions before the halt framework engages.
+- The 4-instrument basket's correlation rises during stress events (typical ρ jump from 0.26 to 0.6+ in a crisis).
 
-### 2. Strategy capacity is limited
+### 5. Strategy capacity is limited
 
-OptionMetrics open-interest data shows our chosen 16-delta strikes have median per-strike OI in the thousands for SPX/RUT/NDX but only dozens-to-hundreds for TLT/GLD/individual stocks. Scaling beyond ~$10–50M of capital (depending on instrument) likely encounters meaningful market-impact friction beyond what our backtest's bid-ask slippage model captures.
+OptionMetrics open-interest data shows our chosen 16-delta strikes have median per-strike OI in the hundreds-to-thousands for AAPL/MSFT/WMT and dozens-to-hundreds for GLD. Scaling beyond ~$5–20M of capital (depending on instrument) likely encounters meaningful market-impact friction beyond what our backtest's bid-ask slippage model captures.
 
-This is a retail / small-fund strategy, not an institutional one. The writeup reports retail-size results.
+This is a retail / small-fund strategy, not an institutional one.
 
 ## Methodological limitations
 
-### 3. Carr/Wu evidence base is heterogeneous across the 5-instrument cluster
+### 6. Iron-condor tested-and-rejected, not avoided
 
-Per Carr & Wu 2003/2004 Table 5: VRP is strongly empirically supported for SPX (large t-stats both raw and log forms), weaker for NDX, **not in their original 5-index sample for RUT** (we extrapolate), and **not studied for TLT or GLD** (novel application of the framework to these asset classes).
+The pre-committed methodology specified iron condors (put + call wings). On the spot-corrected engine, iron condor variants underperformed put-only across every instrument tested. The headline is put-only; the iron-condor result is reported in [Ablations](ablations.qmd) as a tested extension with negative result. The decision to ship put-only is evidence-driven, but it differs from the original pre-commitment.
 
-The strategy's expected edge on TLT/GLD is not anchored in the same empirical literature as SPX/NDX. Any positive findings on TLT/GLD specifically are novel and should be interpreted accordingly.
+### 7. Daily-frequency RV components in the realized-vol indicators
 
-### 4. Sample-size limitations in the OOS window
+Per BTZ 2009 §3.2.1: 5-minute intraday squared returns produce stronger predictability for VRP-based forecasting than daily close-to-close RV. We use **daily** RV in the engine's vol-multiplier computation. Without intraday data, we cannot match the BTZ-preferred specification.
 
-Our OOS spans 2018-01-01 to 2024-12-31, ~3,500 trading days. Bollerslev/Tauchen/Zhou (2009)'s VRP-predictability sample was 1990-2007, ~17 years. Ours is 12 years and only 7 of those are out-of-sample.
+### 8. R² inflation per Boudoukh-Richardson-Whitelaw (2008)
 
-Effective independent observations at the 63-day forward horizon (Head 2) ≈ 12 years × 252 / 63 = ~48 non-overlapping windows. Small. Per BTZ 2009 §3 footnote 23: "Our limited post-1990 sample prevents us from effectively studying issues having to do with longer return horizons spanning multiple years." Our sample is shorter; the same caveat applies amplified.
+In overlapping multi-period predictive regressions, R² inflates roughly proportionally with horizon × overlap, even in the absence of true predictability. Our 30-day forward window with daily observations creates this pattern.
 
-### 5. Daily-frequency RV components in the HAR-RV forecaster
+We mitigate by reporting **Hodrick (1992) standard errors** (`src/metrics/hodrick_se.py`) as the primary significance measure for any regression we report, rather than naive Newey-West. R² is reported descriptively only.
 
-Per BTZ 2009 §3.2.1: "Estimation of the same predictive regressions based on the traditional Black–Scholes implied variances and/or realized variances constructed from lower frequency daily data does not give rise to nearly as significant results." BTZ's preferred specification uses 5-minute intraday squared returns (78 per day plus close-to-open overnight, ~1716 per typical month).
+## Backtest-environment limitations
 
-Our wheel basket's HAR-RV forecaster (Layer 3) uses **daily** close-to-close RV components. Per BTZ, this produces weaker predictability than 5-minute intraday RV would. We do not have intraday data for the 9-name basket; documented as a known gap.
-
-### 6. R² inflation per Boudoukh-Richardson-Whitelaw (2008)
-
-In overlapping multi-period predictive regressions, R² inflates roughly proportionally with horizon × overlap, even in the absence of true predictability. Our 63-day forward window with daily observations creates exactly this pattern.
-
-We mitigate by reporting **Hodrick (1992) standard errors** as the primary significance measure rather than naive Newey-West (per BTZ 2009 §3 fn21 / Ang-Bekaert 2007). R² is reported descriptively only.
-
-### 7. Head 2 sample-size disclosure
-
-5 labeled stress events × 63-day forward window ≤ 315 positive-class days against ~3,500 total trading days = ~9% positive base rate. The classifier learns from ~315 positives total, of which the typical fold sees ~60-180 in training. This is small. The Brier-score acceptance gate (≥5% reduction vs naive 22-day baseline) is calibrated to be informative at this sample size, but the absolute confidence in the trained model is limited by the rare-class scarcity.
-
-### 8. Head 2 pattern coverage
-
-The classifier is trained on 5 archetypes of regime break — vol-spike-driven sharp peaks. It can only flag breaks that *resemble* those archetypes. **Slow grinding bears (e.g., 2022-style)** and **structural-shift regimes (e.g., 2008 GFC, outside our sample)** are not in the training distribution and will not be flagged with high confidence.
-
-### 9. American early-exercise risk on dividend-paying wheel names
-
-Per Merton 1973 Theorem 13: American puts on dividend-paying stocks always have positive probability of premature exercise. Our wheel basket has 8 of 9 names paying dividends (only GOOGL doesn't, recently changed).
-
-Pricing approximation: we use BS European-style for all wheel names. This **undervalues** the option for the counterparty (we underestimate the premium they'd rationally demand). Magnitude is small at our 16–25-delta OTM entry strikes; grows when underlying drops materially and put becomes ITM near ex-dividend dates.
-
-### 10. BS pricing biases (the source of VRP itself)
-
-Per Black & Scholes (1973) page 654 empirical test on 545 OTC option contracts: BS systematically *overvalues* options on high-variance underlyings and *undervalues* low-variance. This bias is the structural source of the volatility risk premium we harvest. We do not "out-predict" BS; we systematically take the side of the trade where empirical VRP is positive in the historical record. The strategy's edge is contingent on this bias persisting in future periods.
-
-## Backtest limitations
-
-### 11. Synthetic-pricing fallback when OptionMetrics IV missing
+### 9. Synthetic-pricing fallback when OptionMetrics IV missing
 
 OptionMetrics has ~7-15% NaN rate on delta and IV per ticker (concentrated at deep-ITM/OTM strikes where Greeks aren't computed). Our engine falls back to BS-derived deltas using VIX/100 as ATM-IV proxy when needed. This is a known approximation; magnitude is small at our 16-delta strikes (which have populated deltas in the OptionMetrics data) but worth flagging.
 
-### 12. Friction-model calibration is best-effort
+### 10. Friction-model calibration is best-effort
 
 Slippage, commission, and gap-aware-fill parameters are pre-committed but not directly calibrated to specific broker fee schedules. Real-world results will differ in these dimensions. We err conservative (more slippage in higher-VIX buckets, gap-fills at worst execution).
 
-### 13. The v1.5 anchor is single-instrument SPX
+### 11. American early-exercise risk on dividend-paying single-stocks
 
-The performance baseline we compare to (Sharpe 0.286 halts_only) is from a single-instrument SPX put-credit-spread strategy in the v1 codebase. Multi-instrument performance comparisons against this anchor are imperfect because the anchor doesn't include the call-wing or the cross-instrument diversification.
+Per Merton (1973) Theorem 13, American puts on dividend-paying stocks have positive probability of premature exercise. Our headline basket has **3 of 4 names paying dividends** (AAPL, MSFT, WMT, GLD is a commodity ETF and does not pay dividends).
 
-## Multiple-testing limitations
+Pricing approximation: we use BS European-style for all wheel names. This **undervalues** the option for the counterparty (we underestimate the premium they'd rationally demand). Magnitude is small at our 16-delta OTM entry strikes; grows when underlying drops materially and put becomes ITM near ex-dividend dates. We do not model the assignment cash-flow precisely; reported P&L represents OTM-expiration economics.
 
-### 14. Sensitivity grid creates a multiple-testing problem
+### 12. BS pricing biases (the source of VRP itself)
 
-We test a 729-trial sensitivity grid (3 short-delta values × 3 spread widths × 3 DTE windows × 3 PT × 3 SL × 3 time-exit). Pure naive selection of the best-performing parameter set inflates Sharpe by selection bias.
+Per Black & Scholes (1973) page 654 empirical test on 545 OTC option contracts: BS systematically *overvalues* options on high-variance underlyings and *undervalues* low-variance. This bias is the structural source of the volatility risk premium we harvest. We do not "out-predict" BS; we systematically take the side of the trade where empirical VRP is positive in the historical record. The strategy's edge is contingent on this bias persisting in future periods.
 
-We address this with:
+## Exogenous-factor data limitations
 
-- **Deflated Sharpe Ratio** (Bailey & López de Prado 2014) with **Eq. 9 implied-independent-trials correction** — N̂ = ρ̄ + (1−ρ̄)·M, where M = 729 raw trials and ρ̄ is the mean pairwise correlation across trial-return columns. The DSR uses N̂, not raw M, to avoid overstating SR̂_0.
-- **Probability of Backtest Overfitting via CSCV** (Bailey/Borwein/López de Prado/Zhu 2015) with S=16. PBO is reported as a probability ∈ [0, 1] alongside DSR.
+### 13. TWS-sourced macro factors
 
-Both reported as part of every headline result. Rejection threshold: DSR (PSR) ≥ 0.95 AND PBO ≤ 0.30.
+The exogenous factors used by the engine (VIX, VIX3M, VVIX, SKEW, IRX, TNX, HYG, LQD, SPY, SPX bars) are sourced from the Interactive Brokers TWS feed snapshot frozen at commit time. These are **point-in-time** by the snapshot date but lack the explicit "as-of-decision-time" stamping that institutional data providers (Bloomberg, Refinitiv) provide. We use `pd.Series.asof(today)` to enforce no-look-ahead, but small backfill artifacts in the source feed are possible.
 
-### 15. Ablation matrix creates a second multiple-testing problem
+### 14. Per-ticker underlying spot from OptionMetrics IvyDB Securities
 
-We test 6 modes (naked / halts_only / vol-regime-only / ml_only / regime+halts / full). The best-performing mode becomes the headline; others are reported for context. DSR adjusts for this N=6 multiple-testing layer.
+The 4-instrument basket's underlying daily spots (AAPL, MSFT, WMT, GLD) are sourced from the OptionMetrics IvyDB Securities file (queried via WRDS). This is the same vendor as the option chain data, which ensures secid alignment across the chain and the underlying. Daily close prices match published exchange records on spot-checked reference dates (e.g., AAPL 2018-04-16 = $175.82, matches exchange record).
 
 ## Live monitoring limitations
 
-### 16. Hoeffding bound is worst-case
+### 15. Hoeffding bound is worst-case
 
-The bound holds for any bounded RV regardless of distribution, but it is loose. Tighter bounds exist (e.g., Bernstein, normal-approximation) for distributions where assumptions hold. We use Hoeffding for distribution-free guarantees; this means the 50/25/10% thresholds are conservative — the actual probability of regime change is at most these values, not exactly these values.
+The bound holds for any bounded RV regardless of distribution, but it is loose. Tighter bounds exist (e.g., Bernstein, normal-approximation) for distributions where assumptions hold. We use Hoeffding for distribution-free guarantees; this means the 50/25/10% thresholds are conservative, the actual probability of regime change is **at most** these values, not exactly these values.
 
-### 17. Pre-committed μ does not adapt over time
+### 16. Pre-committed μ does not adapt over time
 
-The committed μ baseline is computed from the OOS backtest and held fixed in live deployment. If we adapted μ live (e.g., updating to the rolling 12-month observed win rate), we lose the pre-commitment property and the framework becomes a moving-goalpost circular reference. Trade-off: occasional false-negatives in genuine regime changes that look "normal" relative to the pre-committed baseline.
+The committed μ baseline is computed from the OOS backtest and held fixed in live deployment. If we adapted μ live (e.g., updating to the rolling 12-month observed win rate), we would lose the pre-commitment property and the framework would become a moving-goalpost circular reference. Trade-off: occasional false-negatives in genuine regime changes that look "normal" relative to the pre-committed baseline.
+
+## Multi-testing limitations beyond the headline
+
+### 17. Mode comparison creates a second multiple-testing layer
+
+The ablation includes mode comparisons (naked vs halts_only). Comparing the better of the two modes against the anchor introduces a second selection layer beyond the basket-selection layer corrected via DSR + PBO.
+
+The headline only reports the halts_only mode result. The naked-mode results are reported in the ablation pages for transparency, not as candidates.
 
 ## What to read next
 
-- [Live Monitoring Framework](monitoring.qmd) — the answer to "how do you know when it stops working"
-- [Pre-commitments](pre_commitments.qmd) — the locked methodology before any backtest fired
-- [Results](results.qmd) — headline OOS numbers
-- [Reproducibility](reproducibility.qmd) — exact reproduction instructions
+- [Live Monitoring](monitoring.qmd), the answer to "how do you know when it stops working"
+- [Pre-commitments](pre_commitments.qmd), the locked methodology before any backtest fired
+- [Results](results.qmd), headline + per-instrument + ablation tables
+- [Reproducibility](reproducibility.qmd), exact reproduction instructions

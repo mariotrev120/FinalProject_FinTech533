@@ -28,18 +28,37 @@ class OptionContract:
 
 @dataclass(frozen=True)
 class Spread:
-    """Put credit spread: short the higher-strike put, long the lower-strike put."""
+    """Defined-risk credit spread. Generalized to either side of the surface:
+
+      - Put credit spread (right="P"): short the higher-strike put,
+        long the lower-strike put. Profit if underlying stays above short strike.
+      - Call credit spread (right="C"): short the lower-strike call,
+        long the higher-strike call. Profit if underlying stays below short strike.
+
+    For an iron condor, two Spread instances are opened simultaneously (one P,
+    one C) and linked at the Trade level via `iron_condor_id`.
+    """
     short_leg: OptionContract
     long_leg: OptionContract
 
     def __post_init__(self) -> None:
-        if self.short_leg.right != "P" or self.long_leg.right != "P":
-            raise ValueError("Spread requires both legs to be puts")
-        if self.short_leg.strike <= self.long_leg.strike:
+        if self.short_leg.right != self.long_leg.right:
             raise ValueError(
-                f"short strike must be above long strike for a put credit spread "
-                f"(got short={self.short_leg.strike}, long={self.long_leg.strike})"
+                f"Spread legs must share right; got short={self.short_leg.right} "
+                f"long={self.long_leg.right}"
             )
+        if self.short_leg.right == "P":
+            if self.short_leg.strike <= self.long_leg.strike:
+                raise ValueError(
+                    f"put credit spread requires short_strike > long_strike "
+                    f"(got short={self.short_leg.strike}, long={self.long_leg.strike})"
+                )
+        else:  # "C"
+            if self.short_leg.strike >= self.long_leg.strike:
+                raise ValueError(
+                    f"call credit spread requires short_strike < long_strike "
+                    f"(got short={self.short_leg.strike}, long={self.long_leg.strike})"
+                )
         if self.short_leg.expiry != self.long_leg.expiry:
             raise ValueError("legs must share an expiry")
         if self.short_leg.underlying != self.long_leg.underlying:
@@ -47,11 +66,15 @@ class Spread:
 
     @property
     def width(self) -> float:
-        return self.short_leg.strike - self.long_leg.strike
+        return abs(self.short_leg.strike - self.long_leg.strike)
 
     @property
     def underlying(self) -> str:
         return self.short_leg.underlying
+
+    @property
+    def right(self) -> Right:
+        return self.short_leg.right
 
 
 @dataclass
@@ -96,6 +119,13 @@ class Trade:
     kelly_fraction: Optional[float] = None
     vol_multiplier: Optional[float] = None
     stress_multiplier: Optional[float] = None
+
+    # Iron-condor pairing: when set, this trade is one side of an IC opened on
+    # the same date with another trade sharing this id. Per-side fates are
+    # managed independently; aggregate IC P&L = sum of per-side P&L grouped
+    # by iron_condor_id. None means the trade is a standalone (put-only)
+    # credit spread.
+    iron_condor_id: Optional[int] = None
 
     @property
     def is_open(self) -> bool:
