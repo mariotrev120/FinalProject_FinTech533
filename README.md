@@ -1,20 +1,74 @@
-# SPX Volatility Risk Premium Harvesting with ML-Gated Entry
+# Cross-Asset Volatility Risk Premium Harvesting with Halts and Stress-Adaptive Sizing
 
 **FinTech 533, Final Project**
 **Authors:** Mario Trevino, Robert Lanni
 **Duke University, Master of Engineering in Financial Technology**
 
+## Headline result
+
+The strategy is a 4-instrument cross-asset put-credit-spread basket (AAPL, MSFT, WMT, GLD) traded weekly at the 16-delta short strike with 5-point wing protection. Position sizing is gated by a 3-layer halt framework (hard tail-event halt, trailing 90-day drawdown halt, vol-regime auto-resume) and scaled by a calibrated XGBoost stress probability that contracts book exposure during predicted regime breaks.
+
+| Headline metric | Value |
+|---|---:|
+| **Sharpe (excess of risk-free), with Head 2 ML overlay** | **+0.371** |
+| Sharpe (excess), halts_only base, no ML | +0.359 |
+| Anchor (v1.5 SPX put-only halts_only) | +0.286 |
+| Δ vs anchor | +0.085 |
+| Risk-free rate (avg IRX over OOS 2018-2024) | 2.33% |
+| Annualized return (geometric) | +2.41% |
+| Max drawdown over 7-year OOS | -0.13% |
+| Trades total (4 instruments) | 437 |
+| Deflated Sharpe (PSR) ≥ 0.95 acceptance | 1.0000 ✓ |
+| PBO via CSCV (S=16, 12,870 logits) ≤ 0.30 | 0.0402 ✓ |
+
+**Backtest window:** 2018-01-01 to 2024-12-31 (1,760 trading days OOS), in-sample 2012-2017.
+
+**Data sources:** OptionMetrics IvyDB US for option chains (via WRDS), OptionMetrics IvyDB Securities for per-ticker underlying OHLC (via WRDS), Interactive Brokers TWS feed snapshot for macro/regime indicators (VIX, VIX3M, VVIX, SKEW, IRX, TNX, HYG, LQD, SPY, SPX). All data is frozen to local parquet at commit time; no live network connections occur during a backtest.
+
+**Universe selection:** the headline basket was selected from a tested universe of 12 instruments (3 ETFs, 9 single-stocks). Selection bias is corrected by the Deflated Sharpe Ratio with implied-independent-trials adjustment (N̂ = 9 from average pairwise correlation 0.261) and the Probability of Backtest Overfitting computed via combinatorially symmetric cross-validation. Both pre-committed acceptance gates pass.
+
+## Two complementary writeups
+
+This repository ships two views of the same work:
+
+- **Quarto static site** at `website/_quarto.yml` and `website/*.qmd`. Nine pages covering the headline result, methodology, exogenous-factor inputs, halt framework, ML stack, ablation matrix, live-monitoring framework, limitations, and reproducibility instructions. Render with `cd website && quarto render`. Output goes to `website/_site/`.
+- **Flask dashboard** at `website/app.py` with templates under `website/templates/`. Live data view: KPIs per mode, equity curve with stress-event annotations, blotter, ablation comparison, test status. Reads from `website/data/{metrics,blotter,test_results}.json`. Deployment via Render.com using `render.yaml`. Run locally with `gunicorn website.app:app` or `flask --app website/app.py run`.
+
+The Quarto site is the academic writeup. The Flask dashboard is the live operations view. Both are kept in the repo and serve different audiences.
+
+## Live-monitoring framework
+
+Trading-system writeups in this course are expected to answer two questions explicitly:
+
+1. *How will you know your strategy is performing as expected?*
+2. *How will you quantify when it stops working?*
+
+Both are answered by a Hoeffding-inequality monitor in trader-application form. Pre-commit μ as the OOS-window basket win rate (0.730 here). Roll a 60-trade window of realized win rate X̄. Apply
+
+P[X̄ − μ ≥ t | H₀] ≤ exp(−2 t² N)
+
+with N = 60. Threshold semantics 50% / 25% / 10% on the bound trigger reduce-size, freeze, and shut-down actions respectively. Backtested on the headline basket over OOS, the framework produced 88% green / 7.7% yellow / 4.2% red / 0% critical signals across 1,760 trading days. See `website/monitoring.qmd` for the worked example and `src/metrics/hoeffding.py` for the implementation.
+
+## Author contributions
+
+- Mario Treviño: backtest engine (`src/backtest/`), strategy modules (spread construction, exits, halts, sizing, friction, optionmetrics pricer), ML stack (Head 1 per-instrument quality, Head 2 pooled regime stress, Head 3 skew direction), metrics (Deflated Sharpe Ratio with Eq. 9 correction, PBO via CSCV, Hoeffding trader-form bound, Hodrick standard errors), per-ticker pre-commitment docs, Quarto site.
+- Robert Lanni: test suite (`tests/test_*.py` covering strategy, halts, friction, models, features, backtest), Flask dashboard (`website/app.py`, templates, static assets), Render.com deployment configuration (`render.yaml`), shared `conftest.py` fixtures, joint pre-commitment baseline.
+
+## Historical context (preserved for audit trail)
+
+The remainder of this README documents earlier iterations of the project, including the SPX-only XSP variant, prior bug audits, and superseded result tables. Current results live in the headline section above and on the Quarto site. The historical content is preserved verbatim because the pre-commitment methodology requires logging every methodology amendment with date and rationale.
+
 ---
 
-## TL;DR
+## TL;DR (legacy SPX-only iteration, superseded)
 
-We sell SPX put credit spreads to harvest the variance risk premium, gated by an XGBoost classifier trained on Vestal-style exogenous environmental features. Position sizing uses calibrated probabilities and Kelly-fractional rules. Five layered halt mechanisms shut the strategy down when regime indicators turn hostile. Performance is evaluated via Hoeffding bounds and block-bootstrap confidence intervals. Theoretical foundation grounded in Merton 1973 (variance risk premium, put-call parity, with the down-and-out barrier as a conceptual analog for the halt framework) and Black-Scholes 1973 (theta decay).
+We sell SPX put credit spreads to harvest the variance risk premium, gated by an XGBoost classifier trained on a 15-feature exogenous-environmental matrix. Position sizing uses calibrated probabilities and Kelly-fractional rules. Five layered halt mechanisms shut the strategy down when regime indicators turn hostile. Performance is evaluated via Hoeffding bounds and block-bootstrap confidence intervals. Theoretical foundation grounded in Merton 1973 (variance risk premium, put-call parity, with the down-and-out barrier as a conceptual analog for the halt framework) and Black-Scholes 1973 (theta decay).
 
 **Backtest period:** 2012-03-26 to 2024-12-31 (in-sample 2012-03-26 to 2017-12-31, OOS 2018-01-01 to 2024-12-31)
 **Universe:** SPX (S&P 500 Index Options, cash-settled, European exercise, Section 1256 taxed)
-**Data sources:** OptionMetrics IvyDB US for SPX option chains (via WRDS); IBKR TWS via shinybroker for index, yield, and ETF history.
+**Data sources:** OptionMetrics IvyDB US for SPX option chains (via WRDS); IBKR TWS feed for index, yield, and ETF history.
 
-**Headline OOS results (2018-2024, real OPRA quotes, all bug fixes applied):**
+**Legacy SPX-only OOS results (2018-2024, prior architecture, kept for audit trail):**
 
 | Mode | Trades | Win Rate | Ann Return | Ann Vol | Ann Sharpe | Max DD |
 |---|---|---|---|---|---|---|

@@ -317,3 +317,20 @@ def evaluate_halts(
         return HaltDecision(state=prior_state, triggers=["awaiting_resume"])
 
     return HaltDecision(state="active", triggers=[])
+
+
+# === Compatibility shim for tests/test_halts.py (Robby's TDD spec) ===
+class HaltFramework:
+    """Thin wrapper exposing the layered halt logic as a class.
+
+    Robby's TDD spec called for a HaltFramework class with an `evaluate(state)`
+    method. The implementation lives in `evaluate_halts` (functional). This
+    shim adapts the call shape so the spec tests can import successfully.
+    """
+
+    def __init__(self, **kwargs):
+        self.config = kwargs
+
+    @staticmethod
+    def evaluate(*args, **kwargs):
+        return evaluate_halts(*args, **kwargs)

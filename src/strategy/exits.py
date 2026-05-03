@@ -120,3 +120,7 @@ def evaluate_exit(
                 "exit_short_delta": short_delta_abs}
 
     return None
+
+
+# === Compatibility alias for tests/test_strategy.py (Robby's TDD spec) ===
+evaluate_exits = evaluate_exit

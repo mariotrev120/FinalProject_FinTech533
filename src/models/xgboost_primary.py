@@ -258,3 +258,28 @@ def walk_forward_predict(
     if not out:
         return pd.Series(dtype=float, name="p_calibrated")
     return pd.concat(out).sort_index()
+
+
+# === Compatibility shim for tests/test_models.py (Robby's TDD spec) ===
+class XGBoostGate:
+    """Thin wrapper exposing the calibrated XGBoost trainer as a class.
+
+    Robby's TDD spec called for an XGBoostGate class. The implementation
+    is `fit_xgb_calibrated` (functional). This shim adapts the call shape
+    so the spec tests can import successfully.
+    """
+
+    def __init__(self, **kwargs):
+        self.params = kwargs
+        self.model = None
+        self.calibrator = None
+
+    def fit(self, X, y, **kwargs):
+        from src.config import SEED
+        self.model, self.calibrator, self.method_used = fit_xgb_calibrated(
+            X, y, seed=kwargs.get("seed", SEED), **kwargs
+        )
+        return self
+
+    def predict_proba(self, X):
+        return predict_calibrated_auto(self.model, self.calibrator, X)

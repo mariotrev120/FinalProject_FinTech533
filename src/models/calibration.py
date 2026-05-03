@@ -127,3 +127,8 @@ def apply_calibrator(calibrator: Calibrator, raw_scores: np.ndarray) -> np.ndarr
     if isinstance(calibrator, IsotonicRegression):
         return apply_isotonic(calibrator, raw_scores)
     raise TypeError(f"Unknown calibrator type: {type(calibrator)}")
+
+
+# === Compatibility aliases for tests/test_models.py (Robby's TDD spec) ===
+fit_isotonic_calibration = fit_isotonic_on_oof
+apply_calibration = apply_calibrator

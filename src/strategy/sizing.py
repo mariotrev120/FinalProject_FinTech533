@@ -105,3 +105,7 @@ def size_position(
         stress_multiplier=sm,
         notional_at_risk=notional,
     )
+
+
+# === Compatibility alias for tests/test_strategy.py (Robby's TDD spec) ===
+compute_position_size = size_position
