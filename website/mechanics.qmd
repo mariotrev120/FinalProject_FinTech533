@@ -15,7 +15,7 @@ title: "Strategy Mechanics"
 
 ## Entry construction
 
-- **Structure:** Defined-risk put credit spread (short put + long put protection). No call wing, the iron-condor variant tested separately and underperformed (see [Ablations](ablations.qmd)).
+- **Structure:** Defined-risk put credit spread (short put + long put protection). No call wing, the iron-condor variant tested separately and underperformed (see [Variants](ablations.qmd)).
 - **Short put delta target:** −0.16 (one-sigma OTM, BS-Greek-defined via OptionMetrics IV when available; BS pricer fallback when IV missing)
 - **Wing widths:** 5 strike points (per-instrument strike-grid specified above)
 - **DTE at entry:** 30 to 45 calendar days; selected expiry is the chain whose DTE is closest to 35

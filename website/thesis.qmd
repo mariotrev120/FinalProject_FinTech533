@@ -62,7 +62,7 @@ Merton's 1973 extension covers American early-exercise (relevant for the wheel b
 
 - [Mechanics](mechanics.qmd): exact entry/exit logic, halt framework, ML stack, sizing
 - [Results](results.qmd): headline OOS numbers, blotter, ledger, multiple-testing correction
-- [Ablations](ablations.qmd): basket variants, iron-condor vs put-only, naked vs halts
+- [Variants](ablations.qmd): basket variants, iron-condor vs put-only, halts engaged vs disengaged
 - [Live monitoring](monitoring.qmd): how to know it works, how to know it stopped
 - [Limitations](limitations.qmd): what this strategy cannot promise
 - [Data and Literature](data_and_literature.qmd): data sources and reference reading

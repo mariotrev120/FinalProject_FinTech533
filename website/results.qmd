@@ -122,7 +122,7 @@ Pattern: adding SPX or TLT to the headline drags the Sharpe down because their i
 
 We tested both architectures on the same engine and underlying universe. Iron condor (put + call wings on the same expiry) underperforms put-only across every comparable comparison in OOS 2018-2024:
 
-| Mode | Universe | Sharpe (excess) | Δ vs anchor | Notes |
+| Mode | Universe | Sharpe (excess) | Δ vs SPX baseline | Notes |
 |---|---|---:|---:|---|
 | Iron condor, SPX only | 1 inst | -1.882 | -2.168 | Call wing destroyed by post-2020 SPX rally |
 | Iron condor, 3-instrument cluster | SPX/TLT/GLD | -2.292 | -2.578 | Same pattern across all three IC instruments |
