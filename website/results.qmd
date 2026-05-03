@@ -55,13 +55,29 @@ The basket was selected from a tested universe of 12 instruments (3 ETFs: SPX, T
 
 | Correction | Value | Acceptance | Pass? |
 |---|---:|---|:-:|
-| Raw trials tested (N) | 12 |, |, |
-| Avg pairwise return correlation (ρ̄) | 0.261 |, |, |
-| Implied independent trials (N̂) per Eq. 9 | 9 |, |, |
+| Raw trials tested (N) | 12 | informational | n/a |
+| Avg pairwise return correlation (ρ̄) | 0.261 | informational | n/a |
+| Implied independent trials (N̂) per Eq. 9 | 9 | informational | n/a |
 | Deflated Sharpe (PSR) | 1.0000 | ≥ 0.95 | ✓ |
 | PBO via CSCV (S=16, 12,870 logits) | 0.0402 | ≤ 0.30 | ✓ |
 
 Both gates pass. The headline is statistically significant after correction for the 12-trial selection.
+
+### Equity curve
+
+```{=html}
+<iframe src="charts/equity_headline_vs_anchor.html" width="100%" height="480" frameborder="0"></iframe>
+```
+
+The headline ends at 1.18× starting equity over 7 years (CAGR 2.41%). The reconstructed v1.5 anchor (Sharpe 0.286, ann_ret 2.49%) ends very close. The Sharpe gap (+0.073) shows up not in absolute return but in volatility: the headline runs at 0.21% annualized volatility versus the anchor's 0.55%, so the same return is more risk-efficient.
+
+### Drawdown
+
+```{=html}
+<iframe src="charts/drawdown_headline.html" width="100%" height="380" frameborder="0"></iframe>
+```
+
+Maximum drawdown of -0.13% over the 7-year OOS sample. The defined-risk put-credit-spread structure plus the halt framework absorbs every named stress event without measurable equity damage.
 
 ### Per-instrument breakdown
 
@@ -75,13 +91,17 @@ Both gates pass. The headline is statistically significant after correction for 
 
 The book aggregate has higher Sharpe than the per-instrument average because cross-instrument correlation is low (mean pairwise 0.26), so equal-weighting reduces volatility without proportional return loss.
 
+```{=html}
+<iframe src="charts/per_instrument_sharpe.html" width="100%" height="400" frameborder="0"></iframe>
+```
+
 ## Anchor comparison vs v1.5 baseline
 
 | Strategy | Architecture | Sharpe (excess) | Trades | OOS window |
 |---|---|---:|---:|---|
 | v1.5 baseline (anchor) | SPX put-only halts_only | +0.286 | 210 | 2018–2024 |
 | **Headline (D)** | **Wheel-3 + GLD put-only halts_only** | **+0.359** | 437 | 2018–2024 |
-| Δ vs anchor |, | **+0.073** | +227 |, |
+| **Δ vs anchor** | (same OOS window, both halts_only put-only) | **+0.073** | +227 | 2018–2024 |
 
 The new headline beats the anchor on excess Sharpe, with ~2× the trade sample, comparable max drawdown, and cross-asset diversification (equity + commodity) the anchor lacks.
 
@@ -121,23 +141,23 @@ Demonstrates that the halt framework is doing real work, every instrument has hi
 | AAPL | +0.155 | +0.264 | +0.109 |
 | MSFT | +0.037 | +0.269 | +0.232 |
 | WMT  | +0.063 | +0.263 | +0.200 |
-| GLD  | (TBC) | +0.138 | (TBC) |
+| GLD  | -0.971 | +0.138 | +1.109 |
 
-The halt framework's contribution is measurable per instrument and consistently positive.
+The halt framework's contribution is measurable per instrument and consistently positive. GLD has the largest gap because its naked exposure is fully on through every regime; the halt framework gates the worst stretches.
 
 ## Per-event drawdown attribution
 
-(Computed on the headline (D) basket equity curve)
+Computed on the headline (D) basket equity curve, halts_only mode, equal-weight $50K per instrument (basket starting equity $200K).
 
-| Event | Window | Book PnL impact | Halt fired? |
-|---|---|---:|:-:|
-| Volmageddon | 2018-02-05 ± 2w | _TBD_ | _TBD_ |
-| Q4-2018 selloff | 2018-12-24 ± 1m | _TBD_ | _TBD_ |
-| COVID crash | 2020-03-23 ± 1m | _TBD_ | _TBD_ |
-| 2022 bear market | (full year) | _TBD_ | _TBD_ |
-| Banking crisis | 2023-03-13 ± 1m | _TBD_ | _TBD_ |
+| Event | Window probed | Book PnL impact | Worst intra-window drawdown |
+|---|---|---:|---:|
+| Volmageddon | 2018-01-22 → 2018-02-16 | -$35 | -0.06% |
+| Q4-2018 selloff | 2018-11-26 → 2019-01-24 | +$783 | 0.00% |
+| COVID crash | 2020-02-24 → 2020-04-23 | +$102 | 0.00% |
+| 2022 bear market | 2022-01-03 → 2022-12-30 | +$4,223 | 0.00% |
+| Banking crisis | 2023-02-13 → 2023-04-13 | +$1,652 | 0.00% |
 
-(Filled in after stress-event-window analysis on the headline basket.)
+The halt framework + cross-asset diversification absorbed every named stress event with effectively zero drawdown. The largest intra-event dip was 0.06% during Volmageddon. The basket actually generated positive P&L across the COVID crash, Q4-2018 selloff, 2022 bear market, and banking crisis windows. This is the structural goal of the halt-gated put-credit-spread architecture: turn defined-risk option premium into resilient cash-secured income.
 
 ## Reproducibility
 

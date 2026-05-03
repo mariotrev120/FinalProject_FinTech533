@@ -4,6 +4,10 @@ title: "Ablations"
 
 This page documents every alternative configuration tested in the development of the headline strategy. The headline ([D] Wheel-3 + GLD halts_only + Head 2 ML overlay, excess Sharpe +0.371) was selected from this set of variants. All variants are reported transparently, none are selection bias hidden.
 
+```{=html}
+<iframe src="charts/ablation_baskets.html" width="100%" height="440" frameborder="0"></iframe>
+```
+
 ## Basket-composition ablation (put-only halts_only)
 
 Equal-weight $50K per instrument. Mode = halts_only. No-IC (put-only). All on the spot-corrected engine over OOS 2018-01-01 to 2024-12-31.
@@ -32,6 +36,10 @@ The pre-committed methodology proposed iron condors (put + call wings on the sam
 | **Put-only, Wheel-3 + GLD** | **4 inst** | **+0.359** | **+0.073** | **+2.41%** | **-0.13%** |
 
 Iron condor underperforms put-only by more than 1.5 Sharpe units in every paired comparison. The call wing loses on indices (SPX/TLT/GLD) that trended up post-2020, so adding it cannot improve a put-only strategy in this regime. Reported as a tested extension that did not add value.
+
+```{=html}
+<iframe src="charts/iron_condor_vs_putonly.html" width="100%" height="440" frameborder="0"></iframe>
+```
 
 ## Halt framework ablation (naked vs halts_only)
 

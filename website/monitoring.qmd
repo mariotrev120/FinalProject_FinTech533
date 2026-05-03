@@ -55,6 +55,10 @@ Live trading would use this μ = 0.73 as the reference; deviations downward trig
 
 This is a backtest of the monitoring framework itself, what would the monitor have flagged on each rolling-60-trade window over the OOS sample?
 
+```{=html}
+<iframe src="charts/hoeffding_trace.html" width="100%" height="500" frameborder="0"></iframe>
+```
+
 ### Bound distribution (post-warmup of 60 trades)
 
 | Signal band | Bound range | Trades in band | % of post-warmup OOS |
