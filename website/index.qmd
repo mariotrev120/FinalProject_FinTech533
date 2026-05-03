@@ -13,11 +13,14 @@ A 4-instrument cross-asset put-credit-spread basket (AAPL, MSFT, WMT, GLD) with 
 
 | Metric | Value |
 |---|---:|
-| **Sharpe (excess of risk-free, with regime-stress ML overlay)** | **+0.371** |
+| **Sharpe ratio (excess of risk-free, ML overlay engaged)** | **+0.371** |
 | Risk-free baseline (avg IRX 2018-2024) | 2.33% |
-| Annualized return | +2.41% |
-| Max drawdown over 7 years | -0.13% |
-| Trades total | 437 |
+| **Geometric mean return (GMRR, annualized)** | **+2.41%** |
+| Annualized volatility | 0.21% |
+| Alpha vs SPY (annualized OLS) | +2.37% |
+| Beta vs SPY (OLS slope, daily) | +0.0014 |
+| Max drawdown over 7 years | -0.12% |
+| Trades total · Trades per year · Avg return per trade | 437 · 62.8 · +8.25% |
 | **DSR (PSR)** | **1.0000** ≥ 0.95 ✓ |
 | **PBO via CSCV** | **0.0402** ≤ 0.30 ✓ |
 
@@ -43,17 +46,20 @@ The natural deployment is alongside a directional alpha generator. A long-only e
 
 The 0.371 excess Sharpe is the result of a tight volatility denominator, not a large numerator. That is the design intent. A defensive sleeve should be measured by its consistency and downside containment, not by raw return magnitude. Read the +0.085 outperformance versus the SPX baseline as evidence the architecture (cross-asset basket, halt framework, ML stress overlay) compounds risk-adjusted advantage over a single-instrument baseline.
 
-## Live-monitoring framework
+## Answering the two questions every trading-system writeup needs
 
-The strategy ships with a **Hoeffding trader-application bound** that quantifies, in real time, the probability the underlying win-rate has shifted away from the OOS baseline of μ = 0.730. Threshold semantics (50% / 25% / 10% probability bound) trigger reduce-size, freeze, and shut-down actions respectively. See [Live Monitoring](monitoring.qmd) for the full framework and worked example on the headline basket.
+Trading-system writeups in this course are expected to answer two questions explicitly:
 
-### How will you know the strategy is performing as expected?
+> *How will you know your strategy is performing as expected?*
+> *How will you quantify when the strategy stops working?*
 
-A rolling 60-trade window of the realized win rate is compared against the OOS baseline of μ = 0.730. While the Hoeffding bound on the gap stays at or above 50%, the strategy is performing within its modeled regime and trading continues at full size.
+Both are answered by one framework: a **Hoeffding-bound live monitor** that quantifies, in real time, the probability the underlying win rate has shifted away from the OOS baseline of μ = 0.730. The mechanic is straightforward: roll a 60-trade window of the realized win rate, compare it to the pre-set μ, and apply the Hoeffding inequality to get a distribution-free probability bound on whether the observed underperformance is real or random.
 
-### How will you quantify when the strategy stops working?
+For the question **how will you know it's performing as expected**: the bound stays at or above 50% (the green band) and the strategy continues at full size. Performance is plausibly within the OOS regime.
 
-The same Hoeffding bound. When it crosses below 25%, position size is reduced. When it crosses below 10%, entries are halted entirely and the strategy is reviewed. The thresholds are pre-set, distribution-free, and apply uniformly across the 4-instrument basket. Backtested over the 2018-2024 OOS sample, the framework registered no critical signal across 1,760 trading days.
+For the question **how will you quantify when it stops working**: the bound crossing below 10% is the trip-wire. At that point, observed underperformance has dropped to a probability where random chance is an implausible explanation for the gap to baseline. The threshold is dated, quantitative, distribution-free, and pre-set before live deployment.
+
+Backtested over the full 1,760 OOS trading days, the bound stayed at or above 50% on 88% of post-warmup trades and registered no critical signal across the 7-year window. The full framework, threshold table, worked example, and chart are on the [Live Monitoring](monitoring.qmd) page.
 
 ## What was tested but not used
 

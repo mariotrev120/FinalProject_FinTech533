@@ -35,18 +35,26 @@ Acceptance gates we set:
 
 | Headline metric | Value |
 |---|---:|
-| **Sharpe (excess of risk-free), with regime-stress ML overlay** | **+0.371** |
-| Sharpe (excess), without the ML overlay | +0.359 |
+| **Sharpe ratio (excess of risk-free, ML overlay engaged)** | **+0.371** |
+| Sharpe ratio (excess), without ML overlay | +0.359 |
 | SPX baseline (single-instrument, predecessor implementation) | +0.286 |
 | **Δ vs SPX baseline** | **+0.085** ✓ |
 | Risk-free baseline (avg IRX 2018-2024) | 2.33% |
-| Annualized return (geometric) | +2.41% |
+| **Geometric mean return (GMRR, annualized)** | **+2.41%** |
 | Annualized volatility | 0.21% (with ML) / 0.23% (without) |
+| **Alpha vs SPY (annualized OLS intercept × 252)** | **+2.37%** |
+| **Beta vs SPY (OLS slope, daily simple returns)** | **+0.0014** |
+| Correlation with SPY (daily returns) | 0.12 |
 | Max drawdown over OOS (7 years) | **-0.12%** (with ML) / -0.13% (without) |
 | Trades total (sum across 4 instruments) | 437 |
+| Average trades per year | 62.8 |
+| Average return per trade | +8.25% (median +$17.85 net P&L per spread) |
+| Win rate (basket aggregate) | 73.0% |
 | OOS span | 2018-01-01 → 2024-12-31 (1,760 trading days) |
 | ML overlay | Regime-stress scaler `(1 − p_stress)` applied to daily book exposure |
 | ML acceptance gate | Brier-score reduction +14.1% vs naive baseline (gate at ≥5%) ✓ |
+
+Mapping to the HW3 / HW4 rubric: **GMRR** is the geometric mean return (annualized) row; **Alpha** and **Beta** are computed by daily OLS of basket returns vs SPY over the full 1,760-day OOS window (per the project's `src/metrics/portfolio.py`); **Sharpe**, **Annualized Volatility**, **Max Drawdown**, **Avg Return per Trade**, **Trades per Year**, and **Total Trades** are reported above. Beta is essentially zero because the strategy harvests volatility risk premium on a defined-risk wing-protected structure rather than holding directional equity beta.
 
 ### Multiple-testing validation
 
@@ -242,7 +250,7 @@ The distribution is right-skewed by design: a 16-delta short put expires worthle
 | 2024-11 | 12 | +$181.80 | +$1,418.88 |
 | 2024-12 | 12 | +$75.25 | +$1,494.13 |
 
-*Showing 12 of 84 months from January 2018 to December 2024. Net P&L in dollars per spread (per-contract basis at $100 multiplier). Full ledger and blotter: [blotter.json](https://github.com/mariotrev120/FinalProject_FinTech533/blob/mario/data-pipeline/website/data/blotter.json) (437 trades, all fields).*
+*Showing 12 of 84 months from January 2018 to December 2024. Net P&L in dollars per spread (per-contract basis at $100 multiplier). Full monthly ledger: [monthly_ledger.csv](https://github.com/mariotrev120/FinalProject_FinTech533/blob/mario/data-pipeline/website/data/monthly_ledger.csv) (renders as a sortable table on GitHub).*
 
 ## Blotter
 
@@ -263,7 +271,7 @@ Random sample of 10 trades from the 437-row blotter (seed=42).
 
 The `trd_prd` index encodes year + ISO week as a single decimal. Entries on the same Monday share the same `trd_prd`.
 
-*Showing 10 of 437 trades. Full blotter: [blotter.json](https://github.com/mariotrev120/FinalProject_FinTech533/blob/mario/data-pipeline/website/data/blotter.json) (all 437 entries with every field).*
+*Showing 10 of 437 trades. Full blotter: [blotter.csv](https://github.com/mariotrev120/FinalProject_FinTech533/blob/mario/data-pipeline/website/data/blotter.csv) (all 437 entries, renders as a sortable table on GitHub).*
 
 ## How will you know the strategy is performing as expected?
 
