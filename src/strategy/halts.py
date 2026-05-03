@@ -208,15 +208,45 @@ def evaluate_halts(
     vix3m_today: float,
     vix3m_history: pd.Series, vix_history: pd.Series,
     hyg_lqd_history: pd.Series,
-    prob_history: Optional[pd.Series],
-    rolling_winrate: Optional[float],
-    is_winrate_baseline: float,
-    n_trades_in_rolling: int,
+    prob_history: Optional[pd.Series],                    # noqa: ARG001 — Layer 2/3 input, retained for sig compat
+    rolling_winrate: Optional[float],                     # noqa: ARG001
+    is_winrate_baseline: float,                           # noqa: ARG001
+    n_trades_in_rolling: int,                             # noqa: ARG001
     underwater_days: int,
     current_drawdown_frac: float,
+    prior_state: HaltState = "active",
+    rv5d_today: float = float("nan"),
+    rv5d_history_252d: Optional[pd.Series] = None,
 ) -> HaltDecision:
-    """Compose all 5 halt layers (auto-resume is evaluated separately,
-    in the engine, when state != active)."""
+    """v2 latching halt framework: Layers 1, 4, 5 active. Layers 2 & 3 dropped.
+
+    Behavior:
+      1. Fresh Layer 1 (hard tail-event) triggers ALWAYS re-arm a hard_halt,
+         regardless of prior state. Order is: vix_spike, spx_intraday_move,
+         term_inversion_hard.
+      2. Fresh Layer 4 (drawdown) trigger re-arms a drawdown_halt if no
+         Layer 1 trigger fired.
+      3. If neither fired AND prior_state was a halt, Layer 5 auto-resume
+         is checked. ALL four conditions must be simultaneously met to lift:
+            - VIX3M − VIX > RESUME_TERM_BUFFER_PTS for RESUME_TERM_DAYS closes
+            - rv5d_today < RESUME_REALIZED_VOL_PCT-th percentile of trailing 252d
+            - HYG-LQD spread within RESUME_HYG_LQD_SD SD of long-run mean
+            - Drawdown recovered to within RESUME_DD_RECOVERY_FRAC of HWM
+         Met → state="active", triggers=["auto_resumed"].
+         Not met → state held at prior_state, triggers=["awaiting_resume"].
+      4. If neither fresh trigger fired AND prior_state was active → active.
+
+    Layers 2 (soft) and 3 (slow) were dropped after v1 audit found them all
+    to be anti-signals (-9 to -10pp precision lift, blocking profitable
+    trades). Their continuous-regime function will be done by the
+    regime-stress ML head (Head 2) in v2.
+
+    The new `prior_state`, `rv5d_today`, `rv5d_history_252d` params have
+    defaults that make Layer 5 inert when omitted (rv5d_today=NaN never
+    passes the resume gate), so legacy callers that don't pass them get
+    the v1.5 stateless behavior. New callers must thread `prior_state`
+    across the day-loop and supply rv5d series for Layer 5 to fire.
+    """
     triggers: list[str] = []
 
     if vix_spike_triggered(vix_today, vix_yday):
@@ -231,21 +261,19 @@ def evaluate_halts(
     if drawdown_halt_triggered(underwater_days, current_drawdown_frac):
         return HaltDecision(state="drawdown_halt", triggers=["drawdown"])
 
-    if rolling_winrate is not None and winrate_below_baseline(
-        rolling_winrate, is_winrate_baseline, n_trades_in_rolling
-    ):
-        triggers.append("winrate_below_baseline")
-
-    if term_inversion_soft_triggered(vix3m_history, vix_history):
-        triggers.append("term_inversion_soft_2d")
-    if hyg_lqd_spread_widened(hyg_lqd_history):
-        triggers.append("hyg_lqd_spread_2sd")
-    if prob_history is not None and model_prob_persistently_low(prob_history):
-        triggers.append("model_prob_low_5d")
-
-    if "winrate_below_baseline" in triggers:
-        return HaltDecision(state="slow_halt", triggers=triggers)
-    if triggers:
-        return HaltDecision(state="soft_halt", triggers=triggers)
+    # No fresh trigger fired today. If prior_state was a halt, Layer 5
+    # gate must clear before we lift back to active.
+    if prior_state in ("hard_halt", "drawdown_halt", "soft_halt", "slow_halt"):
+        rv5d_hist = rv5d_history_252d if rv5d_history_252d is not None else pd.Series(dtype=float)
+        if auto_resume_ready(
+            vix3m_history=vix3m_history,
+            vix_history=vix_history,
+            rv5d_today=rv5d_today,
+            rv5d_history_252d=rv5d_hist,
+            hyg_lqd_history=hyg_lqd_history,
+            current_drawdown_frac=current_drawdown_frac,
+        ):
+            return HaltDecision(state="active", triggers=["auto_resumed"])
+        return HaltDecision(state=prior_state, triggers=["awaiting_resume"])
 
     return HaltDecision(state="active", triggers=[])

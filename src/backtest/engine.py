@@ -35,11 +35,22 @@ from src.strategy.friction import (
     round_trip_commissions, slippage_dollars_per_share, slippage_pct_at_vix,
     should_skip_entry_due_to_gap,
 )
-from src.strategy.halts import HaltDecision, evaluate_halts
+from src.strategy.halts import HaltDecision, HaltState, evaluate_halts
 from src.strategy.pricer import PricingProvider
 from src.strategy.sizing import size_position
-from src.strategy.spread_construction import build_spread
+from src.strategy.spread_construction import build_spread, build_iron_condor
 from src.strategy.types import Mode, Spread, Trade
+
+
+def _quote_for_spread(pricer: PricingProvider, today, spread: Spread, leg: str):
+    """Dispatch quote_put vs quote_call based on spread side. `leg` is
+    'short' or 'long'."""
+    contract = spread.short_leg if leg == "short" else spread.long_leg
+    if spread.right == "P" and hasattr(pricer, "quote_put"):
+        return pricer.quote_put(today, spread.underlying, contract.strike, contract.expiry)
+    if spread.right == "C" and hasattr(pricer, "quote_call"):
+        return pricer.quote_call(today, spread.underlying, contract.strike, contract.expiry)
+    return None
 
 
 log = logging.getLogger(__name__)
@@ -107,6 +118,7 @@ def run_backtest(
     underlying: str = "SPX",          # the committed instrument
     start: Optional[str] = None,
     end: Optional[str] = None,
+    use_iron_condor: bool = False,    # v2: iron condor instead of put credit spread
 ) -> BacktestResult:
     """Run the backtest in one of four modes.
 
@@ -146,6 +158,18 @@ def run_backtest(
     high_water = inputs.initial_equity
     underwater_days = 0
     current_dd_frac = 0.0
+    next_ic_id = 1
+
+    # Precompute 5-day realized vol of SPX (annualized) for Layer 5 resume gate.
+    # rv5d_today is the latest value; rv5d_history_252d is the trailing 252-day
+    # window the resume helper compares against (RESUME_REALIZED_VOL_PCT pctile).
+    spx_returns = spx["close"].pct_change()
+    rv5d_series = spx_returns.rolling(5).std() * np.sqrt(252)
+
+    # Latching halt-state machine: persists across the day-loop so Layer 5
+    # auto-resume sees yesterday's halt and can lift it once all four
+    # conditions clear.
+    prior_halt_state: HaltState = "active"
 
     for idx, (today, row_spx) in enumerate(spx.iterrows()):
         if idx == 0:
@@ -203,14 +227,9 @@ def run_backtest(
             # where combined_half_spread = (full_short + full_long) / 2.
             # f=1.0 means touching the bid-ask boundary (worst case);
             # f=0 means executing at mid (best case). README schedule: 0.30 to 1.00.
-            short_q = pricer.quote_put(today, t.spread.underlying,
-                                        t.spread.short_leg.strike,
-                                        t.spread.short_leg.expiry) \
-                if hasattr(pricer, "quote_put") else None
-            long_q = pricer.quote_put(today, t.spread.underlying,
-                                       t.spread.long_leg.strike,
-                                       t.spread.long_leg.expiry) \
-                if hasattr(pricer, "quote_put") else None
+            # Dispatch on spread side (puts use quote_put, calls use quote_call).
+            short_q = _quote_for_spread(pricer, today, t.spread, "short")
+            long_q = _quote_for_spread(pricer, today, t.spread, "long")
             if short_q is not None and long_q is not None:
                 full_short = short_q.ask - short_q.bid
                 full_long = long_q.ask - long_q.bid
@@ -265,6 +284,8 @@ def run_backtest(
                 sum(1 for t in closed_trades[-60:]
                     if t.pnl_per_spread is not None and t.pnl_per_spread > 0) / max(n_recent_trades, 1)
             ) if n_recent_trades >= 1 else None
+            rv5d_today = float(rv5d_series.loc[today]) if today in rv5d_series.index else float("nan")
+            rv5d_hist = rv5d_series.loc[:today].iloc[-252:]
             halt_decision = evaluate_halts(
                 vix_today=vix_t, vix_yday=vix_y,
                 spx_today=spx_today_close, spx_yday=spx_yday_close,
@@ -278,9 +299,13 @@ def run_backtest(
                 n_trades_in_rolling=n_recent_trades,
                 underwater_days=underwater_days,
                 current_drawdown_frac=current_dd_frac,
+                prior_state=prior_halt_state,
+                rv5d_today=rv5d_today,
+                rv5d_history_252d=rv5d_hist,
             )
             halt_log_rows.append({"date": today, "state": halt_decision.state,
                                   "triggers": ",".join(halt_decision.triggers)})
+            prior_halt_state = halt_decision.state
 
         # --- Entry pass on Mondays ---
         if _is_monday(today.date() if hasattr(today, "date") else today):
@@ -298,83 +323,13 @@ def run_backtest(
             if entry_blocked_reason is not None:
                 skipped.append({"date": today, "reason": entry_blocked_reason, "mode": mode})
             else:
-                # Build the spread and open trade
-                try:
-                    spread, theoretical_credit_per_share, abs_delta = build_spread(
-                        pricer=pricer, as_of=today, underlying=underlying,
-                        spot=spx_today_close, vix=vix_t,
-                    )
-                except Exception as e:
-                    log.warning("build_spread failed on %s: %s", today, e)
-                    skipped.append({"date": today, "reason": f"build_spread_err:{type(e).__name__}", "mode": mode})
-                    equity_path.append((today, equity))
-                    continue
-
-                # Bug #2 fix: realistic entry execution using REAL bid-ask
-                # spread from the pricer, scaled by README's VIX fraction.
-                # Selling a credit spread:
-                #   credit = mid_credit - f * combined_half_spread
-                # f=0.30 at VIX<20 means trader saves 70% of the half-spread
-                # vs touching the bid-ask boundary (typical SPX execution
-                # better than the boundary).
-                if hasattr(pricer, "quote_put"):
-                    short_q = pricer.quote_put(today, underlying,
-                                                spread.short_leg.strike,
-                                                spread.short_leg.expiry)
-                    long_q = pricer.quote_put(today, underlying,
-                                               spread.long_leg.strike,
-                                               spread.long_leg.expiry)
-                    if short_q is None or long_q is None:
-                        skipped.append({"date": today, "reason": "quote_lookup_miss", "mode": mode})
-                        equity_path.append((today, equity))
-                        continue
-                    full_short = short_q.ask - short_q.bid
-                    full_long = long_q.ask - long_q.bid
-                    combined_half = (full_short + full_long) / 2.0
-                    frac = slippage_pct_at_vix(vix_t)
-                    if abs(gap) >= GAP_SLIPPAGE_THRESHOLD_PCT:
-                        frac *= 1.5    # gap penalty per README
-                    mid_credit = max(short_q.mid - long_q.mid, 0.0)
-                    realistic_credit_per_share = max(mid_credit - frac * combined_half, 0.0)
-                    entry_credit_per_share_after_friction = realistic_credit_per_share
-                else:
-                    # BS pricer fallback
-                    ba_per_share = _bid_ask_estimate_per_share(vix_t)
-                    slip = slippage_dollars_per_share(ba_per_share, vix_t, gap_pct=gap)
-                    entry_credit_per_share_after_friction = max(theoretical_credit_per_share - slip, 0.0)
-
-                # Bug guard: a put credit spread's max economic value is
-                # spread_width per share. Quotes that imply credit > width
-                # are stale / inverted / cross-quoted ticks in OptionMetrics
-                # and would produce nonsense P&L. Cap at width minus a
-                # small floor (1 cent) so max_loss_per_spread can't go
-                # below $1, which would cause sizer.contracts to explode.
-                MAX_CREDIT_PER_SHARE = SPREAD_WIDTH_PTS - 0.01
-                if entry_credit_per_share_after_friction > MAX_CREDIT_PER_SHARE:
-                    log.warning("date=%s: capping entry credit %.4f -> %.4f (> spread width %d)",
-                                today.date(), entry_credit_per_share_after_friction,
-                                MAX_CREDIT_PER_SHARE, SPREAD_WIDTH_PTS)
-                    entry_credit_per_share_after_friction = MAX_CREDIT_PER_SHARE
-                entry_credit_per_spread = entry_credit_per_share_after_friction * 100.0
-
-                # Sizing: max win = credit, max loss = (width - credit) * 100
-                max_win_per_spread = entry_credit_per_spread
-                # Floor max_loss at 1pt of width = $100. Prevents the case
-                # where (rare) credit ≈ width gives ~$0 max_loss and the
-                # sizer divides the risk budget by ~0 → unbounded contracts.
-                max_loss_per_spread = max(
-                    SPREAD_WIDTH_PTS * 100.0 - entry_credit_per_spread,
-                    100.0,
-                )
-
-                # ML probability for sizing (Kelly): use 0.5 if ML disabled.
+                # Resolve sizing inputs once (shared across both IC sides if applicable)
                 if use_ml and inputs.ml_probability is not None:
                     p_for_sizing = float(inputs.ml_probability.asof(today))
                     if np.isnan(p_for_sizing):
                         p_for_sizing = 0.5
                 else:
                     p_for_sizing = 0.5
-
                 try:
                     treas_corr = float(inputs.spy_treasury_corr.asof(today))
                     if np.isnan(treas_corr):
@@ -382,46 +337,126 @@ def run_backtest(
                 except (KeyError, ValueError):
                     treas_corr = 0.0
 
-                # Sizing: ML probability is a binary gate (already filtered
-                # above), not a Kelly weight. Kelly evaluates to 0 for credit
-                # spreads at typical p values (loss/win ratio ~6:1 requires
-                # p > 0.86 for positive Kelly), which would zero out every
-                # ML-gated trade. Treat sizing as cap-based across all modes
-                # and report Kelly as a diagnostic only. This is consistent
-                # with the README's pre-committed interpretation rule:
-                # "if ml_only Sharpe is within 0.1 of naked, ML is decorative."
-                size = size_position(
-                    equity=equity,
-                    p_calibrated=p_for_sizing,
-                    max_win_per_spread=max_win_per_spread,
-                    max_loss_per_spread=max_loss_per_spread,
-                    vix=vix_t,
-                    spy_treasury_corr=treas_corr,
-                    use_kelly=False,
-                )
+                def _attempt_entry_for_side(
+                    side_spread: Spread,
+                    side_theoretical_credit: float,
+                    ic_id: Optional[int] = None,
+                ) -> Optional[Trade]:
+                    """Per-side entry: realistic-quote pricing → cap → sizing
+                    → Trade creation. Returns Trade or None (skipped reason
+                    already appended). Mutates `equity` and `next_trade_id`
+                    via nonlocal."""
+                    nonlocal equity, next_trade_id
+                    side_label = f"_{side_spread.right}" if ic_id is not None else ""
 
-                if size.contracts < 1:
-                    skipped.append({"date": today, "reason": "size_zero", "mode": mode})
-                else:
-                    # Apply entry commissions immediately
+                    # Realistic-quote credit (Bug #2 fix), per side
+                    if hasattr(pricer, "quote_put"):
+                        short_q = _quote_for_spread(pricer, today, side_spread, "short")
+                        long_q = _quote_for_spread(pricer, today, side_spread, "long")
+                        if short_q is None or long_q is None:
+                            skipped.append({"date": today,
+                                            "reason": f"quote_lookup_miss{side_label}",
+                                            "mode": mode})
+                            return None
+                        full_short = short_q.ask - short_q.bid
+                        full_long = long_q.ask - long_q.bid
+                        combined_half = (full_short + full_long) / 2.0
+                        frac = slippage_pct_at_vix(vix_t)
+                        if abs(gap) >= GAP_SLIPPAGE_THRESHOLD_PCT:
+                            frac *= 1.5
+                        mid_credit = max(short_q.mid - long_q.mid, 0.0)
+                        entry_credit_per_share = max(mid_credit - frac * combined_half, 0.0)
+                    else:
+                        ba_per_share = _bid_ask_estimate_per_share(vix_t)
+                        slip = slippage_dollars_per_share(ba_per_share, vix_t, gap_pct=gap)
+                        entry_credit_per_share = max(side_theoretical_credit - slip, 0.0)
+
+                    # Cap at width - $0.01 (Bug guard)
+                    MAX_CREDIT_PER_SHARE = SPREAD_WIDTH_PTS - 0.01
+                    if entry_credit_per_share > MAX_CREDIT_PER_SHARE:
+                        log.warning("date=%s side=%s: capping entry credit %.4f -> %.4f",
+                                    today.date(), side_spread.right,
+                                    entry_credit_per_share, MAX_CREDIT_PER_SHARE)
+                        entry_credit_per_share = MAX_CREDIT_PER_SHARE
+                    entry_credit_per_spread = entry_credit_per_share * 100.0
+
+                    max_win_per_spread = entry_credit_per_spread
+                    max_loss_per_spread = max(
+                        SPREAD_WIDTH_PTS * 100.0 - entry_credit_per_spread, 100.0,
+                    )
+
+                    size = size_position(
+                        equity=equity,
+                        p_calibrated=p_for_sizing,
+                        max_win_per_spread=max_win_per_spread,
+                        max_loss_per_spread=max_loss_per_spread,
+                        vix=vix_t,
+                        spy_treasury_corr=treas_corr,
+                        use_kelly=False,
+                    )
+
+                    if size.contracts < 1:
+                        skipped.append({"date": today, "reason": f"size_zero{side_label}",
+                                        "mode": mode})
+                        return None
+
                     entry_commish = round_trip_commissions(size.contracts) / 2.0
                     equity -= entry_commish
+                    entry_dte_calc = (side_spread.short_leg.expiry -
+                                      (today.date() if hasattr(today, "date") else today)).days
                     trade = Trade(
                         trade_id=next_trade_id, mode=mode,
                         entry_date=today.date() if hasattr(today, "date") else today,
-                        spread=spread, contracts=size.contracts,
+                        spread=side_spread, contracts=size.contracts,
                         entry_credit_per_spread=entry_credit_per_spread,
                         entry_spx=spx_today_close, entry_vix=vix_t,
                         entry_iv=vix_t / 100.0,
-                        entry_dte=(spread.short_leg.expiry - today.date()).days if hasattr(today, "date") else (spread.short_leg.expiry - today).days,
+                        entry_dte=entry_dte_calc,
                         ml_probability=p_for_sizing if use_ml else None,
                         halt_state_at_entry=halt_decision.state if halt_decision else None,
                         kelly_fraction=size.kelly_fraction,
                         vol_multiplier=size.vol_multiplier,
                         stress_multiplier=size.stress_multiplier,
+                        iron_condor_id=ic_id,
                     )
-                    open_trades.append(trade)
                     next_trade_id += 1
+                    return trade
+
+                if use_iron_condor:
+                    try:
+                        ps, cs, pc, cc, _, _ = build_iron_condor(
+                            pricer=pricer, as_of=today, underlying=underlying,
+                            spot=spx_today_close, vix=vix_t,
+                        )
+                    except Exception as e:
+                        log.warning("build_iron_condor failed on %s: %s", today, e)
+                        skipped.append({"date": today,
+                                        "reason": f"build_ic_err:{type(e).__name__}",
+                                        "mode": mode})
+                        equity_path.append((today, equity))
+                        continue
+                    ic_id = next_ic_id
+                    next_ic_id += 1
+                    for side_spread, side_credit in [(ps, pc), (cs, cc)]:
+                        t = _attempt_entry_for_side(side_spread, side_credit, ic_id=ic_id)
+                        if t is not None:
+                            open_trades.append(t)
+                else:
+                    try:
+                        spread, theoretical_credit_per_share, _ = build_spread(
+                            pricer=pricer, as_of=today, underlying=underlying,
+                            spot=spx_today_close, vix=vix_t,
+                        )
+                    except Exception as e:
+                        log.warning("build_spread failed on %s: %s", today, e)
+                        skipped.append({"date": today,
+                                        "reason": f"build_spread_err:{type(e).__name__}",
+                                        "mode": mode})
+                        equity_path.append((today, equity))
+                        continue
+                    t = _attempt_entry_for_side(spread, theoretical_credit_per_share, ic_id=None)
+                    if t is not None:
+                        open_trades.append(t)
 
         equity_path.append((today, equity))
 
@@ -436,10 +471,15 @@ def run_backtest(
         except (KeyError, ValueError):
             last_vix = 20.0
         for t in open_trades:
-            sp = pricer.price_put(last_dt, t.spread.underlying, last_close,
-                                   t.spread.short_leg.strike, t.spread.short_leg.expiry, last_vix)
-            lp = pricer.price_put(last_dt, t.spread.underlying, last_close,
-                                   t.spread.long_leg.strike, t.spread.long_leg.expiry, last_vix)
+            # Dispatch put/call price depending on spread side
+            if t.spread.right == "P":
+                price_fn = pricer.price_put
+            else:
+                price_fn = pricer.price_call
+            sp = price_fn(last_dt, t.spread.underlying, last_close,
+                           t.spread.short_leg.strike, t.spread.short_leg.expiry, last_vix)
+            lp = price_fn(last_dt, t.spread.underlying, last_close,
+                           t.spread.long_leg.strike, t.spread.long_leg.expiry, last_vix)
             exit_debit_per_spread = max(sp - lp, 0.0) * 100.0
             commish_share = round_trip_commissions(t.contracts) / 2.0
             pnl_per_spread = t.entry_credit_per_spread - exit_debit_per_spread
