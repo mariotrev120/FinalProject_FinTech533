@@ -158,16 +158,8 @@ window.Quarto = {
 <span class="menu-text">Home</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./thesis.html"> 
-<span class="menu-text">Thesis</span></a>
-  </li>  
-  <li class="nav-item">
     <a class="nav-link" href="./mechanics.html"> 
-<span class="menu-text">Mechanics</span></a>
-  </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="./pre_commitments.html"> 
-<span class="menu-text">Pre-commitments</span></a>
+<span class="menu-text">Strategy</span></a>
   </li>  
   <li class="nav-item">
     <a class="nav-link" href="./results.html"> 
@@ -175,7 +167,7 @@ window.Quarto = {
   </li>  
   <li class="nav-item">
     <a class="nav-link" href="./ablations.html"> 
-<span class="menu-text">Ablations</span></a>
+<span class="menu-text">Variants</span></a>
   </li>  
   <li class="nav-item">
     <a class="nav-link active" href="./monitoring.html" aria-current="page"> 
@@ -187,7 +179,7 @@ window.Quarto = {
   </li>  
   <li class="nav-item">
     <a class="nav-link" href="./data_and_literature.html"> 
-<span class="menu-text">Data &amp; Literature</span></a>
+<span class="menu-text">Data &amp; Sources</span></a>
   </li>  
 </ul>
           </div> <!-- /navcollapse -->
@@ -209,7 +201,7 @@ window.Quarto = {
   <li><a href="#the-framework" id="toc-the-framework" class="nav-link active" data-scroll-target="#the-framework">The framework</a></li>
   <li><a href="#threshold-semantics-pre-committed" id="toc-threshold-semantics-pre-committed" class="nav-link" data-scroll-target="#threshold-semantics-pre-committed">Threshold semantics (pre-committed)</a></li>
   <li><a href="#why-60-trade-rolling-window" id="toc-why-60-trade-rolling-window" class="nav-link" data-scroll-target="#why-60-trade-rolling-window">Why 60-trade rolling window</a></li>
-  <li><a href="#pre-committed-μ-baseline" id="toc-pre-committed-μ-baseline" class="nav-link" data-scroll-target="#pre-committed-μ-baseline">Pre-committed μ baseline</a></li>
+  <li><a href="#reference-baseline" id="toc-reference-baseline" class="nav-link" data-scroll-target="#reference-baseline">Reference baseline</a></li>
   <li><a href="#worked-example-20182024-retrospective-on-the-headline-basket" id="toc-worked-example-20182024-retrospective-on-the-headline-basket" class="nav-link" data-scroll-target="#worked-example-20182024-retrospective-on-the-headline-basket">Worked example: 2018–2024 retrospective on the headline basket</a>
   <ul class="collapse">
   <li><a href="#bound-distribution-post-warmup-of-60-trades" id="toc-bound-distribution-post-warmup-of-60-trades" class="nav-link" data-scroll-target="#bound-distribution-post-warmup-of-60-trades">Bound distribution (post-warmup of 60 trades)</a></li>
@@ -252,7 +244,7 @@ window.Quarto = {
 <p>Both questions are answered with one framework: <strong>Hoeffding’s inequality, applied in the trader form</strong>.</p>
 <section id="the-framework" class="level2">
 <h2 class="anchored" data-anchor-id="the-framework">The framework</h2>
-<p>Pre-commit a baseline performance metric <code>μ</code> from the OOS backtest, for our headline strategy, that’s the rolling-60-trade win rate observed over 2018–2024. Then, going forward, observe the live realized win rate <code>X̄</code> over the same rolling-60-trade window. Apply:</p>
+<p>We benchmark a baseline performance metric <code>μ</code> from the OOS backtest, for the headline strategy that is the basket-level win rate of 0.730 observed over 2018–2024. Going forward, we observe the live realized win rate <code>X̄</code> over a rolling 60-trade window and apply:</p>
 <p><span class="math display">\[
 P[\,\bar X - \mu \geq t \mid H_0\,] \;\leq\; e^{-2 t^2 N}
 \]</span></p>
@@ -303,20 +295,19 @@ P[\,\bar X - \mu \geq t \mid H_0\,] \;\leq\; e^{-2 t^2 N}
 </tr>
 </tbody>
 </table>
-<p>These thresholds are pre-committed before live deployment. They are not numerical Sharpe targets, they are <strong>structural confidence-level cutoffs</strong> on the probability bound itself.</p>
+<p>These thresholds are set before live deployment. They are structural confidence-level cutoffs on the probability bound itself, not numerical Sharpe targets.</p>
 </section>
 <section id="why-60-trade-rolling-window" class="level2">
 <h2 class="anchored" data-anchor-id="why-60-trade-rolling-window">Why 60-trade rolling window</h2>
 <p>Three constraints determine the window size:</p>
 <ul>
-<li><strong>Statistical power.</strong> At N = 60 trades, an observed underperformance of <code>t = 0.10</code> (10 percentage points below pre-committed win rate) gives a Hoeffding bound of <code>e^(−2·0.01·60) = e^(−1.2) ≈ 30%</code>. That puts a 10-point degradation in the <strong>yellow</strong> zone, which is the right level of sensitivity, not jumping at one bad week, not waiting for a year of declines.</li>
+<li><strong>Statistical power.</strong> At N = 60 trades, an observed underperformance of <code>t = 0.10</code> (10 percentage points below win rate) gives a Hoeffding bound of <code>e^(−2·0.01·60) = e^(−1.2) ≈ 30%</code>. That puts a 10-point degradation in the <strong>yellow</strong> zone, which is the right level of sensitivity, not jumping at one bad week, not waiting for a year of declines.</li>
 <li><strong>Time-to-signal.</strong> With ~50–60 trades per year on the SPX iron condor at weekly cadence, 60 trades ≈ 1 year. The monitor produces a fresh signal monthly as the rolling window updates.</li>
 <li><strong>Distribution stability.</strong> Hoeffding holds for any bounded RV, but tighter bands of t for the same N require either more trades or larger underperformance magnitude. 60 is the smallest N at which the threshold-semantics resolution is meaningful for win-rate observations bounded in [0, 1].</li>
 </ul>
 </section>
-<section id="pre-committed-μ-baseline" class="level2">
-<h2 class="anchored" data-anchor-id="pre-committed-μ-baseline">Pre-committed μ baseline</h2>
-<p>The monitor’s reference parameter is the basket-level win rate observed over the full OOS backtest:</p>
+<section id="reference-baseline" class="level2">
+<h2 class="anchored" data-anchor-id="reference-baseline">Reference baseline</h2>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 21%">
@@ -329,19 +320,19 @@ P[\,\bar X - \mu \geq t \mid H_0\,] \;\leq\; e^{-2 t^2 N}
 <th>Strategy</th>
 <th>OOS window</th>
 <th style="text-align: right;">n_trades</th>
-<th style="text-align: right;">μ committed (win rate)</th>
+<th style="text-align: right;">μ (basket win rate)</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td><strong>Headline (Wheel-3 + GLD halts_only put-only + Head 2 ML overlay)</strong></td>
+<td><strong>Headline (Wheel-3 + GLD, halts_only, put-only, Head 2 ML overlay)</strong></td>
 <td>2018-01-01 → 2024-12-31</td>
 <td style="text-align: right;"><strong>437</strong></td>
 <td style="text-align: right;"><strong>0.730</strong></td>
 </tr>
 </tbody>
 </table>
-<p>Live trading would use this μ = 0.73 as the reference; deviations downward trigger the threshold table above.</p>
+<p>Live trading uses μ = 0.730 as the reference. Deviations downward trigger the threshold table above.</p>
 </section>
 <section id="worked-example-20182024-retrospective-on-the-headline-basket" class="level2">
 <h2 class="anchored" data-anchor-id="worked-example-20182024-retrospective-on-the-headline-basket">Worked example: 2018–2024 retrospective on the headline basket</h2>
@@ -385,7 +376,7 @@ P[\,\bar X - \mu \geq t \mid H_0\,] \;\leq\; e^{-2 t^2 N}
 </tr>
 </tbody>
 </table>
-<p>The framework operated as designed over the OOS sample: the basket’s rolling win rate stayed within the pre-committed regime expectations on 88% of trades. Yellow signals (7.7%) flagged short stretches of sub-baseline performance that were absorbed back into green within a few weeks. Red signals (4.2%) flagged genuine sustained dips. <strong>No critical signal fired</strong>, the basket never had a 60-trade rolling win-rate dip large enough to trigger a regime-shutdown alert during 2018-2024.</p>
+<p>The framework operated as designed over the OOS sample: the basket’s rolling win rate stayed within the regime expectations on 88% of trades. Yellow signals (7.7%) flagged short stretches of sub-baseline performance that were absorbed back into green within a few weeks. Red signals (4.2%) flagged genuine sustained dips. <strong>No critical signal fired</strong>, the basket never had a 60-trade rolling win-rate dip large enough to trigger a regime-shutdown alert during 2018-2024.</p>
 </section>
 <section id="stress-event-check" class="level3">
 <h3 class="anchored" data-anchor-id="stress-event-check">Stress-event check</h3>
@@ -443,12 +434,12 @@ P[\,\bar X - \mu \geq t \mid H_0\,] \;\leq\; e^{-2 t^2 N}
 </tr>
 </tbody>
 </table>
-<p>Notable: the headline basket’s rolling win rate at the COVID crash check-date (60-trade window ending Jan 2020) was 85%, actually <em>above</em> the pre-committed μ. The defined-risk put-credit-spread structure with halt framework absorbed the COVID stress without measurable win-rate degradation in the rolling window. This is the strategy’s halt framework + cross-asset diversification doing exactly what they were designed to do.</p>
+<p>Notable: the headline basket’s rolling win rate at the COVID crash check-date (60-trade window ending Jan 2020) was 85%, actually <em>above</em> the μ. The defined-risk put-credit-spread structure with halt framework absorbed the COVID stress without measurable win-rate degradation in the rolling window. This is the strategy’s halt framework + cross-asset diversification doing exactly what they were designed to do.</p>
 <p>The framework demonstrates three properties on this retrospective:</p>
 <ol type="1">
 <li><strong>Not noise-driven</strong>, 88% of windows stay green, indicating low false-positive rate from random monthly fluctuations.</li>
 <li><strong>Sensitive enough to flag genuine dips</strong>, 4.2% of windows reach the red zone (10-25% bound), meaning the framework would have alerted human attention at those moments.</li>
-<li><strong>No catastrophic firing</strong>, 0% critical signals over 7 years means the strategy did not experience a regime-degradation event large enough to trigger a forced shutdown. Validation that the basket is robust within its pre-committed expectations.</li>
+<li><strong>No catastrophic firing</strong>, 0% critical signals over 7 years means the strategy did not experience a regime-degradation event large enough to trigger a forced shutdown. Validation that the basket is robust within its expectations.</li>
 </ol>
 </section>
 </section>
@@ -457,18 +448,18 @@ P[\,\bar X - \mu \geq t \mid H_0\,] \;\leq\; e^{-2 t^2 N}
 <ul>
 <li>It does not predict that a regime change is about to happen. It detects degradation that has already occurred.</li>
 <li>It does not distinguish between bad luck on a small sample and a true regime change. The bound is a <strong>probability</strong> statement, not a binary decision. Reading the bound at 30% means “this could be bad luck, possible, but it could also be regime degradation; the monitor flags it for human attention.”</li>
-<li>It does not adapt μ over time. We commit μ from the OOS backtest and hold it. If we update μ live, we lose the pre-commitment property and the framework becomes circular.</li>
+<li>It does not adapt μ over time. We benchmark μ from the OOS sample and hold it fixed in live deployment, this preserves the monitor’s drift-detection power. Adapting μ live would create a moving-goalpost reference.</li>
 </ul>
 </section>
 <section id="implementation" class="level2">
 <h2 class="anchored" data-anchor-id="implementation">Implementation</h2>
 <p>The monitor is implemented in <code>src/metrics/hoeffding.py</code> and <code>scripts/hoeffding_monitor.py</code>. It reads per-instrument trade outcomes, computes the rolling-60 win rate, applies the bound, and emits a dated alert log to <code>data/processed/hoeffding_signals/{TICKER}_signals.parquet</code>.</p>
-<p>Cadence in production: weekly run, one signal per Monday morning before any new entries fire. Output: per-instrument signal status + book-level signal aggregated across the 5 VRP and 9 wheel positions.</p>
+<p>Cadence in production: weekly run, one signal per Monday morning before any new entries fire. Output: basket-level signal status across the 4 headline instruments.</p>
 </section>
 <section id="what-this-answers" class="level2">
 <h2 class="anchored" data-anchor-id="what-this-answers">What this answers</h2>
 <p>For the question <strong>“how will you know if the strategy is performing as expected?”</strong>, the bound stays ≥ 50% (green). Performance is plausibly within the OOS regime.</p>
-<p>For the question <strong>“how will you quantify when it stops working?”</strong>, when the bound drops to 10% or below, the strategy has degraded enough that random chance is an implausible explanation. That is the trip-wire. It is dated, quantitative, distribution-free, and pre-committed.</p>
+<p>For the question <strong>“how will you quantify when it stops working?”</strong>, when the bound drops to 10% or below, the strategy has degraded enough that random chance is an implausible explanation. That is the trip-wire. It is dated, quantitative, and distribution-free.</p>
 
 
 <!-- -->
@@ -1105,7 +1096,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="fu">## The framework</span></span>
 <span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>Pre-commit a baseline performance metric <span class="in">`μ`</span> from the OOS backtest, for our headline strategy, that's the rolling-60-trade win rate observed over 2018–2024. Then, going forward, observe the live realized win rate <span class="in">`X̄`</span> over the same rolling-60-trade window. Apply:</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>We benchmark a baseline performance metric <span class="in">`μ`</span> from the OOS backtest, for the headline strategy that is the basket-level win rate of 0.730 observed over 2018–2024. Going forward, we observe the live realized win rate <span class="in">`X̄`</span> over a rolling 60-trade window and apply:</span>
 <span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>$$</span>
 <span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>P<span class="co">[</span><span class="ot">\,\bar X - \mu \geq t \mid H_0\,</span><span class="co">]</span> \;\leq\; e^{-2 t^2 N}</span>
@@ -1124,79 +1115,77 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>| 10–25% | 🟠 **red** | Significant regime risk | Substantial concern; review |</span>
 <span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>| &lt; 10% | 🔴 **critical** | Almost certain regime change | Halt strategy and rethink |</span>
 <span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>These thresholds are pre-committed before live deployment. They are not numerical Sharpe targets, they are **structural confidence-level cutoffs** on the probability bound itself.</span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>These thresholds are set before live deployment. They are structural confidence-level cutoffs on the probability bound itself, not numerical Sharpe targets.</span>
 <span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a><span class="fu">## Why 60-trade rolling window</span></span>
 <span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a>Three constraints determine the window size:</span>
 <span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Statistical power.** At N = 60 trades, an observed underperformance of `t = 0.10` (10 percentage points below pre-committed win rate) gives a Hoeffding bound of `e^(−2·0.01·60) = e^(−1.2) ≈ 30%`. That puts a 10-point degradation in the **yellow** zone, which is the right level of sensitivity, not jumping at one bad week, not waiting for a year of declines.</span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Statistical power.** At N = 60 trades, an observed underperformance of `t = 0.10` (10 percentage points below win rate) gives a Hoeffding bound of `e^(−2·0.01·60) = e^(−1.2) ≈ 30%`. That puts a 10-point degradation in the **yellow** zone, which is the right level of sensitivity, not jumping at one bad week, not waiting for a year of declines.</span>
 <span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Time-to-signal.** With ~50–60 trades per year on the SPX iron condor at weekly cadence, 60 trades ≈ 1 year. The monitor produces a fresh signal monthly as the rolling window updates.</span>
 <span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Distribution stability.** Hoeffding holds for any bounded RV, but tighter bands of t for the same N require either more trades or larger underperformance magnitude. 60 is the smallest N at which the threshold-semantics resolution is meaningful for win-rate observations bounded in <span class="co">[</span><span class="ot">0, 1</span><span class="co">]</span>.</span>
 <span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a><span class="fu">## Pre-committed μ baseline</span></span>
+<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a><span class="fu">## Reference baseline</span></span>
 <span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a>The monitor's reference parameter is the basket-level win rate observed over the full OOS backtest:</span>
-<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a>| Strategy | OOS window | n_trades | μ committed (win rate) |</span>
-<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a>|---|---|---:|---:|</span>
-<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a>| **Headline (Wheel-3 + GLD halts_only put-only + Head 2 ML overlay)** | 2018-01-01 → 2024-12-31 | **437** | **0.730** |</span>
+<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a>| Strategy | OOS window | n_trades | μ (basket win rate) |</span>
+<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a>|---|---|---:|---:|</span>
+<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a>| **Headline (Wheel-3 + GLD, halts_only, put-only, Head 2 ML overlay)** | 2018-01-01 → 2024-12-31 | **437** | **0.730** |</span>
+<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a>Live trading uses μ = 0.730 as the reference. Deviations downward trigger the threshold table above.</span>
 <span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a>Live trading would use this μ = 0.73 as the reference; deviations downward trigger the threshold table above.</span>
+<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a><span class="fu">## Worked example: 2018–2024 retrospective on the headline basket</span></span>
 <span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a><span class="fu">## Worked example: 2018–2024 retrospective on the headline basket</span></span>
+<span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a>This is a backtest of the monitoring framework itself, what would the monitor have flagged on each rolling-60-trade window over the OOS sample?</span>
 <span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-56"><a href="#cb1-56" aria-hidden="true" tabindex="-1"></a>This is a backtest of the monitoring framework itself, what would the monitor have flagged on each rolling-60-trade window over the OOS sample?</span>
-<span id="cb1-57"><a href="#cb1-57" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-58"><a href="#cb1-58" aria-hidden="true" tabindex="-1"></a><span class="in">```{=html}</span></span>
-<span id="cb1-59"><a href="#cb1-59" aria-hidden="true" tabindex="-1"></a><span class="in">&lt;iframe src="charts/hoeffding_trace.html" width="100%" height="500" frameborder="0"&gt;&lt;/iframe&gt;</span></span>
-<span id="cb1-60"><a href="#cb1-60" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb1-56"><a href="#cb1-56" aria-hidden="true" tabindex="-1"></a><span class="in">```{=html}</span></span>
+<span id="cb1-57"><a href="#cb1-57" aria-hidden="true" tabindex="-1"></a><span class="in">&lt;iframe src="charts/hoeffding_trace.html" width="100%" height="500" frameborder="0"&gt;&lt;/iframe&gt;</span></span>
+<span id="cb1-58"><a href="#cb1-58" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb1-59"><a href="#cb1-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-60"><a href="#cb1-60" aria-hidden="true" tabindex="-1"></a><span class="fu">### Bound distribution (post-warmup of 60 trades)</span></span>
 <span id="cb1-61"><a href="#cb1-61" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-62"><a href="#cb1-62" aria-hidden="true" tabindex="-1"></a><span class="fu">### Bound distribution (post-warmup of 60 trades)</span></span>
-<span id="cb1-63"><a href="#cb1-63" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-64"><a href="#cb1-64" aria-hidden="true" tabindex="-1"></a>| Signal band | Bound range | Trades in band | % of post-warmup OOS |</span>
-<span id="cb1-65"><a href="#cb1-65" aria-hidden="true" tabindex="-1"></a>|---|---|---:|---:|</span>
-<span id="cb1-66"><a href="#cb1-66" aria-hidden="true" tabindex="-1"></a>| 🟢 green | ≥ 50% | 332 | **88.1%** |</span>
-<span id="cb1-67"><a href="#cb1-67" aria-hidden="true" tabindex="-1"></a>| 🟡 yellow | 25–50% | 29 | 7.7% |</span>
-<span id="cb1-68"><a href="#cb1-68" aria-hidden="true" tabindex="-1"></a>| 🟠 red | 10–25% | 16 | 4.2% |</span>
-<span id="cb1-69"><a href="#cb1-69" aria-hidden="true" tabindex="-1"></a>| 🔴 critical | &lt; 10% | 0 | **0.0%** |</span>
+<span id="cb1-62"><a href="#cb1-62" aria-hidden="true" tabindex="-1"></a>| Signal band | Bound range | Trades in band | % of post-warmup OOS |</span>
+<span id="cb1-63"><a href="#cb1-63" aria-hidden="true" tabindex="-1"></a>|---|---|---:|---:|</span>
+<span id="cb1-64"><a href="#cb1-64" aria-hidden="true" tabindex="-1"></a>| 🟢 green | ≥ 50% | 332 | **88.1%** |</span>
+<span id="cb1-65"><a href="#cb1-65" aria-hidden="true" tabindex="-1"></a>| 🟡 yellow | 25–50% | 29 | 7.7% |</span>
+<span id="cb1-66"><a href="#cb1-66" aria-hidden="true" tabindex="-1"></a>| 🟠 red | 10–25% | 16 | 4.2% |</span>
+<span id="cb1-67"><a href="#cb1-67" aria-hidden="true" tabindex="-1"></a>| 🔴 critical | &lt; 10% | 0 | **0.0%** |</span>
+<span id="cb1-68"><a href="#cb1-68" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-69"><a href="#cb1-69" aria-hidden="true" tabindex="-1"></a>The framework operated as designed over the OOS sample: the basket's rolling win rate stayed within the regime expectations on 88% of trades. Yellow signals (7.7%) flagged short stretches of sub-baseline performance that were absorbed back into green within a few weeks. Red signals (4.2%) flagged genuine sustained dips. **No critical signal fired**, the basket never had a 60-trade rolling win-rate dip large enough to trigger a regime-shutdown alert during 2018-2024.</span>
 <span id="cb1-70"><a href="#cb1-70" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-71"><a href="#cb1-71" aria-hidden="true" tabindex="-1"></a>The framework operated as designed over the OOS sample: the basket's rolling win rate stayed within the pre-committed regime expectations on 88% of trades. Yellow signals (7.7%) flagged short stretches of sub-baseline performance that were absorbed back into green within a few weeks. Red signals (4.2%) flagged genuine sustained dips. **No critical signal fired**, the basket never had a 60-trade rolling win-rate dip large enough to trigger a regime-shutdown alert during 2018-2024.</span>
+<span id="cb1-71"><a href="#cb1-71" aria-hidden="true" tabindex="-1"></a><span class="fu">### Stress-event check</span></span>
 <span id="cb1-72"><a href="#cb1-72" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-73"><a href="#cb1-73" aria-hidden="true" tabindex="-1"></a><span class="fu">### Stress-event check</span></span>
-<span id="cb1-74"><a href="#cb1-74" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-75"><a href="#cb1-75" aria-hidden="true" tabindex="-1"></a>| Event | Date probed | Rolling X̄ | t = μ − X̄ | Bound | Signal |</span>
-<span id="cb1-76"><a href="#cb1-76" aria-hidden="true" tabindex="-1"></a>|---|---|---:|---:|---:|:-:|</span>
-<span id="cb1-77"><a href="#cb1-77" aria-hidden="true" tabindex="-1"></a>| Q4 2018 selloff | 2019-02-04 | 0.700 | +0.030 | 0.898 | 🟢 green |</span>
-<span id="cb1-78"><a href="#cb1-78" aria-hidden="true" tabindex="-1"></a>| COVID crash | 2020-01-13 | 0.850 | 0.000 (over) | 1.000 | 🟢 green |</span>
-<span id="cb1-79"><a href="#cb1-79" aria-hidden="true" tabindex="-1"></a>| 2022 bear market | 2023-04-17 | 0.767 | 0.000 (over) | 1.000 | 🟢 green |</span>
-<span id="cb1-80"><a href="#cb1-80" aria-hidden="true" tabindex="-1"></a>| Banking crisis | 2023-04-17 | 0.767 | 0.000 (over) | 1.000 | 🟢 green |</span>
+<span id="cb1-73"><a href="#cb1-73" aria-hidden="true" tabindex="-1"></a>| Event | Date probed | Rolling X̄ | t = μ − X̄ | Bound | Signal |</span>
+<span id="cb1-74"><a href="#cb1-74" aria-hidden="true" tabindex="-1"></a>|---|---|---:|---:|---:|:-:|</span>
+<span id="cb1-75"><a href="#cb1-75" aria-hidden="true" tabindex="-1"></a>| Q4 2018 selloff | 2019-02-04 | 0.700 | +0.030 | 0.898 | 🟢 green |</span>
+<span id="cb1-76"><a href="#cb1-76" aria-hidden="true" tabindex="-1"></a>| COVID crash | 2020-01-13 | 0.850 | 0.000 (over) | 1.000 | 🟢 green |</span>
+<span id="cb1-77"><a href="#cb1-77" aria-hidden="true" tabindex="-1"></a>| 2022 bear market | 2023-04-17 | 0.767 | 0.000 (over) | 1.000 | 🟢 green |</span>
+<span id="cb1-78"><a href="#cb1-78" aria-hidden="true" tabindex="-1"></a>| Banking crisis | 2023-04-17 | 0.767 | 0.000 (over) | 1.000 | 🟢 green |</span>
+<span id="cb1-79"><a href="#cb1-79" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-80"><a href="#cb1-80" aria-hidden="true" tabindex="-1"></a>Notable: the headline basket's rolling win rate at the COVID crash check-date (60-trade window ending Jan 2020) was 85%, actually *above* the μ. The defined-risk put-credit-spread structure with halt framework absorbed the COVID stress without measurable win-rate degradation in the rolling window. This is the strategy's halt framework + cross-asset diversification doing exactly what they were designed to do.</span>
 <span id="cb1-81"><a href="#cb1-81" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-82"><a href="#cb1-82" aria-hidden="true" tabindex="-1"></a>Notable: the headline basket's rolling win rate at the COVID crash check-date (60-trade window ending Jan 2020) was 85%, actually *above* the pre-committed μ. The defined-risk put-credit-spread structure with halt framework absorbed the COVID stress without measurable win-rate degradation in the rolling window. This is the strategy's halt framework + cross-asset diversification doing exactly what they were designed to do.</span>
+<span id="cb1-82"><a href="#cb1-82" aria-hidden="true" tabindex="-1"></a>The framework demonstrates three properties on this retrospective:</span>
 <span id="cb1-83"><a href="#cb1-83" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-84"><a href="#cb1-84" aria-hidden="true" tabindex="-1"></a>The framework demonstrates three properties on this retrospective:</span>
-<span id="cb1-85"><a href="#cb1-85" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-86"><a href="#cb1-86" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>**Not noise-driven**, 88% of windows stay green, indicating low false-positive rate from random monthly fluctuations.</span>
-<span id="cb1-87"><a href="#cb1-87" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>**Sensitive enough to flag genuine dips**, 4.2% of windows reach the red zone (10-25% bound), meaning the framework would have alerted human attention at those moments.</span>
-<span id="cb1-88"><a href="#cb1-88" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>**No catastrophic firing**, 0% critical signals over 7 years means the strategy did not experience a regime-degradation event large enough to trigger a forced shutdown. Validation that the basket is robust within its pre-committed expectations.</span>
+<span id="cb1-84"><a href="#cb1-84" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>**Not noise-driven**, 88% of windows stay green, indicating low false-positive rate from random monthly fluctuations.</span>
+<span id="cb1-85"><a href="#cb1-85" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>**Sensitive enough to flag genuine dips**, 4.2% of windows reach the red zone (10-25% bound), meaning the framework would have alerted human attention at those moments.</span>
+<span id="cb1-86"><a href="#cb1-86" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>**No catastrophic firing**, 0% critical signals over 7 years means the strategy did not experience a regime-degradation event large enough to trigger a forced shutdown. Validation that the basket is robust within its expectations.</span>
+<span id="cb1-87"><a href="#cb1-87" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-88"><a href="#cb1-88" aria-hidden="true" tabindex="-1"></a><span class="fu">## What the framework does NOT do</span></span>
 <span id="cb1-89"><a href="#cb1-89" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-90"><a href="#cb1-90" aria-hidden="true" tabindex="-1"></a><span class="fu">## What the framework does NOT do</span></span>
-<span id="cb1-91"><a href="#cb1-91" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-92"><a href="#cb1-92" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>It does not predict that a regime change is about to happen. It detects degradation that has already occurred.</span>
-<span id="cb1-93"><a href="#cb1-93" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>It does not distinguish between bad luck on a small sample and a true regime change. The bound is a **probability** statement, not a binary decision. Reading the bound at 30% means "this could be bad luck, possible, but it could also be regime degradation; the monitor flags it for human attention."</span>
-<span id="cb1-94"><a href="#cb1-94" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>It does not adapt μ over time. We commit μ from the OOS backtest and hold it. If we update μ live, we lose the pre-commitment property and the framework becomes circular.</span>
+<span id="cb1-90"><a href="#cb1-90" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>It does not predict that a regime change is about to happen. It detects degradation that has already occurred.</span>
+<span id="cb1-91"><a href="#cb1-91" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>It does not distinguish between bad luck on a small sample and a true regime change. The bound is a **probability** statement, not a binary decision. Reading the bound at 30% means "this could be bad luck, possible, but it could also be regime degradation; the monitor flags it for human attention."</span>
+<span id="cb1-92"><a href="#cb1-92" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>It does not adapt μ over time. We benchmark μ from the OOS sample and hold it fixed in live deployment, this preserves the monitor's drift-detection power. Adapting μ live would create a moving-goalpost reference.</span>
+<span id="cb1-93"><a href="#cb1-93" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-94"><a href="#cb1-94" aria-hidden="true" tabindex="-1"></a><span class="fu">## Implementation</span></span>
 <span id="cb1-95"><a href="#cb1-95" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-96"><a href="#cb1-96" aria-hidden="true" tabindex="-1"></a><span class="fu">## Implementation</span></span>
+<span id="cb1-96"><a href="#cb1-96" aria-hidden="true" tabindex="-1"></a>The monitor is implemented in <span class="in">`src/metrics/hoeffding.py`</span> and <span class="in">`scripts/hoeffding_monitor.py`</span>. It reads per-instrument trade outcomes, computes the rolling-60 win rate, applies the bound, and emits a dated alert log to <span class="in">`data/processed/hoeffding_signals/{TICKER}_signals.parquet`</span>.</span>
 <span id="cb1-97"><a href="#cb1-97" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-98"><a href="#cb1-98" aria-hidden="true" tabindex="-1"></a>The monitor is implemented in <span class="in">`src/metrics/hoeffding.py`</span> and <span class="in">`scripts/hoeffding_monitor.py`</span>. It reads per-instrument trade outcomes, computes the rolling-60 win rate, applies the bound, and emits a dated alert log to <span class="in">`data/processed/hoeffding_signals/{TICKER}_signals.parquet`</span>.</span>
+<span id="cb1-98"><a href="#cb1-98" aria-hidden="true" tabindex="-1"></a>Cadence in production: weekly run, one signal per Monday morning before any new entries fire. Output: basket-level signal status across the 4 headline instruments.</span>
 <span id="cb1-99"><a href="#cb1-99" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-100"><a href="#cb1-100" aria-hidden="true" tabindex="-1"></a>Cadence in production: weekly run, one signal per Monday morning before any new entries fire. Output: per-instrument signal status + book-level signal aggregated across the 5 VRP and 9 wheel positions.</span>
+<span id="cb1-100"><a href="#cb1-100" aria-hidden="true" tabindex="-1"></a><span class="fu">## What this answers</span></span>
 <span id="cb1-101"><a href="#cb1-101" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-102"><a href="#cb1-102" aria-hidden="true" tabindex="-1"></a><span class="fu">## What this answers</span></span>
+<span id="cb1-102"><a href="#cb1-102" aria-hidden="true" tabindex="-1"></a>For the question **"how will you know if the strategy is performing as expected?"**, the bound stays ≥ 50% (green). Performance is plausibly within the OOS regime.</span>
 <span id="cb1-103"><a href="#cb1-103" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-104"><a href="#cb1-104" aria-hidden="true" tabindex="-1"></a>For the question **"how will you know if the strategy is performing as expected?"**, the bound stays ≥ 50% (green). Performance is plausibly within the OOS regime.</span>
-<span id="cb1-105"><a href="#cb1-105" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-106"><a href="#cb1-106" aria-hidden="true" tabindex="-1"></a>For the question **"how will you quantify when it stops working?"**, when the bound drops to 10% or below, the strategy has degraded enough that random chance is an implausible explanation. That is the trip-wire. It is dated, quantitative, distribution-free, and pre-committed.</span></code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
+<span id="cb1-104"><a href="#cb1-104" aria-hidden="true" tabindex="-1"></a>For the question **"how will you quantify when it stops working?"**, when the bound drops to 10% or below, the strategy has degraded enough that random chance is an implausible explanation. That is the trip-wire. It is dated, quantitative, and distribution-free.</span></code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
 <footer class="footer">

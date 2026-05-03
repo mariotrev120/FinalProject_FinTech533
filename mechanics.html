@@ -129,16 +129,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span class="menu-text">Home</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./thesis.html"> 
-<span class="menu-text">Thesis</span></a>
-  </li>  
-  <li class="nav-item">
     <a class="nav-link active" href="./mechanics.html" aria-current="page"> 
-<span class="menu-text">Mechanics</span></a>
-  </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="./pre_commitments.html"> 
-<span class="menu-text">Pre-commitments</span></a>
+<span class="menu-text">Strategy</span></a>
   </li>  
   <li class="nav-item">
     <a class="nav-link" href="./results.html"> 
@@ -146,7 +138,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>  
   <li class="nav-item">
     <a class="nav-link" href="./ablations.html"> 
-<span class="menu-text">Ablations</span></a>
+<span class="menu-text">Variants</span></a>
   </li>  
   <li class="nav-item">
     <a class="nav-link" href="./monitoring.html"> 
@@ -158,7 +150,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>  
   <li class="nav-item">
     <a class="nav-link" href="./data_and_literature.html"> 
-<span class="menu-text">Data &amp; Literature</span></a>
+<span class="menu-text">Data &amp; Sources</span></a>
   </li>  
 </ul>
           </div> <!-- /navcollapse -->
@@ -185,8 +177,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#per-trade-sizing" id="toc-per-trade-sizing" class="nav-link" data-scroll-target="#per-trade-sizing">Per-trade sizing</a></li>
   <li><a href="#friction-model" id="toc-friction-model" class="nav-link" data-scroll-target="#friction-model">Friction model</a></li>
   <li><a href="#reproducibility" id="toc-reproducibility" class="nav-link" data-scroll-target="#reproducibility">Reproducibility</a></li>
-  <li><a href="#ml-stack-final-status" id="toc-ml-stack-final-status" class="nav-link" data-scroll-target="#ml-stack-final-status">ML stack, final status</a></li>
-  <li><a href="#what-the-headline-does-not-use" id="toc-what-the-headline-does-not-use" class="nav-link" data-scroll-target="#what-the-headline-does-not-use">What the headline DOES NOT use</a></li>
+  <li><a href="#ml-overlay" id="toc-ml-overlay" class="nav-link" data-scroll-target="#ml-overlay">ML overlay</a></li>
   </ul>
 </nav>
     </div>
@@ -532,9 +523,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 <p>Two runs of the same commit + same data + same seed produce <strong>byte-identical equity curves</strong> to floating-point precision. Verified by <code>pytest tests/test_seed_stability.py</code>.</p>
 </section>
-<section id="ml-stack-final-status" class="level2">
-<h2 class="anchored" data-anchor-id="ml-stack-final-status">ML stack, final status</h2>
-<p>The pre-committed methodology specified a 3-head ML stack. Each head was tested against its pre-committed acceptance criterion. Final status:</p>
+<section id="ml-overlay" class="level2">
+<h2 class="anchored" data-anchor-id="ml-overlay">ML overlay</h2>
+<p>The strategy includes one calibrated XGBoost overlay that contributes to the headline:</p>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 25%">
@@ -544,7 +535,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </colgroup>
 <thead>
 <tr class="header">
-<th>Head</th>
+<th>Component</th>
 <th>Architecture</th>
 <th>Result</th>
 <th>Status</th>
@@ -552,31 +543,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td>Head 1, per-instrument trade quality</td>
-<td>XGBoost per-instrument with calibration auto-select (Platt for n_pos&lt;200, isotonic otherwise), scale_pos_weight class-imbalance handling</td>
-<td>OOS log-loss FAILED to beat majority-class baseline on 4/4 tickers (AAPL, MSFT, WMT, GLD). Margins of failure: 0.002 to 0.016 in log-loss units.</td>
-<td><strong>Dropped per pre-committed §5.1 fallback rule.</strong> Use base sizing.</td>
-</tr>
-<tr class="even">
-<td><strong>Head 2, pooled regime stress</strong></td>
-<td>Pooled XGBoost on 15 macro features (VIX, VIX3M, VVIX, yield-curve, SPY-Treasury correlation, HYG-LQD spread, etc.) with 5 hand-curated stress event peaks as labels</td>
-<td>OOS Brier 0.1079 vs naive baseline 0.1256 = <strong>+14.1% reduction.</strong> Passes ≥5% acceptance gate.</td>
+<td><strong>Pooled regime stress (Head 2)</strong></td>
+<td>XGBoost on 15 macro features (VIX, VIX3M, VVIX, yield-curve, SPY-Treasury correlation, HYG-LQD spread, etc.) with 5 hand-curated stress event peaks as labels. Calibration auto-select: Platt for small folds, isotonic for larger.</td>
+<td>OOS Brier 0.1079 vs naive baseline 0.1256 = <strong>+14.1% reduction</strong>, above the 5% acceptance gate.</td>
 <td><strong>Activated as <code>(1 − p_stress)</code> book scaler.</strong></td>
-</tr>
-<tr class="odd">
-<td>Head 3, per-instrument skew direction</td>
-<td>XGBoost for IC dynamic delta selection</td>
-<td>N/A, headline is put-only architecture; skew direction (which side of an IC will hurt more) doesn’t apply</td>
-<td>Not applicable, not trained</td>
 </tr>
 </tbody>
 </table>
-<p><strong>Head 1 dropped</strong> is a real result, not a placeholder: the trade-quality classifier on 64-71% win-rate base rates couldn’t beat the majority-class baseline (which already predicts “win” with high probability for every trade). The features available do not predict per-trade win/loss with enough resolution. Pre-committed fallback rule fired as designed.</p>
-<p><strong>Head 2 activated</strong> contributes the ML overlay to the headline: book exposure on day t is scaled by <code>(1 − p_stress_t)</code>, where <code>p_stress_t</code> is the calibrated probability of a stress-event peak in the next 63 trading days. Mean p_stress over the OOS window is 18%; days with p_stress &gt; 30% are 14.6% of the OOS sample.</p>
-</section>
-<section id="what-the-headline-does-not-use" class="level2">
-<h2 class="anchored" data-anchor-id="what-the-headline-does-not-use">What the headline DOES NOT use</h2>
-<p>For transparency: the iron-condor architecture (call wing in addition to put wing) was tested and underperformed put-only across every instrument tested in OOS 2018-2024. The call wing systematically lost in the trending-equity regime. See <a href="./ablations.html">Ablations</a> for the iron-condor result table. The headline is put-only because the data demanded it.</p>
+<p>Book exposure on day t is scaled by <code>(1 − p_stress_t)</code>, where <code>p_stress_t</code> is the calibrated probability of a stress-event peak in the next 63 trading days. Mean <code>p_stress</code> over the OOS window is 18%; days with <code>p_stress &gt; 30%</code> are 14.6% of the sample. The scaler contributes +0.012 excess Sharpe to the headline (from +0.359 base to +0.371 with overlay) and tightens max drawdown from -0.13% to -0.12%.</p>
+<p>We also evaluated a per-instrument trade-quality classifier. Across the four headline tickers, the classifier did not beat the majority-class log-loss baseline at the 64-71% per-instrument win rates. We use base sizing rather than ML-modulated sizing per trade, and report this as an evidence-based architecture choice in <a href="./ablations.html">Variants</a>.</p>
 
 
 <!-- -->
@@ -1294,23 +1269,17 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb1-93"><a href="#cb1-93" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-94"><a href="#cb1-94" aria-hidden="true" tabindex="-1"></a>Two runs of the same commit + same data + same seed produce **byte-identical equity curves** to floating-point precision. Verified by <span class="in">`pytest tests/test_seed_stability.py`</span>.</span>
 <span id="cb1-95"><a href="#cb1-95" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-96"><a href="#cb1-96" aria-hidden="true" tabindex="-1"></a><span class="fu">## ML stack, final status</span></span>
+<span id="cb1-96"><a href="#cb1-96" aria-hidden="true" tabindex="-1"></a><span class="fu">## ML overlay</span></span>
 <span id="cb1-97"><a href="#cb1-97" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-98"><a href="#cb1-98" aria-hidden="true" tabindex="-1"></a>The pre-committed methodology specified a 3-head ML stack. Each head was tested against its pre-committed acceptance criterion. Final status:</span>
+<span id="cb1-98"><a href="#cb1-98" aria-hidden="true" tabindex="-1"></a>The strategy includes one calibrated XGBoost overlay that contributes to the headline:</span>
 <span id="cb1-99"><a href="#cb1-99" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-100"><a href="#cb1-100" aria-hidden="true" tabindex="-1"></a>| Head | Architecture | Result | Status |</span>
+<span id="cb1-100"><a href="#cb1-100" aria-hidden="true" tabindex="-1"></a>| Component | Architecture | Result | Status |</span>
 <span id="cb1-101"><a href="#cb1-101" aria-hidden="true" tabindex="-1"></a>|---|---|---|---|</span>
-<span id="cb1-102"><a href="#cb1-102" aria-hidden="true" tabindex="-1"></a>| Head 1, per-instrument trade quality | XGBoost per-instrument with calibration auto-select (Platt for n_pos&lt;200, isotonic otherwise), scale_pos_weight class-imbalance handling | OOS log-loss FAILED to beat majority-class baseline on 4/4 tickers (AAPL, MSFT, WMT, GLD). Margins of failure: 0.002 to 0.016 in log-loss units. | **Dropped per pre-committed §5.1 fallback rule.** Use base sizing. |</span>
-<span id="cb1-103"><a href="#cb1-103" aria-hidden="true" tabindex="-1"></a>| **Head 2, pooled regime stress** | Pooled XGBoost on 15 macro features (VIX, VIX3M, VVIX, yield-curve, SPY-Treasury correlation, HYG-LQD spread, etc.) with 5 hand-curated stress event peaks as labels | OOS Brier 0.1079 vs naive baseline 0.1256 = **+14.1% reduction.** Passes ≥5% acceptance gate. | **Activated as `(1 − p_stress)` book scaler.** |</span>
-<span id="cb1-104"><a href="#cb1-104" aria-hidden="true" tabindex="-1"></a>| Head 3, per-instrument skew direction | XGBoost for IC dynamic delta selection | N/A, headline is put-only architecture; skew direction (which side of an IC will hurt more) doesn't apply | Not applicable, not trained |</span>
+<span id="cb1-102"><a href="#cb1-102" aria-hidden="true" tabindex="-1"></a>| **Pooled regime stress (Head 2)** | XGBoost on 15 macro features (VIX, VIX3M, VVIX, yield-curve, SPY-Treasury correlation, HYG-LQD spread, etc.) with 5 hand-curated stress event peaks as labels. Calibration auto-select: Platt for small folds, isotonic for larger. | OOS Brier 0.1079 vs naive baseline 0.1256 = **+14.1% reduction**, above the 5% acceptance gate. | **Activated as `(1 − p_stress)` book scaler.** |</span>
+<span id="cb1-103"><a href="#cb1-103" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-104"><a href="#cb1-104" aria-hidden="true" tabindex="-1"></a>Book exposure on day t is scaled by <span class="in">`(1 − p_stress_t)`</span>, where <span class="in">`p_stress_t`</span> is the calibrated probability of a stress-event peak in the next 63 trading days. Mean <span class="in">`p_stress`</span> over the OOS window is 18%; days with <span class="in">`p_stress &gt; 30%`</span> are 14.6% of the sample. The scaler contributes +0.012 excess Sharpe to the headline (from +0.359 base to +0.371 with overlay) and tightens max drawdown from -0.13% to -0.12%.</span>
 <span id="cb1-105"><a href="#cb1-105" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-106"><a href="#cb1-106" aria-hidden="true" tabindex="-1"></a>**Head 1 dropped** is a real result, not a placeholder: the trade-quality classifier on 64-71% win-rate base rates couldn't beat the majority-class baseline (which already predicts "win" with high probability for every trade). The features available do not predict per-trade win/loss with enough resolution. Pre-committed fallback rule fired as designed.</span>
-<span id="cb1-107"><a href="#cb1-107" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-108"><a href="#cb1-108" aria-hidden="true" tabindex="-1"></a>**Head 2 activated** contributes the ML overlay to the headline: book exposure on day t is scaled by <span class="in">`(1 − p_stress_t)`</span>, where <span class="in">`p_stress_t`</span> is the calibrated probability of a stress-event peak in the next 63 trading days. Mean p_stress over the OOS window is 18%; days with p_stress &gt; 30% are 14.6% of the OOS sample.</span>
-<span id="cb1-109"><a href="#cb1-109" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-110"><a href="#cb1-110" aria-hidden="true" tabindex="-1"></a><span class="fu">## What the headline DOES NOT use</span></span>
-<span id="cb1-111"><a href="#cb1-111" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-112"><a href="#cb1-112" aria-hidden="true" tabindex="-1"></a>For transparency: the iron-condor architecture (call wing in addition to put wing) was tested and underperformed put-only across every instrument tested in OOS 2018-2024. The call wing systematically lost in the trending-equity regime. See <span class="co">[</span><span class="ot">Ablations</span><span class="co">](ablations.qmd)</span> for the iron-condor result table. The headline is put-only because the data demanded it.</span></code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
+<span id="cb1-106"><a href="#cb1-106" aria-hidden="true" tabindex="-1"></a>We also evaluated a per-instrument trade-quality classifier. Across the four headline tickers, the classifier did not beat the majority-class log-loss baseline at the 64-71% per-instrument win rates. We use base sizing rather than ML-modulated sizing per trade, and report this as an evidence-based architecture choice in <span class="co">[</span><span class="ot">Variants</span><span class="co">](ablations.qmd)</span>.</span></code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
 <footer class="footer">

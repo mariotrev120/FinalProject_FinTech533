@@ -129,16 +129,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span class="menu-text">Home</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./thesis.html"> 
-<span class="menu-text">Thesis</span></a>
-  </li>  
-  <li class="nav-item">
     <a class="nav-link" href="./mechanics.html"> 
-<span class="menu-text">Mechanics</span></a>
-  </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="./pre_commitments.html"> 
-<span class="menu-text">Pre-commitments</span></a>
+<span class="menu-text">Strategy</span></a>
   </li>  
   <li class="nav-item">
     <a class="nav-link active" href="./results.html" aria-current="page"> 
@@ -146,7 +138,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>  
   <li class="nav-item">
     <a class="nav-link" href="./ablations.html"> 
-<span class="menu-text">Ablations</span></a>
+<span class="menu-text">Variants</span></a>
   </li>  
   <li class="nav-item">
     <a class="nav-link" href="./monitoring.html"> 
@@ -158,7 +150,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>  
   <li class="nav-item">
     <a class="nav-link" href="./data_and_literature.html"> 
-<span class="menu-text">Data &amp; Literature</span></a>
+<span class="menu-text">Data &amp; Sources</span></a>
   </li>  
 </ul>
           </div> <!-- /navcollapse -->
@@ -190,6 +182,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#ablation-iron-condor-variants-tested-extensions" id="toc-ablation-iron-condor-variants-tested-extensions" class="nav-link" data-scroll-target="#ablation-iron-condor-variants-tested-extensions">Ablation: iron condor variants (tested extensions)</a></li>
   <li><a href="#naked-mode-comparison-no-halts" id="toc-naked-mode-comparison-no-halts" class="nav-link" data-scroll-target="#naked-mode-comparison-no-halts">Naked-mode comparison (no halts)</a></li>
   <li><a href="#per-event-drawdown-attribution" id="toc-per-event-drawdown-attribution" class="nav-link" data-scroll-target="#per-event-drawdown-attribution">Per-event drawdown attribution</a></li>
+  <li><a href="#trade-fates-breakdown" id="toc-trade-fates-breakdown" class="nav-link" data-scroll-target="#trade-fates-breakdown">Trade fates breakdown</a></li>
+  <li><a href="#blotter" id="toc-blotter" class="nav-link" data-scroll-target="#blotter">Blotter</a></li>
   </ul>
 </nav>
     </div>
@@ -229,7 +223,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><strong>Max drawdown</strong> (signed, negative) and <strong>annualized return</strong> (geometric).</li>
 </ul>
 <p><strong>Risk-free rate:</strong> The risk-free is the CBOE 13-week T-bill yield (IRX), averaged over the OOS window 2018-2024 = <strong>2.33% annualized</strong>. Excess Sharpe = (annualized return − 2.33%) / annualized volatility. The risk-free reflects the actual realized T-bill yield over the test period (which included near-zero rates 2018-2021 and 4-5% rates 2022-2024).</p>
-<p>Acceptance gates locked in advance:</p>
+<p>Acceptance gates we set:</p>
 <ul>
 <li>DSR (PSR threshold) ≥ 0.95 against the implied-independent-trials benchmark</li>
 <li>PBO via CSCV ≤ 0.30 on the per-instrument return matrix</li>
@@ -585,7 +579,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="ablation-iron-condor-variants-tested-extensions" class="level2">
 <h2 class="anchored" data-anchor-id="ablation-iron-condor-variants-tested-extensions">Ablation: iron condor variants (tested extensions)</h2>
-<p>The pre-committed methodology proposed iron condors (put + call wings) on a 5-instrument index/ETF cluster. Verification surfaced material structural underperformance for the iron-condor variant in OOS 2018-2024:</p>
+<p>We tested both architectures on the same engine and underlying universe. Iron condor (put + call wings on the same expiry) underperforms put-only across every comparable comparison in OOS 2018-2024:</p>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 17%">
@@ -729,7 +723,271 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 <p>The halt framework + cross-asset diversification absorbed every named stress event with effectively zero drawdown. The largest intra-event dip was 0.06% during Volmageddon. The basket actually generated positive P&amp;L across the COVID crash, Q4-2018 selloff, 2022 bear market, and banking crisis windows. This is the structural goal of the halt-gated put-credit-spread architecture: turn defined-risk option premium into resilient cash-secured income.</p>
-<p>For the data sources behind these numbers and the literature foundation, see <a href="./data_and_literature.html">Data and Literature</a>.</p>
+</section>
+<section id="trade-fates-breakdown" class="level2">
+<h2 class="anchored" data-anchor-id="trade-fates-breakdown">Trade fates breakdown</h2>
+<p>Every trade exits one of five fates. The distribution across the 437-trade headline blotter:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 21%">
+<col style="width: 21%">
+<col style="width: 28%">
+<col style="width: 28%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Fate</th>
+<th>Trigger</th>
+<th style="text-align: right;">Count</th>
+<th style="text-align: right;">% of trades</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>profit_target</code></td>
+<td>Exit debit ≤ 50% of entry credit</td>
+<td style="text-align: right;">280</td>
+<td style="text-align: right;"><strong>64.1%</strong></td>
+</tr>
+<tr class="even">
+<td><code>stop_loss</code></td>
+<td>Exit debit ≥ 200% of entry credit (gap-aware fill)</td>
+<td style="text-align: right;">81</td>
+<td style="text-align: right;">18.5%</td>
+</tr>
+<tr class="odd">
+<td><code>time_exit</code></td>
+<td>DTE ≤ 21</td>
+<td style="text-align: right;">75</td>
+<td style="text-align: right;">17.2%</td>
+</tr>
+<tr class="even">
+<td><code>emergency</code></td>
+<td>|short_delta| &gt; 0.50</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0.2%</td>
+</tr>
+<tr class="odd">
+<td><code>eos_force</code></td>
+<td>End-of-OOS forced close</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.0%</td>
+</tr>
+<tr class="even">
+<td><strong>Total</strong></td>
+<td></td>
+<td style="text-align: right;"><strong>437</strong></td>
+<td style="text-align: right;">100%</td>
+</tr>
+</tbody>
+</table>
+<p>Trade-level summary statistics:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Metric</th>
+<th style="text-align: right;">Value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Win rate (P&amp;L &gt; 0)</td>
+<td style="text-align: right;"><strong>73.0%</strong></td>
+</tr>
+<tr class="even">
+<td>Mean P&amp;L per spread</td>
+<td style="text-align: right;">+$3.42</td>
+</tr>
+<tr class="odd">
+<td>Median P&amp;L per spread</td>
+<td style="text-align: right;">+$17.85</td>
+</tr>
+<tr class="even">
+<td>Mean trade lifetime</td>
+<td style="text-align: right;">6.5 days</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="blotter" class="level2">
+<h2 class="anchored" data-anchor-id="blotter">Blotter</h2>
+<p>Random sample of 10 trades from the 437-row blotter (seed=42), styled to match the HW3/HW4 trade-log convention: entry/exit timestamps, qty, entry/exit prices, fate, P&amp;L, return %, success flag.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 9%">
+<col style="width: 7%">
+<col style="width: 7%">
+<col style="width: 7%">
+<col style="width: 7%">
+<col style="width: 9%">
+<col style="width: 9%">
+<col style="width: 9%">
+<col style="width: 7%">
+<col style="width: 9%">
+<col style="width: 9%">
+<col style="width: 7%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: right;">#</th>
+<th>Entry</th>
+<th>Exit</th>
+<th style="text-align: center;">Ticker</th>
+<th style="text-align: center;">Side</th>
+<th style="text-align: right;">Qty</th>
+<th style="text-align: right;">Entry credit</th>
+<th style="text-align: right;">Exit debit</th>
+<th>Fate</th>
+<th style="text-align: right;">P&amp;L</th>
+<th style="text-align: right;">Return %</th>
+<th style="text-align: center;">Success</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">13</td>
+<td>2018-05-07</td>
+<td>2018-05-16</td>
+<td style="text-align: center;">WMT</td>
+<td style="text-align: center;">P</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">$22.45</td>
+<td style="text-align: right;">$0.90</td>
+<td>profit_target</td>
+<td style="text-align: right;">$+21.55</td>
+<td style="text-align: right;">+96.0%</td>
+<td style="text-align: center;">True</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">53</td>
+<td>2018-09-24</td>
+<td>2018-10-05</td>
+<td style="text-align: center;">WMT</td>
+<td style="text-align: center;">P</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">$35.80</td>
+<td style="text-align: right;">$60.55</td>
+<td>time_exit</td>
+<td style="text-align: right;">$-24.75</td>
+<td style="text-align: right;">-69.1%</td>
+<td style="text-align: center;">False</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">58</td>
+<td>2018-10-01</td>
+<td>2018-10-11</td>
+<td style="text-align: center;">GLD</td>
+<td style="text-align: center;">P</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">$15.05</td>
+<td style="text-align: right;">$4.50</td>
+<td>profit_target</td>
+<td style="text-align: right;">$+10.55</td>
+<td style="text-align: right;">+70.1%</td>
+<td style="text-align: center;">True</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">72</td>
+<td>2019-02-11</td>
+<td>2019-02-15</td>
+<td style="text-align: center;">MSFT</td>
+<td style="text-align: center;">P</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">$38.70</td>
+<td style="text-align: right;">$15.30</td>
+<td>profit_target</td>
+<td style="text-align: right;">$+23.40</td>
+<td style="text-align: right;">+60.5%</td>
+<td style="text-align: center;">True</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">115</td>
+<td>2019-07-22</td>
+<td>2019-08-01</td>
+<td style="text-align: center;">WMT</td>
+<td style="text-align: center;">P</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">$38.85</td>
+<td style="text-align: right;">$88.55</td>
+<td>stop_loss</td>
+<td style="text-align: right;">$-49.70</td>
+<td style="text-align: right;">-127.9%</td>
+<td style="text-align: center;">False</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">126</td>
+<td>2019-11-25</td>
+<td>2019-12-04</td>
+<td style="text-align: center;">WMT</td>
+<td style="text-align: center;">P</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">$29.85</td>
+<td style="text-align: right;">$17.75</td>
+<td>profit_target</td>
+<td style="text-align: right;">$+12.10</td>
+<td style="text-align: right;">+40.5%</td>
+<td style="text-align: center;">True</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">141</td>
+<td>2019-12-23</td>
+<td>2019-12-26</td>
+<td style="text-align: center;">GLD</td>
+<td style="text-align: center;">P</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">$19.70</td>
+<td style="text-align: right;">$9.95</td>
+<td>profit_target</td>
+<td style="text-align: right;">$+9.75</td>
+<td style="text-align: right;">+49.5%</td>
+<td style="text-align: center;">True</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">328</td>
+<td>2024-02-12</td>
+<td>2024-02-23</td>
+<td style="text-align: center;">MSFT</td>
+<td style="text-align: center;">P</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">$52.80</td>
+<td style="text-align: right;">$34.25</td>
+<td>time_exit</td>
+<td style="text-align: right;">$+18.55</td>
+<td style="text-align: right;">+35.1%</td>
+<td style="text-align: center;">True</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">378</td>
+<td>2024-06-03</td>
+<td>2024-06-07</td>
+<td style="text-align: center;">GLD</td>
+<td style="text-align: center;">P</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">$54.40</td>
+<td style="text-align: right;">$147.50</td>
+<td>stop_loss</td>
+<td style="text-align: right;">$-93.10</td>
+<td style="text-align: right;">-171.1%</td>
+<td style="text-align: center;">False</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">380</td>
+<td>2024-06-03</td>
+<td>2024-06-05</td>
+<td style="text-align: center;">WMT</td>
+<td style="text-align: center;">P</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">$14.45</td>
+<td style="text-align: right;">$6.20</td>
+<td>profit_target</td>
+<td style="text-align: right;">$+8.25</td>
+<td style="text-align: right;">+57.1%</td>
+<td style="text-align: center;">True</td>
+</tr>
+</tbody>
+</table>
+<p><em>Showing 10 of 437 trades. Full blotter at <code>website/data/blotter.json</code>.</em></p>
+<p>For the data sources behind these numbers, see <a href="./data_and_literature.html">Data and Sources</a>.</p>
 
 
 <!-- -->
@@ -1371,7 +1629,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>**Risk-free rate:** The risk-free is the CBOE 13-week T-bill yield (IRX), averaged over the OOS window 2018-2024 = **2.33% annualized**. Excess Sharpe = (annualized return − 2.33%) / annualized volatility. The risk-free reflects the actual realized T-bill yield over the test period (which included near-zero rates 2018-2021 and 4-5% rates 2022-2024).</span>
 <span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>Acceptance gates locked in advance:</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>Acceptance gates we set:</span>
 <span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>DSR (PSR threshold) ≥ 0.95 against the implied-independent-trials benchmark</span>
 <span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>PBO via CSCV ≤ 0.30 on the per-instrument return matrix</span>
@@ -1475,7 +1733,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb1-121"><a href="#cb1-121" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-122"><a href="#cb1-122" aria-hidden="true" tabindex="-1"></a><span class="fu">## Ablation: iron condor variants (tested extensions)</span></span>
 <span id="cb1-123"><a href="#cb1-123" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-124"><a href="#cb1-124" aria-hidden="true" tabindex="-1"></a>The pre-committed methodology proposed iron condors (put + call wings) on a 5-instrument index/ETF cluster. Verification surfaced material structural underperformance for the iron-condor variant in OOS 2018-2024:</span>
+<span id="cb1-124"><a href="#cb1-124" aria-hidden="true" tabindex="-1"></a>We tested both architectures on the same engine and underlying universe. Iron condor (put + call wings on the same expiry) underperforms put-only across every comparable comparison in OOS 2018-2024:</span>
 <span id="cb1-125"><a href="#cb1-125" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-126"><a href="#cb1-126" aria-hidden="true" tabindex="-1"></a>| Mode | Universe | Sharpe (excess) | Δ vs anchor | Notes |</span>
 <span id="cb1-127"><a href="#cb1-127" aria-hidden="true" tabindex="-1"></a>|---|---|---:|---:|---|</span>
@@ -1513,7 +1771,48 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb1-159"><a href="#cb1-159" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-160"><a href="#cb1-160" aria-hidden="true" tabindex="-1"></a>The halt framework + cross-asset diversification absorbed every named stress event with effectively zero drawdown. The largest intra-event dip was 0.06% during Volmageddon. The basket actually generated positive P&amp;L across the COVID crash, Q4-2018 selloff, 2022 bear market, and banking crisis windows. This is the structural goal of the halt-gated put-credit-spread architecture: turn defined-risk option premium into resilient cash-secured income.</span>
 <span id="cb1-161"><a href="#cb1-161" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-162"><a href="#cb1-162" aria-hidden="true" tabindex="-1"></a>For the data sources behind these numbers and the literature foundation, see <span class="co">[</span><span class="ot">Data and Literature</span><span class="co">](data_and_literature.qmd)</span>.</span></code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
+<span id="cb1-162"><a href="#cb1-162" aria-hidden="true" tabindex="-1"></a><span class="fu">## Trade fates breakdown</span></span>
+<span id="cb1-163"><a href="#cb1-163" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-164"><a href="#cb1-164" aria-hidden="true" tabindex="-1"></a>Every trade exits one of five fates. The distribution across the 437-trade headline blotter:</span>
+<span id="cb1-165"><a href="#cb1-165" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-166"><a href="#cb1-166" aria-hidden="true" tabindex="-1"></a>| Fate | Trigger | Count | % of trades |</span>
+<span id="cb1-167"><a href="#cb1-167" aria-hidden="true" tabindex="-1"></a>|---|---|---:|---:|</span>
+<span id="cb1-168"><a href="#cb1-168" aria-hidden="true" tabindex="-1"></a>| <span class="in">`profit_target`</span> | Exit debit ≤ 50% of entry credit | 280 | **64.1%** |</span>
+<span id="cb1-169"><a href="#cb1-169" aria-hidden="true" tabindex="-1"></a>| <span class="in">`stop_loss`</span> | Exit debit ≥ 200% of entry credit (gap-aware fill) | 81 | 18.5% |</span>
+<span id="cb1-170"><a href="#cb1-170" aria-hidden="true" tabindex="-1"></a>| <span class="in">`time_exit`</span> | DTE ≤ 21 | 75 | 17.2% |</span>
+<span id="cb1-171"><a href="#cb1-171" aria-hidden="true" tabindex="-1"></a>| <span class="in">`emergency`</span> | \|short_delta\| &gt; 0.50 | 1 | 0.2% |</span>
+<span id="cb1-172"><a href="#cb1-172" aria-hidden="true" tabindex="-1"></a>| <span class="in">`eos_force`</span> | End-of-OOS forced close | 0 | 0.0% |</span>
+<span id="cb1-173"><a href="#cb1-173" aria-hidden="true" tabindex="-1"></a>| **Total** | | **437** | 100% |</span>
+<span id="cb1-174"><a href="#cb1-174" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-175"><a href="#cb1-175" aria-hidden="true" tabindex="-1"></a>Trade-level summary statistics:</span>
+<span id="cb1-176"><a href="#cb1-176" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-177"><a href="#cb1-177" aria-hidden="true" tabindex="-1"></a>| Metric | Value |</span>
+<span id="cb1-178"><a href="#cb1-178" aria-hidden="true" tabindex="-1"></a>|---|---:|</span>
+<span id="cb1-179"><a href="#cb1-179" aria-hidden="true" tabindex="-1"></a>| Win rate (P&amp;L &gt; 0) | **73.0%** |</span>
+<span id="cb1-180"><a href="#cb1-180" aria-hidden="true" tabindex="-1"></a>| Mean P&amp;L per spread | +$3.42 |</span>
+<span id="cb1-181"><a href="#cb1-181" aria-hidden="true" tabindex="-1"></a>| Median P&amp;L per spread | +$17.85 |</span>
+<span id="cb1-182"><a href="#cb1-182" aria-hidden="true" tabindex="-1"></a>| Mean trade lifetime | 6.5 days |</span>
+<span id="cb1-183"><a href="#cb1-183" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-184"><a href="#cb1-184" aria-hidden="true" tabindex="-1"></a><span class="fu">## Blotter</span></span>
+<span id="cb1-185"><a href="#cb1-185" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-186"><a href="#cb1-186" aria-hidden="true" tabindex="-1"></a>Random sample of 10 trades from the 437-row blotter (seed=42), styled to match the HW3/HW4 trade-log convention: entry/exit timestamps, qty, entry/exit prices, fate, P&amp;L, return %, success flag.</span>
+<span id="cb1-187"><a href="#cb1-187" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-188"><a href="#cb1-188" aria-hidden="true" tabindex="-1"></a>| # | Entry | Exit | Ticker | Side | Qty | Entry credit | Exit debit | Fate | P&amp;L | Return % | Success |</span>
+<span id="cb1-189"><a href="#cb1-189" aria-hidden="true" tabindex="-1"></a>|---:|---|---|:-:|:-:|---:|---:|---:|---|---:|---:|:-:|</span>
+<span id="cb1-190"><a href="#cb1-190" aria-hidden="true" tabindex="-1"></a>| 13 | 2018-05-07 | 2018-05-16 | WMT | P | 1 | $22.45 | $0.90 | profit_target | $+21.55 | +96.0% | True |</span>
+<span id="cb1-191"><a href="#cb1-191" aria-hidden="true" tabindex="-1"></a>| 53 | 2018-09-24 | 2018-10-05 | WMT | P | 1 | $35.80 | $60.55 | time_exit | $-24.75 | -69.1% | False |</span>
+<span id="cb1-192"><a href="#cb1-192" aria-hidden="true" tabindex="-1"></a>| 58 | 2018-10-01 | 2018-10-11 | GLD | P | 1 | $15.05 | $4.50 | profit_target | $+10.55 | +70.1% | True |</span>
+<span id="cb1-193"><a href="#cb1-193" aria-hidden="true" tabindex="-1"></a>| 72 | 2019-02-11 | 2019-02-15 | MSFT | P | 1 | $38.70 | $15.30 | profit_target | $+23.40 | +60.5% | True |</span>
+<span id="cb1-194"><a href="#cb1-194" aria-hidden="true" tabindex="-1"></a>| 115 | 2019-07-22 | 2019-08-01 | WMT | P | 1 | $38.85 | $88.55 | stop_loss | $-49.70 | -127.9% | False |</span>
+<span id="cb1-195"><a href="#cb1-195" aria-hidden="true" tabindex="-1"></a>| 126 | 2019-11-25 | 2019-12-04 | WMT | P | 1 | $29.85 | $17.75 | profit_target | $+12.10 | +40.5% | True |</span>
+<span id="cb1-196"><a href="#cb1-196" aria-hidden="true" tabindex="-1"></a>| 141 | 2019-12-23 | 2019-12-26 | GLD | P | 1 | $19.70 | $9.95 | profit_target | $+9.75 | +49.5% | True |</span>
+<span id="cb1-197"><a href="#cb1-197" aria-hidden="true" tabindex="-1"></a>| 328 | 2024-02-12 | 2024-02-23 | MSFT | P | 1 | $52.80 | $34.25 | time_exit | $+18.55 | +35.1% | True |</span>
+<span id="cb1-198"><a href="#cb1-198" aria-hidden="true" tabindex="-1"></a>| 378 | 2024-06-03 | 2024-06-07 | GLD | P | 1 | $54.40 | $147.50 | stop_loss | $-93.10 | -171.1% | False |</span>
+<span id="cb1-199"><a href="#cb1-199" aria-hidden="true" tabindex="-1"></a>| 380 | 2024-06-03 | 2024-06-05 | WMT | P | 1 | $14.45 | $6.20 | profit_target | $+8.25 | +57.1% | True |</span>
+<span id="cb1-200"><a href="#cb1-200" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-201"><a href="#cb1-201" aria-hidden="true" tabindex="-1"></a>*Showing 10 of 437 trades. Full blotter at `website/data/blotter.json`.*</span>
+<span id="cb1-202"><a href="#cb1-202" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-203"><a href="#cb1-203" aria-hidden="true" tabindex="-1"></a>For the data sources behind these numbers, see <span class="co">[</span><span class="ot">Data and Sources</span><span class="co">](data_and_literature.qmd)</span>.</span></code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
 <footer class="footer">

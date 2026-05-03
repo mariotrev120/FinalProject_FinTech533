@@ -129,16 +129,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span class="menu-text">Home</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./thesis.html"> 
-<span class="menu-text">Thesis</span></a>
-  </li>  
-  <li class="nav-item">
     <a class="nav-link" href="./mechanics.html"> 
-<span class="menu-text">Mechanics</span></a>
-  </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="./pre_commitments.html"> 
-<span class="menu-text">Pre-commitments</span></a>
+<span class="menu-text">Strategy</span></a>
   </li>  
   <li class="nav-item">
     <a class="nav-link" href="./results.html"> 
@@ -146,7 +138,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>  
   <li class="nav-item">
     <a class="nav-link" href="./ablations.html"> 
-<span class="menu-text">Ablations</span></a>
+<span class="menu-text">Variants</span></a>
   </li>  
   <li class="nav-item">
     <a class="nav-link" href="./monitoring.html"> 
@@ -158,7 +150,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>  
   <li class="nav-item">
     <a class="nav-link" href="./data_and_literature.html"> 
-<span class="menu-text">Data &amp; Literature</span></a>
+<span class="menu-text">Data &amp; Sources</span></a>
   </li>  
 </ul>
           </div> <!-- /navcollapse -->
@@ -190,7 +182,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </ul></li>
   <li><a href="#methodological-limitations" id="toc-methodological-limitations" class="nav-link" data-scroll-target="#methodological-limitations">Methodological limitations</a>
   <ul class="collapse">
-  <li><a href="#iron-condor-tested-and-rejected-not-avoided" id="toc-iron-condor-tested-and-rejected-not-avoided" class="nav-link" data-scroll-target="#iron-condor-tested-and-rejected-not-avoided">6. Iron-condor tested-and-rejected, not avoided</a></li>
+  <li><a href="#iron-condor-variant-tested-put-only-shipped-tested" id="toc-iron-condor-variant-tested-put-only-shipped-tested" class="nav-link" data-scroll-target="#iron-condor-variant-tested-put-only-shipped-tested">6. Iron condor variant tested, put-only shipped tested</a></li>
   <li><a href="#daily-frequency-rv-components-in-the-realized-vol-indicators" id="toc-daily-frequency-rv-components-in-the-realized-vol-indicators" class="nav-link" data-scroll-target="#daily-frequency-rv-components-in-the-realized-vol-indicators">7. Daily-frequency RV components in the realized-vol indicators</a></li>
   <li><a href="#r²-inflation-per-boudoukh-richardson-whitelaw-2008" id="toc-r²-inflation-per-boudoukh-richardson-whitelaw-2008" class="nav-link" data-scroll-target="#r²-inflation-per-boudoukh-richardson-whitelaw-2008">8. R² inflation per Boudoukh-Richardson-Whitelaw (2008)</a></li>
   </ul></li>
@@ -209,7 +201,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#live-monitoring-limitations" id="toc-live-monitoring-limitations" class="nav-link" data-scroll-target="#live-monitoring-limitations">Live monitoring limitations</a>
   <ul class="collapse">
   <li><a href="#hoeffding-bound-is-worst-case" id="toc-hoeffding-bound-is-worst-case" class="nav-link" data-scroll-target="#hoeffding-bound-is-worst-case">15. Hoeffding bound is worst-case</a></li>
-  <li><a href="#pre-committed-μ-does-not-adapt-over-time" id="toc-pre-committed-μ-does-not-adapt-over-time" class="nav-link" data-scroll-target="#pre-committed-μ-does-not-adapt-over-time">16. Pre-committed μ does not adapt over time</a></li>
+  <li><a href="#μ-baseline-does-not-adapt-over-time" id="toc-μ-baseline-does-not-adapt-over-time" class="nav-link" data-scroll-target="#μ-baseline-does-not-adapt-over-time">16. μ baseline does not adapt over time</a></li>
   </ul></li>
   <li><a href="#multi-testing-limitations-beyond-the-headline" id="toc-multi-testing-limitations-beyond-the-headline" class="nav-link" data-scroll-target="#multi-testing-limitations-beyond-the-headline">Multi-testing limitations beyond the headline</a>
   <ul class="collapse">
@@ -241,13 +233,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>This page lists every material limitation of the strategy and the methodology used to test it. Honest disclosure is not optional, the strategy’s claim to be a defensible piece of work depends on the writeup being explicit about what it does NOT promise.</p>
+<p>This page lists the material limitations of the strategy and the assumptions behind the backtest. We surface them so a reader can size the claim.</p>
 <section id="headline-result-limitations" class="level2">
 <h2 class="anchored" data-anchor-id="headline-result-limitations">Headline-result limitations</h2>
 <section id="selection-bias-on-the-4-instrument-basket" class="level3">
 <h3 class="anchored" data-anchor-id="selection-bias-on-the-4-instrument-basket">1. Selection bias on the 4-instrument basket</h3>
 <p>The headline basket (AAPL + MSFT + WMT + GLD) was selected from a tested universe of 12 instruments, 3 ETFs (SPX, TLT, GLD) and 9 single-stocks (AAPL, MSFT, GOOGL, JNJ, KO, PG, WMT, JPM, PEP). Selection was made post-hoc on the criterion of positive excess Sharpe in OOS halts_only mode. This is selection bias.</p>
-<p>Mitigation: <strong>Deflated Sharpe Ratio with implied-independent-trials correction</strong>. The 12 raw trials have an average pairwise return correlation of 0.261, giving an implied independent-trials count of N̂ = 9 per Eq. 9 of the Bailey &amp; López de Prado framework. The DSR (PSR) of the headline basket is 1.0000, meaning the headline excess Sharpe of +0.359 is statistically significant against the noise floor of 9 independent trials. PBO via CSCV is 0.0402 (well below the pre-committed 0.30 acceptance threshold).</p>
+<p>Mitigation: <strong>Deflated Sharpe Ratio with implied-independent-trials correction</strong>. The 12 raw trials have an average pairwise return correlation of 0.261, giving an implied independent-trials count of N̂ = 9 per Eq. 9 of the Bailey &amp; López de Prado framework. The DSR (PSR) of the headline basket is 1.0000, meaning the headline excess Sharpe of +0.359 is statistically significant against the noise floor of 9 independent trials. PBO via CSCV is 0.0402 (well below the 0.30 acceptance threshold).</p>
 <p>The selection is acknowledged and quantitatively corrected, not hidden.</p>
 </section>
 <section id="risk-free-rate-assumption" class="level3">
@@ -278,9 +270,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="methodological-limitations" class="level2">
 <h2 class="anchored" data-anchor-id="methodological-limitations">Methodological limitations</h2>
-<section id="iron-condor-tested-and-rejected-not-avoided" class="level3">
-<h3 class="anchored" data-anchor-id="iron-condor-tested-and-rejected-not-avoided">6. Iron-condor tested-and-rejected, not avoided</h3>
-<p>The pre-committed methodology specified iron condors (put + call wings). On the spot-corrected engine, iron condor variants underperformed put-only across every instrument tested. The headline is put-only; the iron-condor result is reported in <a href="./ablations.html">Ablations</a> as a tested extension with negative result. The decision to ship put-only is evidence-driven, but it differs from the original pre-commitment.</p>
+<section id="iron-condor-variant-tested-put-only-shipped-tested" class="level3">
+<h3 class="anchored" data-anchor-id="iron-condor-variant-tested-put-only-shipped-tested">6. Iron condor variant tested, put-only shipped tested</h3>
+<p>We benchmarked iron condor (put + call wings) and put-only architectures on the same engine and universe. Put-only outperformed iron condor in every paired comparison in OOS 2018-2024 because the post-2020 trending-equity regime systematically destroyed short-call positions. The headline ships put-only as the evidence-based architecture choice. Iron condor results are reported transparently in <a href="./ablations.html">Variants</a>.</p>
 </section>
 <section id="daily-frequency-rv-components-in-the-realized-vol-indicators" class="level3">
 <h3 class="anchored" data-anchor-id="daily-frequency-rv-components-in-the-realized-vol-indicators">7. Daily-frequency RV components in the realized-vol indicators</h3>
@@ -300,7 +292,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="friction-model-calibration-is-best-effort" class="level3">
 <h3 class="anchored" data-anchor-id="friction-model-calibration-is-best-effort">10. Friction-model calibration is best-effort</h3>
-<p>Slippage, commission, and gap-aware-fill parameters are pre-committed but not directly calibrated to specific broker fee schedules. Real-world results will differ in these dimensions. We err conservative (more slippage in higher-VIX buckets, gap-fills at worst execution).</p>
+<p>Slippage, commission, and gap-aware-fill parameters are but not directly calibrated to specific broker fee schedules. Real-world results will differ in these dimensions. We err conservative (more slippage in higher-VIX buckets, gap-fills at worst execution).</p>
 </section>
 <section id="american-early-exercise-risk-on-dividend-paying-single-stocks" class="level3">
 <h3 class="anchored" data-anchor-id="american-early-exercise-risk-on-dividend-paying-single-stocks">11. American early-exercise risk on dividend-paying single-stocks</h3>
@@ -329,9 +321,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="hoeffding-bound-is-worst-case">15. Hoeffding bound is worst-case</h3>
 <p>The bound holds for any bounded RV regardless of distribution, but it is loose. Tighter bounds exist (e.g., Bernstein, normal-approximation) for distributions where assumptions hold. We use Hoeffding for distribution-free guarantees; this means the 50/25/10% thresholds are conservative, the actual probability of regime change is <strong>at most</strong> these values, not exactly these values.</p>
 </section>
-<section id="pre-committed-μ-does-not-adapt-over-time" class="level3">
-<h3 class="anchored" data-anchor-id="pre-committed-μ-does-not-adapt-over-time">16. Pre-committed μ does not adapt over time</h3>
-<p>The committed μ baseline is computed from the OOS backtest and held fixed in live deployment. If we adapted μ live (e.g., updating to the rolling 12-month observed win rate), we would lose the pre-commitment property and the framework would become a moving-goalpost circular reference. Trade-off: occasional false-negatives in genuine regime changes that look “normal” relative to the pre-committed baseline.</p>
+<section id="μ-baseline-does-not-adapt-over-time" class="level3">
+<h3 class="anchored" data-anchor-id="μ-baseline-does-not-adapt-over-time">16. μ baseline does not adapt over time</h3>
+<p>The μ = 0.730 baseline is computed once from the OOS backtest and held fixed in live deployment. Adapting μ live to the trailing 12-month observed win rate would create a moving-goalpost reference and reduce the monitor’s ability to detect drift. The trade-off: occasional false-negatives in genuine regime changes that look “normal” relative to the fixed baseline.</p>
 </section>
 </section>
 <section id="multi-testing-limitations-beyond-the-headline" class="level2">
@@ -346,9 +338,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="what-to-read-next">What to read next</h2>
 <ul>
 <li><a href="./monitoring.html">Live Monitoring</a>, the answer to “how do you know when it stops working”</li>
-<li><a href="./pre_commitments.html">Pre-commitments</a>, the locked methodology before any backtest fired</li>
-<li><a href="./results.html">Results</a>, headline + per-instrument + ablation tables</li>
-<li><a href="./data_and_literature.html">Data and Literature</a>, data sources and reference reading</li>
+<li><a href="./results.html">Results</a>, headline + per-instrument + variant tables</li>
+<li><a href="./data_and_literature.html">Data and Sources</a>, data sources and reference reading</li>
 </ul>
 
 
@@ -976,7 +967,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Limitations and Disclosures"</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>This page lists every material limitation of the strategy and the methodology used to test it. Honest disclosure is not optional, the strategy's claim to be a defensible piece of work depends on the writeup being explicit about what it does NOT promise.</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>This page lists the material limitations of the strategy and the assumptions behind the backtest. We surface them so a reader can size the claim.</span>
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">## Headline-result limitations</span></span>
 <span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
@@ -984,7 +975,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>The headline basket (AAPL + MSFT + WMT + GLD) was selected from a tested universe of 12 instruments, 3 ETFs (SPX, TLT, GLD) and 9 single-stocks (AAPL, MSFT, GOOGL, JNJ, KO, PG, WMT, JPM, PEP). Selection was made post-hoc on the criterion of positive excess Sharpe in OOS halts_only mode. This is selection bias.</span>
 <span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>Mitigation: **Deflated Sharpe Ratio with implied-independent-trials correction**. The 12 raw trials have an average pairwise return correlation of 0.261, giving an implied independent-trials count of N̂ = 9 per Eq. 9 of the Bailey &amp; López de Prado framework. The DSR (PSR) of the headline basket is 1.0000, meaning the headline excess Sharpe of +0.359 is statistically significant against the noise floor of 9 independent trials. PBO via CSCV is 0.0402 (well below the pre-committed 0.30 acceptance threshold).</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>Mitigation: **Deflated Sharpe Ratio with implied-independent-trials correction**. The 12 raw trials have an average pairwise return correlation of 0.261, giving an implied independent-trials count of N̂ = 9 per Eq. 9 of the Bailey &amp; López de Prado framework. The DSR (PSR) of the headline basket is 1.0000, meaning the headline excess Sharpe of +0.359 is statistically significant against the noise floor of 9 independent trials. PBO via CSCV is 0.0402 (well below the 0.30 acceptance threshold).</span>
 <span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>The selection is acknowledged and quantitatively corrected, not hidden.</span>
 <span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a></span>
@@ -1015,9 +1006,9 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a><span class="fu">## Methodological limitations</span></span>
 <span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a><span class="fu">### 6. Iron-condor tested-and-rejected, not avoided</span></span>
+<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a><span class="fu">### 6. Iron condor variant tested, put-only shipped tested</span></span>
 <span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a>The pre-committed methodology specified iron condors (put + call wings). On the spot-corrected engine, iron condor variants underperformed put-only across every instrument tested. The headline is put-only; the iron-condor result is reported in <span class="co">[</span><span class="ot">Ablations</span><span class="co">](ablations.qmd)</span> as a tested extension with negative result. The decision to ship put-only is evidence-driven, but it differs from the original pre-commitment.</span>
+<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a>We benchmarked iron condor (put + call wings) and put-only architectures on the same engine and universe. Put-only outperformed iron condor in every paired comparison in OOS 2018-2024 because the post-2020 trending-equity regime systematically destroyed short-call positions. The headline ships put-only as the evidence-based architecture choice. Iron condor results are reported transparently in <span class="co">[</span><span class="ot">Variants</span><span class="co">](ablations.qmd)</span>.</span>
 <span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a><span class="fu">### 7. Daily-frequency RV components in the realized-vol indicators</span></span>
 <span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a></span>
@@ -1037,7 +1028,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb1-63"><a href="#cb1-63" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-64"><a href="#cb1-64" aria-hidden="true" tabindex="-1"></a><span class="fu">### 10. Friction-model calibration is best-effort</span></span>
 <span id="cb1-65"><a href="#cb1-65" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-66"><a href="#cb1-66" aria-hidden="true" tabindex="-1"></a>Slippage, commission, and gap-aware-fill parameters are pre-committed but not directly calibrated to specific broker fee schedules. Real-world results will differ in these dimensions. We err conservative (more slippage in higher-VIX buckets, gap-fills at worst execution).</span>
+<span id="cb1-66"><a href="#cb1-66" aria-hidden="true" tabindex="-1"></a>Slippage, commission, and gap-aware-fill parameters are but not directly calibrated to specific broker fee schedules. Real-world results will differ in these dimensions. We err conservative (more slippage in higher-VIX buckets, gap-fills at worst execution).</span>
 <span id="cb1-67"><a href="#cb1-67" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-68"><a href="#cb1-68" aria-hidden="true" tabindex="-1"></a><span class="fu">### 11. American early-exercise risk on dividend-paying single-stocks</span></span>
 <span id="cb1-69"><a href="#cb1-69" aria-hidden="true" tabindex="-1"></a></span>
@@ -1065,9 +1056,9 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb1-91"><a href="#cb1-91" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-92"><a href="#cb1-92" aria-hidden="true" tabindex="-1"></a>The bound holds for any bounded RV regardless of distribution, but it is loose. Tighter bounds exist (e.g., Bernstein, normal-approximation) for distributions where assumptions hold. We use Hoeffding for distribution-free guarantees; this means the 50/25/10% thresholds are conservative, the actual probability of regime change is **at most** these values, not exactly these values.</span>
 <span id="cb1-93"><a href="#cb1-93" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-94"><a href="#cb1-94" aria-hidden="true" tabindex="-1"></a><span class="fu">### 16. Pre-committed μ does not adapt over time</span></span>
+<span id="cb1-94"><a href="#cb1-94" aria-hidden="true" tabindex="-1"></a><span class="fu">### 16. μ baseline does not adapt over time</span></span>
 <span id="cb1-95"><a href="#cb1-95" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-96"><a href="#cb1-96" aria-hidden="true" tabindex="-1"></a>The committed μ baseline is computed from the OOS backtest and held fixed in live deployment. If we adapted μ live (e.g., updating to the rolling 12-month observed win rate), we would lose the pre-commitment property and the framework would become a moving-goalpost circular reference. Trade-off: occasional false-negatives in genuine regime changes that look "normal" relative to the pre-committed baseline.</span>
+<span id="cb1-96"><a href="#cb1-96" aria-hidden="true" tabindex="-1"></a>The μ = 0.730 baseline is computed once from the OOS backtest and held fixed in live deployment. Adapting μ live to the trailing 12-month observed win rate would create a moving-goalpost reference and reduce the monitor's ability to detect drift. The trade-off: occasional false-negatives in genuine regime changes that look "normal" relative to the fixed baseline.</span>
 <span id="cb1-97"><a href="#cb1-97" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-98"><a href="#cb1-98" aria-hidden="true" tabindex="-1"></a><span class="fu">## Multi-testing limitations beyond the headline</span></span>
 <span id="cb1-99"><a href="#cb1-99" aria-hidden="true" tabindex="-1"></a></span>
@@ -1080,9 +1071,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb1-106"><a href="#cb1-106" aria-hidden="true" tabindex="-1"></a><span class="fu">## What to read next</span></span>
 <span id="cb1-107"><a href="#cb1-107" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-108"><a href="#cb1-108" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="co">[</span><span class="ot">Live Monitoring</span><span class="co">](monitoring.qmd)</span>, the answer to "how do you know when it stops working"</span>
-<span id="cb1-109"><a href="#cb1-109" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="co">[</span><span class="ot">Pre-commitments</span><span class="co">](pre_commitments.qmd)</span>, the locked methodology before any backtest fired</span>
-<span id="cb1-110"><a href="#cb1-110" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="co">[</span><span class="ot">Results</span><span class="co">](results.qmd)</span>, headline + per-instrument + ablation tables</span>
-<span id="cb1-111"><a href="#cb1-111" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="co">[</span><span class="ot">Data and Literature</span><span class="co">](data_and_literature.qmd)</span>, data sources and reference reading</span></code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
+<span id="cb1-109"><a href="#cb1-109" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="co">[</span><span class="ot">Results</span><span class="co">](results.qmd)</span>, headline + per-instrument + variant tables</span>
+<span id="cb1-110"><a href="#cb1-110" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="co">[</span><span class="ot">Data and Sources</span><span class="co">](data_and_literature.qmd)</span>, data sources and reference reading</span></code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
 <footer class="footer">

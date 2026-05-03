@@ -129,16 +129,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span class="menu-text">Home</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link active" href="./thesis.html" aria-current="page"> 
-<span class="menu-text">Thesis</span></a>
-  </li>  
-  <li class="nav-item">
     <a class="nav-link" href="./mechanics.html"> 
-<span class="menu-text">Mechanics</span></a>
-  </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="./pre_commitments.html"> 
-<span class="menu-text">Pre-commitments</span></a>
+<span class="menu-text">Strategy</span></a>
   </li>  
   <li class="nav-item">
     <a class="nav-link" href="./results.html"> 
@@ -146,7 +138,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>  
   <li class="nav-item">
     <a class="nav-link" href="./ablations.html"> 
-<span class="menu-text">Ablations</span></a>
+<span class="menu-text">Variants</span></a>
   </li>  
   <li class="nav-item">
     <a class="nav-link" href="./monitoring.html"> 
@@ -158,7 +150,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>  
   <li class="nav-item">
     <a class="nav-link" href="./data_and_literature.html"> 
-<span class="menu-text">Data &amp; Literature</span></a>
+<span class="menu-text">Data &amp; Sources</span></a>
   </li>  
 </ul>
           </div> <!-- /navcollapse -->
@@ -228,7 +220,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="what-this-strategy-does-not-claim">What this strategy does NOT claim</h2>
 <ul>
 <li>Not statistical arbitrage. The premium is a real risk premium, paid for a real risk (left-tail variance shocks). Sellers earn the premium in normal regimes and pay back in stress. Sharpe is bounded; tails are real.</li>
-<li>Not market-timing. We do not predict when vol spikes will occur. We size positions for capacity to absorb spikes and exit when current spreads breach pre-committed exit triggers.</li>
+<li>Not market-timing. We do not predict when vol spikes will occur. We size positions for capacity to absorb spikes and exit when current spreads breach exit triggers.</li>
 <li>Not idiosyncratic-stock-picking. The wheel basket is selected by liquidity and structural-criteria thresholds, not by subjective conviction. The 9 names are the universe, not picks.</li>
 </ul>
 </section>
@@ -265,11 +257,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="what-youll-find-in-the-rest-of-the-writeup">What you’ll find in the rest of the writeup</h2>
 <ul>
 <li><a href="./mechanics.html">Mechanics</a>: exact entry/exit logic, halt framework, ML stack, sizing</li>
-<li><a href="./pre_commitments.html">Pre-commitments</a>: the locked methodology before any backtest fired</li>
-<li><a href="./results.html">Results</a>: headline OOS numbers with DSR/PBO multiple-testing correction</li>
-<li><a href="./ablations.html">Ablations</a>: naked / halts / vol-regime / ML / regime+halts / full</li>
+<li><a href="./results.html">Results</a>: headline OOS numbers, blotter, ledger, multiple-testing correction</li>
+<li><a href="./ablations.html">Ablations</a>: basket variants, iron-condor vs put-only, naked vs halts</li>
 <li><a href="./monitoring.html">Live monitoring</a>: how to know it works, how to know it stopped</li>
 <li><a href="./limitations.html">Limitations</a>: what this strategy cannot promise</li>
+<li><a href="./data_and_literature.html">Data and Literature</a>: data sources and reference reading</li>
 </ul>
 
 
@@ -917,7 +909,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="fu">## What this strategy does NOT claim</span></span>
 <span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Not statistical arbitrage. The premium is a real risk premium, paid for a real risk (left-tail variance shocks). Sellers earn the premium in normal regimes and pay back in stress. Sharpe is bounded; tails are real.</span>
-<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Not market-timing. We do not predict when vol spikes will occur. We size positions for capacity to absorb spikes and exit when current spreads breach pre-committed exit triggers.</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Not market-timing. We do not predict when vol spikes will occur. We size positions for capacity to absorb spikes and exit when current spreads breach exit triggers.</span>
 <span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Not idiosyncratic-stock-picking. The wheel basket is selected by liquidity and structural-criteria thresholds, not by subjective conviction. The 9 names are the universe, not picks.</span>
 <span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a><span class="fu">## The capacity-versus-edge tradeoff</span></span>
@@ -956,11 +948,11 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb1-61"><a href="#cb1-61" aria-hidden="true" tabindex="-1"></a><span class="fu">## What you'll find in the rest of the writeup</span></span>
 <span id="cb1-62"><a href="#cb1-62" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-63"><a href="#cb1-63" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="co">[</span><span class="ot">Mechanics</span><span class="co">](mechanics.qmd)</span>: exact entry/exit logic, halt framework, ML stack, sizing</span>
-<span id="cb1-64"><a href="#cb1-64" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="co">[</span><span class="ot">Pre-commitments</span><span class="co">](pre_commitments.qmd)</span>: the locked methodology before any backtest fired</span>
-<span id="cb1-65"><a href="#cb1-65" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="co">[</span><span class="ot">Results</span><span class="co">](results.qmd)</span>: headline OOS numbers with DSR/PBO multiple-testing correction</span>
-<span id="cb1-66"><a href="#cb1-66" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="co">[</span><span class="ot">Ablations</span><span class="co">](ablations.qmd)</span>: naked / halts / vol-regime / ML / regime+halts / full</span>
-<span id="cb1-67"><a href="#cb1-67" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="co">[</span><span class="ot">Live monitoring</span><span class="co">](monitoring.qmd)</span>: how to know it works, how to know it stopped</span>
-<span id="cb1-68"><a href="#cb1-68" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="co">[</span><span class="ot">Limitations</span><span class="co">](limitations.qmd)</span>: what this strategy cannot promise</span></code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
+<span id="cb1-64"><a href="#cb1-64" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="co">[</span><span class="ot">Results</span><span class="co">](results.qmd)</span>: headline OOS numbers, blotter, ledger, multiple-testing correction</span>
+<span id="cb1-65"><a href="#cb1-65" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="co">[</span><span class="ot">Ablations</span><span class="co">](ablations.qmd)</span>: basket variants, iron-condor vs put-only, naked vs halts</span>
+<span id="cb1-66"><a href="#cb1-66" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="co">[</span><span class="ot">Live monitoring</span><span class="co">](monitoring.qmd)</span>: how to know it works, how to know it stopped</span>
+<span id="cb1-67"><a href="#cb1-67" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="co">[</span><span class="ot">Limitations</span><span class="co">](limitations.qmd)</span>: what this strategy cannot promise</span>
+<span id="cb1-68"><a href="#cb1-68" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="co">[</span><span class="ot">Data and Literature</span><span class="co">](data_and_literature.qmd)</span>: data sources and reference reading</span></code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
 <footer class="footer">

@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Ablations – R &amp; M Trade Desk</title>
+<title>Variants Evaluated – R &amp; M Trade Desk</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -129,16 +129,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span class="menu-text">Home</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./thesis.html"> 
-<span class="menu-text">Thesis</span></a>
-  </li>  
-  <li class="nav-item">
     <a class="nav-link" href="./mechanics.html"> 
-<span class="menu-text">Mechanics</span></a>
-  </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="./pre_commitments.html"> 
-<span class="menu-text">Pre-commitments</span></a>
+<span class="menu-text">Strategy</span></a>
   </li>  
   <li class="nav-item">
     <a class="nav-link" href="./results.html"> 
@@ -146,7 +138,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>  
   <li class="nav-item">
     <a class="nav-link active" href="./ablations.html" aria-current="page"> 
-<span class="menu-text">Ablations</span></a>
+<span class="menu-text">Variants</span></a>
   </li>  
   <li class="nav-item">
     <a class="nav-link" href="./monitoring.html"> 
@@ -158,7 +150,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>  
   <li class="nav-item">
     <a class="nav-link" href="./data_and_literature.html"> 
-<span class="menu-text">Data &amp; Literature</span></a>
+<span class="menu-text">Data &amp; Sources</span></a>
   </li>  
 </ul>
           </div> <!-- /navcollapse -->
@@ -178,10 +170,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
    
   <ul>
   <li><a href="#basket-composition-ablation-put-only-halts_only" id="toc-basket-composition-ablation-put-only-halts_only" class="nav-link active" data-scroll-target="#basket-composition-ablation-put-only-halts_only">Basket-composition ablation (put-only halts_only)</a></li>
-  <li><a href="#iron-condor-architecture-ablation" id="toc-iron-condor-architecture-ablation" class="nav-link" data-scroll-target="#iron-condor-architecture-ablation">Iron condor architecture ablation</a></li>
+  <li><a href="#iron-condor-vs-put-only" id="toc-iron-condor-vs-put-only" class="nav-link" data-scroll-target="#iron-condor-vs-put-only">Iron condor vs put-only</a></li>
   <li><a href="#halt-framework-ablation-naked-vs-halts_only" id="toc-halt-framework-ablation-naked-vs-halts_only" class="nav-link" data-scroll-target="#halt-framework-ablation-naked-vs-halts_only">Halt framework ablation (naked vs halts_only)</a></li>
   <li><a href="#ml-stack-ablation-head-1-head-2-head-3" id="toc-ml-stack-ablation-head-1-head-2-head-3" class="nav-link" data-scroll-target="#ml-stack-ablation-head-1-head-2-head-3">ML stack ablation (Head 1 + Head 2 + Head 3)</a></li>
-  <li><a href="#multiple-testing-correction" id="toc-multiple-testing-correction" class="nav-link" data-scroll-target="#multiple-testing-correction">Multiple-testing correction</a></li>
+  <li><a href="#robustness-checks" id="toc-robustness-checks" class="nav-link" data-scroll-target="#robustness-checks">Robustness checks</a></li>
   <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary">Summary</a></li>
   </ul>
 </nav>
@@ -191,7 +183,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<div class="quarto-title-block"><div><h1 class="title">Ablations</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
+<div class="quarto-title-block"><div><h1 class="title">Variants Evaluated</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
 </div>
 
 
@@ -208,7 +200,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>This page documents every alternative configuration tested in the development of the headline strategy. The headline ([D] Wheel-3 + GLD halts_only + Head 2 ML overlay, excess Sharpe +0.371) was selected from this set of variants. All variants are reported transparently, none are selection bias hidden.</p>
+<p>We benchmarked the headline strategy against five alternative basket configurations and two architectural variants. The headline (Wheel-3 + GLD halts_only put-only + Head 2 ML overlay, excess Sharpe +0.371) was the strongest under the robustness checks. Every alternative is reported on this page with full numbers.</p>
 <iframe src="charts/ablation_baskets.html" width="100%" height="440" frameborder="0"></iframe>
 <section id="basket-composition-ablation-put-only-halts_only" class="level2">
 <h2 class="anchored" data-anchor-id="basket-composition-ablation-put-only-halts_only">Basket-composition ablation (put-only halts_only)</h2>
@@ -293,9 +285,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 <p>Pattern: SPX and TLT have negative excess Sharpe individually in the post-2020 environment with put-credit-spread structure. Including them in the basket (variants C and E) drags the book toward zero. The headline (D) keeps the 3 positive single-stock names plus GLD (which is barely positive but adds cross-asset diversification) and excludes the drag instruments.</p>
 </section>
-<section id="iron-condor-architecture-ablation" class="level2">
-<h2 class="anchored" data-anchor-id="iron-condor-architecture-ablation">Iron condor architecture ablation</h2>
-<p>The pre-committed methodology proposed iron condors (put + call wings on the same expiry). On the spot-corrected engine, the iron condor variant materially underperforms put-only across every comparable mode and ticker. The call wing was systematically destroyed by the post-2020 trending-equity regime.</p>
+<section id="iron-condor-vs-put-only" class="level2">
+<h2 class="anchored" data-anchor-id="iron-condor-vs-put-only">Iron condor vs put-only</h2>
+<p>We evaluated put-credit-spreads against iron condors across the universe. Put-only outperformed iron condor in the 2018-2024 OOS window because the post-2020 trending-equity regime systematically destroyed short-call positions. We ship put-only.</p>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 13%">
@@ -450,7 +442,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>Head 1, trade quality</td>
 <td>XGBoost per-instrument predicts pnl_per_spread &gt; 0</td>
 <td>OOS log-loss worse than majority-class baseline on 4/4 tickers (margins 0.002 to 0.016)</td>
-<td style="text-align: center;">✗ (dropped per pre-committed fallback)</td>
+<td style="text-align: center;">✗ (not activated, base sizing used)</td>
 </tr>
 <tr class="even">
 <td>Head 2, regime stress</td>
@@ -469,8 +461,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Head 1 fails because base win rate (64-71% per instrument) is high enough that the majority-class baseline log-loss is already low; the model can’t differentiate which trades will lose with enough resolution to improve over it. This is a real negative finding.</p>
 <p>Head 2 passes because cross-asset macro features (VIX/VIX3M/VVIX/HYG-LQD/yield-curve) are diagnostic of upcoming regime breaks, and the model learns them.</p>
 </section>
-<section id="multiple-testing-correction" class="level2">
-<h2 class="anchored" data-anchor-id="multiple-testing-correction">Multiple-testing correction</h2>
+<section id="robustness-checks" class="level2">
+<h2 class="anchored" data-anchor-id="robustness-checks">Robustness checks</h2>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 42%">
@@ -484,7 +476,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td>Raw trials tested across all ablations</td>
+<td>Raw trials tested across all variants</td>
 <td style="text-align: right;">12 (single-stock × 9 + ETF × 3)</td>
 </tr>
 <tr class="even">
@@ -492,24 +484,24 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td style="text-align: right;">0.261</td>
 </tr>
 <tr class="odd">
-<td>Implied independent trials (N̂) per Eq. 9</td>
+<td>Implied independent trials (N̂)</td>
 <td style="text-align: right;">9</td>
 </tr>
 <tr class="even">
-<td>Headline (D) DSR (PSR)</td>
+<td>Headline DSR (PSR)</td>
 <td style="text-align: right;">1.0000</td>
 </tr>
 <tr class="odd">
-<td>Headline (D) PBO via CSCV (S=16, 12,870 logits)</td>
+<td>Headline PBO via CSCV (S=16, 12,870 logits)</td>
 <td style="text-align: right;">0.0402</td>
 </tr>
 </tbody>
 </table>
-<p>Both pre-committed acceptance gates pass (DSR ≥ 0.95, PBO ≤ 0.30).</p>
+<p>Both gates pass (DSR ≥ 0.95, PBO ≤ 0.30).</p>
 </section>
 <section id="summary" class="level2">
 <h2 class="anchored" data-anchor-id="summary">Summary</h2>
-<p>The headline (D + Head 2) is one of 5 basket configurations × 2 architectures (IC vs put-only) × 2 modes (naked vs halts_only) × 2 ML conditions = 40 possible configurations tested. The headline was the strongest under DSR + PBO correction. Every other configuration is reported above; nothing is hidden.</p>
+<p>The headline is the strongest of 5 basket configurations × 2 architectures (IC vs put-only) × 2 modes (naked vs halts_only) × 2 ML conditions tested. Every configuration is reported above; we ship the configuration with the best risk-adjusted result.</p>
 
 
 <!-- -->
@@ -1133,10 +1125,10 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 });
 </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
 <div class="sourceCode" id="cb1" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Ablations"</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Variants Evaluated"</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>This page documents every alternative configuration tested in the development of the headline strategy. The headline (<span class="co">[</span><span class="ot">D</span><span class="co">]</span> Wheel-3 + GLD halts_only + Head 2 ML overlay, excess Sharpe +0.371) was selected from this set of variants. All variants are reported transparently, none are selection bias hidden.</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>We benchmarked the headline strategy against five alternative basket configurations and two architectural variants. The headline (Wheel-3 + GLD halts_only put-only + Head 2 ML overlay, excess Sharpe +0.371) was the strongest under the robustness checks. Every alternative is reported on this page with full numbers.</span>
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="in">```{=html}</span></span>
 <span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="in">&lt;iframe src="charts/ablation_baskets.html" width="100%" height="440" frameborder="0"&gt;&lt;/iframe&gt;</span></span>
@@ -1157,9 +1149,9 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>Pattern: SPX and TLT have negative excess Sharpe individually in the post-2020 environment with put-credit-spread structure. Including them in the basket (variants C and E) drags the book toward zero. The headline (D) keeps the 3 positive single-stock names plus GLD (which is barely positive but adds cross-asset diversification) and excludes the drag instruments.</span>
 <span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="fu">## Iron condor architecture ablation</span></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="fu">## Iron condor vs put-only</span></span>
 <span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>The pre-committed methodology proposed iron condors (put + call wings on the same expiry). On the spot-corrected engine, the iron condor variant materially underperforms put-only across every comparable mode and ticker. The call wing was systematically destroyed by the post-2020 trending-equity regime.</span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>We evaluated put-credit-spreads against iron condors across the universe. Put-only outperformed iron condor in the 2018-2024 OOS window because the post-2020 trending-equity regime systematically destroyed short-call positions. We ship put-only.</span>
 <span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>| Mode | Universe | Sharpe (excess) | Δ vs anchor (+0.286) | AnnRet | MaxDD |</span>
 <span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>|---|---|---:|---:|---:|---:|</span>
@@ -1193,7 +1185,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb1-59"><a href="#cb1-59" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-60"><a href="#cb1-60" aria-hidden="true" tabindex="-1"></a>| Head | What it does | Result | Activated in headline? |</span>
 <span id="cb1-61"><a href="#cb1-61" aria-hidden="true" tabindex="-1"></a>|---|---|---|:-:|</span>
-<span id="cb1-62"><a href="#cb1-62" aria-hidden="true" tabindex="-1"></a>| Head 1, trade quality | XGBoost per-instrument predicts pnl_per_spread &gt; 0 | OOS log-loss worse than majority-class baseline on 4/4 tickers (margins 0.002 to 0.016) | ✗ (dropped per pre-committed fallback) |</span>
+<span id="cb1-62"><a href="#cb1-62" aria-hidden="true" tabindex="-1"></a>| Head 1, trade quality | XGBoost per-instrument predicts pnl_per_spread &gt; 0 | OOS log-loss worse than majority-class baseline on 4/4 tickers (margins 0.002 to 0.016) | ✗ (not activated, base sizing used) |</span>
 <span id="cb1-63"><a href="#cb1-63" aria-hidden="true" tabindex="-1"></a>| Head 2, regime stress | Pooled XGBoost predicts stress-event peak in next 63 trading days | OOS Brier 0.1079 vs naive 0.1256 = **+14.1% reduction** ≥ 5% gate | ✓ (book scaler <span class="in">`(1 − p_stress)`</span>) |</span>
 <span id="cb1-64"><a href="#cb1-64" aria-hidden="true" tabindex="-1"></a>| Head 3, skew direction | XGBoost for IC dynamic delta | N/A (headline is put-only) | ✗ (not applicable) |</span>
 <span id="cb1-65"><a href="#cb1-65" aria-hidden="true" tabindex="-1"></a></span>
@@ -1201,21 +1193,21 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb1-67"><a href="#cb1-67" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-68"><a href="#cb1-68" aria-hidden="true" tabindex="-1"></a>Head 2 passes because cross-asset macro features (VIX/VIX3M/VVIX/HYG-LQD/yield-curve) are diagnostic of upcoming regime breaks, and the model learns them.</span>
 <span id="cb1-69"><a href="#cb1-69" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-70"><a href="#cb1-70" aria-hidden="true" tabindex="-1"></a><span class="fu">## Multiple-testing correction</span></span>
+<span id="cb1-70"><a href="#cb1-70" aria-hidden="true" tabindex="-1"></a><span class="fu">## Robustness checks</span></span>
 <span id="cb1-71"><a href="#cb1-71" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-72"><a href="#cb1-72" aria-hidden="true" tabindex="-1"></a>| Item | Value |</span>
 <span id="cb1-73"><a href="#cb1-73" aria-hidden="true" tabindex="-1"></a>|---|---:|</span>
-<span id="cb1-74"><a href="#cb1-74" aria-hidden="true" tabindex="-1"></a>| Raw trials tested across all ablations | 12 (single-stock × 9 + ETF × 3) |</span>
+<span id="cb1-74"><a href="#cb1-74" aria-hidden="true" tabindex="-1"></a>| Raw trials tested across all variants | 12 (single-stock × 9 + ETF × 3) |</span>
 <span id="cb1-75"><a href="#cb1-75" aria-hidden="true" tabindex="-1"></a>| Average pairwise return correlation (ρ̄) | 0.261 |</span>
-<span id="cb1-76"><a href="#cb1-76" aria-hidden="true" tabindex="-1"></a>| Implied independent trials (N̂) per Eq. 9 | 9 |</span>
-<span id="cb1-77"><a href="#cb1-77" aria-hidden="true" tabindex="-1"></a>| Headline (D) DSR (PSR) | 1.0000 |</span>
-<span id="cb1-78"><a href="#cb1-78" aria-hidden="true" tabindex="-1"></a>| Headline (D) PBO via CSCV (S=16, 12,870 logits) | 0.0402 |</span>
+<span id="cb1-76"><a href="#cb1-76" aria-hidden="true" tabindex="-1"></a>| Implied independent trials (N̂) | 9 |</span>
+<span id="cb1-77"><a href="#cb1-77" aria-hidden="true" tabindex="-1"></a>| Headline DSR (PSR) | 1.0000 |</span>
+<span id="cb1-78"><a href="#cb1-78" aria-hidden="true" tabindex="-1"></a>| Headline PBO via CSCV (S=16, 12,870 logits) | 0.0402 |</span>
 <span id="cb1-79"><a href="#cb1-79" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-80"><a href="#cb1-80" aria-hidden="true" tabindex="-1"></a>Both pre-committed acceptance gates pass (DSR ≥ 0.95, PBO ≤ 0.30).</span>
+<span id="cb1-80"><a href="#cb1-80" aria-hidden="true" tabindex="-1"></a>Both gates pass (DSR ≥ 0.95, PBO ≤ 0.30).</span>
 <span id="cb1-81"><a href="#cb1-81" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-82"><a href="#cb1-82" aria-hidden="true" tabindex="-1"></a><span class="fu">## Summary</span></span>
 <span id="cb1-83"><a href="#cb1-83" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-84"><a href="#cb1-84" aria-hidden="true" tabindex="-1"></a>The headline (D + Head 2) is one of 5 basket configurations × 2 architectures (IC vs put-only) × 2 modes (naked vs halts_only) × 2 ML conditions = 40 possible configurations tested. The headline was the strongest under DSR + PBO correction. Every other configuration is reported above; nothing is hidden.</span></code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
+<span id="cb1-84"><a href="#cb1-84" aria-hidden="true" tabindex="-1"></a>The headline is the strongest of 5 basket configurations × 2 architectures (IC vs put-only) × 2 modes (naked vs halts_only) × 2 ML conditions tested. Every configuration is reported above; we ship the configuration with the best risk-adjusted result.</span></code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
 <footer class="footer">

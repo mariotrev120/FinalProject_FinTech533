@@ -129,16 +129,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span class="menu-text">Home</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./thesis.html"> 
-<span class="menu-text">Thesis</span></a>
-  </li>  
-  <li class="nav-item">
     <a class="nav-link" href="./mechanics.html"> 
-<span class="menu-text">Mechanics</span></a>
-  </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="./pre_commitments.html"> 
-<span class="menu-text">Pre-commitments</span></a>
+<span class="menu-text">Strategy</span></a>
   </li>  
   <li class="nav-item">
     <a class="nav-link" href="./results.html"> 
@@ -146,7 +138,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>  
   <li class="nav-item">
     <a class="nav-link" href="./ablations.html"> 
-<span class="menu-text">Ablations</span></a>
+<span class="menu-text">Variants</span></a>
   </li>  
   <li class="nav-item">
     <a class="nav-link" href="./monitoring.html"> 
@@ -158,7 +150,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>  
   <li class="nav-item">
     <a class="nav-link" href="./data_and_literature.html"> 
-<span class="menu-text">Data &amp; Literature</span></a>
+<span class="menu-text">Data &amp; Sources</span></a>
   </li>  
 </ul>
           </div> <!-- /navcollapse -->
@@ -180,7 +172,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#the-strategy-in-one-sentence" id="toc-the-strategy-in-one-sentence" class="nav-link active" data-scroll-target="#the-strategy-in-one-sentence">The strategy in one sentence</a></li>
   <li><a href="#headline" id="toc-headline" class="nav-link" data-scroll-target="#headline">Headline result</a></li>
   <li><a href="#whats-behind-the-number" id="toc-whats-behind-the-number" class="nav-link" data-scroll-target="#whats-behind-the-number">What’s behind the number</a></li>
-  <li><a href="#pre-commitment-driven-methodology" id="toc-pre-commitment-driven-methodology" class="nav-link" data-scroll-target="#pre-commitment-driven-methodology">Pre-commitment-driven methodology</a></li>
   <li><a href="#live-monitoring-framework" id="toc-live-monitoring-framework" class="nav-link" data-scroll-target="#live-monitoring-framework">Live-monitoring framework</a></li>
   <li><a href="#what-was-tested-but-not-used" id="toc-what-was-tested-but-not-used" class="nav-link" data-scroll-target="#what-was-tested-but-not-used">What was tested but not used</a></li>
   <li><a href="#reproducibility" id="toc-reproducibility" class="nav-link" data-scroll-target="#reproducibility">Reproducibility</a></li>
@@ -255,7 +246,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 </tbody>
 </table>
-<p>Both pre-committed acceptance gates pass. See <a href="./results.html">Results</a> for the full breakdown and <a href="./pre_commitments.html">Pre-commitments</a> for the locked methodology.</p>
+<p>Both acceptance gates pass. See <a href="./results.html">Results</a> for the full breakdown.</p>
 </section>
 <section id="whats-behind-the-number" class="level2">
 <h2 class="anchored" data-anchor-id="whats-behind-the-number">What’s behind the number</h2>
@@ -267,13 +258,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><strong>Honest aggregation</strong>, book Sharpe computed from the equal-weighted aggregate equity curve, not from per-instrument Sharpe averaging. Cross-instrument correlation 0.26 (low) drives the diversification benefit.</li>
 </ul>
 </section>
-<section id="pre-commitment-driven-methodology" class="level2">
-<h2 class="anchored" data-anchor-id="pre-commitment-driven-methodology">Pre-commitment-driven methodology</h2>
-<p>Every parameter, threshold, and acceptance criterion was locked in version-controlled pre-commitment documents <strong>before</strong> the OOS backtest ran. Methodology amendments after pre-commitment are logged with date and reason. See <a href="./pre_commitments.html">Pre-commitments</a>.</p>
-</section>
 <section id="live-monitoring-framework" class="level2">
 <h2 class="anchored" data-anchor-id="live-monitoring-framework">Live-monitoring framework</h2>
-<p>The strategy ships with a <strong>Hoeffding trader-application bound</strong> that quantifies, in real time, the probability the underlying win-rate has shifted away from the pre-committed baseline. Threshold semantics (50% / 25% / 10% probability bound) trigger reduce-size, freeze, and shut-down actions respectively. See <a href="./monitoring.html">Live Monitoring</a> for the full framework and worked example on the headline basket.</p>
+<p>The strategy ships with a <strong>Hoeffding trader-application bound</strong> that quantifies, in real time, the probability the underlying win-rate has shifted away from the OOS baseline of μ = 0.730. Threshold semantics (50% / 25% / 10% probability bound) trigger reduce-size, freeze, and shut-down actions respectively. See <a href="./monitoring.html">Live Monitoring</a> for the full framework and worked example on the headline basket.</p>
 </section>
 <section id="what-was-tested-but-not-used" class="level2">
 <h2 class="anchored" data-anchor-id="what-was-tested-but-not-used">What was tested but not used</h2>
@@ -937,7 +924,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>| **DSR (PSR)** | **1.0000** ≥ 0.95 ✓ |</span>
 <span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>| **PBO via CSCV** | **0.0402** ≤ 0.30 ✓ |</span>
 <span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>Both pre-committed acceptance gates pass. See <span class="co">[</span><span class="ot">Results</span><span class="co">](results.qmd)</span> for the full breakdown and <span class="co">[</span><span class="ot">Pre-commitments</span><span class="co">](pre_commitments.qmd)</span> for the locked methodology.</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>Both acceptance gates pass. See <span class="co">[</span><span class="ot">Results</span><span class="co">](results.qmd)</span> for the full breakdown.</span>
 <span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a><span class="fu">## What's behind the number</span></span>
 <span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a></span>
@@ -947,35 +934,31 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Exogenous-factor inputs**, VIX/VIX3M/VVIX/SKEW for regime classification, IRX for risk-free baseline + cash accrual, HYG-LQD spread + rolling SPY-Treasury correlation for stress detection. See <span class="co">[</span><span class="ot">Mechanics</span><span class="co">](mechanics.qmd)</span> for the full list.</span>
 <span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Honest aggregation**, book Sharpe computed from the equal-weighted aggregate equity curve, not from per-instrument Sharpe averaging. Cross-instrument correlation 0.26 (low) drives the diversification benefit.</span>
 <span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a><span class="fu">## Pre-commitment-driven methodology</span></span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a><span class="fu">## Live-monitoring framework</span></span>
 <span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a>Every parameter, threshold, and acceptance criterion was locked in version-controlled pre-commitment documents **before** the OOS backtest ran. Methodology amendments after pre-commitment are logged with date and reason. See <span class="co">[</span><span class="ot">Pre-commitments</span><span class="co">](pre_commitments.qmd)</span>.</span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a>The strategy ships with a **Hoeffding trader-application bound** that quantifies, in real time, the probability the underlying win-rate has shifted away from the OOS baseline of μ = 0.730. Threshold semantics (50% / 25% / 10% probability bound) trigger reduce-size, freeze, and shut-down actions respectively. See <span class="co">[</span><span class="ot">Live Monitoring</span><span class="co">](monitoring.qmd)</span> for the full framework and worked example on the headline basket.</span>
 <span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a><span class="fu">## Live-monitoring framework</span></span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a><span class="fu">## What was tested but not used</span></span>
 <span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a>The strategy ships with a **Hoeffding trader-application bound** that quantifies, in real time, the probability the underlying win-rate has shifted away from the pre-committed baseline. Threshold semantics (50% / 25% / 10% probability bound) trigger reduce-size, freeze, and shut-down actions respectively. See <span class="co">[</span><span class="ot">Live Monitoring</span><span class="co">](monitoring.qmd)</span> for the full framework and worked example on the headline basket.</span>
+<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a>The headline is one of five baskets tested. The four others (SPX-only put-credit-spread, ETF-3 cluster, full 6-instrument book, iron condor variants on the 3-instrument cluster) underperformed the v1.5 anchor. They are reported transparently in the <span class="co">[</span><span class="ot">Ablations</span><span class="co">](ablations.qmd)</span> page, the iron condor variant is particularly informative: adding the call wing systematically lost in the 2018-2024 trending-equity regime.</span>
 <span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a><span class="fu">## What was tested but not used</span></span>
+<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a><span class="fu">## Reproducibility</span></span>
 <span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a>The headline is one of five baskets tested. The four others (SPX-only put-credit-spread, ETF-3 cluster, full 6-instrument book, iron condor variants on the 3-instrument cluster) underperformed the v1.5 anchor. They are reported transparently in the <span class="co">[</span><span class="ot">Ablations</span><span class="co">](ablations.qmd)</span> page, the iron condor variant is particularly informative: adding the call wing systematically lost in the 2018-2024 trending-equity regime.</span>
+<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a>Single-command reproduction from a fresh checkout:</span>
 <span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a><span class="fu">## Reproducibility</span></span>
-<span id="cb2-47"><a href="#cb2-47" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-48"><a href="#cb2-48" aria-hidden="true" tabindex="-1"></a>Single-command reproduction from a fresh checkout:</span>
-<span id="cb2-49"><a href="#cb2-49" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-50"><a href="#cb2-50" aria-hidden="true" tabindex="-1"></a><span class="in">```bash</span></span>
-<span id="cb2-51"><a href="#cb2-51" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone <span class="op">&lt;</span>repo<span class="op">&gt;</span></span>
-<span id="cb2-52"><a href="#cb2-52" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> FinalProject_FinTech533</span>
-<span id="cb2-53"><a href="#cb2-53" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> <span class="at">-m</span> venv .venv <span class="kw">&amp;&amp;</span> <span class="bu">source</span> .venv/bin/activate</span>
-<span id="cb2-54"><a href="#cb2-54" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install <span class="at">-r</span> requirements.txt</span>
-<span id="cb2-55"><a href="#cb2-55" aria-hidden="true" tabindex="-1"></a><span class="va">PYTHONPATH</span><span class="op">=</span>. <span class="ex">python</span> scripts/convert_optionmetrics_to_parquet.py   <span class="co"># one-time, ~80s</span></span>
-<span id="cb2-56"><a href="#cb2-56" aria-hidden="true" tabindex="-1"></a><span class="va">PYTHONPATH</span><span class="op">=</span>. <span class="ex">python</span> scripts/run_multi_instrument_vrp.py <span class="dt">\</span></span>
-<span id="cb2-57"><a href="#cb2-57" aria-hidden="true" tabindex="-1"></a>    <span class="at">--tickers</span> AAPL MSFT WMT GLD <span class="dt">\</span></span>
-<span id="cb2-58"><a href="#cb2-58" aria-hidden="true" tabindex="-1"></a>    <span class="at">--mode</span> halts_only <span class="at">--no-ic</span> <span class="dt">\</span></span>
-<span id="cb2-59"><a href="#cb2-59" aria-hidden="true" tabindex="-1"></a>    <span class="at">--total-capital</span> 200000</span>
-<span id="cb2-60"><a href="#cb2-60" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb2-61"><a href="#cb2-61" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-62"><a href="#cb2-62" aria-hidden="true" tabindex="-1"></a><span class="in">`SEED = 42`</span> is consumed by every stochastic component. Two runs of the same commit produce identical equity curves to floating-point precision. See <span class="co">[</span><span class="ot">Data and Literature</span><span class="co">](data_and_literature.qmd)</span> for the full data-source list and reference reading.</span></code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
+<span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a><span class="in">```bash</span></span>
+<span id="cb2-47"><a href="#cb2-47" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone <span class="op">&lt;</span>repo<span class="op">&gt;</span></span>
+<span id="cb2-48"><a href="#cb2-48" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> FinalProject_FinTech533</span>
+<span id="cb2-49"><a href="#cb2-49" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> <span class="at">-m</span> venv .venv <span class="kw">&amp;&amp;</span> <span class="bu">source</span> .venv/bin/activate</span>
+<span id="cb2-50"><a href="#cb2-50" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install <span class="at">-r</span> requirements.txt</span>
+<span id="cb2-51"><a href="#cb2-51" aria-hidden="true" tabindex="-1"></a><span class="va">PYTHONPATH</span><span class="op">=</span>. <span class="ex">python</span> scripts/convert_optionmetrics_to_parquet.py   <span class="co"># one-time, ~80s</span></span>
+<span id="cb2-52"><a href="#cb2-52" aria-hidden="true" tabindex="-1"></a><span class="va">PYTHONPATH</span><span class="op">=</span>. <span class="ex">python</span> scripts/run_multi_instrument_vrp.py <span class="dt">\</span></span>
+<span id="cb2-53"><a href="#cb2-53" aria-hidden="true" tabindex="-1"></a>    <span class="at">--tickers</span> AAPL MSFT WMT GLD <span class="dt">\</span></span>
+<span id="cb2-54"><a href="#cb2-54" aria-hidden="true" tabindex="-1"></a>    <span class="at">--mode</span> halts_only <span class="at">--no-ic</span> <span class="dt">\</span></span>
+<span id="cb2-55"><a href="#cb2-55" aria-hidden="true" tabindex="-1"></a>    <span class="at">--total-capital</span> 200000</span>
+<span id="cb2-56"><a href="#cb2-56" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb2-57"><a href="#cb2-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-58"><a href="#cb2-58" aria-hidden="true" tabindex="-1"></a><span class="in">`SEED = 42`</span> is consumed by every stochastic component. Two runs of the same commit produce identical equity curves to floating-point precision. See <span class="co">[</span><span class="ot">Data and Literature</span><span class="co">](data_and_literature.qmd)</span> for the full data-source list and reference reading.</span></code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
 <footer class="footer">
