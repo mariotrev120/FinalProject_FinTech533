@@ -814,7 +814,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Random sample of 10 trades from the 437-row blotter (seed=42), styled to match the HW3/HW4 trade-log convention: entry/exit timestamps, qty, entry/exit prices, fate, P&amp;L, return %, success flag.</p>
 <table class="caption-top table">
 <colgroup>
-<col style="width: 9%">
+<col style="width: 7%">
 <col style="width: 7%">
 <col style="width: 7%">
 <col style="width: 7%">
@@ -829,7 +829,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </colgroup>
 <thead>
 <tr class="header">
-<th style="text-align: right;">#</th>
+<th>trd_prd</th>
 <th>Entry</th>
 <th>Exit</th>
 <th style="text-align: center;">Ticker</th>
@@ -845,7 +845,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: right;">13</td>
+<td>2018.19</td>
 <td>2018-05-07</td>
 <td>2018-05-16</td>
 <td style="text-align: center;">WMT</td>
@@ -859,7 +859,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td style="text-align: center;">True</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">53</td>
+<td>2018.39</td>
 <td>2018-09-24</td>
 <td>2018-10-05</td>
 <td style="text-align: center;">WMT</td>
@@ -873,7 +873,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td style="text-align: center;">False</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">58</td>
+<td>2018.40</td>
 <td>2018-10-01</td>
 <td>2018-10-11</td>
 <td style="text-align: center;">GLD</td>
@@ -887,7 +887,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td style="text-align: center;">True</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">72</td>
+<td>2019.07</td>
 <td>2019-02-11</td>
 <td>2019-02-15</td>
 <td style="text-align: center;">MSFT</td>
@@ -901,7 +901,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td style="text-align: center;">True</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">115</td>
+<td>2019.30</td>
 <td>2019-07-22</td>
 <td>2019-08-01</td>
 <td style="text-align: center;">WMT</td>
@@ -915,7 +915,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td style="text-align: center;">False</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">126</td>
+<td>2019.48</td>
 <td>2019-11-25</td>
 <td>2019-12-04</td>
 <td style="text-align: center;">WMT</td>
@@ -929,7 +929,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td style="text-align: center;">True</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">141</td>
+<td>2019.52</td>
 <td>2019-12-23</td>
 <td>2019-12-26</td>
 <td style="text-align: center;">GLD</td>
@@ -943,7 +943,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td style="text-align: center;">True</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">328</td>
+<td>2024.07</td>
 <td>2024-02-12</td>
 <td>2024-02-23</td>
 <td style="text-align: center;">MSFT</td>
@@ -957,7 +957,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td style="text-align: center;">True</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">378</td>
+<td>2024.23</td>
 <td>2024-06-03</td>
 <td>2024-06-07</td>
 <td style="text-align: center;">GLD</td>
@@ -971,7 +971,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td style="text-align: center;">False</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">380</td>
+<td>2024.23</td>
 <td>2024-06-03</td>
 <td>2024-06-05</td>
 <td style="text-align: center;">WMT</td>
@@ -986,6 +986,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 </tbody>
 </table>
+<p>The <code>trd_prd</code> index encodes year + ISO week as a single decimal (matches HW2/HW3 trade-period convention). Entries on the same Monday share the same <code>trd_prd</code>.</p>
 <p><em>Showing 10 of 437 trades. Full blotter at <code>website/data/blotter.json</code>.</em></p>
 <p>For the data sources behind these numbers, see <a href="./data_and_literature.html">Data and Sources</a>.</p>
 
@@ -1797,22 +1798,24 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb1-185"><a href="#cb1-185" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-186"><a href="#cb1-186" aria-hidden="true" tabindex="-1"></a>Random sample of 10 trades from the 437-row blotter (seed=42), styled to match the HW3/HW4 trade-log convention: entry/exit timestamps, qty, entry/exit prices, fate, P&amp;L, return %, success flag.</span>
 <span id="cb1-187"><a href="#cb1-187" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-188"><a href="#cb1-188" aria-hidden="true" tabindex="-1"></a>| # | Entry | Exit | Ticker | Side | Qty | Entry credit | Exit debit | Fate | P&amp;L | Return % | Success |</span>
-<span id="cb1-189"><a href="#cb1-189" aria-hidden="true" tabindex="-1"></a>|---:|---|---|:-:|:-:|---:|---:|---:|---|---:|---:|:-:|</span>
-<span id="cb1-190"><a href="#cb1-190" aria-hidden="true" tabindex="-1"></a>| 13 | 2018-05-07 | 2018-05-16 | WMT | P | 1 | $22.45 | $0.90 | profit_target | $+21.55 | +96.0% | True |</span>
-<span id="cb1-191"><a href="#cb1-191" aria-hidden="true" tabindex="-1"></a>| 53 | 2018-09-24 | 2018-10-05 | WMT | P | 1 | $35.80 | $60.55 | time_exit | $-24.75 | -69.1% | False |</span>
-<span id="cb1-192"><a href="#cb1-192" aria-hidden="true" tabindex="-1"></a>| 58 | 2018-10-01 | 2018-10-11 | GLD | P | 1 | $15.05 | $4.50 | profit_target | $+10.55 | +70.1% | True |</span>
-<span id="cb1-193"><a href="#cb1-193" aria-hidden="true" tabindex="-1"></a>| 72 | 2019-02-11 | 2019-02-15 | MSFT | P | 1 | $38.70 | $15.30 | profit_target | $+23.40 | +60.5% | True |</span>
-<span id="cb1-194"><a href="#cb1-194" aria-hidden="true" tabindex="-1"></a>| 115 | 2019-07-22 | 2019-08-01 | WMT | P | 1 | $38.85 | $88.55 | stop_loss | $-49.70 | -127.9% | False |</span>
-<span id="cb1-195"><a href="#cb1-195" aria-hidden="true" tabindex="-1"></a>| 126 | 2019-11-25 | 2019-12-04 | WMT | P | 1 | $29.85 | $17.75 | profit_target | $+12.10 | +40.5% | True |</span>
-<span id="cb1-196"><a href="#cb1-196" aria-hidden="true" tabindex="-1"></a>| 141 | 2019-12-23 | 2019-12-26 | GLD | P | 1 | $19.70 | $9.95 | profit_target | $+9.75 | +49.5% | True |</span>
-<span id="cb1-197"><a href="#cb1-197" aria-hidden="true" tabindex="-1"></a>| 328 | 2024-02-12 | 2024-02-23 | MSFT | P | 1 | $52.80 | $34.25 | time_exit | $+18.55 | +35.1% | True |</span>
-<span id="cb1-198"><a href="#cb1-198" aria-hidden="true" tabindex="-1"></a>| 378 | 2024-06-03 | 2024-06-07 | GLD | P | 1 | $54.40 | $147.50 | stop_loss | $-93.10 | -171.1% | False |</span>
-<span id="cb1-199"><a href="#cb1-199" aria-hidden="true" tabindex="-1"></a>| 380 | 2024-06-03 | 2024-06-05 | WMT | P | 1 | $14.45 | $6.20 | profit_target | $+8.25 | +57.1% | True |</span>
+<span id="cb1-188"><a href="#cb1-188" aria-hidden="true" tabindex="-1"></a>| trd_prd | Entry | Exit | Ticker | Side | Qty | Entry credit | Exit debit | Fate | P&amp;L | Return % | Success |</span>
+<span id="cb1-189"><a href="#cb1-189" aria-hidden="true" tabindex="-1"></a>|---|---|---|:-:|:-:|---:|---:|---:|---|---:|---:|:-:|</span>
+<span id="cb1-190"><a href="#cb1-190" aria-hidden="true" tabindex="-1"></a>| 2018.19 | 2018-05-07 | 2018-05-16 | WMT | P | 1 | $22.45 | $0.90 | profit_target | $+21.55 | +96.0% | True |</span>
+<span id="cb1-191"><a href="#cb1-191" aria-hidden="true" tabindex="-1"></a>| 2018.39 | 2018-09-24 | 2018-10-05 | WMT | P | 1 | $35.80 | $60.55 | time_exit | $-24.75 | -69.1% | False |</span>
+<span id="cb1-192"><a href="#cb1-192" aria-hidden="true" tabindex="-1"></a>| 2018.40 | 2018-10-01 | 2018-10-11 | GLD | P | 1 | $15.05 | $4.50 | profit_target | $+10.55 | +70.1% | True |</span>
+<span id="cb1-193"><a href="#cb1-193" aria-hidden="true" tabindex="-1"></a>| 2019.07 | 2019-02-11 | 2019-02-15 | MSFT | P | 1 | $38.70 | $15.30 | profit_target | $+23.40 | +60.5% | True |</span>
+<span id="cb1-194"><a href="#cb1-194" aria-hidden="true" tabindex="-1"></a>| 2019.30 | 2019-07-22 | 2019-08-01 | WMT | P | 1 | $38.85 | $88.55 | stop_loss | $-49.70 | -127.9% | False |</span>
+<span id="cb1-195"><a href="#cb1-195" aria-hidden="true" tabindex="-1"></a>| 2019.48 | 2019-11-25 | 2019-12-04 | WMT | P | 1 | $29.85 | $17.75 | profit_target | $+12.10 | +40.5% | True |</span>
+<span id="cb1-196"><a href="#cb1-196" aria-hidden="true" tabindex="-1"></a>| 2019.52 | 2019-12-23 | 2019-12-26 | GLD | P | 1 | $19.70 | $9.95 | profit_target | $+9.75 | +49.5% | True |</span>
+<span id="cb1-197"><a href="#cb1-197" aria-hidden="true" tabindex="-1"></a>| 2024.07 | 2024-02-12 | 2024-02-23 | MSFT | P | 1 | $52.80 | $34.25 | time_exit | $+18.55 | +35.1% | True |</span>
+<span id="cb1-198"><a href="#cb1-198" aria-hidden="true" tabindex="-1"></a>| 2024.23 | 2024-06-03 | 2024-06-07 | GLD | P | 1 | $54.40 | $147.50 | stop_loss | $-93.10 | -171.1% | False |</span>
+<span id="cb1-199"><a href="#cb1-199" aria-hidden="true" tabindex="-1"></a>| 2024.23 | 2024-06-03 | 2024-06-05 | WMT | P | 1 | $14.45 | $6.20 | profit_target | $+8.25 | +57.1% | True |</span>
 <span id="cb1-200"><a href="#cb1-200" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-201"><a href="#cb1-201" aria-hidden="true" tabindex="-1"></a>*Showing 10 of 437 trades. Full blotter at `website/data/blotter.json`.*</span>
+<span id="cb1-201"><a href="#cb1-201" aria-hidden="true" tabindex="-1"></a>The <span class="in">`trd_prd`</span> index encodes year + ISO week as a single decimal (matches HW2/HW3 trade-period convention). Entries on the same Monday share the same <span class="in">`trd_prd`</span>.</span>
 <span id="cb1-202"><a href="#cb1-202" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-203"><a href="#cb1-203" aria-hidden="true" tabindex="-1"></a>For the data sources behind these numbers, see <span class="co">[</span><span class="ot">Data and Sources</span><span class="co">](data_and_literature.qmd)</span>.</span></code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
+<span id="cb1-203"><a href="#cb1-203" aria-hidden="true" tabindex="-1"></a>*Showing 10 of 437 trades. Full blotter at `website/data/blotter.json`.*</span>
+<span id="cb1-204"><a href="#cb1-204" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-205"><a href="#cb1-205" aria-hidden="true" tabindex="-1"></a>For the data sources behind these numbers, see <span class="co">[</span><span class="ot">Data and Sources</span><span class="co">](data_and_literature.qmd)</span>.</span></code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
 <footer class="footer">
