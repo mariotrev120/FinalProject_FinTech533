@@ -41,7 +41,10 @@ import numpy as np
 import pandas as pd
 
 from src.config import SEED
-from src.models.xgboost_primary import fit_xgb_with_isotonic, predict_calibrated
+from src.models.xgboost_primary import (
+    fit_xgb_calibrated,
+    predict_calibrated_auto,
+)
 
 
 log = logging.getLogger(__name__)
@@ -247,16 +250,23 @@ def train_regime_stress_walkforward(
         last_train_size = len(X_train)
 
         try:
-            model, iso = fit_xgb_with_isotonic(X_train, y_train, seed=seed)
+            model, calibrator, cal_method = fit_xgb_calibrated(
+                X_train, y_train, seed=seed, method="auto",
+                use_scale_pos_weight=True,
+            )
         except Exception as e:
             log.error("regime_stress fold %s training failed: %s", fs.date(), e)
             continue
+        log.info(
+            "regime_stress fold %s: trained on %d (%d pos), calibration=%s",
+            fs.date(), len(X_train), int((y_train == 1).sum()), cal_method,
+        )
 
         pred_idx = feats.index[(feats.index >= fs) & (feats.index < fe)]
         if len(pred_idx) == 0:
             continue
         X_pred = feats.loc[pred_idx]
-        preds = predict_calibrated(model, iso, X_pred)
+        preds = predict_calibrated_auto(model, calibrator, X_pred)
         out_preds.append(preds)
 
     if not out_preds:

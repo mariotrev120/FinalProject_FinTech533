@@ -62,6 +62,28 @@ def main() -> int:
     features_path = Path(DATA_PROCESSED_DIR) / "features.parquet"
     log.info("Loading features from %s", features_path)
     features = pd.read_parquet(features_path)
+
+    # Merge HMM regime probabilities per PRE_COMMITMENT_VRP §5.1 "optional"
+    # feature clause. HMM has a binary 'regime' column ('calm' / 'stressed');
+    # we encode as a single binary indicator hmm_stressed.
+    hmm_path = Path(DATA_PROCESSED_DIR) / "hmm_regimes.parquet"
+    if hmm_path.exists():
+        hmm = pd.read_parquet(hmm_path)
+        if "regime" in hmm.columns:
+            hmm_indicator = (hmm["regime"] == "stressed").astype(int)
+            hmm_indicator.name = "hmm_stressed"
+            features = features.join(hmm_indicator, how="left")
+            features["hmm_stressed"] = features["hmm_stressed"].fillna(0).astype(int)
+            log.info(
+                "Merged hmm_stressed indicator: %d / %d trading days flagged stressed",
+                int(features["hmm_stressed"].sum()), len(features),
+            )
+        else:
+            log.warning("hmm_regimes.parquet has no 'regime' column; skipping merge")
+    else:
+        log.warning("hmm_regimes.parquet not found at %s; skipping HMM features",
+                    hmm_path)
+
     log.info(
         "Features: shape=%s  range=[%s, %s]  cols=%s",
         features.shape,

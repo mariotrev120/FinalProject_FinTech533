@@ -25,13 +25,29 @@ from sklearn.model_selection import TimeSeriesSplit
 from xgboost import XGBClassifier
 
 from src.config import SEED
-from src.models.calibration import apply_isotonic, fit_isotonic_on_oof
+from src.models.calibration import (
+    Calibrator,
+    CalibrationMethod,
+    apply_calibrator,
+    apply_isotonic,
+    fit_calibrator_on_oof,
+    fit_isotonic_on_oof,
+)
 
 
 log = logging.getLogger(__name__)
 
 
-def _xgb_params(seed: int = SEED) -> dict:
+def _xgb_params(seed: int = SEED, scale_pos_weight: float = 1.0) -> dict:
+    """Default XGBoost hyperparameters.
+
+    `scale_pos_weight` controls class-imbalance gradient weighting per
+    XGBoost docs (recommended value = neg_count / pos_count for imbalanced
+    binary classification). Default 1.0 preserves the legacy behavior for
+    Head 1 (where classes are roughly balanced); for Head 2 (rare-class
+    stress events at ~9% base rate), the auto-computed neg/pos ratio is
+    passed through `fit_xgb_calibrated`.
+    """
     return dict(
         n_estimators=200,
         max_depth=4,
@@ -43,6 +59,7 @@ def _xgb_params(seed: int = SEED) -> dict:
         min_child_weight=3,
         random_state=seed,
         eval_metric="logloss",
+        scale_pos_weight=scale_pos_weight,
     )
 
 
@@ -77,6 +94,69 @@ def predict_calibrated(
 ) -> pd.Series:
     raw = model.predict_proba(X)[:, 1]
     cal = apply_isotonic(iso, raw)
+    return pd.Series(cal, index=X.index, name="p_calibrated")
+
+
+def fit_xgb_calibrated(
+    X_train: pd.DataFrame,
+    y_train: pd.Series,
+    seed: int = SEED,
+    method: CalibrationMethod = "auto",
+    use_scale_pos_weight: bool = True,
+) -> tuple[XGBClassifier, Calibrator, str]:
+    """Train XGBoost with auto-selected calibration (Platt vs isotonic
+    per Niculescu-Mizil & Caruana 2005 §5 learning-curve thresholds) AND
+    automatic `scale_pos_weight` for class imbalance.
+
+    Returns (model, calibrator, calibration_method_used).
+
+    Use this for Head 2 (rare-class stress events) and any other
+    classification head where minority-class size may fall below 200.
+    For Head 1 with balanced classes, `fit_xgb_with_isotonic` (legacy)
+    remains in place.
+    """
+    n_pos = int((y_train == 1).sum())
+    n_neg = int((y_train == 0).sum())
+    if use_scale_pos_weight and n_pos > 0:
+        spw = float(n_neg) / float(n_pos)
+    else:
+        spw = 1.0
+
+    if len(X_train) < 50:
+        log.warning(
+            "training set has only %d rows; calibration may be unstable",
+            len(X_train),
+        )
+
+    tscv = TimeSeriesSplit(n_splits=5)
+    oof = np.full(len(X_train), np.nan)
+    for tr_idx, val_idx in tscv.split(X_train):
+        if len(np.unique(y_train.iloc[tr_idx])) < 2:
+            continue
+        m = XGBClassifier(**_xgb_params(seed=seed, scale_pos_weight=spw))
+        m.fit(X_train.iloc[tr_idx], y_train.iloc[tr_idx])
+        oof[val_idx] = m.predict_proba(X_train.iloc[val_idx])[:, 1]
+
+    calibrator, method_used = fit_calibrator_on_oof(oof, y_train, method=method)
+
+    final = XGBClassifier(**_xgb_params(seed=seed, scale_pos_weight=spw))
+    final.fit(X_train, y_train)
+
+    log.info(
+        "fit_xgb_calibrated: n_pos=%d, n_neg=%d, scale_pos_weight=%.2f, "
+        "calibration=%s",
+        n_pos, n_neg, spw, method_used,
+    )
+    return final, calibrator, method_used
+
+
+def predict_calibrated_auto(
+    model: XGBClassifier, calibrator: Calibrator, X: pd.DataFrame,
+) -> pd.Series:
+    """Method-agnostic prediction. Dispatches to Platt or isotonic based
+    on calibrator type."""
+    raw = model.predict_proba(X)[:, 1]
+    cal = apply_calibrator(calibrator, raw)
     return pd.Series(cal, index=X.index, name="p_calibrated")
 
 
