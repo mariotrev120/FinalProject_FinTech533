@@ -115,7 +115,9 @@ The halt log diagnostic (state=hard_halt, trigger=awaiting_resume from 2018-02-1
 - Keep the three market-regime conditions; ALL three required for auto-resume.
 - **Add a 60-trading-day time-based fallback:** if a halt has lasted ≥ 60 trading days, auto-resume regardless. Caps worst-case halt duration; provides an escape hatch for pathological cases.
 
-**Acceptance check after fix:** SPX halts_only Sharpe lands in the 0.15–0.40 plausibility range; halt log shows 10–30 distinct halt periods over 7 years (sensible given 2018-Volmageddon, 2020-COVID, 2022-bear, 2023-banking events). If outside this range, Layer 5 design is re-examined again.
+**Acceptance check after fix:** SPX halts_only halt log shows multiple distinct halt periods rather than a single latched period; `auto_resumed` and `time_fallback_resumed` events fire in non-degenerate ratios; the strategy actually trades during released periods rather than oscillating in/out instantly. The Sharpe number is reported as-is, whatever it emerges as. Pre-committing a target Sharpe range after observing v1's pathological behavior would itself be a form of result-driven tuning, and is therefore avoided.
+
+> **2026-05-03 morning amendment to §4.1 acceptance text.** Removed the previously-written Sharpe-plausibility-range (0.15–0.40) and halt-period-count-range (10–30) acceptance criteria. Reason: pre-committing a target range AFTER observing v1's pathological behavior is itself result-driven, regardless of intent. The Layer 4 re-run reports whatever Sharpe emerges. Acceptance is structural only — does the latching pathology disappear? — not numerical. Logged here for transparency.
 
 **Methodology breach disclosure:** This is an edit to a previously-committed pre-commitment parameter, made AFTER seeing OOS behavior (catch-22 in halts_only mode). It is NOT a result-driven tweak — the v1 design was structurally broken (latch-by-construction), not just under-performing. The change is logged in this section for full transparency. Any reviewer can verify the v1 catch-22 by reverting `auto_resume_ready` to require condition 4 and re-running halts_only on SPX 2018-2024.
 
