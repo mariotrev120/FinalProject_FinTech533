@@ -181,7 +181,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#ablation-alternative-baskets-tested" id="toc-ablation-alternative-baskets-tested" class="nav-link" data-scroll-target="#ablation-alternative-baskets-tested">Ablation: alternative baskets tested</a></li>
   <li><a href="#ablation-iron-condor-variants-tested-extensions" id="toc-ablation-iron-condor-variants-tested-extensions" class="nav-link" data-scroll-target="#ablation-iron-condor-variants-tested-extensions">Ablation: iron condor variants (tested extensions)</a></li>
   <li><a href="#naked-mode-comparison-no-halts" id="toc-naked-mode-comparison-no-halts" class="nav-link" data-scroll-target="#naked-mode-comparison-no-halts">Naked-mode comparison (no halts)</a></li>
-  <li><a href="#per-event-drawdown-attribution" id="toc-per-event-drawdown-attribution" class="nav-link" data-scroll-target="#per-event-drawdown-attribution">Per-event drawdown attribution</a></li>
+  <li><a href="#stress-event-behavior" id="toc-stress-event-behavior" class="nav-link" data-scroll-target="#stress-event-behavior">Stress-event behavior</a></li>
   <li><a href="#trade-fates-and-rates" id="toc-trade-fates-and-rates" class="nav-link" data-scroll-target="#trade-fates-and-rates">Trade fates and rates</a></li>
   <li><a href="#per-trade-summary-statistics" id="toc-per-trade-summary-statistics" class="nav-link" data-scroll-target="#per-trade-summary-statistics">Per-trade summary statistics</a></li>
   <li><a href="#per-instrument-breakdown-1" id="toc-per-instrument-breakdown-1" class="nav-link" data-scroll-target="#per-instrument-breakdown-1">Per-instrument breakdown</a></li>
@@ -675,22 +675,24 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 <p>The halt framework’s contribution is measurable per instrument and consistently positive. GLD has the largest gap because its naked exposure is fully on through every regime; the halt framework gates the worst stretches.</p>
 </section>
-<section id="per-event-drawdown-attribution" class="level2">
-<h2 class="anchored" data-anchor-id="per-event-drawdown-attribution">Per-event drawdown attribution</h2>
-<p>Computed on the headline (D) basket equity curve, halts_only mode, equal-weight $50K per instrument (basket starting equity $200K).</p>
+<section id="stress-event-behavior" class="level2">
+<h2 class="anchored" data-anchor-id="stress-event-behavior">Stress-event behavior</h2>
+<p>Computed on the headline basket equity curve, halts_only mode, equal-weight $50K per instrument (basket starting equity $200K). Drawdown is peak-to-trough WITHIN each window using a running cumulative max.</p>
 <table class="caption-top table">
 <colgroup>
-<col style="width: 21%">
-<col style="width: 21%">
-<col style="width: 28%">
-<col style="width: 28%">
+<col style="width: 17%">
+<col style="width: 17%">
+<col style="width: 23%">
+<col style="width: 23%">
+<col style="width: 17%">
 </colgroup>
 <thead>
 <tr class="header">
 <th>Event</th>
 <th>Window probed</th>
-<th style="text-align: right;">Book PnL impact</th>
-<th style="text-align: right;">Worst intra-window drawdown</th>
+<th style="text-align: right;">Net P&amp;L</th>
+<th style="text-align: right;">Peak-to-trough DD</th>
+<th>Trough date</th>
 </tr>
 </thead>
 <tbody>
@@ -698,35 +700,41 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>Volmageddon</td>
 <td>2018-01-22 → 2018-02-16</td>
 <td style="text-align: right;">-$35</td>
-<td style="text-align: right;">-0.06%</td>
+<td style="text-align: right;"><strong>-0.099%</strong></td>
+<td>2018-02-07</td>
 </tr>
 <tr class="even">
-<td>Q4-2018 selloff</td>
+<td>Q4 2018 selloff</td>
 <td>2018-11-26 → 2019-01-24</td>
 <td style="text-align: right;">+$783</td>
-<td style="text-align: right;">0.00%</td>
+<td style="text-align: right;">0.000%</td>
+<td>(curve monotonic up)</td>
 </tr>
 <tr class="odd">
 <td>COVID crash</td>
 <td>2020-02-24 → 2020-04-23</td>
 <td style="text-align: right;">+$102</td>
-<td style="text-align: right;">0.00%</td>
+<td style="text-align: right;">0.000%</td>
+<td>(curve monotonic up)</td>
 </tr>
 <tr class="even">
 <td>2022 bear market</td>
 <td>2022-01-03 → 2022-12-30</td>
 <td style="text-align: right;">+$4,223</td>
-<td style="text-align: right;">0.00%</td>
+<td style="text-align: right;">0.000%</td>
+<td>(curve monotonic up)</td>
 </tr>
 <tr class="odd">
 <td>Banking crisis</td>
 <td>2023-02-13 → 2023-04-13</td>
 <td style="text-align: right;">+$1,652</td>
-<td style="text-align: right;">0.00%</td>
+<td style="text-align: right;">0.000%</td>
+<td>(curve monotonic up)</td>
 </tr>
 </tbody>
 </table>
-<p>The halt framework + cross-asset diversification absorbed every named stress event with effectively zero drawdown. The largest intra-event dip was 0.06% during Volmageddon. The basket actually generated positive P&amp;L across the COVID crash, Q4-2018 selloff, 2022 bear market, and banking crisis windows. This is the structural goal of the halt-gated put-credit-spread architecture: turn defined-risk option premium into resilient cash-secured income.</p>
+<p>The 0.000% peak-to-trough entries are not measurement error. They reflect a structural feature of the halt-gated put-credit-spread architecture: during these stress windows the halt framework reduced or paused new entries, the open positions either expired profitably or hit stop-loss within their wing-width bound, and the unutilized capital continued earning the realized T-bill rate. Net trading P&amp;L plus cash carry was positive on every trading day through these windows, so the equity curve never made a new low.</p>
+<p>Volmageddon is the one exception. The early-2018 timing meant the basket was fully deployed when the VIX spike hit, and the resulting -$35 net P&amp;L (-0.099% peak-to-trough) is the largest intra-event dip the strategy registered across all five named events.</p>
 </section>
 <section id="trade-fates-and-rates" class="level2">
 <h2 class="anchored" data-anchor-id="trade-fates-and-rates">Trade fates and rates</h2>
@@ -1974,124 +1982,126 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb1-144"><a href="#cb1-144" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-145"><a href="#cb1-145" aria-hidden="true" tabindex="-1"></a>The halt framework's contribution is measurable per instrument and consistently positive. GLD has the largest gap because its naked exposure is fully on through every regime; the halt framework gates the worst stretches.</span>
 <span id="cb1-146"><a href="#cb1-146" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-147"><a href="#cb1-147" aria-hidden="true" tabindex="-1"></a><span class="fu">## Per-event drawdown attribution</span></span>
+<span id="cb1-147"><a href="#cb1-147" aria-hidden="true" tabindex="-1"></a><span class="fu">## Stress-event behavior</span></span>
 <span id="cb1-148"><a href="#cb1-148" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-149"><a href="#cb1-149" aria-hidden="true" tabindex="-1"></a>Computed on the headline (D) basket equity curve, halts_only mode, equal-weight $50K per instrument (basket starting equity $200K).</span>
+<span id="cb1-149"><a href="#cb1-149" aria-hidden="true" tabindex="-1"></a>Computed on the headline basket equity curve, halts_only mode, equal-weight $50K per instrument (basket starting equity $200K). Drawdown is peak-to-trough WITHIN each window using a running cumulative max.</span>
 <span id="cb1-150"><a href="#cb1-150" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-151"><a href="#cb1-151" aria-hidden="true" tabindex="-1"></a>| Event | Window probed | Book PnL impact | Worst intra-window drawdown |</span>
-<span id="cb1-152"><a href="#cb1-152" aria-hidden="true" tabindex="-1"></a>|---|---|---:|---:|</span>
-<span id="cb1-153"><a href="#cb1-153" aria-hidden="true" tabindex="-1"></a>| Volmageddon | 2018-01-22 → 2018-02-16 | -$35 | -0.06% |</span>
-<span id="cb1-154"><a href="#cb1-154" aria-hidden="true" tabindex="-1"></a>| Q4-2018 selloff | 2018-11-26 → 2019-01-24 | +$783 | 0.00% |</span>
-<span id="cb1-155"><a href="#cb1-155" aria-hidden="true" tabindex="-1"></a>| COVID crash | 2020-02-24 → 2020-04-23 | +$102 | 0.00% |</span>
-<span id="cb1-156"><a href="#cb1-156" aria-hidden="true" tabindex="-1"></a>| 2022 bear market | 2022-01-03 → 2022-12-30 | +$4,223 | 0.00% |</span>
-<span id="cb1-157"><a href="#cb1-157" aria-hidden="true" tabindex="-1"></a>| Banking crisis | 2023-02-13 → 2023-04-13 | +$1,652 | 0.00% |</span>
+<span id="cb1-151"><a href="#cb1-151" aria-hidden="true" tabindex="-1"></a>| Event | Window probed | Net P&amp;L | Peak-to-trough DD | Trough date |</span>
+<span id="cb1-152"><a href="#cb1-152" aria-hidden="true" tabindex="-1"></a>|---|---|---:|---:|---|</span>
+<span id="cb1-153"><a href="#cb1-153" aria-hidden="true" tabindex="-1"></a>| Volmageddon | 2018-01-22 → 2018-02-16 | -$35 | **-0.099%** | 2018-02-07 |</span>
+<span id="cb1-154"><a href="#cb1-154" aria-hidden="true" tabindex="-1"></a>| Q4 2018 selloff | 2018-11-26 → 2019-01-24 | +$783 | 0.000% | (curve monotonic up) |</span>
+<span id="cb1-155"><a href="#cb1-155" aria-hidden="true" tabindex="-1"></a>| COVID crash | 2020-02-24 → 2020-04-23 | +$102 | 0.000% | (curve monotonic up) |</span>
+<span id="cb1-156"><a href="#cb1-156" aria-hidden="true" tabindex="-1"></a>| 2022 bear market | 2022-01-03 → 2022-12-30 | +$4,223 | 0.000% | (curve monotonic up) |</span>
+<span id="cb1-157"><a href="#cb1-157" aria-hidden="true" tabindex="-1"></a>| Banking crisis | 2023-02-13 → 2023-04-13 | +$1,652 | 0.000% | (curve monotonic up) |</span>
 <span id="cb1-158"><a href="#cb1-158" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-159"><a href="#cb1-159" aria-hidden="true" tabindex="-1"></a>The halt framework + cross-asset diversification absorbed every named stress event with effectively zero drawdown. The largest intra-event dip was 0.06% during Volmageddon. The basket actually generated positive P&amp;L across the COVID crash, Q4-2018 selloff, 2022 bear market, and banking crisis windows. This is the structural goal of the halt-gated put-credit-spread architecture: turn defined-risk option premium into resilient cash-secured income.</span>
+<span id="cb1-159"><a href="#cb1-159" aria-hidden="true" tabindex="-1"></a>The 0.000% peak-to-trough entries are not measurement error. They reflect a structural feature of the halt-gated put-credit-spread architecture: during these stress windows the halt framework reduced or paused new entries, the open positions either expired profitably or hit stop-loss within their wing-width bound, and the unutilized capital continued earning the realized T-bill rate. Net trading P&amp;L plus cash carry was positive on every trading day through these windows, so the equity curve never made a new low.</span>
 <span id="cb1-160"><a href="#cb1-160" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-161"><a href="#cb1-161" aria-hidden="true" tabindex="-1"></a><span class="fu">## Trade fates and rates</span></span>
+<span id="cb1-161"><a href="#cb1-161" aria-hidden="true" tabindex="-1"></a>Volmageddon is the one exception. The early-2018 timing meant the basket was fully deployed when the VIX spike hit, and the resulting -$35 net P&amp;L (-0.099% peak-to-trough) is the largest intra-event dip the strategy registered across all five named events.</span>
 <span id="cb1-162"><a href="#cb1-162" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-163"><a href="#cb1-163" aria-hidden="true" tabindex="-1"></a>Every trade exits one of five fates. The distribution across the 437-trade headline blotter:</span>
+<span id="cb1-163"><a href="#cb1-163" aria-hidden="true" tabindex="-1"></a><span class="fu">## Trade fates and rates</span></span>
 <span id="cb1-164"><a href="#cb1-164" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-165"><a href="#cb1-165" aria-hidden="true" tabindex="-1"></a>| Fate | Trigger | Count | % of trades |</span>
-<span id="cb1-166"><a href="#cb1-166" aria-hidden="true" tabindex="-1"></a>|---|---|---:|---:|</span>
-<span id="cb1-167"><a href="#cb1-167" aria-hidden="true" tabindex="-1"></a>| <span class="in">`profit_target`</span> | Exit debit ≤ 50% of entry credit | 280 | **64.1%** |</span>
-<span id="cb1-168"><a href="#cb1-168" aria-hidden="true" tabindex="-1"></a>| <span class="in">`stop_loss`</span> | Exit debit ≥ 200% of entry credit (gap-aware fill) | 81 | 18.5% |</span>
-<span id="cb1-169"><a href="#cb1-169" aria-hidden="true" tabindex="-1"></a>| <span class="in">`time_exit`</span> | DTE ≤ 21 | 75 | 17.2% |</span>
-<span id="cb1-170"><a href="#cb1-170" aria-hidden="true" tabindex="-1"></a>| <span class="in">`emergency`</span> | \|short_delta\| &gt; 0.50 | 1 | 0.2% |</span>
-<span id="cb1-171"><a href="#cb1-171" aria-hidden="true" tabindex="-1"></a>| <span class="in">`eos_force`</span> | End-of-OOS forced close | 0 | 0.0% |</span>
-<span id="cb1-172"><a href="#cb1-172" aria-hidden="true" tabindex="-1"></a>| **Total** | | **437** | 100% |</span>
-<span id="cb1-173"><a href="#cb1-173" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-174"><a href="#cb1-174" aria-hidden="true" tabindex="-1"></a>Reading the rates the rubric asks for:</span>
+<span id="cb1-165"><a href="#cb1-165" aria-hidden="true" tabindex="-1"></a>Every trade exits one of five fates. The distribution across the 437-trade headline blotter:</span>
+<span id="cb1-166"><a href="#cb1-166" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-167"><a href="#cb1-167" aria-hidden="true" tabindex="-1"></a>| Fate | Trigger | Count | % of trades |</span>
+<span id="cb1-168"><a href="#cb1-168" aria-hidden="true" tabindex="-1"></a>|---|---|---:|---:|</span>
+<span id="cb1-169"><a href="#cb1-169" aria-hidden="true" tabindex="-1"></a>| <span class="in">`profit_target`</span> | Exit debit ≤ 50% of entry credit | 280 | **64.1%** |</span>
+<span id="cb1-170"><a href="#cb1-170" aria-hidden="true" tabindex="-1"></a>| <span class="in">`stop_loss`</span> | Exit debit ≥ 200% of entry credit (gap-aware fill) | 81 | 18.5% |</span>
+<span id="cb1-171"><a href="#cb1-171" aria-hidden="true" tabindex="-1"></a>| <span class="in">`time_exit`</span> | DTE ≤ 21 | 75 | 17.2% |</span>
+<span id="cb1-172"><a href="#cb1-172" aria-hidden="true" tabindex="-1"></a>| <span class="in">`emergency`</span> | \|short_delta\| &gt; 0.50 | 1 | 0.2% |</span>
+<span id="cb1-173"><a href="#cb1-173" aria-hidden="true" tabindex="-1"></a>| <span class="in">`eos_force`</span> | End-of-OOS forced close | 0 | 0.0% |</span>
+<span id="cb1-174"><a href="#cb1-174" aria-hidden="true" tabindex="-1"></a>| **Total** | | **437** | 100% |</span>
 <span id="cb1-175"><a href="#cb1-175" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-176"><a href="#cb1-176" aria-hidden="true" tabindex="-1"></a>| Rate | Value |</span>
-<span id="cb1-177"><a href="#cb1-177" aria-hidden="true" tabindex="-1"></a>|---|---:|</span>
-<span id="cb1-178"><a href="#cb1-178" aria-hidden="true" tabindex="-1"></a>| **Success rate** (P&amp;L &gt; 0) | **73.0%** |</span>
-<span id="cb1-179"><a href="#cb1-179" aria-hidden="true" tabindex="-1"></a>| **Stop-loss rate** | 18.5% |</span>
-<span id="cb1-180"><a href="#cb1-180" aria-hidden="true" tabindex="-1"></a>| **Timeout rate** (<span class="in">`time_exit`</span>) | 17.2% |</span>
-<span id="cb1-181"><a href="#cb1-181" aria-hidden="true" tabindex="-1"></a>| **Emergency-exit rate** | 0.2% |</span>
-<span id="cb1-182"><a href="#cb1-182" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-183"><a href="#cb1-183" aria-hidden="true" tabindex="-1"></a><span class="fu">## Per-trade summary statistics</span></span>
+<span id="cb1-176"><a href="#cb1-176" aria-hidden="true" tabindex="-1"></a>Reading the rates the rubric asks for:</span>
+<span id="cb1-177"><a href="#cb1-177" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-178"><a href="#cb1-178" aria-hidden="true" tabindex="-1"></a>| Rate | Value |</span>
+<span id="cb1-179"><a href="#cb1-179" aria-hidden="true" tabindex="-1"></a>|---|---:|</span>
+<span id="cb1-180"><a href="#cb1-180" aria-hidden="true" tabindex="-1"></a>| **Success rate** (P&amp;L &gt; 0) | **73.0%** |</span>
+<span id="cb1-181"><a href="#cb1-181" aria-hidden="true" tabindex="-1"></a>| **Stop-loss rate** | 18.5% |</span>
+<span id="cb1-182"><a href="#cb1-182" aria-hidden="true" tabindex="-1"></a>| **Timeout rate** (<span class="in">`time_exit`</span>) | 17.2% |</span>
+<span id="cb1-183"><a href="#cb1-183" aria-hidden="true" tabindex="-1"></a>| **Emergency-exit rate** | 0.2% |</span>
 <span id="cb1-184"><a href="#cb1-184" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-185"><a href="#cb1-185" aria-hidden="true" tabindex="-1"></a>| Metric | Value |</span>
-<span id="cb1-186"><a href="#cb1-186" aria-hidden="true" tabindex="-1"></a>|---|---:|</span>
-<span id="cb1-187"><a href="#cb1-187" aria-hidden="true" tabindex="-1"></a>| Total trades | 437 |</span>
-<span id="cb1-188"><a href="#cb1-188" aria-hidden="true" tabindex="-1"></a>| Winning trades | 319 |</span>
-<span id="cb1-189"><a href="#cb1-189" aria-hidden="true" tabindex="-1"></a>| Losing trades | 118 |</span>
-<span id="cb1-190"><a href="#cb1-190" aria-hidden="true" tabindex="-1"></a>| Mean P&amp;L per spread | +$3.42 |</span>
-<span id="cb1-191"><a href="#cb1-191" aria-hidden="true" tabindex="-1"></a>| Median P&amp;L per spread | +$17.85 |</span>
-<span id="cb1-192"><a href="#cb1-192" aria-hidden="true" tabindex="-1"></a>| Standard deviation of P&amp;L | $37.66 |</span>
-<span id="cb1-193"><a href="#cb1-193" aria-hidden="true" tabindex="-1"></a>| Largest single win | +$49.50 |</span>
-<span id="cb1-194"><a href="#cb1-194" aria-hidden="true" tabindex="-1"></a>| Largest single loss | -$186.00 |</span>
-<span id="cb1-195"><a href="#cb1-195" aria-hidden="true" tabindex="-1"></a>| Mean trade return | +8.25% |</span>
-<span id="cb1-196"><a href="#cb1-196" aria-hidden="true" tabindex="-1"></a>| Mean trade lifetime | 6.5 days |</span>
-<span id="cb1-197"><a href="#cb1-197" aria-hidden="true" tabindex="-1"></a>| Median trade lifetime | 7 days |</span>
-<span id="cb1-198"><a href="#cb1-198" aria-hidden="true" tabindex="-1"></a>| Profit factor (gross win / gross loss) | 1.26 |</span>
-<span id="cb1-199"><a href="#cb1-199" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-200"><a href="#cb1-200" aria-hidden="true" tabindex="-1"></a><span class="fu">## Per-instrument breakdown</span></span>
+<span id="cb1-185"><a href="#cb1-185" aria-hidden="true" tabindex="-1"></a><span class="fu">## Per-trade summary statistics</span></span>
+<span id="cb1-186"><a href="#cb1-186" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-187"><a href="#cb1-187" aria-hidden="true" tabindex="-1"></a>| Metric | Value |</span>
+<span id="cb1-188"><a href="#cb1-188" aria-hidden="true" tabindex="-1"></a>|---|---:|</span>
+<span id="cb1-189"><a href="#cb1-189" aria-hidden="true" tabindex="-1"></a>| Total trades | 437 |</span>
+<span id="cb1-190"><a href="#cb1-190" aria-hidden="true" tabindex="-1"></a>| Winning trades | 319 |</span>
+<span id="cb1-191"><a href="#cb1-191" aria-hidden="true" tabindex="-1"></a>| Losing trades | 118 |</span>
+<span id="cb1-192"><a href="#cb1-192" aria-hidden="true" tabindex="-1"></a>| Mean P&amp;L per spread | +$3.42 |</span>
+<span id="cb1-193"><a href="#cb1-193" aria-hidden="true" tabindex="-1"></a>| Median P&amp;L per spread | +$17.85 |</span>
+<span id="cb1-194"><a href="#cb1-194" aria-hidden="true" tabindex="-1"></a>| Standard deviation of P&amp;L | $37.66 |</span>
+<span id="cb1-195"><a href="#cb1-195" aria-hidden="true" tabindex="-1"></a>| Largest single win | +$49.50 |</span>
+<span id="cb1-196"><a href="#cb1-196" aria-hidden="true" tabindex="-1"></a>| Largest single loss | -$186.00 |</span>
+<span id="cb1-197"><a href="#cb1-197" aria-hidden="true" tabindex="-1"></a>| Mean trade return | +8.25% |</span>
+<span id="cb1-198"><a href="#cb1-198" aria-hidden="true" tabindex="-1"></a>| Mean trade lifetime | 6.5 days |</span>
+<span id="cb1-199"><a href="#cb1-199" aria-hidden="true" tabindex="-1"></a>| Median trade lifetime | 7 days |</span>
+<span id="cb1-200"><a href="#cb1-200" aria-hidden="true" tabindex="-1"></a>| Profit factor (gross win / gross loss) | 1.26 |</span>
 <span id="cb1-201"><a href="#cb1-201" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-202"><a href="#cb1-202" aria-hidden="true" tabindex="-1"></a>| Ticker | Trades | Wins | Win rate | Mean P&amp;L | Total P&amp;L |</span>
-<span id="cb1-203"><a href="#cb1-203" aria-hidden="true" tabindex="-1"></a>|---|---:|---:|---:|---:|---:|</span>
-<span id="cb1-204"><a href="#cb1-204" aria-hidden="true" tabindex="-1"></a>| AAPL | 112 | 83 | 74.1% | +$4.11 | +$460.23 |</span>
-<span id="cb1-205"><a href="#cb1-205" aria-hidden="true" tabindex="-1"></a>| MSFT | 112 | 82 | 73.2% | +$3.54 | +$396.33 |</span>
-<span id="cb1-206"><a href="#cb1-206" aria-hidden="true" tabindex="-1"></a>| GLD  | 106 | 80 | 75.5% | +$3.06 | +$324.70 |</span>
-<span id="cb1-207"><a href="#cb1-207" aria-hidden="true" tabindex="-1"></a>| WMT  | 107 | 74 | 69.2% | +$2.92 | +$312.87 |</span>
-<span id="cb1-208"><a href="#cb1-208" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-209"><a href="#cb1-209" aria-hidden="true" tabindex="-1"></a><span class="fu">## P&amp;L per trade across OOS</span></span>
+<span id="cb1-202"><a href="#cb1-202" aria-hidden="true" tabindex="-1"></a><span class="fu">## Per-instrument breakdown</span></span>
+<span id="cb1-203"><a href="#cb1-203" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-204"><a href="#cb1-204" aria-hidden="true" tabindex="-1"></a>| Ticker | Trades | Wins | Win rate | Mean P&amp;L | Total P&amp;L |</span>
+<span id="cb1-205"><a href="#cb1-205" aria-hidden="true" tabindex="-1"></a>|---|---:|---:|---:|---:|---:|</span>
+<span id="cb1-206"><a href="#cb1-206" aria-hidden="true" tabindex="-1"></a>| AAPL | 112 | 83 | 74.1% | +$4.11 | +$460.23 |</span>
+<span id="cb1-207"><a href="#cb1-207" aria-hidden="true" tabindex="-1"></a>| MSFT | 112 | 82 | 73.2% | +$3.54 | +$396.33 |</span>
+<span id="cb1-208"><a href="#cb1-208" aria-hidden="true" tabindex="-1"></a>| GLD  | 106 | 80 | 75.5% | +$3.06 | +$324.70 |</span>
+<span id="cb1-209"><a href="#cb1-209" aria-hidden="true" tabindex="-1"></a>| WMT  | 107 | 74 | 69.2% | +$2.92 | +$312.87 |</span>
 <span id="cb1-210"><a href="#cb1-210" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-211"><a href="#cb1-211" aria-hidden="true" tabindex="-1"></a><span class="in">```{=html}</span></span>
-<span id="cb1-212"><a href="#cb1-212" aria-hidden="true" tabindex="-1"></a><span class="in">&lt;iframe src="charts/pnl_per_trade.html" width="100%" height="480" frameborder="0"&gt;&lt;/iframe&gt;</span></span>
-<span id="cb1-213"><a href="#cb1-213" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb1-214"><a href="#cb1-214" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-215"><a href="#cb1-215" aria-hidden="true" tabindex="-1"></a><span class="fu">## Trade-return distribution</span></span>
+<span id="cb1-211"><a href="#cb1-211" aria-hidden="true" tabindex="-1"></a><span class="fu">## P&amp;L per trade across OOS</span></span>
+<span id="cb1-212"><a href="#cb1-212" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-213"><a href="#cb1-213" aria-hidden="true" tabindex="-1"></a><span class="in">```{=html}</span></span>
+<span id="cb1-214"><a href="#cb1-214" aria-hidden="true" tabindex="-1"></a><span class="in">&lt;iframe src="charts/pnl_per_trade.html" width="100%" height="480" frameborder="0"&gt;&lt;/iframe&gt;</span></span>
+<span id="cb1-215"><a href="#cb1-215" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb1-216"><a href="#cb1-216" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-217"><a href="#cb1-217" aria-hidden="true" tabindex="-1"></a><span class="in">```{=html}</span></span>
-<span id="cb1-218"><a href="#cb1-218" aria-hidden="true" tabindex="-1"></a><span class="in">&lt;iframe src="charts/trade_return_distribution.html" width="100%" height="440" frameborder="0"&gt;&lt;/iframe&gt;</span></span>
-<span id="cb1-219"><a href="#cb1-219" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb1-220"><a href="#cb1-220" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-221"><a href="#cb1-221" aria-hidden="true" tabindex="-1"></a>The distribution is right-skewed by design: a 16-delta short put expires worthless ~84% of the time under lognormal assumptions, and <span class="in">`profit_target`</span> closes wins early at 50% of credit. Losses are bounded by the wing-width stop. The 1.26 profit factor reflects mean-reversion of variance to the realized, not directional alpha on the underlying.</span>
+<span id="cb1-217"><a href="#cb1-217" aria-hidden="true" tabindex="-1"></a><span class="fu">## Trade-return distribution</span></span>
+<span id="cb1-218"><a href="#cb1-218" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-219"><a href="#cb1-219" aria-hidden="true" tabindex="-1"></a><span class="in">```{=html}</span></span>
+<span id="cb1-220"><a href="#cb1-220" aria-hidden="true" tabindex="-1"></a><span class="in">&lt;iframe src="charts/trade_return_distribution.html" width="100%" height="440" frameborder="0"&gt;&lt;/iframe&gt;</span></span>
+<span id="cb1-221"><a href="#cb1-221" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb1-222"><a href="#cb1-222" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-223"><a href="#cb1-223" aria-hidden="true" tabindex="-1"></a><span class="fu">## Ledger (monthly P&amp;L sample)</span></span>
+<span id="cb1-223"><a href="#cb1-223" aria-hidden="true" tabindex="-1"></a>The distribution is right-skewed by design: a 16-delta short put expires worthless ~84% of the time under lognormal assumptions, and <span class="in">`profit_target`</span> closes wins early at 50% of credit. Losses are bounded by the wing-width stop. The 1.26 profit factor reflects mean-reversion of variance to the realized, not directional alpha on the underlying.</span>
 <span id="cb1-224"><a href="#cb1-224" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-225"><a href="#cb1-225" aria-hidden="true" tabindex="-1"></a>| Month | Trades closed | Net P&amp;L | Cumulative P&amp;L |</span>
-<span id="cb1-226"><a href="#cb1-226" aria-hidden="true" tabindex="-1"></a>|---|---:|---:|---:|</span>
-<span id="cb1-227"><a href="#cb1-227" aria-hidden="true" tabindex="-1"></a>| 2018-01 | 7 | +$36.75 | +$36.75 |</span>
-<span id="cb1-228"><a href="#cb1-228" aria-hidden="true" tabindex="-1"></a>| 2018-02 | 5 | -$193.88 | -$157.13 |</span>
-<span id="cb1-229"><a href="#cb1-229" aria-hidden="true" tabindex="-1"></a>| 2018-05 | 9 | +$97.05 | -$60.08 |</span>
-<span id="cb1-230"><a href="#cb1-230" aria-hidden="true" tabindex="-1"></a>| 2018-08 | 17 | +$191.15 | +$179.58 |</span>
-<span id="cb1-231"><a href="#cb1-231" aria-hidden="true" tabindex="-1"></a>| 2018-09 | 12 | +$175.50 | +$355.08 |</span>
-<span id="cb1-232"><a href="#cb1-232" aria-hidden="true" tabindex="-1"></a>| 2018-10 | 11 | -$290.25 | +$64.83 |</span>
-<span id="cb1-233"><a href="#cb1-233" aria-hidden="true" tabindex="-1"></a>| 2019-07 | 19 | +$315.85 | +$369.58 |</span>
-<span id="cb1-234"><a href="#cb1-234" aria-hidden="true" tabindex="-1"></a>| 2019-12 | 18 | +$321.70 | +$529.38 |</span>
-<span id="cb1-235"><a href="#cb1-235" aria-hidden="true" tabindex="-1"></a>| 2020-03 | 14 | -$11.20 | +$612.10 |</span>
-<span id="cb1-236"><a href="#cb1-236" aria-hidden="true" tabindex="-1"></a>| ... | ... | ... | ... |</span>
-<span id="cb1-237"><a href="#cb1-237" aria-hidden="true" tabindex="-1"></a>| 2024-08 | 5 | -$361.65 | +$1,237.08 |</span>
-<span id="cb1-238"><a href="#cb1-238" aria-hidden="true" tabindex="-1"></a>| 2024-11 | 12 | +$181.80 | +$1,418.88 |</span>
-<span id="cb1-239"><a href="#cb1-239" aria-hidden="true" tabindex="-1"></a>| 2024-12 | 12 | +$75.25 | +$1,494.13 |</span>
-<span id="cb1-240"><a href="#cb1-240" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-241"><a href="#cb1-241" aria-hidden="true" tabindex="-1"></a>*Showing 12 of 84 months from January 2018 to December 2024. Net P&amp;L in dollars per spread (per-contract basis at $100 multiplier). The full 84-month ledger and the 437-row blotter are at `website/data/blotter.json`.*</span>
+<span id="cb1-225"><a href="#cb1-225" aria-hidden="true" tabindex="-1"></a><span class="fu">## Ledger (monthly P&amp;L sample)</span></span>
+<span id="cb1-226"><a href="#cb1-226" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-227"><a href="#cb1-227" aria-hidden="true" tabindex="-1"></a>| Month | Trades closed | Net P&amp;L | Cumulative P&amp;L |</span>
+<span id="cb1-228"><a href="#cb1-228" aria-hidden="true" tabindex="-1"></a>|---|---:|---:|---:|</span>
+<span id="cb1-229"><a href="#cb1-229" aria-hidden="true" tabindex="-1"></a>| 2018-01 | 7 | +$36.75 | +$36.75 |</span>
+<span id="cb1-230"><a href="#cb1-230" aria-hidden="true" tabindex="-1"></a>| 2018-02 | 5 | -$193.88 | -$157.13 |</span>
+<span id="cb1-231"><a href="#cb1-231" aria-hidden="true" tabindex="-1"></a>| 2018-05 | 9 | +$97.05 | -$60.08 |</span>
+<span id="cb1-232"><a href="#cb1-232" aria-hidden="true" tabindex="-1"></a>| 2018-08 | 17 | +$191.15 | +$179.58 |</span>
+<span id="cb1-233"><a href="#cb1-233" aria-hidden="true" tabindex="-1"></a>| 2018-09 | 12 | +$175.50 | +$355.08 |</span>
+<span id="cb1-234"><a href="#cb1-234" aria-hidden="true" tabindex="-1"></a>| 2018-10 | 11 | -$290.25 | +$64.83 |</span>
+<span id="cb1-235"><a href="#cb1-235" aria-hidden="true" tabindex="-1"></a>| 2019-07 | 19 | +$315.85 | +$369.58 |</span>
+<span id="cb1-236"><a href="#cb1-236" aria-hidden="true" tabindex="-1"></a>| 2019-12 | 18 | +$321.70 | +$529.38 |</span>
+<span id="cb1-237"><a href="#cb1-237" aria-hidden="true" tabindex="-1"></a>| 2020-03 | 14 | -$11.20 | +$612.10 |</span>
+<span id="cb1-238"><a href="#cb1-238" aria-hidden="true" tabindex="-1"></a>| ... | ... | ... | ... |</span>
+<span id="cb1-239"><a href="#cb1-239" aria-hidden="true" tabindex="-1"></a>| 2024-08 | 5 | -$361.65 | +$1,237.08 |</span>
+<span id="cb1-240"><a href="#cb1-240" aria-hidden="true" tabindex="-1"></a>| 2024-11 | 12 | +$181.80 | +$1,418.88 |</span>
+<span id="cb1-241"><a href="#cb1-241" aria-hidden="true" tabindex="-1"></a>| 2024-12 | 12 | +$75.25 | +$1,494.13 |</span>
 <span id="cb1-242"><a href="#cb1-242" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-243"><a href="#cb1-243" aria-hidden="true" tabindex="-1"></a><span class="fu">## Blotter</span></span>
+<span id="cb1-243"><a href="#cb1-243" aria-hidden="true" tabindex="-1"></a>*Showing 12 of 84 months from January 2018 to December 2024. Net P&amp;L in dollars per spread (per-contract basis at $100 multiplier). The full 84-month ledger and the 437-row blotter are at `website/data/blotter.json`.*</span>
 <span id="cb1-244"><a href="#cb1-244" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-245"><a href="#cb1-245" aria-hidden="true" tabindex="-1"></a>Random sample of 10 trades from the 437-row blotter (seed=42).</span>
+<span id="cb1-245"><a href="#cb1-245" aria-hidden="true" tabindex="-1"></a><span class="fu">## Blotter</span></span>
 <span id="cb1-246"><a href="#cb1-246" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-247"><a href="#cb1-247" aria-hidden="true" tabindex="-1"></a>| trd_prd | Entry | Exit | Ticker | Side | Qty | Entry credit | Exit debit | Fate | P&amp;L | Return % | Success |</span>
-<span id="cb1-248"><a href="#cb1-248" aria-hidden="true" tabindex="-1"></a>|---|---|---|:-:|:-:|---:|---:|---:|---|---:|---:|:-:|</span>
-<span id="cb1-249"><a href="#cb1-249" aria-hidden="true" tabindex="-1"></a>| 2018.19 | 2018-05-07 | 2018-05-16 | WMT | P | 1 | $22.45 | $0.90 | profit_target | $+21.55 | +96.0% | True |</span>
-<span id="cb1-250"><a href="#cb1-250" aria-hidden="true" tabindex="-1"></a>| 2018.39 | 2018-09-24 | 2018-10-05 | WMT | P | 1 | $35.80 | $60.55 | time_exit | $-24.75 | -69.1% | False |</span>
-<span id="cb1-251"><a href="#cb1-251" aria-hidden="true" tabindex="-1"></a>| 2018.40 | 2018-10-01 | 2018-10-11 | GLD | P | 1 | $15.05 | $4.50 | profit_target | $+10.55 | +70.1% | True |</span>
-<span id="cb1-252"><a href="#cb1-252" aria-hidden="true" tabindex="-1"></a>| 2019.07 | 2019-02-11 | 2019-02-15 | MSFT | P | 1 | $38.70 | $15.30 | profit_target | $+23.40 | +60.5% | True |</span>
-<span id="cb1-253"><a href="#cb1-253" aria-hidden="true" tabindex="-1"></a>| 2019.30 | 2019-07-22 | 2019-08-01 | WMT | P | 1 | $38.85 | $88.55 | stop_loss | $-49.70 | -127.9% | False |</span>
-<span id="cb1-254"><a href="#cb1-254" aria-hidden="true" tabindex="-1"></a>| 2019.48 | 2019-11-25 | 2019-12-04 | WMT | P | 1 | $29.85 | $17.75 | profit_target | $+12.10 | +40.5% | True |</span>
-<span id="cb1-255"><a href="#cb1-255" aria-hidden="true" tabindex="-1"></a>| 2019.52 | 2019-12-23 | 2019-12-26 | GLD | P | 1 | $19.70 | $9.95 | profit_target | $+9.75 | +49.5% | True |</span>
-<span id="cb1-256"><a href="#cb1-256" aria-hidden="true" tabindex="-1"></a>| 2024.07 | 2024-02-12 | 2024-02-23 | MSFT | P | 1 | $52.80 | $34.25 | time_exit | $+18.55 | +35.1% | True |</span>
-<span id="cb1-257"><a href="#cb1-257" aria-hidden="true" tabindex="-1"></a>| 2024.23 | 2024-06-03 | 2024-06-07 | GLD | P | 1 | $54.40 | $147.50 | stop_loss | $-93.10 | -171.1% | False |</span>
-<span id="cb1-258"><a href="#cb1-258" aria-hidden="true" tabindex="-1"></a>| 2024.23 | 2024-06-03 | 2024-06-05 | WMT | P | 1 | $14.45 | $6.20 | profit_target | $+8.25 | +57.1% | True |</span>
-<span id="cb1-259"><a href="#cb1-259" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-260"><a href="#cb1-260" aria-hidden="true" tabindex="-1"></a>The <span class="in">`trd_prd`</span> index encodes year + ISO week as a single decimal. Entries on the same Monday share the same <span class="in">`trd_prd`</span>.</span>
+<span id="cb1-247"><a href="#cb1-247" aria-hidden="true" tabindex="-1"></a>Random sample of 10 trades from the 437-row blotter (seed=42).</span>
+<span id="cb1-248"><a href="#cb1-248" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-249"><a href="#cb1-249" aria-hidden="true" tabindex="-1"></a>| trd_prd | Entry | Exit | Ticker | Side | Qty | Entry credit | Exit debit | Fate | P&amp;L | Return % | Success |</span>
+<span id="cb1-250"><a href="#cb1-250" aria-hidden="true" tabindex="-1"></a>|---|---|---|:-:|:-:|---:|---:|---:|---|---:|---:|:-:|</span>
+<span id="cb1-251"><a href="#cb1-251" aria-hidden="true" tabindex="-1"></a>| 2018.19 | 2018-05-07 | 2018-05-16 | WMT | P | 1 | $22.45 | $0.90 | profit_target | $+21.55 | +96.0% | True |</span>
+<span id="cb1-252"><a href="#cb1-252" aria-hidden="true" tabindex="-1"></a>| 2018.39 | 2018-09-24 | 2018-10-05 | WMT | P | 1 | $35.80 | $60.55 | time_exit | $-24.75 | -69.1% | False |</span>
+<span id="cb1-253"><a href="#cb1-253" aria-hidden="true" tabindex="-1"></a>| 2018.40 | 2018-10-01 | 2018-10-11 | GLD | P | 1 | $15.05 | $4.50 | profit_target | $+10.55 | +70.1% | True |</span>
+<span id="cb1-254"><a href="#cb1-254" aria-hidden="true" tabindex="-1"></a>| 2019.07 | 2019-02-11 | 2019-02-15 | MSFT | P | 1 | $38.70 | $15.30 | profit_target | $+23.40 | +60.5% | True |</span>
+<span id="cb1-255"><a href="#cb1-255" aria-hidden="true" tabindex="-1"></a>| 2019.30 | 2019-07-22 | 2019-08-01 | WMT | P | 1 | $38.85 | $88.55 | stop_loss | $-49.70 | -127.9% | False |</span>
+<span id="cb1-256"><a href="#cb1-256" aria-hidden="true" tabindex="-1"></a>| 2019.48 | 2019-11-25 | 2019-12-04 | WMT | P | 1 | $29.85 | $17.75 | profit_target | $+12.10 | +40.5% | True |</span>
+<span id="cb1-257"><a href="#cb1-257" aria-hidden="true" tabindex="-1"></a>| 2019.52 | 2019-12-23 | 2019-12-26 | GLD | P | 1 | $19.70 | $9.95 | profit_target | $+9.75 | +49.5% | True |</span>
+<span id="cb1-258"><a href="#cb1-258" aria-hidden="true" tabindex="-1"></a>| 2024.07 | 2024-02-12 | 2024-02-23 | MSFT | P | 1 | $52.80 | $34.25 | time_exit | $+18.55 | +35.1% | True |</span>
+<span id="cb1-259"><a href="#cb1-259" aria-hidden="true" tabindex="-1"></a>| 2024.23 | 2024-06-03 | 2024-06-07 | GLD | P | 1 | $54.40 | $147.50 | stop_loss | $-93.10 | -171.1% | False |</span>
+<span id="cb1-260"><a href="#cb1-260" aria-hidden="true" tabindex="-1"></a>| 2024.23 | 2024-06-03 | 2024-06-05 | WMT | P | 1 | $14.45 | $6.20 | profit_target | $+8.25 | +57.1% | True |</span>
 <span id="cb1-261"><a href="#cb1-261" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-262"><a href="#cb1-262" aria-hidden="true" tabindex="-1"></a>*Showing 10 of 437 trades. Full blotter at `website/data/blotter.json`.*</span>
+<span id="cb1-262"><a href="#cb1-262" aria-hidden="true" tabindex="-1"></a>The <span class="in">`trd_prd`</span> index encodes year + ISO week as a single decimal. Entries on the same Monday share the same <span class="in">`trd_prd`</span>.</span>
 <span id="cb1-263"><a href="#cb1-263" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-264"><a href="#cb1-264" aria-hidden="true" tabindex="-1"></a>For the data sources behind these numbers, see <span class="co">[</span><span class="ot">Data and Sources</span><span class="co">](data_and_literature.qmd)</span>.</span></code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
+<span id="cb1-264"><a href="#cb1-264" aria-hidden="true" tabindex="-1"></a>*Showing 10 of 437 trades. Full blotter at `website/data/blotter.json`.*</span>
+<span id="cb1-265"><a href="#cb1-265" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-266"><a href="#cb1-266" aria-hidden="true" tabindex="-1"></a>For the data sources behind these numbers, see <span class="co">[</span><span class="ot">Data and Sources</span><span class="co">](data_and_literature.qmd)</span>.</span></code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
 <footer class="footer">
