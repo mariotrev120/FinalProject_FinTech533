@@ -207,6 +207,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul class="collapse">
   <li><a href="#mode-comparison-creates-a-second-multiple-testing-layer" id="toc-mode-comparison-creates-a-second-multiple-testing-layer" class="nav-link" data-scroll-target="#mode-comparison-creates-a-second-multiple-testing-layer">17. Mode comparison creates a second multiple-testing layer</a></li>
   </ul></li>
+  <li><a href="#future-work-treasury-management-on-undeployed-capital" id="toc-future-work-treasury-management-on-undeployed-capital" class="nav-link" data-scroll-target="#future-work-treasury-management-on-undeployed-capital">Future work: treasury management on undeployed capital</a></li>
   <li><a href="#what-to-read-next" id="toc-what-to-read-next" class="nav-link" data-scroll-target="#what-to-read-next">What to read next</a></li>
   </ul>
 </nav>
@@ -329,6 +330,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>The variants page includes mode comparisons (halts engaged versus disengaged). Comparing the better of the two modes against the baseline introduces a second selection layer beyond the basket-selection layer corrected via DSR + PBO.</p>
 <p>The headline only reports the halts-engaged mode result. The halts-disengaged results are reported on the <a href="./ablations.html">Variants</a> page for transparency, not as candidates.</p>
 </section>
+</section>
+<section id="future-work-treasury-management-on-undeployed-capital" class="level2">
+<h2 class="anchored" data-anchor-id="future-work-treasury-management-on-undeployed-capital">Future work: treasury management on undeployed capital</h2>
+<p>The current backtest accrues idle cash at the realized 13-week T-bill yield (IRX averaged 2.33% over OOS). This is the conservative baseline. A natural next step is active treasury management on the undeployed $200,000 of basket capital that backs the options positions.</p>
+<p>Replacing the passive T-bill accrual with an ultra-short Treasury ETF (SGOV, BIL) or a short-duration corporate bond fund (VCSH, BSV) targets an additional 100-200 bps of carry with minimal duration or credit risk. The trade-off is a small increase in drawdown sensitivity during credit-spread blowouts, but the headline -0.12% maximum drawdown leaves substantial room before this becomes a constraint.</p>
+<p>The deliberate exclusion is broad-equity exposure (SPY, QQQ) for the undeployed capital. Adding equity beta to the cash sleeve introduces correlation risk: in the stress events the strategy is designed to absorb (Volmageddon, COVID, 2022 bear, 2023 banking), the put-credit-spread portfolio is under maximum pressure exactly when an equity cash sleeve would also be drawing down. This double-correlation would destroy the maximum-drawdown profile that makes the strategy useful as a portfolio defensive sleeve.</p>
+<p>Recommended treasury overlay for production deployment: 80% allocation to SGOV (0-3M Treasuries, near-zero duration, currently yielding around 5%) and 20% to short-investment-grade-corporate (VCSH, around 1-year duration, currently yielding around 5%). Expected blended carry roughly 100-150 bps above passive IRX accrual, raising the strategy’s annualized return from 2.41% to approximately 3.5-4%, while keeping the maximum-drawdown floor near -0.12%. This is a low-risk capital-efficiency improvement, not a return-chasing one.</p>
 </section>
 <section id="what-to-read-next" class="level2">
 <h2 class="anchored" data-anchor-id="what-to-read-next">What to read next</h2>
@@ -1056,11 +1064,21 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb1-95"><a href="#cb1-95" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-96"><a href="#cb1-96" aria-hidden="true" tabindex="-1"></a>The headline only reports the halts-engaged mode result. The halts-disengaged results are reported on the <span class="co">[</span><span class="ot">Variants</span><span class="co">](ablations.qmd)</span> page for transparency, not as candidates.</span>
 <span id="cb1-97"><a href="#cb1-97" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-98"><a href="#cb1-98" aria-hidden="true" tabindex="-1"></a><span class="fu">## What to read next</span></span>
+<span id="cb1-98"><a href="#cb1-98" aria-hidden="true" tabindex="-1"></a><span class="fu">## Future work: treasury management on undeployed capital</span></span>
 <span id="cb1-99"><a href="#cb1-99" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-100"><a href="#cb1-100" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="co">[</span><span class="ot">Live Monitoring</span><span class="co">](monitoring.qmd)</span>, the answer to "how do you know when it stops working"</span>
-<span id="cb1-101"><a href="#cb1-101" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="co">[</span><span class="ot">Results</span><span class="co">](results.qmd)</span>, headline + per-instrument + variant tables</span>
-<span id="cb1-102"><a href="#cb1-102" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="co">[</span><span class="ot">Data and Sources</span><span class="co">](data_and_literature.qmd)</span>, data sources and reference reading</span></code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
+<span id="cb1-100"><a href="#cb1-100" aria-hidden="true" tabindex="-1"></a>The current backtest accrues idle cash at the realized 13-week T-bill yield (IRX averaged 2.33% over OOS). This is the conservative baseline. A natural next step is active treasury management on the undeployed $200,000 of basket capital that backs the options positions.</span>
+<span id="cb1-101"><a href="#cb1-101" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-102"><a href="#cb1-102" aria-hidden="true" tabindex="-1"></a>Replacing the passive T-bill accrual with an ultra-short Treasury ETF (SGOV, BIL) or a short-duration corporate bond fund (VCSH, BSV) targets an additional 100-200 bps of carry with minimal duration or credit risk. The trade-off is a small increase in drawdown sensitivity during credit-spread blowouts, but the headline -0.12% maximum drawdown leaves substantial room before this becomes a constraint.</span>
+<span id="cb1-103"><a href="#cb1-103" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-104"><a href="#cb1-104" aria-hidden="true" tabindex="-1"></a>The deliberate exclusion is broad-equity exposure (SPY, QQQ) for the undeployed capital. Adding equity beta to the cash sleeve introduces correlation risk: in the stress events the strategy is designed to absorb (Volmageddon, COVID, 2022 bear, 2023 banking), the put-credit-spread portfolio is under maximum pressure exactly when an equity cash sleeve would also be drawing down. This double-correlation would destroy the maximum-drawdown profile that makes the strategy useful as a portfolio defensive sleeve.</span>
+<span id="cb1-105"><a href="#cb1-105" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-106"><a href="#cb1-106" aria-hidden="true" tabindex="-1"></a>Recommended treasury overlay for production deployment: 80% allocation to SGOV (0-3M Treasuries, near-zero duration, currently yielding around 5%) and 20% to short-investment-grade-corporate (VCSH, around 1-year duration, currently yielding around 5%). Expected blended carry roughly 100-150 bps above passive IRX accrual, raising the strategy's annualized return from 2.41% to approximately 3.5-4%, while keeping the maximum-drawdown floor near -0.12%. This is a low-risk capital-efficiency improvement, not a return-chasing one.</span>
+<span id="cb1-107"><a href="#cb1-107" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-108"><a href="#cb1-108" aria-hidden="true" tabindex="-1"></a><span class="fu">## What to read next</span></span>
+<span id="cb1-109"><a href="#cb1-109" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-110"><a href="#cb1-110" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="co">[</span><span class="ot">Live Monitoring</span><span class="co">](monitoring.qmd)</span>, the answer to "how do you know when it stops working"</span>
+<span id="cb1-111"><a href="#cb1-111" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="co">[</span><span class="ot">Results</span><span class="co">](results.qmd)</span>, headline + per-instrument + variant tables</span>
+<span id="cb1-112"><a href="#cb1-112" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="co">[</span><span class="ot">Data and Sources</span><span class="co">](data_and_literature.qmd)</span>, data sources and reference reading</span></code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
 <footer class="footer">

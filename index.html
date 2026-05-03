@@ -175,6 +175,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#portfolio-fit" id="toc-portfolio-fit" class="nav-link" data-scroll-target="#portfolio-fit">Portfolio fit</a></li>
   <li><a href="#live-monitoring-framework" id="toc-live-monitoring-framework" class="nav-link" data-scroll-target="#live-monitoring-framework">Live-monitoring framework</a></li>
   <li><a href="#what-was-tested-but-not-used" id="toc-what-was-tested-but-not-used" class="nav-link" data-scroll-target="#what-was-tested-but-not-used">What was tested but not used</a></li>
+  <li><a href="#future-work-treasury-management-on-undeployed-capital" id="toc-future-work-treasury-management-on-undeployed-capital" class="nav-link" data-scroll-target="#future-work-treasury-management-on-undeployed-capital">Future work: treasury management on undeployed capital</a></li>
   </ul>
 </nav>
     </div>
@@ -279,7 +280,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="what-was-tested-but-not-used" class="level2">
 <h2 class="anchored" data-anchor-id="what-was-tested-but-not-used">What was tested but not used</h2>
-<p>The headline is one of five baskets tested. The four others (SPX-only put-credit-spread, 3-ETF basket, full 6-instrument book, iron condor variants on the 3-instrument cluster) underperformed the SPX baseline. They are reported transparently in the <a href="./ablations.html">Ablations</a> page, the iron condor variant is particularly informative: adding the call wing systematically lost in the 2018-2024 trending-equity regime.</p>
+<p>The headline is one of six configurations tested. The other five (SPX-only put-credit-spread, 3-ETF basket, full 6-instrument book, and iron condor variants on the 3-instrument cluster and SPX-only) underperformed the SPX baseline. They are reported transparently on the <a href="./ablations.html">Variants</a> page; the iron-condor variant is particularly informative because adding the call wing systematically lost in the 2018-2024 trending-equity regime.</p>
+</section>
+<section id="future-work-treasury-management-on-undeployed-capital" class="level2">
+<h2 class="anchored" data-anchor-id="future-work-treasury-management-on-undeployed-capital">Future work: treasury management on undeployed capital</h2>
+<p>The current backtest accrues idle cash at the realized 13-week T-bill yield (IRX averaged 2.33% over OOS). This is the conservative baseline. A natural next step is active treasury management on the undeployed $200,000 of basket capital that backs the options positions.</p>
+<p>Replacing the passive T-bill accrual with an ultra-short Treasury ETF (SGOV, BIL) or a short-duration corporate bond fund (VCSH, BSV) targets an additional 100-200 bps of carry with minimal duration or credit risk. The trade-off is a small increase in drawdown sensitivity during credit-spread blowouts, but the headline -0.12% maximum drawdown leaves substantial room before this becomes a constraint.</p>
+<p>The deliberate exclusion is broad-equity exposure (SPY, QQQ) for the undeployed capital. Adding equity beta to the cash sleeve introduces correlation risk: in the stress events the strategy is designed to absorb (Volmageddon, COVID, 2022 bear, 2023 banking), the put-credit-spread portfolio is under maximum pressure exactly when an equity cash sleeve would also be drawing down. This double-correlation would destroy the maximum-drawdown profile that makes the strategy useful as a portfolio defensive sleeve.</p>
+<p>Recommended treasury overlay for production deployment: 80% allocation to SGOV (0-3M Treasuries, near-zero duration, currently yielding ~5%) and 20% to short-investment-grade-corporate (VCSH, ~1y duration, currently yielding ~5%). Expected blended carry roughly 100-150 bps above passive IRX accrual, raising the strategy’s annualized return from 2.41% to approximately 3.5-4%, while keeping the maximum-drawdown floor near -0.12%. This is a low-risk capital-efficiency improvement, not a return-chasing one.</p>
 
 
 <!-- -->
@@ -953,7 +961,17 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a><span class="fu">## What was tested but not used</span></span>
 <span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a>The headline is one of five baskets tested. The four others (SPX-only put-credit-spread, 3-ETF basket, full 6-instrument book, iron condor variants on the 3-instrument cluster) underperformed the SPX baseline. They are reported transparently in the <span class="co">[</span><span class="ot">Ablations</span><span class="co">](ablations.qmd)</span> page, the iron condor variant is particularly informative: adding the call wing systematically lost in the 2018-2024 trending-equity regime.</span></code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
+<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a>The headline is one of six configurations tested. The other five (SPX-only put-credit-spread, 3-ETF basket, full 6-instrument book, and iron condor variants on the 3-instrument cluster and SPX-only) underperformed the SPX baseline. They are reported transparently on the <span class="co">[</span><span class="ot">Variants</span><span class="co">](ablations.qmd)</span> page; the iron-condor variant is particularly informative because adding the call wing systematically lost in the 2018-2024 trending-equity regime.</span>
+<span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a><span class="fu">## Future work: treasury management on undeployed capital</span></span>
+<span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-56"><a href="#cb1-56" aria-hidden="true" tabindex="-1"></a>The current backtest accrues idle cash at the realized 13-week T-bill yield (IRX averaged 2.33% over OOS). This is the conservative baseline. A natural next step is active treasury management on the undeployed $200,000 of basket capital that backs the options positions.</span>
+<span id="cb1-57"><a href="#cb1-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-58"><a href="#cb1-58" aria-hidden="true" tabindex="-1"></a>Replacing the passive T-bill accrual with an ultra-short Treasury ETF (SGOV, BIL) or a short-duration corporate bond fund (VCSH, BSV) targets an additional 100-200 bps of carry with minimal duration or credit risk. The trade-off is a small increase in drawdown sensitivity during credit-spread blowouts, but the headline -0.12% maximum drawdown leaves substantial room before this becomes a constraint.</span>
+<span id="cb1-59"><a href="#cb1-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-60"><a href="#cb1-60" aria-hidden="true" tabindex="-1"></a>The deliberate exclusion is broad-equity exposure (SPY, QQQ) for the undeployed capital. Adding equity beta to the cash sleeve introduces correlation risk: in the stress events the strategy is designed to absorb (Volmageddon, COVID, 2022 bear, 2023 banking), the put-credit-spread portfolio is under maximum pressure exactly when an equity cash sleeve would also be drawing down. This double-correlation would destroy the maximum-drawdown profile that makes the strategy useful as a portfolio defensive sleeve.</span>
+<span id="cb1-61"><a href="#cb1-61" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-62"><a href="#cb1-62" aria-hidden="true" tabindex="-1"></a>Recommended treasury overlay for production deployment: 80% allocation to SGOV (0-3M Treasuries, near-zero duration, currently yielding ~5%) and 20% to short-investment-grade-corporate (VCSH, ~1y duration, currently yielding ~5%). Expected blended carry roughly 100-150 bps above passive IRX accrual, raising the strategy's annualized return from 2.41% to approximately 3.5-4%, while keeping the maximum-drawdown floor near -0.12%. This is a low-risk capital-efficiency improvement, not a return-chasing one.</span></code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
 <footer class="footer">
