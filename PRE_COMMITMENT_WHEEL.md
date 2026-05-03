@@ -33,6 +33,37 @@ The headline result runs on the 9-name primary. Both robustness baskets are repo
 
 **Why PEP is activated despite sector overlap with KO:** PEP enters the activated basket for the **within-sector correlation probe**. The KO/PEP pair is methodologically deliberate — same sector (Consumer Staples), different brands. Reporting per-name attribution lets us measure whether within-sector pairs add diversification or just average-out their idiosyncrasies. This is a probe, not free diversification. The writeup discloses the within-sector overlap explicitly.
 
+### §1.1 American early-exercise risk on dividend-paying names
+
+**Source:** Merton 1973 Theorem 13 (Section 4) and Section 7 (continuous-dividend BS PDE).
+
+8 of the 9 wheel names pay dividends:
+
+| Ticker | Dividend? |
+|---|---|
+| AAPL | Yes |
+| MSFT | Yes |
+| GOOGL | **No** (only non-dividend name) |
+| JNJ | Yes |
+| KO | Yes |
+| PG | Yes |
+| WMT | Yes |
+| JPM | Yes |
+| PEP | Yes |
+
+Per Merton 1973 Theorem 13: American puts on dividend-paying stocks ALWAYS have positive probability of premature exercise. The European put-call parity `g(S, τ; E) = f(S, τ; E) − S + E·P(τ)` does NOT hold for American puts on these names. The American put has strictly higher value than its European counterpart.
+
+For wheel mechanics, we are SHORT puts (cash-secured puts). The counterparty holding the long put has the early-exercise option; we may be assigned shares before option expiry. This is intrinsic to the wheel: assignment converts the position into long shares + covered call, which is the wheel's other leg. We accept early-assignment risk as a feature, not a bug.
+
+**Pricing approximation:** All wheel option pricing uses Black-Scholes / Merton European-style closed-form. For American puts on dividend-paying stocks, this:
+- **Undervalues the option** (we underestimate the premium our counterparty would rationally pay).
+- **Magnitude is small** when the put is OTM at entry (our 16-25-delta short puts are well OTM at entry).
+- **Magnitude grows** when underlying drops materially and put becomes ITM near ex-dividend dates.
+
+Merton 1973 Section 7 sufficient condition for no premature exercise (continuous-dividend at rate d, constant interest rate r, exercise price E): **E > d/r**. With current 5% interest rates and ~1–3% dividend yields, even ITM puts (E > S) typically satisfy this. But near earnings or dividend-date catalysts, the condition can flip.
+
+**Disclosure:** writeup wheel mechanics page (Phase F task F3) discloses that wheel pricing uses BS European-style for all 9 names; the 8 dividend-paying names face American early-exercise risk that BS does not model; magnitude is small at OTM entry but grows in stress. Future-work item is to integrate a binomial-tree pricer for the 8 American-style names (matching OptionMetrics' own convention per Carr/Wu 2003 §5).
+
 ## 2. Five-layer wheel architecture
 
 ### Layer 1 — regime-conditional delta selection
