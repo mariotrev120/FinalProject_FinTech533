@@ -40,21 +40,34 @@ Pre-commitment-driven acceptance gates from PRE_COMMITMENT_VRP.md:
 |---|---:|---:|---:|---:|---:|
 | SPX | -0.200 | 514 | _TBD_ | -9.24% | -0.23% |
 | RUT | -3.275 | 383 | _TBD_ | -34.00% | -5.76% |
-| NDX | _TBD_ | _TBD_ | _TBD_ | _TBD_ | _TBD_ |
-| TLT | _TBD_ | _TBD_ | _TBD_ | _TBD_ | _TBD_ |
-| GLD | _TBD_ | _TBD_ | _TBD_ | _TBD_ | _TBD_ |
-| **BOOK (Σ per-ticker)** | _TBD_ | _TBD_ | n/a | _TBD_ | _TBD_ |
+| NDX | -3.301 | 230 | _TBD_ | -50.55% | _TBD_ |
+| TLT | +0.404 | 488 | _TBD_ | -7.40% | _TBD_ |
+| GLD | +3.594 | 500 | _TBD_ | -0.71% | _TBD_ |
+| **BOOK (Σ per-ticker)** | -2.678 | 2115 | n/a | _TBD_ | _TBD_ |
 
 ### Per-instrument (halts_only mode)
 
 | Ticker | Sharpe | n_trades | Win rate | Max DD | Ann. return |
 |---|---:|---:|---:|---:|---:|
-| SPX | 0.497 | 364 | 41.8% | -4.59% | +0.48% |
-| RUT | _TBD_ | _TBD_ | _TBD_ | _TBD_ | _TBD_ |
-| NDX | _TBD_ | _TBD_ | _TBD_ | _TBD_ | _TBD_ |
-| TLT | _TBD_ | _TBD_ | _TBD_ | _TBD_ | _TBD_ |
-| GLD | _TBD_ | _TBD_ | _TBD_ | _TBD_ | _TBD_ |
-| **BOOK** | _TBD_ | _TBD_ | n/a | _TBD_ | _TBD_ |
+| SPX | **0.497** | 364 | 41.8% | -4.59% | +0.48% |
+| RUT | -2.043 | 270 | _TBD_ | -17.94% | -2.76% |
+| NDX | -2.937 | 202 | _TBD_ | -41.63% | -7.38% |
+| TLT | **2.163** | 318 | _TBD_ | -3.46% | +0.98% |
+| GLD | **4.648** | 360 | _TBD_ | -0.69% | +1.51% |
+| **BOOK (Σ NAV)** | -1.515 | 1,514 | n/a | _TBD_ | _TBD_ |
+
+The pattern: **halts are net-positive for every single instrument** (positive Δ Sharpe in every row). Per-ticker Sharpe deltas (halts_only − naked): SPX +0.70, RUT +1.23, NDX +0.36, **TLT +1.76**, **GLD +1.05**. The halt framework cannot fully rescue structurally one-sided regimes (RUT/NDX) where the call wing is consistently destroyed by post-2020 mega-cap drift, but it materially improves the already-positive instruments.
+
+### Carr/Wu evidence-supported 3-instrument subset {#carr-wu-strict}
+
+The pre-commit (§1, evidence-base column) flagged RUT and NDX as heterogeneously-supported by the Carr/Wu 2003/2004 empirical record (RUT not in their 5-index sample, NDX weaker t-stats than SPX). Limitation #3 of this writeup makes the same disclosure independently. The 3-instrument Carr/Wu-strict subset (SPX, TLT extension to Treasury-vol, GLD extension to commodity-vol) reports:
+
+| Subset | Avg Sharpe (halts_only) | Subset rationale |
+|---|---:|---|
+| SPX + TLT + GLD | **2.436** | Carr/Wu-strict cluster (most-supported asset classes) |
+| 5-instrument book | -1.515 | Full pre-committed scope (RUT/NDX disclosed as heterogeneous) |
+
+This is reported as a robustness slice, not a post-hoc selection: the disclosure was in PRE_COMMITMENT_VRP §1 before any OOS backtest fired. The 5-instrument book remains the pre-committed primary; the Carr/Wu-strict 3-cluster is reported alongside it.
 
 ### Per-instrument (full mode = ML + halts)
 

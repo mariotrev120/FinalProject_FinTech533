@@ -32,13 +32,27 @@ The ablation matrix isolates the contribution of each strategy component (halts,
 | regime+halts | _TBD_ | _TBD_ | _TBD_ | _TBD_ | _TBD_ |
 | full | _TBD_ | _TBD_ | _TBD_ | _TBD_ | _TBD_ |
 
-## 5-VRP book results
+## 5-VRP per-instrument matrix (in-flight)
 
-(Filled in post-multi-instrument runs)
+Sharpe by mode, per ticker. Halts column is current OOS run; vol-regime / ML / regime+halts / full are TBD as those modes are not yet executed.
+
+| Ticker | naked | halts_only | vol-regime-only | ml_only | regime+halts | full |
+|---|---:|---:|---:|---:|---:|---:|
+| SPX | -0.200 | **0.497** | _TBD_ | _TBD_ | _TBD_ | _TBD_ |
+| RUT | -3.275 | -2.043 | _TBD_ | _TBD_ | _TBD_ | _TBD_ |
+| NDX | -3.301 | -2.937 | _TBD_ | _TBD_ | _TBD_ | _TBD_ |
+| TLT | +0.404 | **2.163** | _TBD_ | _TBD_ | _TBD_ | _TBD_ |
+| GLD | +3.594 | _TBD_ | _TBD_ | _TBD_ | _TBD_ | _TBD_ |
+
+Halts are meaningfully additive on **every** instrument tested so far (positive Δ Sharpe in every row). TLT is the single largest beneficiary (Δ +1.76).
+
+## 5-VRP book-level (in-flight)
+
+(Book aggregation pending GLD completion + correlation-weighted aggregation — per-ticker Sharpes do not naively sum.)
 
 | Mode | Sharpe | Total trades | Max DD | Ann. return |
 |---|---:|---:|---:|---:|
-| naked | _TBD_ | _TBD_ | _TBD_ | _TBD_ |
+| naked | -2.678 | 2,115 | _TBD_ | _TBD_ |
 | halts_only | _TBD_ | _TBD_ | _TBD_ | _TBD_ |
 | vol-regime-only | _TBD_ | _TBD_ | _TBD_ | _TBD_ |
 | ml_only | _TBD_ | _TBD_ | _TBD_ | _TBD_ |
