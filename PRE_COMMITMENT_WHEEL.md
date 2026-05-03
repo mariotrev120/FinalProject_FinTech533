@@ -45,7 +45,11 @@ VIX percentile (trailing 252-day) drives the cash-secured put short delta:
 | Middle quartiles | 0.20 |
 | Top quartile (elevated) | 0.25 |
 
-**Rationale:** Higher delta in elevated VIX = higher premium captured to compensate for higher assignment risk. Lower delta in calm VIX = lower assignment probability when the volatility-risk-premium edge is thinner.
+**Direction (calm → elevated = lower → higher delta):** Higher absolute delta = strike closer to spot = larger premium captured per CSP, AND higher assignment probability. The table moves UP in delta as VIX percentile rises.
+
+**Rationale:** In elevated VIX the IV–RV wedge (the VRP itself) is widest in absolute terms, so harvesting is most lucrative on a per-trade basis; the trade-off is paid in higher assignment risk, which on a wheel is partially-acceptable because assignment converts the position into stock + covered calls (the wheel's other leg). In calm VIX the absolute premium is thin, so going further OTM (lower delta) keeps assignment frequency low and avoids unnecessary basis risk on shares.
+
+**Code-direction note:** Wheel code is not yet implemented (Phase B task B4). The acceptance criterion at implementation time is that the table direction in `src/strategy/wheel/regime_delta.py` (when written) matches the rationale here — i.e., monotonically increasing delta target as VIX percentile rises. If the implemented direction is opposite, the rationale text wins and the implementation is corrected to match.
 
 ### Layer 2 — per-name vol-adjusted strikes
 
@@ -71,7 +75,13 @@ XGBoost regression on:
 
 **Skip rule:** if `rv_hat_30d > 95th percentile of trailing 252-day rv_hat_30d distribution for that name`, skip the trade entirely (regime too uncertain).
 
-**Pre-committed acceptance:** Head 3 RV forecaster must beat HAR baseline OOS RMSE on ≥ 7 of 9 names. If it fails, **fall back to static `size_multiplier = 1.0` and the skip rule is dropped** for the failing names. The static-fallback equity curve is the headline result for those names, and the failure is reported.
+**Pre-committed acceptance (per-name, individual comparison — NOT aggregate):** For each of the 9 names independently, the per-name XGBoost RV forecaster's OOS RMSE must be strictly lower than that name's own pure-HAR baseline RMSE on the same OOS sample. The accept/reject decision is made *per name*, not on a pooled or averaged metric.
+
+- **Per-name pass:** XGBoost RMSE < HAR RMSE on that name → use XGBoost forecaster + size_multiplier + skip rule for that name.
+- **Per-name fail:** XGBoost RMSE ≥ HAR RMSE on that name → fall back to `size_multiplier = 1.0` and drop the skip rule for that name.
+- **Headline rule:** If at least 7 of 9 names pass, the basket-level result reported as "Layer 3 active." If fewer than 7 pass, the basket-level result is reported as "Layer 3 inconclusive — failing names use static fallback."
+
+The aggregate count (≥ 7 of 9) is for narrative classification of the result, not for an aggregate-metric pass/fail. Each name's fallback decision is independent.
 
 ### Layer 4 — earnings-aware management
 

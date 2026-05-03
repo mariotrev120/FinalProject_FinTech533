@@ -20,7 +20,7 @@
 
 **Why this set, not bigger:** Carr & Wu (2003/2004) document strongly negative VRP for S&P 500 indexes, smaller-magnitude negative VRP for NDX and most individual stocks. Indexes diversify across-name idiosyncratic risk, isolating the volatility-of-volatility premium itself. TLT and GLD diversify *across asset class*, so the cluster is not just a leveraged bet on equity vol regime. The trade-off: TLT/GLD lose 1256 treatment and are smaller in liquidity. We accept this and disclose tax asymmetry explicitly.
 
-**Why not PEP / not 6+:** PEP is reserved for the wheel basket (live activated). Adding more VRP instruments past 5 dilutes the per-instrument sample size below the ML acceptance threshold (~60 trades/instrument/fold).
+**Why not PEP / not 6+:** PEP is currently active in the wheel basket (PRE_COMMITMENT_WHEEL.md §1, 9-name primary), not in the VRP cluster. The VRP universe is 5 instruments locked. Adding more dilutes the per-instrument sample size below the ML acceptance threshold (~60 trades/instrument/fold).
 
 ## 2. Entry construction
 
@@ -162,6 +162,8 @@ The sensitivity grid for Deflated Sharpe Ratio (Bailey & López de Prado 2014) a
 | Time exit DTE | 14, 21, 28 | 3 |
 
 **Total trials N = 3⁶ = 729.** Per the DSR paper, average pairwise correlation between trials must be estimated for the implied-independent-trials count N̂ via Eq. 9 (`N̂ = ρ̄ + (1−ρ̄)·M`). The headline DSR uses N̂, not raw N.
+
+**Strike-snap policy is handled separately** (NOT as a grid dimension). The grid above is purely strategy-parameter sensitivity. Strike-snap is a *data-handling* policy choice (which listed strike to round to when the delta-target falls between two listed strikes — nearest-delta vs nearest-strike). Adding it to the grid would conflate strategy-parameter sensitivity with execution-policy sensitivity. Instead: the headline result is locked under the canonical policy (nearest-delta rounding); the alternative policy (nearest-strike rounding) is reported as a single-number robustness check in the writeup, not multiplied through the grid. Two policies × 729 grid points = 1458 trials would also unnecessarily inflate N for DSR.
 
 ## 12. Acceptance gates (pre-committed, in order)
 
