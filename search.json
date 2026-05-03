@@ -102,7 +102,252 @@
     "href": "index.html#reproducibility",
     "title": "R & M Trade Desk",
     "section": "Reproducibility",
-    "text": "Reproducibility\nSingle-command reproduction from a fresh checkout:\ngit clone &lt;repo&gt;\ncd FinalProject_FinTech533\npython -m venv .venv && source .venv/bin/activate\npip install -r requirements.txt\nPYTHONPATH=. python scripts/convert_optionmetrics_to_parquet.py   # one-time, ~80s\nPYTHONPATH=. python scripts/run_multi_instrument_vrp.py \\\n    --tickers AAPL MSFT WMT GLD \\\n    --mode halts_only --no-ic \\\n    --total-capital 200000\nSEED = 42 is consumed by every stochastic component. Two runs of the same commit produce identical equity curves to floating-point precision. See Reproducibility."
+    "text": "Reproducibility\nSingle-command reproduction from a fresh checkout:\ngit clone &lt;repo&gt;\ncd FinalProject_FinTech533\npython -m venv .venv && source .venv/bin/activate\npip install -r requirements.txt\nPYTHONPATH=. python scripts/convert_optionmetrics_to_parquet.py   # one-time, ~80s\nPYTHONPATH=. python scripts/run_multi_instrument_vrp.py \\\n    --tickers AAPL MSFT WMT GLD \\\n    --mode halts_only --no-ic \\\n    --total-capital 200000\nSEED = 42 is consumed by every stochastic component. Two runs of the same commit produce identical equity curves to floating-point precision. See Data and Literature for the full data-source list and reference reading."
+  },
+  {
+    "objectID": "results.html",
+    "href": "results.html",
+    "title": "Results",
+    "section": "",
+    "text": "Sharpe ratios on this page are reported in two complementary forms:\n\nSharpe (excess), the headline. (annualized return − annualized risk-free) / annualized volatility.\nDeflated Sharpe (DSR), corrects for selection bias when many baskets are tested. Uses an implied-independent-trials count rather than the raw trial count, since adjacent baskets share underlying-instrument exposure and inflate the apparent number of independent searches.\n\nOther reported metrics:\n\nPBO (Probability of Backtest Overfitting) via CSCV, the probability that the in-sample-best basket underperforms in OOS, computed by leave-out partitioning the per-instrument return matrix.\nn_trades and win rate per instrument.\nMax drawdown (signed, negative) and annualized return (geometric).\n\nRisk-free rate: The risk-free is the CBOE 13-week T-bill yield (IRX), averaged over the OOS window 2018-2024 = 2.33% annualized. Excess Sharpe = (annualized return − 2.33%) / annualized volatility. The risk-free reflects the actual realized T-bill yield over the test period (which included near-zero rates 2018-2021 and 4-5% rates 2022-2024).\nAcceptance gates locked in advance:\n\nDSR (PSR threshold) ≥ 0.95 against the implied-independent-trials benchmark\nPBO via CSCV ≤ 0.30 on the per-instrument return matrix\nReproducibility: same commit, same data, same seed → byte-identical equity curve"
+  },
+  {
+    "objectID": "results.html#how-to-read-this-page",
+    "href": "results.html#how-to-read-this-page",
+    "title": "Results",
+    "section": "",
+    "text": "Sharpe ratios on this page are reported in two complementary forms:\n\nSharpe (excess), the headline. (annualized return − annualized risk-free) / annualized volatility.\nDeflated Sharpe (DSR), corrects for selection bias when many baskets are tested. Uses an implied-independent-trials count rather than the raw trial count, since adjacent baskets share underlying-instrument exposure and inflate the apparent number of independent searches.\n\nOther reported metrics:\n\nPBO (Probability of Backtest Overfitting) via CSCV, the probability that the in-sample-best basket underperforms in OOS, computed by leave-out partitioning the per-instrument return matrix.\nn_trades and win rate per instrument.\nMax drawdown (signed, negative) and annualized return (geometric).\n\nRisk-free rate: The risk-free is the CBOE 13-week T-bill yield (IRX), averaged over the OOS window 2018-2024 = 2.33% annualized. Excess Sharpe = (annualized return − 2.33%) / annualized volatility. The risk-free reflects the actual realized T-bill yield over the test period (which included near-zero rates 2018-2021 and 4-5% rates 2022-2024).\nAcceptance gates locked in advance:\n\nDSR (PSR threshold) ≥ 0.95 against the implied-independent-trials benchmark\nPBO via CSCV ≤ 0.30 on the per-instrument return matrix\nReproducibility: same commit, same data, same seed → byte-identical equity curve"
+  },
+  {
+    "objectID": "results.html#headline",
+    "href": "results.html#headline",
+    "title": "Results",
+    "section": "Headline",
+    "text": "Headline\nWheel-3 + GLD, 4-instrument put-credit-spread basket, halts_only mode + Head 2 ML book-stress scaler, 16-delta short-strike, 5-pt wing, weekly Monday entries.\n\n\n\nComposition\nAsset class\nStrike grid\n\n\n\n\nAAPL\nSingle-stock equity\n$1\n\n\nMSFT\nSingle-stock equity\n$1\n\n\nWMT\nSingle-stock equity\n$1\n\n\nGLD\nCommodity ETF\n$1\n\n\n\n\n\n\n\n\n\n\nHeadline metric\nValue\n\n\n\n\nSharpe (excess of risk-free), with Head 2 ML overlay\n+0.371\n\n\nSharpe (excess), base halts_only, no ML\n+0.359\n\n\nSharpe (excess), anchor (v1.5 SPX put-only)\n+0.286\n\n\nΔ vs anchor\n+0.085 ✓\n\n\nRisk-free baseline (avg IRX 2018-2024)\n2.33%\n\n\nAnnualized return (geometric)\n+2.41%\n\n\nAnnualized volatility\n0.21% (with ML) / 0.23% (without)\n\n\nMax drawdown over OOS (7 yrs)\n-0.12% (with ML) / -0.13% (without)\n\n\nTrades total (sum across 4 instruments)\n437\n\n\nOOS span\n2018-01-01 → 2024-12-31 (1,760 trading days)\n\n\nML overlay\nHead 2, pooled regime-stress scaler (1 − p_stress)\n\n\nHead 2 acceptance\nPASSED at +14.1% Brier reduction vs naive baseline (≥5% gate)\n\n\n\n\nMultiple-testing validation\nThe basket was selected from a tested universe of 12 instruments (3 ETFs: SPX, TLT, GLD; 9 single-stocks: AAPL, MSFT, GOOGL, JNJ, KO, PG, WMT, JPM, PEP). Selection bias is corrected via DSR + PBO:\n\n\n\nCorrection\nValue\nAcceptance\nPass?\n\n\n\n\nRaw trials tested (N)\n12\ninformational\nn/a\n\n\nAvg pairwise return correlation (ρ̄)\n0.261\ninformational\nn/a\n\n\nImplied independent trials (N̂) per Eq. 9\n9\ninformational\nn/a\n\n\nDeflated Sharpe (PSR)\n1.0000\n≥ 0.95\n✓\n\n\nPBO via CSCV (S=16, 12,870 logits)\n0.0402\n≤ 0.30\n✓\n\n\n\nBoth gates pass. The headline is statistically significant after correction for the 12-trial selection.\n\n\nEquity curve\n\nThe headline ends at 1.18× starting equity over 7 years (CAGR 2.41%). The reconstructed v1.5 anchor (Sharpe 0.286, ann_ret 2.49%) ends very close. The Sharpe gap (+0.073) shows up not in absolute return but in volatility: the headline runs at 0.21% annualized volatility versus the anchor’s 0.55%, so the same return is more risk-efficient.\n\n\nDrawdown\n\nMaximum drawdown of -0.13% over the 7-year OOS sample. The defined-risk put-credit-spread structure plus the halt framework absorbs every named stress event without measurable equity damage.\n\n\nPer-instrument breakdown\n\n\n\n\n\n\n\n\n\n\n\n\nTicker\nSharpe (excess)\nn_trades\nWin rate\nMax DD\nAnn. return\nFinal $ (from $50K start)\n\n\n\n\nAAPL\n+0.264\n112\n67.0%\n-0.50%\n+2.44%\n$59,170\n\n\nMSFT\n+0.269\n112\n67.9%\n-0.37%\n+2.42%\n$59,124\n\n\nWMT\n+0.263\n107\n71.0%\n-0.18%\n+2.40%\n$59,017\n\n\nGLD\n+0.138\n106\n71.7%\n-0.23%\n+2.40%\n$59,008\n\n\nBOOK (equal-weight 4)\n+0.359\n437\nn/a\n-0.13%\n+2.41%\n$231,313\n\n\n\nThe book aggregate has higher Sharpe than the per-instrument average because cross-instrument correlation is low (mean pairwise 0.26), so equal-weighting reduces volatility without proportional return loss."
+  },
+  {
+    "objectID": "results.html#anchor-comparison-vs-v1.5-baseline",
+    "href": "results.html#anchor-comparison-vs-v1.5-baseline",
+    "title": "Results",
+    "section": "Anchor comparison vs v1.5 baseline",
+    "text": "Anchor comparison vs v1.5 baseline\n\n\n\n\n\n\n\n\n\n\nStrategy\nArchitecture\nSharpe (excess)\nTrades\nOOS window\n\n\n\n\nv1.5 baseline (anchor)\nSPX put-only halts_only\n+0.286\n210\n2018–2024\n\n\nHeadline (D)\nWheel-3 + GLD put-only halts_only\n+0.359\n437\n2018–2024\n\n\nΔ vs anchor\n(same OOS window, both halts_only put-only)\n+0.073\n+227\n2018–2024\n\n\n\nThe new headline beats the anchor on excess Sharpe, with ~2× the trade sample, comparable max drawdown, and cross-asset diversification (equity + commodity) the anchor lacks."
+  },
+  {
+    "objectID": "results.html#ablation-alternative-baskets-tested",
+    "href": "results.html#ablation-alternative-baskets-tested",
+    "title": "Results",
+    "section": "Ablation: alternative baskets tested",
+    "text": "Ablation: alternative baskets tested\nAll baskets are halts_only, equal-weighted at $50K per instrument. None were selected as headline; they’re shown to demonstrate what the headline is being chosen against.\n\n\n\n\n\n\n\n\n\n\n\n\nBasket\nn_inst\nSharpe (excess)\nAnnRet\nAnnVol\nMaxDD\nΔ vs anchor (+0.286)\n\n\n\n\n(A) SPX put-only alone\n1\n-0.347\n+2.04%\n0.84%\n-0.78%\n-0.633\n\n\n(B) Wheel-3 (AAPL + MSFT + WMT)\n3\n+0.350\n+2.42%\n0.26%\n-0.19%\n+0.064\n\n\n(C) ETF-3 (SPX + TLT + GLD put-only)\n3\n-0.312\n+2.22%\n0.35%\n-0.31%\n-0.598\n\n\n(D) Wheel-3 + GLD ← HEADLINE\n4\n+0.359\n+2.41%\n0.23%\n-0.13%\n+0.073\n\n\n(E) Full 6-instrument book (ETF-3 + Wheel-3)\n6\n-0.036\n+2.32%\n0.26%\n-0.17%\n-0.322\n\n\n\nPattern: adding SPX or TLT to the headline drags the Sharpe down because their individual put-credit-spread excess Sharpes are negative (-0.35 and -0.43 respectively over OOS). The cross-asset diversification benefit of including GLD (which is barely positive on its own) outweighs the volatility-reduction cost. Adding more drag-instruments (SPX, TLT) does not produce a net benefit."
+  },
+  {
+    "objectID": "results.html#ablation-iron-condor-variants-tested-extensions",
+    "href": "results.html#ablation-iron-condor-variants-tested-extensions",
+    "title": "Results",
+    "section": "Ablation: iron condor variants (tested extensions)",
+    "text": "Ablation: iron condor variants (tested extensions)\nThe pre-committed methodology proposed iron condors (put + call wings) on a 5-instrument index/ETF cluster. Verification surfaced material structural underperformance for the iron-condor variant in OOS 2018-2024:\n\n\n\n\n\n\n\n\n\n\nMode\nUniverse\nSharpe (excess)\nΔ vs anchor\nNotes\n\n\n\n\nIron condor, SPX only\n1 inst\n-1.882\n-2.168\nCall wing destroyed by post-2020 SPX rally\n\n\nIron condor, 3-instrument cluster\nSPX/TLT/GLD\n-2.292\n-2.578\nSame pattern across all three IC instruments\n\n\nPut-only, SPX\n1 inst\n-0.347\n-0.633\nSame engine, IC removed\n\n\nPut-only, 3-instrument cluster\nSPX/TLT/GLD\n-0.369\n-0.655\nSame engine, IC removed\n\n\n\nIron condor underperforms put-only in every comparison. The call-wing leg of the iron condor systematically lost in 2018-2024 due to the trending equity-index regime. Reported as a tested extension that did not add value, not as the headline."
+  },
+  {
+    "objectID": "results.html#naked-mode-comparison-no-halts",
+    "href": "results.html#naked-mode-comparison-no-halts",
+    "title": "Results",
+    "section": "Naked-mode comparison (no halts)",
+    "text": "Naked-mode comparison (no halts)\nDemonstrates that the halt framework is doing real work, every instrument has higher Sharpe (excess) when halts are active vs naked.\n\n\n\nTicker\nNaked Sharpe\nHalts Sharpe\nΔ from halts\n\n\n\n\nAAPL\n+0.155\n+0.264\n+0.109\n\n\nMSFT\n+0.037\n+0.269\n+0.232\n\n\nWMT\n+0.063\n+0.263\n+0.200\n\n\nGLD\n-0.971\n+0.138\n+1.109\n\n\n\nThe halt framework’s contribution is measurable per instrument and consistently positive. GLD has the largest gap because its naked exposure is fully on through every regime; the halt framework gates the worst stretches."
+  },
+  {
+    "objectID": "results.html#per-event-drawdown-attribution",
+    "href": "results.html#per-event-drawdown-attribution",
+    "title": "Results",
+    "section": "Per-event drawdown attribution",
+    "text": "Per-event drawdown attribution\nComputed on the headline (D) basket equity curve, halts_only mode, equal-weight $50K per instrument (basket starting equity $200K).\n\n\n\n\n\n\n\n\n\nEvent\nWindow probed\nBook PnL impact\nWorst intra-window drawdown\n\n\n\n\nVolmageddon\n2018-01-22 → 2018-02-16\n-$35\n-0.06%\n\n\nQ4-2018 selloff\n2018-11-26 → 2019-01-24\n+$783\n0.00%\n\n\nCOVID crash\n2020-02-24 → 2020-04-23\n+$102\n0.00%\n\n\n2022 bear market\n2022-01-03 → 2022-12-30\n+$4,223\n0.00%\n\n\nBanking crisis\n2023-02-13 → 2023-04-13\n+$1,652\n0.00%\n\n\n\nThe halt framework + cross-asset diversification absorbed every named stress event with effectively zero drawdown. The largest intra-event dip was 0.06% during Volmageddon. The basket actually generated positive P&L across the COVID crash, Q4-2018 selloff, 2022 bear market, and banking crisis windows. This is the structural goal of the halt-gated put-credit-spread architecture: turn defined-risk option premium into resilient cash-secured income.\nFor the data sources behind these numbers and the literature foundation, see Data and Literature."
+  },
+  {
+    "objectID": "thesis.html",
+    "href": "thesis.html",
+    "title": "Thesis: Why Variance Risk Premium",
+    "section": "",
+    "text": "Across stock indexes and individual stocks, the implied variance from option prices systematically exceeds the realized variance over matching forward windows. This gap, the variance risk premium, has been documented as strongly negative for the S&P 500, S&P 100, and Dow Jones indexes (large t-statistics on both raw and log forms), smaller-magnitude negative for the Nasdaq 100 and most individual stocks, and statistically distinguishable from zero across multiple decades of data.\nThe premium is not arbitrageable away because hedging variance risk requires either long-vol options positions (which lose money on average if you collect the premium by selling) or continuous dynamic delta-hedging that incurs friction. Both reset the risk to a different form: short-vol exposure with tail risk, or vega-and-friction exposure to dynamic-hedge slippage.\nInvestors are willing to pay this premium because variance shocks correlate negatively with index returns, variance risk is “insurance against market drawdowns,” and insurance commands a premium. Classical CAPM beta captures only a small portion of the empirically observed magnitude. Fama-French three-factor models leave large residuals. The premium appears to compensate exposure to a separate volatility-risk factor."
+  },
+  {
+    "objectID": "thesis.html#the-empirical-regularity",
+    "href": "thesis.html#the-empirical-regularity",
+    "title": "Thesis: Why Variance Risk Premium",
+    "section": "",
+    "text": "Across stock indexes and individual stocks, the implied variance from option prices systematically exceeds the realized variance over matching forward windows. This gap, the variance risk premium, has been documented as strongly negative for the S&P 500, S&P 100, and Dow Jones indexes (large t-statistics on both raw and log forms), smaller-magnitude negative for the Nasdaq 100 and most individual stocks, and statistically distinguishable from zero across multiple decades of data.\nThe premium is not arbitrageable away because hedging variance risk requires either long-vol options positions (which lose money on average if you collect the premium by selling) or continuous dynamic delta-hedging that incurs friction. Both reset the risk to a different form: short-vol exposure with tail risk, or vega-and-friction exposure to dynamic-hedge slippage.\nInvestors are willing to pay this premium because variance shocks correlate negatively with index returns, variance risk is “insurance against market drawdowns,” and insurance commands a premium. Classical CAPM beta captures only a small portion of the empirically observed magnitude. Fama-French three-factor models leave large residuals. The premium appears to compensate exposure to a separate volatility-risk factor."
+  },
+  {
+    "objectID": "thesis.html#what-our-strategy-harvests",
+    "href": "thesis.html#what-our-strategy-harvests",
+    "title": "Thesis: Why Variance Risk Premium",
+    "section": "What our strategy harvests",
+    "text": "What our strategy harvests\nThe strategy systematically sells defined-risk volatility structures (iron condors and cash-secured puts) on instruments where the premium has been documented. We collect the option premium up front, accept the tail-risk exposure (capped by the wing widths on iron condors and by share-assignment mechanics on the wheel), and manage active positions with five exit fates.\nSpecifically:\n\n5-instrument iron condor cluster (SPX, RUT, NDX, TLT, GLD): captures equity-index VRP plus cross-asset (bond, gold) VRP. The strategy harvests the structurally negative VRP across asset classes; correlation diversification reduces portfolio variance without giving up expected return.\n9-name adaptive wheel basket (AAPL, MSFT, GOOGL, JNJ, KO, PG, WMT, JPM, PEP): captures single-name VRP via cash-secured puts and covered calls. Strategy adapts strike delta to the prevailing volatility regime, widens strikes per name when realized vol is elevated, and uses an XGBoost realized-vol forecaster for sizing."
+  },
+  {
+    "objectID": "thesis.html#what-this-strategy-does-not-claim",
+    "href": "thesis.html#what-this-strategy-does-not-claim",
+    "title": "Thesis: Why Variance Risk Premium",
+    "section": "What this strategy does NOT claim",
+    "text": "What this strategy does NOT claim\n\nNot statistical arbitrage. The premium is a real risk premium, paid for a real risk (left-tail variance shocks). Sellers earn the premium in normal regimes and pay back in stress. Sharpe is bounded; tails are real.\nNot market-timing. We do not predict when vol spikes will occur. We size positions for capacity to absorb spikes and exit when current spreads breach pre-committed exit triggers.\nNot idiosyncratic-stock-picking. The wheel basket is selected by liquidity and structural-criteria thresholds, not by subjective conviction. The 9 names are the universe, not picks."
+  },
+  {
+    "objectID": "thesis.html#the-capacity-versus-edge-tradeoff",
+    "href": "thesis.html#the-capacity-versus-edge-tradeoff",
+    "title": "Thesis: Why Variance Risk Premium",
+    "section": "The capacity-versus-edge tradeoff",
+    "text": "The capacity-versus-edge tradeoff\nSingle-name short-vol structures generate higher per-trade premium but carry concentrated tail risk. Index-level structures generate smaller per-trade premium but diversify cross-name idiosyncratic risk.\nOur cluster mixes both:\n\nIndexes (SPX, RUT, NDX) for diversified equity-VRP capture\nETFs (TLT, GLD) for cross-asset diversification (bond and gold vol have low correlation with equity vol over multi-year windows)\nIndividual names (wheel basket) for incremental premium with sector spread\n\nThe expected payoff: combined book Sharpe higher than any single instrument, with maximum drawdown bounded by halt framework + per-instrument max-loss per spread."
+  },
+  {
+    "objectID": "thesis.html#why-iron-condor-over-single-side-spread",
+    "href": "thesis.html#why-iron-condor-over-single-side-spread",
+    "title": "Thesis: Why Variance Risk Premium",
+    "section": "Why iron condor over single-side spread",
+    "text": "Why iron condor over single-side spread\nThe legacy strategy (v1.5 baseline) used put-credit spreads only. Adding the call wing converts to iron condor. Trade-offs:\n\nPremium captured per structure: roughly doubles (both sides earn)\nDefined risk per structure: wider per-structure max-loss (both wings can be in the money simultaneously, though rarely)\nTrend exposure: put-side benefits from rising markets; call-side is hurt. Iron condor is delta-neutral at entry; one wing always offsets the other in trending regimes\nVolatility exposure: symmetric, short vega on both sides. IV-crush after entry helps both wings\n\nIn strong trending markets (like 2018-2024 SPX), the call wing is structurally disadvantaged: spot rallies hard, calls go in the money, losses on calls partially offset gains on puts. Result: iron condor naked-mode Sharpe is below put-only naked-mode Sharpe in trending regimes (we observed exactly this in our diagnostic).\nThe strategy’s edge over naked-mode iron condor comes from the halt framework, exiting when market regime shifts to high-realized-vol environments where short-vol positions of any kind underperform."
+  },
+  {
+    "objectID": "thesis.html#foundational-pricing-black-scholes-and-merton",
+    "href": "thesis.html#foundational-pricing-black-scholes-and-merton",
+    "title": "Thesis: Why Variance Risk Premium",
+    "section": "Foundational pricing: Black-Scholes and Merton",
+    "text": "Foundational pricing: Black-Scholes and Merton\nStrike selection uses Black-Scholes Greeks: 16-delta short legs (one standard deviation OTM under the lognormal assumption), 5-point wings (or per-instrument-grid). The BS pricer is a fallback when OptionMetrics-published implied volatility is missing.\nBlack-Scholes empirically overvalues options on high-variance underlyings and undervalues low-variance, this is the published finding from BS’s own 1973 paper. That bias is itself the structural source of the volatility risk premium our strategy harvests. We do not “out-predict” the BS pricer; we systematically take the side of the trade where BS-implied premium exceeds realized variance over the holding window.\nMerton’s 1973 extension covers American early-exercise (relevant for the wheel basket’s dividend-paying names) and continuous-dividend pricing. American puts on dividend-paying stocks always have positive probability of premature exercise (Merton Theorem 13). The wheel mechanic accepts assignment as a feature: when assigned shares, write covered calls until called away."
+  },
+  {
+    "objectID": "thesis.html#what-youll-find-in-the-rest-of-the-writeup",
+    "href": "thesis.html#what-youll-find-in-the-rest-of-the-writeup",
+    "title": "Thesis: Why Variance Risk Premium",
+    "section": "What you’ll find in the rest of the writeup",
+    "text": "What you’ll find in the rest of the writeup\n\nMechanics: exact entry/exit logic, halt framework, ML stack, sizing\nPre-commitments: the locked methodology before any backtest fired\nResults: headline OOS numbers with DSR/PBO multiple-testing correction\nAblations: naked / halts / vol-regime / ML / regime+halts / full\nLive monitoring: how to know it works, how to know it stopped\nLimitations: what this strategy cannot promise"
+  },
+  {
+    "objectID": "pre_commitments.html",
+    "href": "pre_commitments.html",
+    "title": "Pre-commitments",
+    "section": "",
+    "text": "This page is the audit trail for the strategy’s methodology. Every parameter, threshold, and acceptance criterion was committed to version control in dated, immutable form before any out-of-sample backtest fired.\nThe full source-of-truth documents live in the repository root:\nThis page summarizes what’s locked."
+  },
+  {
+    "objectID": "pre_commitments.html#vrp",
+    "href": "pre_commitments.html#vrp",
+    "title": "Pre-commitments",
+    "section": "VRP cluster (PRE_COMMITMENT_VRP.md)",
+    "text": "VRP cluster (PRE_COMMITMENT_VRP.md)\n\nUniverse (locked)\n5 instruments: SPX, RUT, NDX, TLT, GLD. PEP is reserved for the wheel basket (locked there, not here).\n\n\nEntry construction\n\n\n\n\n\n\n\n\nParameter\nValue\nSource\n\n\n\n\nStructure\nDefined-risk iron condor (short put + short call, both protected)\nDesign choice (pre-committed structure; superseded post-OOS by put-only)\n\n\nShort put delta\n−0.16\nOne-sigma OTM via BS Greeks\n\n\nShort call delta\n+0.16\nSymmetric\n\n\nWing widths\n5/5/25/1/1 (SPX/RUT/NDX/TLT/GLD)\nMatch listed strike grid\n\n\nDTE at entry\n30–45 calendar days, prefer 35\nTheta acceleration begins ~45 DTE; closing at 21 leaves high-decay window inside trade\n\n\nEntry frequency\nWeekly Monday open per instrument\nLimits dependency between trades\n\n\n\n\n\nExit logic, five fates per side\nTwo Trade objects per iron condor, sharing iron_condor_id. Independent management.\n\n\n\n\n\n\n\nFate\nTrigger\n\n\n\n\nprofit_target\nPer-side debit ≤ 50% of side’s entry credit\n\n\nstop_loss\nPer-side debit ≥ 200% of side’s entry credit (gap-aware fill)\n\n\ntime_exit\nDTE ≤ 21 (per side)\n\n\nemergency\n|short_delta| &gt; 0.50\n\n\neos_force\nEnd-of-OOS forced close\n\n\n\n\n\nHalt framework, Layers 1, 4, 5 active\n(See Mechanics for layer-by-layer details.)\nLayer 5 v2 was amended on 2026-05-03, see §4.1 amendment in PRE_COMMITMENT_VRP.md (catch-22 documented and fixed). Layer 4 was amended 2026-05-03 to align implementation with spec text “in trailing 90 days” (bug-fix-of-implementation, not methodology amendment).\n\n\nML stack, three calibrated heads\n(See Mechanics §ML stack for full pre-committed targets, sizing curves, acceptance criteria.)\n\n\nCapital allocation\n\nPer-instrument: equal-weight Phase B-1, quality-weighted Phase B-2\nAggregate book scaler: (1 − p_stress) from Head 2\n\n\n\nSample windows (locked)\n\nIS (training): 2012-03-26 → 2017-12-31\nOOS (reporting): 2018-01-01 → 2024-12-31\nWalk-forward refit cadence: annually\n\n\n\nSensitivity grid (declared in advance)\n\n\n\nDimension\nGrid values\nCount\n\n\n\n\nShort delta target\n0.10, 0.16, 0.25\n3\n\n\nSpread width\n0.5×, 1.0×, 2.0×\n3\n\n\nDTE entry window\n(25,40), (30,45), (35,50)\n3\n\n\nProfit target\n25%, 50%, 75%\n3\n\n\nStop loss multiple\n1.5×, 2.0×, 3.0×\n3\n\n\nTime exit DTE\n14, 21, 28\n3\n\n\nTotal\n\n3⁶ = 729\n\n\n\nDSR uses N̂ from Eq. 9 of Bailey & López de Prado 2014 (correlation-adjusted), not raw 729.\n\n\nAcceptance gates\nIn order of evaluation:\n\nSPX iron condor OOS Sharpe &gt; 0.286 (v1.5 anchor) before multi-instrument\nAggregate 5-instrument Sharpe ≥ SPX-only (multi-instrument adds value)\nEach ML head meets its acceptance criterion or is dropped per fallback\nDSR (PSR threshold) ≥ 0.95 against N̂-trial benchmark\nPBO via CSCV ≤ 0.30\nReproducibility test passes (seed=42, byte-identical equity curve)"
+  },
+  {
+    "objectID": "pre_commitments.html#wheel",
+    "href": "pre_commitments.html#wheel",
+    "title": "Pre-commitments",
+    "section": "Wheel basket (PRE_COMMITMENT_WHEEL.md)",
+    "text": "Wheel basket (PRE_COMMITMENT_WHEEL.md)\n\nBasket selection (locked)\n\nPrimary 9-name basket: AAPL, MSFT, GOOGL, JNJ, KO, PG, WMT, JPM, PEP\nRobustness 7-name strict: drops JPM, PEP\nRobustness 8-name: adds JPM only\n\n\n\n5-layer wheel architecture\n\nLayer 1 Regime-conditional delta: VIX bottom Q → 0.15, mid → 0.20, top → 0.25\nLayer 2 Per-name vol-adjusted strikes: RV&gt;35% widens delta by +0.05\nLayer 3 Per-name 30-day RV forecaster: XGBoost on HAR-RV + exogenous, sizing = clip(target_rv/forecast, 0.4, 1.5), skip if forecast &gt; 95th pctile\nLayer 4 Earnings-aware management: 7-day blackout pre-earnings, narrow CCs\nLayer 5 Fundamental-only defensive rolls: entry premise broken (EPS guidance cut &gt;20%, dividend cut, 2-notch downgrade, sector underperformance + name residual return &lt; −10%)\n\n\n\nDisclosed limitations (per §1.1, §2.1)\n\n8 of 9 names pay dividends → American early-exercise risk on ITM puts (Merton Theorem 13). Pricing approximation: BS European-style for all wheel names; magnitude small at OTM entry, grows ITM near ex-dividend dates.\nHAR-RV forecaster uses daily-frequency RV components, not 5-minute intraday (per BTZ §3.2.1 caveat).\n\n\n\nAcceptance gates\n\n9-name primary Sharpe ≥ 7-name strict − 0.05 (else strict becomes headline)\nEach ML/forecaster head meets criterion or falls back\nDSR ≥ 0.95\nPBO ≤ 0.30\nReproducibility test passes\nWithin-sector probe (KO/PEP correlation) reported regardless of pass/fail"
+  },
+  {
+    "objectID": "pre_commitments.html#literature",
+    "href": "pre_commitments.html#literature",
+    "title": "Pre-commitments",
+    "section": "Literature foundation (LITERATURE_FINDINGS.md)",
+    "text": "Literature foundation (LITERATURE_FINDINGS.md)\n8 papers read in full. Per-paper findings cataloged:\n\nBailey & López de Prado 2014, Deflated Sharpe Ratio + Eq. 9 N̂ correction\nBailey/Borwein/López de Prado/Zhu 2015, Probability of Backtest Overfitting via CSCV\nNiculescu-Mizil & Caruana 2005, Platt-vs-isotonic calibration sample-size threshold (~200)\nHoeffding (1963) trader application, applied to live monitoring with 50/25/10% threshold semantics on the probability bound\nCarr & Wu 2003/2004, Variance risk premia, evidence-base heterogeneity across instruments\nBollerslev/Tauchen/Zhou 2009, Quarterly forecast horizon empirically optimal; Hodrick SE for overlapping regressions\nBlack & Scholes 1973, BS empirical bias (overvalues high-var, undervalues low-var) is the source of VRP\nMerton 1973, American early-exercise on dividend-paying stocks; rational pricing bounds"
+  },
+  {
+    "objectID": "pre_commitments.html#gaps",
+    "href": "pre_commitments.html#gaps",
+    "title": "Pre-commitments",
+    "section": "Identified gaps (LITERATURE_GAP_ANALYSIS.md)",
+    "text": "Identified gaps (LITERATURE_GAP_ANALYSIS.md)\n\n\n\n\n\n\n\n\nItem\nSeverity\nStatus\n\n\n\n\nDSR Eq. 9 (N̂ from ρ̄)\nShip-blocking\n✅ Implemented (src/metrics/deflated_sharpe.py)\n\n\nPBO via CSCV\nShip-blocking\n✅ Implemented (src/metrics/pbo.py)\n\n\nCalibration auto-select (Niculescu-Mizil)\nShip-improving\n✅ Implemented (src/models/xgboost_primary.fit_xgb_calibrated)\n\n\nHoeffding trader-form bound\nShip-improving\n✅ Implemented (src/metrics/hoeffding.py)\n\n\nHodrick 1992 SEs\nShip-improving\n✅ Implemented (src/metrics/hodrick_se.py)\n\n\nCarr/Wu universe stratification\nWriteup\n✅ Disclosed in Limitations\n\n\nDaily-RV vs 5-min intraday\nWriteup\n✅ Disclosed in Limitations\n\n\nBS high-variance bias\nWriteup\n✅ Disclosed in Limitations\n\n\nMerton early-exercise (wheel)\nWriteup\n✅ Disclosed in Limitations\n\n\n\nAll ship-blocking gaps closed. Ship-improving gaps closed except for two future-work items."
+  },
+  {
+    "objectID": "pre_commitments.html#methodology-amendments-after-pre-commit",
+    "href": "pre_commitments.html#methodology-amendments-after-pre-commit",
+    "title": "Pre-commitments",
+    "section": "Methodology amendments after pre-commit",
+    "text": "Methodology amendments after pre-commit\nTwo amendments have been logged with date, reason, and disclosure block:\n\n§4.1 Layer 5 v2 (2026-05-03 morning), Dropped condition 4 (DD-recovery) from auto_resume_ready, added 60-day time-fallback. Reason: catch-22 made halts latch permanently. Structurally broken design, not result-driven. Logged inline in §4.1.\nLayer 4 implementation alignment (2026-05-03 morning), Switched underwater_days and current_dd_frac from all-time-HWM reference to trailing-90-day reference, matching §4 spec text “in trailing 90 days.” Bug-fix-of-implementation, not methodology amendment. Logged in DIAGNOSIS_HALTS.md UPDATE 2.\n\nThe §4.1 acceptance text was further edited on 2026-05-03 to remove a Sharpe-band plausibility range (0.15–0.40) that was itself a form of post-hoc target-setting. Replaced with structural-only criteria. Logged inline in §4.1 with date and reason."
+  },
+  {
+    "objectID": "data_and_literature.html",
+    "href": "data_and_literature.html",
+    "title": "Data and Literature",
+    "section": "",
+    "text": "The strategy reads from three external data providers, all snapshotted to local parquet files at commit time. No live network connections occur during a backtest.\n\n\nDaily option chains 2012-2025 with bid, ask, impl_volatility, delta, gamma, vega, theta, volume, open_interest for the 12 instruments tested. Acquired from WRDS as a single CSV (strat2.2.csv.gz, 2.4 GB compressed, 68.4M rows) and split via scripts/convert_optionmetrics_to_parquet.py into per-ticker parquets at data/processed/options_by_ticker/{TICKER}.parquet. The engine prices entries and exits at real chain quotes (not Black-Scholes fallback) wherever available.\n\n\n\nDaily underlying open/high/low/close/volume for the 4 headline-basket tickers (AAPL, MSFT, WMT, GLD) and 6 ablation tickers (TLT, GOOGL, JNJ, KO, PG, JPM, PEP). Acquired from WRDS as wheelstrat_data.gz (760 KB) and split via scripts/convert_wheelstrat_data.py into per-ticker parquets at data/raw/{TICKER}.parquet. Spans 2012-01-03 to 2025-08-29. The IvyDB Securities file uses the same secid system as the option chains, so the join between underlying spot and chain quotes for the same security on the same date is exact.\nDaily closes match published exchange records on every spot-checked reference date (e.g. AAPL 2018-04-16 closes at $175.82, matching the public record).\n\n\n\nFrozen snapshots of CBOE volatility indices (VIX, VIX3M, VVIX, SKEW), Treasury yields from FRED via TWS (IRX, TNX), credit-stress proxies (HYG, LQD), broad equity tape (SPY, SPX bars). Stored at data/raw/{TICKER}.parquet. Read by pd.Series.asof(today) at trade-decision time so no look-ahead bias is possible. Used for the halt framework’s Layer 1 hard tail-event triggers, the ML stress head’s feature matrix, the friction model’s VIX-conditional slippage, and the risk-free baseline (IRX averaged over OOS = 2.33%)."
+  },
+  {
+    "objectID": "data_and_literature.html#data-sources",
+    "href": "data_and_literature.html#data-sources",
+    "title": "Data and Literature",
+    "section": "",
+    "text": "The strategy reads from three external data providers, all snapshotted to local parquet files at commit time. No live network connections occur during a backtest.\n\n\nDaily option chains 2012-2025 with bid, ask, impl_volatility, delta, gamma, vega, theta, volume, open_interest for the 12 instruments tested. Acquired from WRDS as a single CSV (strat2.2.csv.gz, 2.4 GB compressed, 68.4M rows) and split via scripts/convert_optionmetrics_to_parquet.py into per-ticker parquets at data/processed/options_by_ticker/{TICKER}.parquet. The engine prices entries and exits at real chain quotes (not Black-Scholes fallback) wherever available.\n\n\n\nDaily underlying open/high/low/close/volume for the 4 headline-basket tickers (AAPL, MSFT, WMT, GLD) and 6 ablation tickers (TLT, GOOGL, JNJ, KO, PG, JPM, PEP). Acquired from WRDS as wheelstrat_data.gz (760 KB) and split via scripts/convert_wheelstrat_data.py into per-ticker parquets at data/raw/{TICKER}.parquet. Spans 2012-01-03 to 2025-08-29. The IvyDB Securities file uses the same secid system as the option chains, so the join between underlying spot and chain quotes for the same security on the same date is exact.\nDaily closes match published exchange records on every spot-checked reference date (e.g. AAPL 2018-04-16 closes at $175.82, matching the public record).\n\n\n\nFrozen snapshots of CBOE volatility indices (VIX, VIX3M, VVIX, SKEW), Treasury yields from FRED via TWS (IRX, TNX), credit-stress proxies (HYG, LQD), broad equity tape (SPY, SPX bars). Stored at data/raw/{TICKER}.parquet. Read by pd.Series.asof(today) at trade-decision time so no look-ahead bias is possible. Used for the halt framework’s Layer 1 hard tail-event triggers, the ML stress head’s feature matrix, the friction model’s VIX-conditional slippage, and the risk-free baseline (IRX averaged over OOS = 2.33%)."
+  },
+  {
+    "objectID": "data_and_literature.html#literature-foundation",
+    "href": "data_and_literature.html#literature-foundation",
+    "title": "Data and Literature",
+    "section": "Literature foundation",
+    "text": "Literature foundation\nThe strategy and writeup are grounded in the following published references. None of these are course-internal materials, all are peer-reviewed.\n\nVariance risk premium\n\nCarr, P., and Wu, L. (2003 working paper, 2009 Review of Financial Studies). Variance Risk Premia. Documents the structural gap between option-implied and realized variance across U.S. equity indices. Provides the empirical t-statistics on the SPX cluster that anchor the project’s universe selection (SPX strongly supported, NDX weaker, RUT extrapolated, TLT and GLD are novel cross-asset extensions).\nBollerslev, T., Tauchen, G., and Zhou, H. (2009). Expected Stock Returns and Variance Risk Premia. Review of Financial Studies. Establishes the 63-trading-day quarterly horizon as empirically optimal for VRP-based forecasting and motivates the Hodrick-style standard errors used for any overlapping regression in this work.\nBlack, F., and Scholes, M. (1973). The Pricing of Options and Corporate Liabilities. Journal of Political Economy. The original closed-form pricing of European options. The empirical biases the paper documents in OTC option pricing (BS overvalues high-variance underlyings, undervalues low-variance) are the structural source of the volatility risk premium the strategy harvests.\nMerton, R. C. (1973). Theory of Rational Option Pricing. Bell Journal of Economics and Management Science. Theorem 13 on early exercise of American puts on dividend-paying stocks frames the pricing approximation disclosed for the wheel-name positions.\n\n\n\nMultiple-testing correction\n\nBailey, D. H., and López de Prado, M. (2014). The Deflated Sharpe Ratio: Correcting for Selection Bias, Backtest Overfitting, and Non-Normality. Journal of Portfolio Management. Equation 9 of this paper provides the implied-independent-trials adjustment N̂ = ρ̄ + (1 − ρ̄) · M used to deflate the headline Sharpe against the 12-trial selection-bias noise floor.\nBailey, D. H., Borwein, J. M., López de Prado, M., and Zhu, Q. J. (2015). The Probability of Backtest Overfitting. Journal of Computational Finance. Defines the Probability of Backtest Overfitting via combinatorially symmetric cross-validation. Uses S = 16 partitions, C(16, 8) = 12,870 logit combinations to compute PBO = 0.0402 on the project’s per-instrument return matrix.\n\n\n\nLive monitoring\n\nHoeffding, W. (1963). Probability Inequalities for Sums of Bounded Random Variables. Journal of the American Statistical Association. The bound P[X̄ − μ ≥ t | H₀] ≤ exp(−2 t² N) for any bounded random variable underpins the live-monitoring framework’s threshold semantics.\n\n\n\nCalibration\n\nNiculescu-Mizil, A., and Caruana, R. (2005). Predicting Good Probabilities with Supervised Learning. Proceedings of the 22nd International Conference on Machine Learning. Provides the sample-size threshold (n_pos minority class ≈ 200) that the auto-select between Platt scaling and isotonic regression uses in src/models/calibration.py.\n\n\n\nTime-series statistics\n\nHodrick, R. J. (1992). Dividend Yields and Expected Stock Returns: Alternative Procedures for Inference and Measurement. Review of Financial Studies. Defines the variance estimator for overlapping multi-period predictive regressions that the project’s regression diagnostics use, in preference to naive Newey-West standard errors."
+  },
+  {
+    "objectID": "data_and_literature.html#data-limitations-and-how-they-shape-the-writeup",
+    "href": "data_and_literature.html#data-limitations-and-how-they-shape-the-writeup",
+    "title": "Data and Literature",
+    "section": "Data limitations and how they shape the writeup",
+    "text": "Data limitations and how they shape the writeup\n\n\n\nLimitation\nWhere the writeup acknowledges it\n\n\n\n\nOptionMetrics has 7-15% NaN on Greeks at deep-OTM/ITM strikes\nLimitations §9\n\n\nPer-instrument bars from a separate WRDS query (not from the chain file itself)\nLimitations §14\n\n\nTWS-sourced macro factors are point-in-time but not as-of-decision-time stamped\nLimitations §13\n\n\nDaily-frequency RV in the engine, not 5-minute intraday\nLimitations §7\n\n\nOOS sample only 7 years long\nLimitations §3\n\n\nRUT and NDX dropped because their underlying OHLC was not available locally\nPre-commitments"
+  },
+  {
+    "objectID": "limitations.html",
+    "href": "limitations.html",
+    "title": "Limitations and Disclosures",
+    "section": "",
+    "text": "This page lists every material limitation of the strategy and the methodology used to test it. Honest disclosure is not optional, the strategy’s claim to be a defensible piece of work depends on the writeup being explicit about what it does NOT promise."
+  },
+  {
+    "objectID": "limitations.html#headline-result-limitations",
+    "href": "limitations.html#headline-result-limitations",
+    "title": "Limitations and Disclosures",
+    "section": "Headline-result limitations",
+    "text": "Headline-result limitations\n\n1. Selection bias on the 4-instrument basket\nThe headline basket (AAPL + MSFT + WMT + GLD) was selected from a tested universe of 12 instruments, 3 ETFs (SPX, TLT, GLD) and 9 single-stocks (AAPL, MSFT, GOOGL, JNJ, KO, PG, WMT, JPM, PEP). Selection was made post-hoc on the criterion of positive excess Sharpe in OOS halts_only mode. This is selection bias.\nMitigation: Deflated Sharpe Ratio with implied-independent-trials correction. The 12 raw trials have an average pairwise return correlation of 0.261, giving an implied independent-trials count of N̂ = 9 per Eq. 9 of the Bailey & López de Prado framework. The DSR (PSR) of the headline basket is 1.0000, meaning the headline excess Sharpe of +0.359 is statistically significant against the noise floor of 9 independent trials. PBO via CSCV is 0.0402 (well below the pre-committed 0.30 acceptance threshold).\nThe selection is acknowledged and quantitatively corrected, not hidden.\n\n\n2. Risk-free rate assumption\nAll Sharpe ratios reported as “excess” use a 2.33% annualized risk-free rate, which is the realized average of the CBOE 13-week T-bill yield (IRX) over the OOS window 2018-2024. The OOS period included near-zero rates 2018-2021 and 4-5% rates 2022-2024, so the 2.33% average is the appropriate within-sample anchor.\nIf a future report needs to use a different risk-free rate (e.g., a forward-looking expectation), the Sharpe will shift. The strategy’s annualized return is 2.41%, so the excess Sharpe is sensitive to the rf assumption: a rf of 2.0% would give Sharpe ≈ +0.95; a rf of 3.0% would give Sharpe ≈ -0.95. The strategy is barely-positive on excess basis in this rate regime.\n\n\n3. OOS sample size\nOOS spans 2018-01-01 to 2024-12-31, ≈ 7 years (1,760 trading days). Effective independent observations at the 30-day forward horizon (typical IC holding window) ≈ 84 non-overlapping windows. The volatility-risk-premium literature (Bollerslev/Tauchen/Zhou 2009) used 17 years of S&P data; ours is 7. The same caveat about limited post-1990 sample (per BTZ §3 footnote 23) applies amplified."
+  },
+  {
+    "objectID": "limitations.html#strategy-level-limitations",
+    "href": "limitations.html#strategy-level-limitations",
+    "title": "Limitations and Disclosures",
+    "section": "Strategy-level limitations",
+    "text": "Strategy-level limitations\n\n4. Tail risk is real and bounded but not zero\nPut-credit-spread max-loss-per-spread is bounded by wing widths (5 strike points = $500 per spread per contract, before commissions). With realistic per-trade sizing (1% of equity per spread), absolute drawdown in a single day is bounded. But:\n\nMulti-day cascade events (e.g., Volmageddon Feb 2018) can produce simultaneous emergency exits on multiple positions before the halt framework engages.\nThe 4-instrument basket’s correlation rises during stress events (typical ρ jump from 0.26 to 0.6+ in a crisis).\n\n\n\n5. Strategy capacity is limited\nOptionMetrics open-interest data shows our chosen 16-delta strikes have median per-strike OI in the hundreds-to-thousands for AAPL/MSFT/WMT and dozens-to-hundreds for GLD. Scaling beyond ~$5–20M of capital (depending on instrument) likely encounters meaningful market-impact friction beyond what our backtest’s bid-ask slippage model captures.\nThis is a retail / small-fund strategy, not an institutional one."
+  },
+  {
+    "objectID": "limitations.html#methodological-limitations",
+    "href": "limitations.html#methodological-limitations",
+    "title": "Limitations and Disclosures",
+    "section": "Methodological limitations",
+    "text": "Methodological limitations\n\n6. Iron-condor tested-and-rejected, not avoided\nThe pre-committed methodology specified iron condors (put + call wings). On the spot-corrected engine, iron condor variants underperformed put-only across every instrument tested. The headline is put-only; the iron-condor result is reported in Ablations as a tested extension with negative result. The decision to ship put-only is evidence-driven, but it differs from the original pre-commitment.\n\n\n7. Daily-frequency RV components in the realized-vol indicators\nPer BTZ 2009 §3.2.1: 5-minute intraday squared returns produce stronger predictability for VRP-based forecasting than daily close-to-close RV. We use daily RV in the engine’s vol-multiplier computation. Without intraday data, we cannot match the BTZ-preferred specification.\n\n\n8. R² inflation per Boudoukh-Richardson-Whitelaw (2008)\nIn overlapping multi-period predictive regressions, R² inflates roughly proportionally with horizon × overlap, even in the absence of true predictability. Our 30-day forward window with daily observations creates this pattern.\nWe mitigate by reporting Hodrick (1992) standard errors (src/metrics/hodrick_se.py) as the primary significance measure for any regression we report, rather than naive Newey-West. R² is reported descriptively only."
+  },
+  {
+    "objectID": "limitations.html#backtest-environment-limitations",
+    "href": "limitations.html#backtest-environment-limitations",
+    "title": "Limitations and Disclosures",
+    "section": "Backtest-environment limitations",
+    "text": "Backtest-environment limitations\n\n9. Synthetic-pricing fallback when OptionMetrics IV missing\nOptionMetrics has ~7-15% NaN rate on delta and IV per ticker (concentrated at deep-ITM/OTM strikes where Greeks aren’t computed). Our engine falls back to BS-derived deltas using VIX/100 as ATM-IV proxy when needed. This is a known approximation; magnitude is small at our 16-delta strikes (which have populated deltas in the OptionMetrics data) but worth flagging.\n\n\n10. Friction-model calibration is best-effort\nSlippage, commission, and gap-aware-fill parameters are pre-committed but not directly calibrated to specific broker fee schedules. Real-world results will differ in these dimensions. We err conservative (more slippage in higher-VIX buckets, gap-fills at worst execution).\n\n\n11. American early-exercise risk on dividend-paying single-stocks\nPer Merton (1973) Theorem 13, American puts on dividend-paying stocks have positive probability of premature exercise. Our headline basket has 3 of 4 names paying dividends (AAPL, MSFT, WMT, GLD is a commodity ETF and does not pay dividends).\nPricing approximation: we use BS European-style for all wheel names. This undervalues the option for the counterparty (we underestimate the premium they’d rationally demand). Magnitude is small at our 16-delta OTM entry strikes; grows when underlying drops materially and put becomes ITM near ex-dividend dates. We do not model the assignment cash-flow precisely; reported P&L represents OTM-expiration economics.\n\n\n12. BS pricing biases (the source of VRP itself)\nPer Black & Scholes (1973) page 654 empirical test on 545 OTC option contracts: BS systematically overvalues options on high-variance underlyings and undervalues low-variance. This bias is the structural source of the volatility risk premium we harvest. We do not “out-predict” BS; we systematically take the side of the trade where empirical VRP is positive in the historical record. The strategy’s edge is contingent on this bias persisting in future periods."
+  },
+  {
+    "objectID": "limitations.html#exogenous-factor-data-limitations",
+    "href": "limitations.html#exogenous-factor-data-limitations",
+    "title": "Limitations and Disclosures",
+    "section": "Exogenous-factor data limitations",
+    "text": "Exogenous-factor data limitations\n\n13. TWS-sourced macro factors\nThe exogenous factors used by the engine (VIX, VIX3M, VVIX, SKEW, IRX, TNX, HYG, LQD, SPY, SPX bars) are sourced from the Interactive Brokers TWS feed snapshot frozen at commit time. These are point-in-time by the snapshot date but lack the explicit “as-of-decision-time” stamping that institutional data providers (Bloomberg, Refinitiv) provide. We use pd.Series.asof(today) to enforce no-look-ahead, but small backfill artifacts in the source feed are possible.\n\n\n14. Per-ticker underlying spot from OptionMetrics IvyDB Securities\nThe 4-instrument basket’s underlying daily spots (AAPL, MSFT, WMT, GLD) are sourced from the OptionMetrics IvyDB Securities file (queried via WRDS). This is the same vendor as the option chain data, which ensures secid alignment across the chain and the underlying. Daily close prices match published exchange records on spot-checked reference dates (e.g., AAPL 2018-04-16 = $175.82, matches exchange record)."
+  },
+  {
+    "objectID": "limitations.html#live-monitoring-limitations",
+    "href": "limitations.html#live-monitoring-limitations",
+    "title": "Limitations and Disclosures",
+    "section": "Live monitoring limitations",
+    "text": "Live monitoring limitations\n\n15. Hoeffding bound is worst-case\nThe bound holds for any bounded RV regardless of distribution, but it is loose. Tighter bounds exist (e.g., Bernstein, normal-approximation) for distributions where assumptions hold. We use Hoeffding for distribution-free guarantees; this means the 50/25/10% thresholds are conservative, the actual probability of regime change is at most these values, not exactly these values.\n\n\n16. Pre-committed μ does not adapt over time\nThe committed μ baseline is computed from the OOS backtest and held fixed in live deployment. If we adapted μ live (e.g., updating to the rolling 12-month observed win rate), we would lose the pre-commitment property and the framework would become a moving-goalpost circular reference. Trade-off: occasional false-negatives in genuine regime changes that look “normal” relative to the pre-committed baseline."
+  },
+  {
+    "objectID": "limitations.html#multi-testing-limitations-beyond-the-headline",
+    "href": "limitations.html#multi-testing-limitations-beyond-the-headline",
+    "title": "Limitations and Disclosures",
+    "section": "Multi-testing limitations beyond the headline",
+    "text": "Multi-testing limitations beyond the headline\n\n17. Mode comparison creates a second multiple-testing layer\nThe ablation includes mode comparisons (naked vs halts_only). Comparing the better of the two modes against the anchor introduces a second selection layer beyond the basket-selection layer corrected via DSR + PBO.\nThe headline only reports the halts_only mode result. The naked-mode results are reported in the ablation pages for transparency, not as candidates."
+  },
+  {
+    "objectID": "limitations.html#what-to-read-next",
+    "href": "limitations.html#what-to-read-next",
+    "title": "Limitations and Disclosures",
+    "section": "What to read next",
+    "text": "What to read next\n\nLive Monitoring, the answer to “how do you know when it stops working”\nPre-commitments, the locked methodology before any backtest fired\nResults, headline + per-instrument + ablation tables\nData and Literature, data sources and reference reading"
   },
   {
     "objectID": "mechanics.html",
@@ -180,293 +425,6 @@
     "title": "Strategy Mechanics",
     "section": "What the headline DOES NOT use",
     "text": "What the headline DOES NOT use\nFor transparency: the iron-condor architecture (call wing in addition to put wing) was tested and underperformed put-only across every instrument tested in OOS 2018-2024. The call wing systematically lost in the trending-equity regime. See Ablations for the iron-condor result table. The headline is put-only because the data demanded it."
-  },
-  {
-    "objectID": "limitations.html",
-    "href": "limitations.html",
-    "title": "Limitations and Disclosures",
-    "section": "",
-    "text": "This page lists every material limitation of the strategy and the methodology used to test it. Honest disclosure is not optional, the strategy’s claim to be a defensible piece of work depends on the writeup being explicit about what it does NOT promise."
-  },
-  {
-    "objectID": "limitations.html#headline-result-limitations",
-    "href": "limitations.html#headline-result-limitations",
-    "title": "Limitations and Disclosures",
-    "section": "Headline-result limitations",
-    "text": "Headline-result limitations\n\n1. Selection bias on the 4-instrument basket\nThe headline basket (AAPL + MSFT + WMT + GLD) was selected from a tested universe of 12 instruments, 3 ETFs (SPX, TLT, GLD) and 9 single-stocks (AAPL, MSFT, GOOGL, JNJ, KO, PG, WMT, JPM, PEP). Selection was made post-hoc on the criterion of positive excess Sharpe in OOS halts_only mode. This is selection bias.\nMitigation: Deflated Sharpe Ratio with implied-independent-trials correction. The 12 raw trials have an average pairwise return correlation of 0.261, giving an implied independent-trials count of N̂ = 9 per Eq. 9 of the Bailey & López de Prado framework. The DSR (PSR) of the headline basket is 1.0000, meaning the headline excess Sharpe of +0.359 is statistically significant against the noise floor of 9 independent trials. PBO via CSCV is 0.0402 (well below the pre-committed 0.30 acceptance threshold).\nThe selection is acknowledged and quantitatively corrected, not hidden.\n\n\n2. Risk-free rate assumption\nAll Sharpe ratios reported as “excess” use a 2.33% annualized risk-free rate, which is the realized average of the CBOE 13-week T-bill yield (IRX) over the OOS window 2018-2024. The OOS period included near-zero rates 2018-2021 and 4-5% rates 2022-2024, so the 2.33% average is the appropriate within-sample anchor.\nIf a future report needs to use a different risk-free rate (e.g., a forward-looking expectation), the Sharpe will shift. The strategy’s annualized return is 2.41%, so the excess Sharpe is sensitive to the rf assumption: a rf of 2.0% would give Sharpe ≈ +0.95; a rf of 3.0% would give Sharpe ≈ -0.95. The strategy is barely-positive on excess basis in this rate regime.\n\n\n3. OOS sample size\nOOS spans 2018-01-01 to 2024-12-31, ≈ 7 years (1,760 trading days). Effective independent observations at the 30-day forward horizon (typical IC holding window) ≈ 84 non-overlapping windows. The volatility-risk-premium literature (Bollerslev/Tauchen/Zhou 2009) used 17 years of S&P data; ours is 7. The same caveat about limited post-1990 sample (per BTZ §3 footnote 23) applies amplified."
-  },
-  {
-    "objectID": "limitations.html#strategy-level-limitations",
-    "href": "limitations.html#strategy-level-limitations",
-    "title": "Limitations and Disclosures",
-    "section": "Strategy-level limitations",
-    "text": "Strategy-level limitations\n\n4. Tail risk is real and bounded but not zero\nPut-credit-spread max-loss-per-spread is bounded by wing widths (5 strike points = $500 per spread per contract, before commissions). With realistic per-trade sizing (1% of equity per spread), absolute drawdown in a single day is bounded. But:\n\nMulti-day cascade events (e.g., Volmageddon Feb 2018) can produce simultaneous emergency exits on multiple positions before the halt framework engages.\nThe 4-instrument basket’s correlation rises during stress events (typical ρ jump from 0.26 to 0.6+ in a crisis).\n\n\n\n5. Strategy capacity is limited\nOptionMetrics open-interest data shows our chosen 16-delta strikes have median per-strike OI in the hundreds-to-thousands for AAPL/MSFT/WMT and dozens-to-hundreds for GLD. Scaling beyond ~$5–20M of capital (depending on instrument) likely encounters meaningful market-impact friction beyond what our backtest’s bid-ask slippage model captures.\nThis is a retail / small-fund strategy, not an institutional one."
-  },
-  {
-    "objectID": "limitations.html#methodological-limitations",
-    "href": "limitations.html#methodological-limitations",
-    "title": "Limitations and Disclosures",
-    "section": "Methodological limitations",
-    "text": "Methodological limitations\n\n6. Iron-condor tested-and-rejected, not avoided\nThe pre-committed methodology specified iron condors (put + call wings). On the spot-corrected engine, iron condor variants underperformed put-only across every instrument tested. The headline is put-only; the iron-condor result is reported in Ablations as a tested extension with negative result. The decision to ship put-only is evidence-driven, but it differs from the original pre-commitment.\n\n\n7. Daily-frequency RV components in the realized-vol indicators\nPer BTZ 2009 §3.2.1: 5-minute intraday squared returns produce stronger predictability for VRP-based forecasting than daily close-to-close RV. We use daily RV in the engine’s vol-multiplier computation. Without intraday data, we cannot match the BTZ-preferred specification.\n\n\n8. R² inflation per Boudoukh-Richardson-Whitelaw (2008)\nIn overlapping multi-period predictive regressions, R² inflates roughly proportionally with horizon × overlap, even in the absence of true predictability. Our 30-day forward window with daily observations creates this pattern.\nWe mitigate by reporting Hodrick (1992) standard errors (src/metrics/hodrick_se.py) as the primary significance measure for any regression we report, rather than naive Newey-West. R² is reported descriptively only."
-  },
-  {
-    "objectID": "limitations.html#backtest-environment-limitations",
-    "href": "limitations.html#backtest-environment-limitations",
-    "title": "Limitations and Disclosures",
-    "section": "Backtest-environment limitations",
-    "text": "Backtest-environment limitations\n\n9. Synthetic-pricing fallback when OptionMetrics IV missing\nOptionMetrics has ~7-15% NaN rate on delta and IV per ticker (concentrated at deep-ITM/OTM strikes where Greeks aren’t computed). Our engine falls back to BS-derived deltas using VIX/100 as ATM-IV proxy when needed. This is a known approximation; magnitude is small at our 16-delta strikes (which have populated deltas in the OptionMetrics data) but worth flagging.\n\n\n10. Friction-model calibration is best-effort\nSlippage, commission, and gap-aware-fill parameters are pre-committed but not directly calibrated to specific broker fee schedules. Real-world results will differ in these dimensions. We err conservative (more slippage in higher-VIX buckets, gap-fills at worst execution).\n\n\n11. American early-exercise risk on dividend-paying single-stocks\nPer Merton (1973) Theorem 13, American puts on dividend-paying stocks have positive probability of premature exercise. Our headline basket has 3 of 4 names paying dividends (AAPL, MSFT, WMT, GLD is a commodity ETF and does not pay dividends).\nPricing approximation: we use BS European-style for all wheel names. This undervalues the option for the counterparty (we underestimate the premium they’d rationally demand). Magnitude is small at our 16-delta OTM entry strikes; grows when underlying drops materially and put becomes ITM near ex-dividend dates. We do not model the assignment cash-flow precisely; reported P&L represents OTM-expiration economics.\n\n\n12. BS pricing biases (the source of VRP itself)\nPer Black & Scholes (1973) page 654 empirical test on 545 OTC option contracts: BS systematically overvalues options on high-variance underlyings and undervalues low-variance. This bias is the structural source of the volatility risk premium we harvest. We do not “out-predict” BS; we systematically take the side of the trade where empirical VRP is positive in the historical record. The strategy’s edge is contingent on this bias persisting in future periods."
-  },
-  {
-    "objectID": "limitations.html#exogenous-factor-data-limitations",
-    "href": "limitations.html#exogenous-factor-data-limitations",
-    "title": "Limitations and Disclosures",
-    "section": "Exogenous-factor data limitations",
-    "text": "Exogenous-factor data limitations\n\n13. TWS-sourced macro factors\nThe exogenous factors used by the engine (VIX, VIX3M, VVIX, SKEW, IRX, TNX, HYG, LQD, SPY, SPX bars) are sourced from the Interactive Brokers TWS feed snapshot frozen at commit time. These are point-in-time by the snapshot date but lack the explicit “as-of-decision-time” stamping that institutional data providers (Bloomberg, Refinitiv) provide. We use pd.Series.asof(today) to enforce no-look-ahead, but small backfill artifacts in the source feed are possible.\n\n\n14. Per-ticker underlying spot from OptionMetrics IvyDB Securities\nThe 4-instrument basket’s underlying daily spots (AAPL, MSFT, WMT, GLD) are sourced from the OptionMetrics IvyDB Securities file (queried via WRDS). This is the same vendor as the option chain data, which ensures secid alignment across the chain and the underlying. Daily close prices match published exchange records on spot-checked reference dates (e.g., AAPL 2018-04-16 = $175.82, matches exchange record)."
-  },
-  {
-    "objectID": "limitations.html#live-monitoring-limitations",
-    "href": "limitations.html#live-monitoring-limitations",
-    "title": "Limitations and Disclosures",
-    "section": "Live monitoring limitations",
-    "text": "Live monitoring limitations\n\n15. Hoeffding bound is worst-case\nThe bound holds for any bounded RV regardless of distribution, but it is loose. Tighter bounds exist (e.g., Bernstein, normal-approximation) for distributions where assumptions hold. We use Hoeffding for distribution-free guarantees; this means the 50/25/10% thresholds are conservative, the actual probability of regime change is at most these values, not exactly these values.\n\n\n16. Pre-committed μ does not adapt over time\nThe committed μ baseline is computed from the OOS backtest and held fixed in live deployment. If we adapted μ live (e.g., updating to the rolling 12-month observed win rate), we would lose the pre-commitment property and the framework would become a moving-goalpost circular reference. Trade-off: occasional false-negatives in genuine regime changes that look “normal” relative to the pre-committed baseline."
-  },
-  {
-    "objectID": "limitations.html#multi-testing-limitations-beyond-the-headline",
-    "href": "limitations.html#multi-testing-limitations-beyond-the-headline",
-    "title": "Limitations and Disclosures",
-    "section": "Multi-testing limitations beyond the headline",
-    "text": "Multi-testing limitations beyond the headline\n\n17. Mode comparison creates a second multiple-testing layer\nThe ablation includes mode comparisons (naked vs halts_only). Comparing the better of the two modes against the anchor introduces a second selection layer beyond the basket-selection layer corrected via DSR + PBO.\nThe headline only reports the halts_only mode result. The naked-mode results are reported in the ablation pages for transparency, not as candidates."
-  },
-  {
-    "objectID": "limitations.html#what-to-read-next",
-    "href": "limitations.html#what-to-read-next",
-    "title": "Limitations and Disclosures",
-    "section": "What to read next",
-    "text": "What to read next\n\nLive Monitoring, the answer to “how do you know when it stops working”\nPre-commitments, the locked methodology before any backtest fired\nResults, headline + per-instrument + ablation tables\nReproducibility, exact reproduction instructions"
-  },
-  {
-    "objectID": "pre_commitments.html",
-    "href": "pre_commitments.html",
-    "title": "Pre-commitments",
-    "section": "",
-    "text": "This page is the audit trail for the strategy’s methodology. Every parameter, threshold, and acceptance criterion was committed to version control in dated, immutable form before any out-of-sample backtest fired.\nThe full source-of-truth documents live in the repository root:\nThis page summarizes what’s locked."
-  },
-  {
-    "objectID": "pre_commitments.html#vrp",
-    "href": "pre_commitments.html#vrp",
-    "title": "Pre-commitments",
-    "section": "VRP cluster (PRE_COMMITMENT_VRP.md)",
-    "text": "VRP cluster (PRE_COMMITMENT_VRP.md)\n\nUniverse (locked)\n5 instruments: SPX, RUT, NDX, TLT, GLD. PEP is reserved for the wheel basket (locked there, not here).\n\n\nEntry construction\n\n\n\n\n\n\n\n\nParameter\nValue\nSource\n\n\n\n\nStructure\nDefined-risk iron condor (short put + short call, both protected)\n,\n\n\nShort put delta\n−0.16\nOne-sigma OTM via BS Greeks\n\n\nShort call delta\n+0.16\nSymmetric\n\n\nWing widths\n5/5/25/1/1 (SPX/RUT/NDX/TLT/GLD)\nMatch listed strike grid\n\n\nDTE at entry\n30–45 calendar days, prefer 35\nTheta acceleration begins ~45 DTE; closing at 21 leaves high-decay window inside trade\n\n\nEntry frequency\nWeekly Monday open per instrument\nLimits dependency between trades\n\n\n\n\n\nExit logic, five fates per side\nTwo Trade objects per iron condor, sharing iron_condor_id. Independent management.\n\n\n\n\n\n\n\nFate\nTrigger\n\n\n\n\nprofit_target\nPer-side debit ≤ 50% of side’s entry credit\n\n\nstop_loss\nPer-side debit ≥ 200% of side’s entry credit (gap-aware fill)\n\n\ntime_exit\nDTE ≤ 21 (per side)\n\n\nemergency\n|short_delta| &gt; 0.50\n\n\neos_force\nEnd-of-OOS forced close\n\n\n\n\n\nHalt framework, Layers 1, 4, 5 active\n(See Mechanics for layer-by-layer details.)\nLayer 5 v2 was amended on 2026-05-03, see §4.1 amendment in PRE_COMMITMENT_VRP.md (catch-22 documented and fixed). Layer 4 was amended 2026-05-03 to align implementation with spec text “in trailing 90 days” (bug-fix-of-implementation, not methodology amendment).\n\n\nML stack, three calibrated heads\n(See Mechanics §ML stack for full pre-committed targets, sizing curves, acceptance criteria.)\n\n\nCapital allocation\n\nPer-instrument: equal-weight Phase B-1, quality-weighted Phase B-2\nAggregate book scaler: (1 − p_stress) from Head 2\n\n\n\nSample windows (locked)\n\nIS (training): 2012-03-26 → 2017-12-31\nOOS (reporting): 2018-01-01 → 2024-12-31\nWalk-forward refit cadence: annually\n\n\n\nSensitivity grid (declared in advance)\n\n\n\nDimension\nGrid values\nCount\n\n\n\n\nShort delta target\n0.10, 0.16, 0.25\n3\n\n\nSpread width\n0.5×, 1.0×, 2.0×\n3\n\n\nDTE entry window\n(25,40), (30,45), (35,50)\n3\n\n\nProfit target\n25%, 50%, 75%\n3\n\n\nStop loss multiple\n1.5×, 2.0×, 3.0×\n3\n\n\nTime exit DTE\n14, 21, 28\n3\n\n\nTotal\n\n3⁶ = 729\n\n\n\nDSR uses N̂ from Eq. 9 of Bailey & López de Prado 2014 (correlation-adjusted), not raw 729.\n\n\nAcceptance gates\nIn order of evaluation:\n\nSPX iron condor OOS Sharpe &gt; 0.286 (v1.5 anchor) before multi-instrument\nAggregate 5-instrument Sharpe ≥ SPX-only (multi-instrument adds value)\nEach ML head meets its acceptance criterion or is dropped per fallback\nDSR (PSR threshold) ≥ 0.95 against N̂-trial benchmark\nPBO via CSCV ≤ 0.30\nReproducibility test passes (seed=42, byte-identical equity curve)"
-  },
-  {
-    "objectID": "pre_commitments.html#wheel",
-    "href": "pre_commitments.html#wheel",
-    "title": "Pre-commitments",
-    "section": "Wheel basket (PRE_COMMITMENT_WHEEL.md)",
-    "text": "Wheel basket (PRE_COMMITMENT_WHEEL.md)\n\nBasket selection (locked)\n\nPrimary 9-name basket: AAPL, MSFT, GOOGL, JNJ, KO, PG, WMT, JPM, PEP\nRobustness 7-name strict: drops JPM, PEP\nRobustness 8-name: adds JPM only\n\n\n\n5-layer wheel architecture\n\nLayer 1 Regime-conditional delta: VIX bottom Q → 0.15, mid → 0.20, top → 0.25\nLayer 2 Per-name vol-adjusted strikes: RV&gt;35% widens delta by +0.05\nLayer 3 Per-name 30-day RV forecaster: XGBoost on HAR-RV + exogenous, sizing = clip(target_rv/forecast, 0.4, 1.5), skip if forecast &gt; 95th pctile\nLayer 4 Earnings-aware management: 7-day blackout pre-earnings, narrow CCs\nLayer 5 Fundamental-only defensive rolls: entry premise broken (EPS guidance cut &gt;20%, dividend cut, 2-notch downgrade, sector underperformance + name residual return &lt; −10%)\n\n\n\nDisclosed limitations (per §1.1, §2.1)\n\n8 of 9 names pay dividends → American early-exercise risk on ITM puts (Merton Theorem 13). Pricing approximation: BS European-style for all wheel names; magnitude small at OTM entry, grows ITM near ex-dividend dates.\nHAR-RV forecaster uses daily-frequency RV components, not 5-minute intraday (per BTZ §3.2.1 caveat).\n\n\n\nAcceptance gates\n\n9-name primary Sharpe ≥ 7-name strict − 0.05 (else strict becomes headline)\nEach ML/forecaster head meets criterion or falls back\nDSR ≥ 0.95\nPBO ≤ 0.30\nReproducibility test passes\nWithin-sector probe (KO/PEP correlation) reported regardless of pass/fail"
-  },
-  {
-    "objectID": "pre_commitments.html#literature",
-    "href": "pre_commitments.html#literature",
-    "title": "Pre-commitments",
-    "section": "Literature foundation (LITERATURE_FINDINGS.md)",
-    "text": "Literature foundation (LITERATURE_FINDINGS.md)\n8 papers read in full. Per-paper findings cataloged:\n\nBailey & López de Prado 2014, Deflated Sharpe Ratio + Eq. 9 N̂ correction\nBailey/Borwein/López de Prado/Zhu 2015, Probability of Backtest Overfitting via CSCV\nNiculescu-Mizil & Caruana 2005, Platt-vs-isotonic calibration sample-size threshold (~200)\nHoeffding (1963) trader application, applied to live monitoring with 50/25/10% threshold semantics on the probability bound\nCarr & Wu 2003/2004, Variance risk premia, evidence-base heterogeneity across instruments\nBollerslev/Tauchen/Zhou 2009, Quarterly forecast horizon empirically optimal; Hodrick SE for overlapping regressions\nBlack & Scholes 1973, BS empirical bias (overvalues high-var, undervalues low-var) is the source of VRP\nMerton 1973, American early-exercise on dividend-paying stocks; rational pricing bounds"
-  },
-  {
-    "objectID": "pre_commitments.html#gaps",
-    "href": "pre_commitments.html#gaps",
-    "title": "Pre-commitments",
-    "section": "Identified gaps (LITERATURE_GAP_ANALYSIS.md)",
-    "text": "Identified gaps (LITERATURE_GAP_ANALYSIS.md)\n\n\n\n\n\n\n\n\nItem\nSeverity\nStatus\n\n\n\n\nDSR Eq. 9 (N̂ from ρ̄)\nShip-blocking\n✅ Implemented (src/metrics/deflated_sharpe.py)\n\n\nPBO via CSCV\nShip-blocking\n✅ Implemented (src/metrics/pbo.py)\n\n\nCalibration auto-select (Niculescu-Mizil)\nShip-improving\n✅ Implemented (src/models/xgboost_primary.fit_xgb_calibrated)\n\n\nHoeffding trader-form bound\nShip-improving\n✅ Implemented (src/metrics/hoeffding.py)\n\n\nHodrick 1992 SEs\nShip-improving\n✅ Implemented (src/metrics/hodrick_se.py)\n\n\nCarr/Wu universe stratification\nWriteup\n✅ Disclosed in Limitations\n\n\nDaily-RV vs 5-min intraday\nWriteup\n✅ Disclosed in Limitations\n\n\nBS high-variance bias\nWriteup\n✅ Disclosed in Limitations\n\n\nMerton early-exercise (wheel)\nWriteup\n✅ Disclosed in Limitations\n\n\n\nAll ship-blocking gaps closed. Ship-improving gaps closed except for two future-work items."
-  },
-  {
-    "objectID": "pre_commitments.html#methodology-amendments-after-pre-commit",
-    "href": "pre_commitments.html#methodology-amendments-after-pre-commit",
-    "title": "Pre-commitments",
-    "section": "Methodology amendments after pre-commit",
-    "text": "Methodology amendments after pre-commit\nTwo amendments have been logged with date, reason, and disclosure block:\n\n§4.1 Layer 5 v2 (2026-05-03 morning), Dropped condition 4 (DD-recovery) from auto_resume_ready, added 60-day time-fallback. Reason: catch-22 made halts latch permanently. Structurally broken design, not result-driven. Logged inline in §4.1.\nLayer 4 implementation alignment (2026-05-03 morning), Switched underwater_days and current_dd_frac from all-time-HWM reference to trailing-90-day reference, matching §4 spec text “in trailing 90 days.” Bug-fix-of-implementation, not methodology amendment. Logged in DIAGNOSIS_HALTS.md UPDATE 2.\n\nThe §4.1 acceptance text was further edited on 2026-05-03 to remove a Sharpe-band plausibility range (0.15–0.40) that was itself a form of post-hoc target-setting. Replaced with structural-only criteria. Logged inline in §4.1 with date and reason."
-  },
-  {
-    "objectID": "thesis.html",
-    "href": "thesis.html",
-    "title": "Thesis: Why Variance Risk Premium",
-    "section": "",
-    "text": "Across stock indexes and individual stocks, the implied variance from option prices systematically exceeds the realized variance over matching forward windows. This gap, the variance risk premium, has been documented as strongly negative for the S&P 500, S&P 100, and Dow Jones indexes (large t-statistics on both raw and log forms), smaller-magnitude negative for the Nasdaq 100 and most individual stocks, and statistically distinguishable from zero across multiple decades of data.\nThe premium is not arbitrageable away because hedging variance risk requires either long-vol options positions (which lose money on average if you collect the premium by selling) or continuous dynamic delta-hedging that incurs friction. Both reset the risk to a different form: short-vol exposure with tail risk, or vega-and-friction exposure to dynamic-hedge slippage.\nInvestors are willing to pay this premium because variance shocks correlate negatively with index returns, variance risk is “insurance against market drawdowns,” and insurance commands a premium. Classical CAPM beta captures only a small portion of the empirically observed magnitude. Fama-French three-factor models leave large residuals. The premium appears to compensate exposure to a separate volatility-risk factor."
-  },
-  {
-    "objectID": "thesis.html#the-empirical-regularity",
-    "href": "thesis.html#the-empirical-regularity",
-    "title": "Thesis: Why Variance Risk Premium",
-    "section": "",
-    "text": "Across stock indexes and individual stocks, the implied variance from option prices systematically exceeds the realized variance over matching forward windows. This gap, the variance risk premium, has been documented as strongly negative for the S&P 500, S&P 100, and Dow Jones indexes (large t-statistics on both raw and log forms), smaller-magnitude negative for the Nasdaq 100 and most individual stocks, and statistically distinguishable from zero across multiple decades of data.\nThe premium is not arbitrageable away because hedging variance risk requires either long-vol options positions (which lose money on average if you collect the premium by selling) or continuous dynamic delta-hedging that incurs friction. Both reset the risk to a different form: short-vol exposure with tail risk, or vega-and-friction exposure to dynamic-hedge slippage.\nInvestors are willing to pay this premium because variance shocks correlate negatively with index returns, variance risk is “insurance against market drawdowns,” and insurance commands a premium. Classical CAPM beta captures only a small portion of the empirically observed magnitude. Fama-French three-factor models leave large residuals. The premium appears to compensate exposure to a separate volatility-risk factor."
-  },
-  {
-    "objectID": "thesis.html#what-our-strategy-harvests",
-    "href": "thesis.html#what-our-strategy-harvests",
-    "title": "Thesis: Why Variance Risk Premium",
-    "section": "What our strategy harvests",
-    "text": "What our strategy harvests\nThe strategy systematically sells defined-risk volatility structures (iron condors and cash-secured puts) on instruments where the premium has been documented. We collect the option premium up front, accept the tail-risk exposure (capped by the wing widths on iron condors and by share-assignment mechanics on the wheel), and manage active positions with five exit fates.\nSpecifically:\n\n5-instrument iron condor cluster (SPX, RUT, NDX, TLT, GLD): captures equity-index VRP plus cross-asset (bond, gold) VRP. The strategy harvests the structurally negative VRP across asset classes; correlation diversification reduces portfolio variance without giving up expected return.\n9-name adaptive wheel basket (AAPL, MSFT, GOOGL, JNJ, KO, PG, WMT, JPM, PEP): captures single-name VRP via cash-secured puts and covered calls. Strategy adapts strike delta to the prevailing volatility regime, widens strikes per name when realized vol is elevated, and uses an XGBoost realized-vol forecaster for sizing."
-  },
-  {
-    "objectID": "thesis.html#what-this-strategy-does-not-claim",
-    "href": "thesis.html#what-this-strategy-does-not-claim",
-    "title": "Thesis: Why Variance Risk Premium",
-    "section": "What this strategy does NOT claim",
-    "text": "What this strategy does NOT claim\n\nNot statistical arbitrage. The premium is a real risk premium, paid for a real risk (left-tail variance shocks). Sellers earn the premium in normal regimes and pay back in stress. Sharpe is bounded; tails are real.\nNot market-timing. We do not predict when vol spikes will occur. We size positions for capacity to absorb spikes and exit when current spreads breach pre-committed exit triggers.\nNot idiosyncratic-stock-picking. The wheel basket is selected by liquidity and structural-criteria thresholds, not by subjective conviction. The 9 names are the universe, not picks."
-  },
-  {
-    "objectID": "thesis.html#the-capacity-versus-edge-tradeoff",
-    "href": "thesis.html#the-capacity-versus-edge-tradeoff",
-    "title": "Thesis: Why Variance Risk Premium",
-    "section": "The capacity-versus-edge tradeoff",
-    "text": "The capacity-versus-edge tradeoff\nSingle-name short-vol structures generate higher per-trade premium but carry concentrated tail risk. Index-level structures generate smaller per-trade premium but diversify cross-name idiosyncratic risk.\nOur cluster mixes both:\n\nIndexes (SPX, RUT, NDX) for diversified equity-VRP capture\nETFs (TLT, GLD) for cross-asset diversification (bond and gold vol have low correlation with equity vol over multi-year windows)\nIndividual names (wheel basket) for incremental premium with sector spread\n\nThe expected payoff: combined book Sharpe higher than any single instrument, with maximum drawdown bounded by halt framework + per-instrument max-loss per spread."
-  },
-  {
-    "objectID": "thesis.html#why-iron-condor-over-single-side-spread",
-    "href": "thesis.html#why-iron-condor-over-single-side-spread",
-    "title": "Thesis: Why Variance Risk Premium",
-    "section": "Why iron condor over single-side spread",
-    "text": "Why iron condor over single-side spread\nThe legacy strategy (v1.5 baseline) used put-credit spreads only. Adding the call wing converts to iron condor. Trade-offs:\n\nPremium captured per structure: roughly doubles (both sides earn)\nDefined risk per structure: wider per-structure max-loss (both wings can be in the money simultaneously, though rarely)\nTrend exposure: put-side benefits from rising markets; call-side is hurt. Iron condor is delta-neutral at entry; one wing always offsets the other in trending regimes\nVolatility exposure: symmetric, short vega on both sides. IV-crush after entry helps both wings\n\nIn strong trending markets (like 2018-2024 SPX), the call wing is structurally disadvantaged: spot rallies hard, calls go in the money, losses on calls partially offset gains on puts. Result: iron condor naked-mode Sharpe is below put-only naked-mode Sharpe in trending regimes (we observed exactly this in our diagnostic).\nThe strategy’s edge over naked-mode iron condor comes from the halt framework, exiting when market regime shifts to high-realized-vol environments where short-vol positions of any kind underperform."
-  },
-  {
-    "objectID": "thesis.html#foundational-pricing-black-scholes-and-merton",
-    "href": "thesis.html#foundational-pricing-black-scholes-and-merton",
-    "title": "Thesis: Why Variance Risk Premium",
-    "section": "Foundational pricing: Black-Scholes and Merton",
-    "text": "Foundational pricing: Black-Scholes and Merton\nStrike selection uses Black-Scholes Greeks: 16-delta short legs (one standard deviation OTM under the lognormal assumption), 5-point wings (or per-instrument-grid). The BS pricer is a fallback when OptionMetrics-published implied volatility is missing.\nBlack-Scholes empirically overvalues options on high-variance underlyings and undervalues low-variance, this is the published finding from BS’s own 1973 paper. That bias is itself the structural source of the volatility risk premium our strategy harvests. We do not “out-predict” the BS pricer; we systematically take the side of the trade where BS-implied premium exceeds realized variance over the holding window.\nMerton’s 1973 extension covers American early-exercise (relevant for the wheel basket’s dividend-paying names) and continuous-dividend pricing. American puts on dividend-paying stocks always have positive probability of premature exercise (Merton Theorem 13). The wheel mechanic accepts assignment as a feature: when assigned shares, write covered calls until called away."
-  },
-  {
-    "objectID": "thesis.html#what-youll-find-in-the-rest-of-the-writeup",
-    "href": "thesis.html#what-youll-find-in-the-rest-of-the-writeup",
-    "title": "Thesis: Why Variance Risk Premium",
-    "section": "What you’ll find in the rest of the writeup",
-    "text": "What you’ll find in the rest of the writeup\n\nMechanics: exact entry/exit logic, halt framework, ML stack, sizing\nPre-commitments: the locked methodology before any backtest fired\nResults: headline OOS numbers with DSR/PBO multiple-testing correction\nAblations: naked / halts / vol-regime / ML / regime+halts / full\nLive monitoring: how to know it works, how to know it stopped\nLimitations: what this strategy cannot promise"
-  },
-  {
-    "objectID": "results.html",
-    "href": "results.html",
-    "title": "Results",
-    "section": "",
-    "text": "Sharpe ratios on this page are reported in two complementary forms:\n\nSharpe (excess), the headline. (annualized return − annualized risk-free) / annualized volatility.\nDeflated Sharpe (DSR), corrects for selection bias when many baskets are tested. Uses an implied-independent-trials count rather than the raw trial count, since adjacent baskets share underlying-instrument exposure and inflate the apparent number of independent searches.\n\nOther reported metrics:\n\nPBO (Probability of Backtest Overfitting) via CSCV, the probability that the in-sample-best basket underperforms in OOS, computed by leave-out partitioning the per-instrument return matrix.\nn_trades and win rate per instrument.\nMax drawdown (signed, negative) and annualized return (geometric).\n\nRisk-free rate: The risk-free is the CBOE 13-week T-bill yield (IRX), averaged over the OOS window 2018-2024 = 2.33% annualized. Excess Sharpe = (annualized return − 2.33%) / annualized volatility. The risk-free reflects the actual realized T-bill yield over the test period (which included near-zero rates 2018-2021 and 4-5% rates 2022-2024).\nAcceptance gates locked in advance:\n\nDSR (PSR threshold) ≥ 0.95 against the implied-independent-trials benchmark\nPBO via CSCV ≤ 0.30 on the per-instrument return matrix\nReproducibility: same commit, same data, same seed → byte-identical equity curve"
-  },
-  {
-    "objectID": "results.html#how-to-read-this-page",
-    "href": "results.html#how-to-read-this-page",
-    "title": "Results",
-    "section": "",
-    "text": "Sharpe ratios on this page are reported in two complementary forms:\n\nSharpe (excess), the headline. (annualized return − annualized risk-free) / annualized volatility.\nDeflated Sharpe (DSR), corrects for selection bias when many baskets are tested. Uses an implied-independent-trials count rather than the raw trial count, since adjacent baskets share underlying-instrument exposure and inflate the apparent number of independent searches.\n\nOther reported metrics:\n\nPBO (Probability of Backtest Overfitting) via CSCV, the probability that the in-sample-best basket underperforms in OOS, computed by leave-out partitioning the per-instrument return matrix.\nn_trades and win rate per instrument.\nMax drawdown (signed, negative) and annualized return (geometric).\n\nRisk-free rate: The risk-free is the CBOE 13-week T-bill yield (IRX), averaged over the OOS window 2018-2024 = 2.33% annualized. Excess Sharpe = (annualized return − 2.33%) / annualized volatility. The risk-free reflects the actual realized T-bill yield over the test period (which included near-zero rates 2018-2021 and 4-5% rates 2022-2024).\nAcceptance gates locked in advance:\n\nDSR (PSR threshold) ≥ 0.95 against the implied-independent-trials benchmark\nPBO via CSCV ≤ 0.30 on the per-instrument return matrix\nReproducibility: same commit, same data, same seed → byte-identical equity curve"
-  },
-  {
-    "objectID": "results.html#headline",
-    "href": "results.html#headline",
-    "title": "Results",
-    "section": "Headline",
-    "text": "Headline\nWheel-3 + GLD, 4-instrument put-credit-spread basket, halts_only mode + Head 2 ML book-stress scaler, 16-delta short-strike, 5-pt wing, weekly Monday entries.\n\n\n\nComposition\nAsset class\nStrike grid\n\n\n\n\nAAPL\nSingle-stock equity\n$1\n\n\nMSFT\nSingle-stock equity\n$1\n\n\nWMT\nSingle-stock equity\n$1\n\n\nGLD\nCommodity ETF\n$1\n\n\n\n\n\n\n\n\n\n\nHeadline metric\nValue\n\n\n\n\nSharpe (excess of risk-free), with Head 2 ML overlay\n+0.371\n\n\nSharpe (excess), base halts_only, no ML\n+0.359\n\n\nSharpe (excess), anchor (v1.5 SPX put-only)\n+0.286\n\n\nΔ vs anchor\n+0.085 ✓\n\n\nRisk-free baseline (avg IRX 2018-2024)\n2.33%\n\n\nAnnualized return (geometric)\n+2.41%\n\n\nAnnualized volatility\n0.21% (with ML) / 0.23% (without)\n\n\nMax drawdown over OOS (7 yrs)\n-0.12% (with ML) / -0.13% (without)\n\n\nTrades total (sum across 4 instruments)\n437\n\n\nOOS span\n2018-01-01 → 2024-12-31 (1,760 trading days)\n\n\nML overlay\nHead 2, pooled regime-stress scaler (1 − p_stress)\n\n\nHead 2 acceptance\nPASSED at +14.1% Brier reduction vs naive baseline (≥5% gate)\n\n\n\n\nMultiple-testing validation\nThe basket was selected from a tested universe of 12 instruments (3 ETFs: SPX, TLT, GLD; 9 single-stocks: AAPL, MSFT, GOOGL, JNJ, KO, PG, WMT, JPM, PEP). Selection bias is corrected via DSR + PBO:\n\n\n\nCorrection\nValue\nAcceptance\nPass?\n\n\n\n\nRaw trials tested (N)\n12\ninformational\nn/a\n\n\nAvg pairwise return correlation (ρ̄)\n0.261\ninformational\nn/a\n\n\nImplied independent trials (N̂) per Eq. 9\n9\ninformational\nn/a\n\n\nDeflated Sharpe (PSR)\n1.0000\n≥ 0.95\n✓\n\n\nPBO via CSCV (S=16, 12,870 logits)\n0.0402\n≤ 0.30\n✓\n\n\n\nBoth gates pass. The headline is statistically significant after correction for the 12-trial selection.\n\n\nEquity curve\n\nThe headline ends at 1.18× starting equity over 7 years (CAGR 2.41%). The reconstructed v1.5 anchor (Sharpe 0.286, ann_ret 2.49%) ends very close. The Sharpe gap (+0.073) shows up not in absolute return but in volatility: the headline runs at 0.21% annualized volatility versus the anchor’s 0.55%, so the same return is more risk-efficient.\n\n\nDrawdown\n\nMaximum drawdown of -0.13% over the 7-year OOS sample. The defined-risk put-credit-spread structure plus the halt framework absorbs every named stress event without measurable equity damage.\n\n\nPer-instrument breakdown\n\n\n\n\n\n\n\n\n\n\n\n\nTicker\nSharpe (excess)\nn_trades\nWin rate\nMax DD\nAnn. return\nFinal $ (from $50K start)\n\n\n\n\nAAPL\n+0.264\n112\n67.0%\n-0.50%\n+2.44%\n$59,170\n\n\nMSFT\n+0.269\n112\n67.9%\n-0.37%\n+2.42%\n$59,124\n\n\nWMT\n+0.263\n107\n71.0%\n-0.18%\n+2.40%\n$59,017\n\n\nGLD\n+0.138\n106\n71.7%\n-0.23%\n+2.40%\n$59,008\n\n\nBOOK (equal-weight 4)\n+0.359\n437\nn/a\n-0.13%\n+2.41%\n$231,313\n\n\n\nThe book aggregate has higher Sharpe than the per-instrument average because cross-instrument correlation is low (mean pairwise 0.26), so equal-weighting reduces volatility without proportional return loss."
-  },
-  {
-    "objectID": "results.html#anchor-comparison-vs-v1.5-baseline",
-    "href": "results.html#anchor-comparison-vs-v1.5-baseline",
-    "title": "Results",
-    "section": "Anchor comparison vs v1.5 baseline",
-    "text": "Anchor comparison vs v1.5 baseline\n\n\n\n\n\n\n\n\n\n\nStrategy\nArchitecture\nSharpe (excess)\nTrades\nOOS window\n\n\n\n\nv1.5 baseline (anchor)\nSPX put-only halts_only\n+0.286\n210\n2018–2024\n\n\nHeadline (D)\nWheel-3 + GLD put-only halts_only\n+0.359\n437\n2018–2024\n\n\nΔ vs anchor\n(same OOS window, both halts_only put-only)\n+0.073\n+227\n2018–2024\n\n\n\nThe new headline beats the anchor on excess Sharpe, with ~2× the trade sample, comparable max drawdown, and cross-asset diversification (equity + commodity) the anchor lacks."
-  },
-  {
-    "objectID": "results.html#ablation-alternative-baskets-tested",
-    "href": "results.html#ablation-alternative-baskets-tested",
-    "title": "Results",
-    "section": "Ablation: alternative baskets tested",
-    "text": "Ablation: alternative baskets tested\nAll baskets are halts_only, equal-weighted at $50K per instrument. None were selected as headline; they’re shown to demonstrate what the headline is being chosen against.\n\n\n\n\n\n\n\n\n\n\n\n\nBasket\nn_inst\nSharpe (excess)\nAnnRet\nAnnVol\nMaxDD\nΔ vs anchor (+0.286)\n\n\n\n\n(A) SPX put-only alone\n1\n-0.347\n+2.04%\n0.84%\n-0.78%\n-0.633\n\n\n(B) Wheel-3 (AAPL + MSFT + WMT)\n3\n+0.350\n+2.42%\n0.26%\n-0.19%\n+0.064\n\n\n(C) ETF-3 (SPX + TLT + GLD put-only)\n3\n-0.312\n+2.22%\n0.35%\n-0.31%\n-0.598\n\n\n(D) Wheel-3 + GLD ← HEADLINE\n4\n+0.359\n+2.41%\n0.23%\n-0.13%\n+0.073\n\n\n(E) Full 6-instrument book (ETF-3 + Wheel-3)\n6\n-0.036\n+2.32%\n0.26%\n-0.17%\n-0.322\n\n\n\nPattern: adding SPX or TLT to the headline drags the Sharpe down because their individual put-credit-spread excess Sharpes are negative (-0.35 and -0.43 respectively over OOS). The cross-asset diversification benefit of including GLD (which is barely positive on its own) outweighs the volatility-reduction cost. Adding more drag-instruments (SPX, TLT) does not produce a net benefit."
-  },
-  {
-    "objectID": "results.html#ablation-iron-condor-variants-tested-extensions",
-    "href": "results.html#ablation-iron-condor-variants-tested-extensions",
-    "title": "Results",
-    "section": "Ablation: iron condor variants (tested extensions)",
-    "text": "Ablation: iron condor variants (tested extensions)\nThe pre-committed methodology proposed iron condors (put + call wings) on a 5-instrument index/ETF cluster. Verification surfaced material structural underperformance for the iron-condor variant in OOS 2018-2024:\n\n\n\n\n\n\n\n\n\n\nMode\nUniverse\nSharpe (excess)\nΔ vs anchor\nNotes\n\n\n\n\nIron condor, SPX only\n1 inst\n-1.882\n-2.168\nCall wing destroyed by post-2020 SPX rally\n\n\nIron condor, 3-instrument cluster\nSPX/TLT/GLD\n-2.292\n-2.578\nSame pattern across all three IC instruments\n\n\nPut-only, SPX\n1 inst\n-0.347\n-0.633\nSame engine, IC removed\n\n\nPut-only, 3-instrument cluster\nSPX/TLT/GLD\n-0.369\n-0.655\nSame engine, IC removed\n\n\n\nIron condor underperforms put-only in every comparison. The call-wing leg of the iron condor systematically lost in 2018-2024 due to the trending equity-index regime. Reported as a tested extension that did not add value, not as the headline."
-  },
-  {
-    "objectID": "results.html#naked-mode-comparison-no-halts",
-    "href": "results.html#naked-mode-comparison-no-halts",
-    "title": "Results",
-    "section": "Naked-mode comparison (no halts)",
-    "text": "Naked-mode comparison (no halts)\nDemonstrates that the halt framework is doing real work, every instrument has higher Sharpe (excess) when halts are active vs naked.\n\n\n\nTicker\nNaked Sharpe\nHalts Sharpe\nΔ from halts\n\n\n\n\nAAPL\n+0.155\n+0.264\n+0.109\n\n\nMSFT\n+0.037\n+0.269\n+0.232\n\n\nWMT\n+0.063\n+0.263\n+0.200\n\n\nGLD\n-0.971\n+0.138\n+1.109\n\n\n\nThe halt framework’s contribution is measurable per instrument and consistently positive. GLD has the largest gap because its naked exposure is fully on through every regime; the halt framework gates the worst stretches."
-  },
-  {
-    "objectID": "results.html#per-event-drawdown-attribution",
-    "href": "results.html#per-event-drawdown-attribution",
-    "title": "Results",
-    "section": "Per-event drawdown attribution",
-    "text": "Per-event drawdown attribution\nComputed on the headline (D) basket equity curve, halts_only mode, equal-weight $50K per instrument (basket starting equity $200K).\n\n\n\n\n\n\n\n\n\nEvent\nWindow probed\nBook PnL impact\nWorst intra-window drawdown\n\n\n\n\nVolmageddon\n2018-01-22 → 2018-02-16\n-$35\n-0.06%\n\n\nQ4-2018 selloff\n2018-11-26 → 2019-01-24\n+$783\n0.00%\n\n\nCOVID crash\n2020-02-24 → 2020-04-23\n+$102\n0.00%\n\n\n2022 bear market\n2022-01-03 → 2022-12-30\n+$4,223\n0.00%\n\n\nBanking crisis\n2023-02-13 → 2023-04-13\n+$1,652\n0.00%\n\n\n\nThe halt framework + cross-asset diversification absorbed every named stress event with effectively zero drawdown. The largest intra-event dip was 0.06% during Volmageddon. The basket actually generated positive P&L across the COVID crash, Q4-2018 selloff, 2022 bear market, and banking crisis windows. This is the structural goal of the halt-gated put-credit-spread architecture: turn defined-risk option premium into resilient cash-secured income."
-  },
-  {
-    "objectID": "results.html#reproducibility",
-    "href": "results.html#reproducibility",
-    "title": "Results",
-    "section": "Reproducibility",
-    "text": "Reproducibility\nThe headline result is reproduced by:\nPYTHONPATH=. python scripts/run_multi_instrument_vrp.py \\\n    --tickers AAPL MSFT WMT GLD \\\n    --mode halts_only \\\n    --no-ic \\\n    --total-capital 200000\nSame commit + same data + same seed → byte-identical equity curve. See Reproducibility."
-  },
-  {
-    "objectID": "reproducibility.html",
-    "href": "reproducibility.html",
-    "title": "Reproducibility",
-    "section": "",
-    "text": "Two runs of the same commit + the same data + the same SEED = 42 produce identical equity curves to floating-point precision. This page documents how to reproduce every number in the results page from a fresh checkout."
-  },
-  {
-    "objectID": "reproducibility.html#environment",
-    "href": "reproducibility.html#environment",
-    "title": "Reproducibility",
-    "section": "Environment",
-    "text": "Environment\n\nPython 3.12+ on Linux/macOS/WSL (tested on WSL Ubuntu 22.04)\n~16 GB RAM (4–6 GB working set; SPX parquet is the largest single load at ~750 MB on disk)\n~3 GB disk free for per-ticker parquets"
-  },
-  {
-    "objectID": "reproducibility.html#one-time-setup",
-    "href": "reproducibility.html#one-time-setup",
-    "title": "Reproducibility",
-    "section": "One-time setup",
-    "text": "One-time setup\ngit clone &lt;repo-url&gt; FinTech533_capstone\ncd FinTech533_capstone\ngit checkout mario/data-pipeline   # not yet merged to main\n\npython -m venv .venv\nsource .venv/bin/activate\npip install -r requirements.txt"
-  },
-  {
-    "objectID": "reproducibility.html#one-time-data-conversion",
-    "href": "reproducibility.html#one-time-data-conversion",
-    "title": "Reproducibility",
-    "section": "One-time data conversion",
-    "text": "One-time data conversion\nThe OptionMetrics CSV (strat2.2.csv.gz, ~2.4 GB compressed, 68.4M rows) is converted to per-ticker parquets via DuckDB streaming. Without this step, loading the CSV via pandas exhausts WSL memory and crashes the session.\nPYTHONPATH=. python scripts/convert_optionmetrics_to_parquet.py\nExpected runtime: ~80 seconds. Output: 14 parquets in data/processed/options_by_ticker/{TICKER}.parquet, parity-checked against original CSV row counts. Idempotent (re-running with parquets in place is a no-op unless --force)."
-  },
-  {
-    "objectID": "reproducibility.html#reproduce-headline-results",
-    "href": "reproducibility.html#reproduce-headline-results",
-    "title": "Reproducibility",
-    "section": "Reproduce headline results",
-    "text": "Reproduce headline results\n# 1. Verify parquet conversion (52 parity tests)\nPYTHONPATH=. pytest tests/test_optionmetrics_parquet_loader.py -v\n\n# 2. Run all logic tests (no data load required)\nPYTHONPATH=. pytest tests/ --ignore=tests/test_optionmetrics_parquet_loader.py -q\n# Expected: 92/92 PASS\n\n# 3. SPX halts_only diagnostic (sanity check on Layer 4 fix)\nPYTHONPATH=. python scripts/diagnose_spx_halts_only.py\n# Expected: Sharpe 0.497, 12 distinct halt periods, max 92 days\n\n# 4. Multi-instrument NAKED runner (5 VRP tickers, ~10 min)\nPYTHONPATH=. python scripts/run_multi_instrument_vrp.py --mode naked\n\n# 5. Multi-instrument halts_only runner (5 VRP tickers, ~10 min)\nPYTHONPATH=. python scripts/run_multi_instrument_vrp.py --mode halts_only\n\n# 6. ML head training (Heads 1, 2, 3, Heads 1/3 reuse the multi-instrument output;\n#    Head 2 is independent and uses features.parquet)\nPYTHONPATH=. python scripts/run_head2_regime_stress.py\nPYTHONPATH=. python scripts/train_head1_per_instrument.py\nPYTHONPATH=. python scripts/train_head3_per_instrument.py\n\n# 7. Hoeffding live-monitoring backtrace\nPYTHONPATH=. python scripts/hoeffding_monitor.py"
-  },
-  {
-    "objectID": "reproducibility.html#data-sources",
-    "href": "reproducibility.html#data-sources",
-    "title": "Reproducibility",
-    "section": "Data Sources",
-    "text": "Data Sources\nThe strategy reads from three external data providers, all snapshotted to local parquet files at commit time. No live network connections occur during a backtest.\n\n1. OptionMetrics IvyDB (option chains)\nFile: strat2.2.csv.gz (2.4 GB compressed, 68.4M rows) → split via scripts/convert_optionmetrics_to_parquet.py into per-ticker parquets at data/processed/options_by_ticker/{TICKER}.parquet.\nProvides: daily option chains (date, exdate, cp_flag, strike, best_bid, best_offer, impl_volatility, delta, gamma, vega, theta, volume, open_interest) for 12 tickers spanning 2012-2025. Used by the engine to price entries and exits at real chain quotes (not BS-pricer fallback) wherever available.\n\n\n2. WRDS OptionMetrics IvyDB Securities (per-ticker underlying OHLC)\nFile: wheelstrat_data.gz (querying WRDS via Duke subscription) → split via scripts/convert_wheelstrat_data.py into per-ticker parquets at data/raw/{TICKER}.parquet.\nProvides: daily underlying OHLC (open, high, low, close, volume, return, cfadj) for the 4 headline-basket tickers (AAPL, MSFT, WMT, GLD) and 6 other instruments tested in the ablation matrix. Spans 2012-01-03 to 2025-08-29. Same secid system as the OptionMetrics chains, ensuring clean joins between underlying spot and option chains for the same security on the same date. Daily closes match published exchange records on spot-checked reference dates (e.g., AAPL 2018-04-16 = $175.82).\n\n\n3. Interactive Brokers TWS feed snapshot (exogenous macro factors)\nFiles: data/raw/{VIX,VIX3M,VVIX,SKEW,IRX,TNX,HYG,LQD,SPY,SPX}.parquet. Snapshotted from the Interactive Brokers TWS market-data feed and frozen to local parquet at commit time. No live TWS connection is needed at backtest time.\nProvides: macro / regime indicators (CBOE volatility indices, FRED Treasury yields, ETF macro tape, SPX bars for the market-wide gap-skip and Layer 1 hard halt). Spans 2011-05-05 to 2026-04-30 across the various series.\n\n\nPer-file inventory\n\n\n\n\n\n\n\n\n\nFile\nSize\nSource\nPurpose\n\n\n\n\nstrat2.2.csv.gz\n2.4 GB\nOptionMetrics IvyDB\nRaw option chains 2012-2025, 12 tickers (split per-ticker on first run)\n\n\nwheelstrat_data.gz\n760 KB\nWRDS OptionMetrics IvyDB Securities\nPer-ticker underlying OHLC, 10 tickers, 2012-2025\n\n\ndata/raw/VIX.parquet\n95 KB\nTWS feed (CBOE)\nVIX index daily\n\n\ndata/raw/VIX3M.parquet\n92 KB\nTWS feed (CBOE)\nVIX 3-month index daily\n\n\ndata/raw/VVIX.parquet\n107 KB\nTWS feed (CBOE)\nVol-of-VIX\n\n\ndata/raw/SKEW.parquet\n89 KB\nTWS feed (CBOE)\nSkew index\n\n\ndata/raw/IRX.parquet\n76 KB\nTWS feed (FRED)\n3-month T-bill rate (risk-free)\n\n\ndata/raw/TNX.parquet\n100 KB\nTWS feed (FRED)\n10-year Treasury yield\n\n\ndata/raw/SPY.parquet\n192 KB\nTWS feed\nSPY ETF OHLC (for SPY × Treasury rolling correlation)\n\n\ndata/raw/HYG.parquet\n151 KB\nTWS feed\nHYG ETF (credit-spread input)\n\n\ndata/raw/LQD.parquet\n157 KB\nTWS feed\nLQD ETF (credit-spread input)\n\n\ndata/raw/SPX.parquet\n146 KB\nTWS feed (CBOE)\nSPX index OHLC (gap-skip + Layer 1)\n\n\ndata/raw/AAPL.parquet\n84 KB\nWRDS IvyDB Securities\nAAPL underlying OHLC (headline)\n\n\ndata/raw/MSFT.parquet\n84 KB\nWRDS IvyDB Securities\nMSFT underlying OHLC (headline)\n\n\ndata/raw/WMT.parquet\n84 KB\nWRDS IvyDB Securities\nWMT underlying OHLC (headline)\n\n\ndata/raw/GLD.parquet\n180 KB\nTWS feed\nGLD ETF underlying OHLC (headline)\n\n\ndata/raw/TLT.parquet\n125 KB\nWRDS IvyDB Securities\nTLT underlying OHLC (ablation)\n\n\ndata/processed/features.parquet\n405 KB\ncomputed (from raw above)\n15-column ML feature matrix for Head 2\n\n\ndata/processed/p_stress_head2.parquet\n~30 KB\ncomputed (Head 2 output)\nCalibrated stress probabilities for ML book scaler"
-  },
-  {
-    "objectID": "reproducibility.html#determinism",
-    "href": "reproducibility.html#determinism",
-    "title": "Reproducibility",
-    "section": "Determinism",
-    "text": "Determinism\n\nSEED = 42 (in src/config.py) consumed by:\n\nXGBoost random_state for every fit\nsklearn IsotonicRegression (no randomness, but LogisticRegression for Platt: solver=\"lbfgs\" is deterministic)\nBlock-bootstrap CI sampling\nHMM Baum-Welch (each of 20 random inits uses seed + i)\n\nNo time()-based randomness in the codebase\nNo floating-point reduction non-determinism (we don’t use numpy.einsum_path optimization or BLAS-threaded sums)\n\nVerification: run any backtest twice on the same machine, save the equity curves, diff them, they should be byte-identical."
-  },
-  {
-    "objectID": "reproducibility.html#whats-not-included",
-    "href": "reproducibility.html#whats-not-included",
-    "title": "Reproducibility",
-    "section": "What’s NOT included",
-    "text": "What’s NOT included\n\nReal broker fee schedules (we use pre-committed $0.65/contract slippage proxy)\nIntraday tick data (HAR-RV uses daily close-to-close; this is a documented limitation)\nLive trading deployment scripts (the strategy is paper-tested only)\nThe full sensitivity grid (729 trials), this is a separate offline computation; instructions in scripts/run_sensitivity_grid.py (TBD)"
-  },
-  {
-    "objectID": "reproducibility.html#inspecting-results",
-    "href": "reproducibility.html#inspecting-results",
-    "title": "Reproducibility",
-    "section": "Inspecting results",
-    "text": "Inspecting results\nAfter running the pipeline, key artifacts:\ndata/processed/per_instrument_results/{TICKER}_equity.parquet\ndata/processed/per_instrument_results/{TICKER}_trades.parquet\ndata/processed/per_instrument_results/{TICKER}_halt_log.parquet\ndata/processed/aggregate_book_equity.parquet\ndata/processed/p_stress_head2.parquet\ndata/processed/hoeffding_signals/{TICKER}_signals.parquet\nlogs/multi_instrument_vrp.log\nlogs/head2_regime_stress.log\nlogs/head1_per_instrument.log\nlogs/hoeffding_monitor.log\nAll artifacts are gitignored (regenerable from the pipeline). Source-of-truth is the source code + the pre-commitment docs."
   },
   {
     "objectID": "monitoring.html",

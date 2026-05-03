@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Live Monitoring Framework – R &amp; M Trade Desk</title>
+<title>Data and Literature – R &amp; M Trade Desk</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -103,35 +103,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   }
 }</script>
 
-  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
-
-<script type="text/javascript">
-const typesetMath = (el) => {
-  if (window.MathJax) {
-    // MathJax Typeset
-    window.MathJax.typeset([el]);
-  } else if (window.katex) {
-    // KaTeX Render
-    var mathElements = el.getElementsByClassName("math");
-    var macros = [];
-    for (var i = 0; i < mathElements.length; i++) {
-      var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN") {
-        window.katex.render(texText.data, mathElements[i], {
-          displayMode: mathElements[i].classList.contains('display'),
-          throwOnError: false,
-          macros: macros,
-          fleqn: false
-        });
-      }
-    }
-  }
-}
-window.Quarto = {
-  typesetMath
-};
-</script>
 
 <link rel="stylesheet" href="styles.css">
 </head>
@@ -178,7 +149,7 @@ window.Quarto = {
 <span class="menu-text">Ablations</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link active" href="./monitoring.html" aria-current="page"> 
+    <a class="nav-link" href="./monitoring.html"> 
 <span class="menu-text">Live Monitoring</span></a>
   </li>  
   <li class="nav-item">
@@ -186,7 +157,7 @@ window.Quarto = {
 <span class="menu-text">Limitations</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./data_and_literature.html"> 
+    <a class="nav-link active" href="./data_and_literature.html" aria-current="page"> 
 <span class="menu-text">Data &amp; Literature</span></a>
   </li>  
 </ul>
@@ -206,18 +177,21 @@ window.Quarto = {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#the-framework" id="toc-the-framework" class="nav-link active" data-scroll-target="#the-framework">The framework</a></li>
-  <li><a href="#threshold-semantics-pre-committed" id="toc-threshold-semantics-pre-committed" class="nav-link" data-scroll-target="#threshold-semantics-pre-committed">Threshold semantics (pre-committed)</a></li>
-  <li><a href="#why-60-trade-rolling-window" id="toc-why-60-trade-rolling-window" class="nav-link" data-scroll-target="#why-60-trade-rolling-window">Why 60-trade rolling window</a></li>
-  <li><a href="#pre-committed-μ-baseline" id="toc-pre-committed-μ-baseline" class="nav-link" data-scroll-target="#pre-committed-μ-baseline">Pre-committed μ baseline</a></li>
-  <li><a href="#worked-example-20182024-retrospective-on-the-headline-basket" id="toc-worked-example-20182024-retrospective-on-the-headline-basket" class="nav-link" data-scroll-target="#worked-example-20182024-retrospective-on-the-headline-basket">Worked example: 2018–2024 retrospective on the headline basket</a>
+  <li><a href="#data-sources" id="toc-data-sources" class="nav-link active" data-scroll-target="#data-sources">Data sources</a>
   <ul class="collapse">
-  <li><a href="#bound-distribution-post-warmup-of-60-trades" id="toc-bound-distribution-post-warmup-of-60-trades" class="nav-link" data-scroll-target="#bound-distribution-post-warmup-of-60-trades">Bound distribution (post-warmup of 60 trades)</a></li>
-  <li><a href="#stress-event-check" id="toc-stress-event-check" class="nav-link" data-scroll-target="#stress-event-check">Stress-event check</a></li>
+  <li><a href="#optionmetrics-ivydb-us-option-chains" id="toc-optionmetrics-ivydb-us-option-chains" class="nav-link" data-scroll-target="#optionmetrics-ivydb-us-option-chains">1. OptionMetrics IvyDB US (option chains)</a></li>
+  <li><a href="#optionmetrics-ivydb-securities-per-ticker-underlying-ohlc" id="toc-optionmetrics-ivydb-securities-per-ticker-underlying-ohlc" class="nav-link" data-scroll-target="#optionmetrics-ivydb-securities-per-ticker-underlying-ohlc">2. OptionMetrics IvyDB Securities (per-ticker underlying OHLC)</a></li>
+  <li><a href="#interactive-brokers-tws-feed-snapshot-macro-factors" id="toc-interactive-brokers-tws-feed-snapshot-macro-factors" class="nav-link" data-scroll-target="#interactive-brokers-tws-feed-snapshot-macro-factors">3. Interactive Brokers TWS feed snapshot (macro factors)</a></li>
   </ul></li>
-  <li><a href="#what-the-framework-does-not-do" id="toc-what-the-framework-does-not-do" class="nav-link" data-scroll-target="#what-the-framework-does-not-do">What the framework does NOT do</a></li>
-  <li><a href="#implementation" id="toc-implementation" class="nav-link" data-scroll-target="#implementation">Implementation</a></li>
-  <li><a href="#what-this-answers" id="toc-what-this-answers" class="nav-link" data-scroll-target="#what-this-answers">What this answers</a></li>
+  <li><a href="#literature-foundation" id="toc-literature-foundation" class="nav-link" data-scroll-target="#literature-foundation">Literature foundation</a>
+  <ul class="collapse">
+  <li><a href="#variance-risk-premium" id="toc-variance-risk-premium" class="nav-link" data-scroll-target="#variance-risk-premium">Variance risk premium</a></li>
+  <li><a href="#multiple-testing-correction" id="toc-multiple-testing-correction" class="nav-link" data-scroll-target="#multiple-testing-correction">Multiple-testing correction</a></li>
+  <li><a href="#live-monitoring" id="toc-live-monitoring" class="nav-link" data-scroll-target="#live-monitoring">Live monitoring</a></li>
+  <li><a href="#calibration" id="toc-calibration" class="nav-link" data-scroll-target="#calibration">Calibration</a></li>
+  <li><a href="#time-series-statistics" id="toc-time-series-statistics" class="nav-link" data-scroll-target="#time-series-statistics">Time-series statistics</a></li>
+  </ul></li>
+  <li><a href="#data-limitations-and-how-they-shape-the-writeup" id="toc-data-limitations-and-how-they-shape-the-writeup" class="nav-link" data-scroll-target="#data-limitations-and-how-they-shape-the-writeup">Data limitations and how they shape the writeup</a></li>
   </ul>
 </nav>
     </div>
@@ -226,8 +200,7 @@ window.Quarto = {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<div class="quarto-title-block"><div><h1 class="title">Live Monitoring Framework</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
-<p class="subtitle lead">How we know the strategy works, and when it stops</p>
+<div class="quarto-title-block"><div><h1 class="title">Data and Literature</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
 </div>
 
 
@@ -244,231 +217,97 @@ window.Quarto = {
 </header>
 
 
-<p>This is the answer to the two questions every trading-system writeup is supposed to address:</p>
-<ol type="1">
-<li><strong>Going forward, how will you know that your strategy’s performance is in line with what you expect from the backtest?</strong></li>
-<li><strong>How will you quantify when the strategy stops working?</strong></li>
-</ol>
-<p>Both questions are answered with one framework: <strong>Hoeffding’s inequality, applied in the trader form</strong>.</p>
-<section id="the-framework" class="level2">
-<h2 class="anchored" data-anchor-id="the-framework">The framework</h2>
-<p>Pre-commit a baseline performance metric <code>μ</code> from the OOS backtest, for our headline strategy, that’s the rolling-60-trade win rate observed over 2018–2024. Then, going forward, observe the live realized win rate <code>X̄</code> over the same rolling-60-trade window. Apply:</p>
-<p><span class="math display">\[
-P[\,\bar X - \mu \geq t \mid H_0\,] \;\leq\; e^{-2 t^2 N}
-\]</span></p>
-<p>where <code>t = μ − X̄</code> is the realized underperformance, <code>N</code> is the number of trades in the rolling window (60), and the bound is the <strong>maximum probability</strong> that the observed underperformance is due to chance alone, given the regime hypothesis <code>H₀</code> (= “the OOS regime persists going forward”).</p>
-<p>The bound is a <strong>distribution-free, worst-case</strong> probability. It holds for any bounded random variable regardless of the underlying distribution or autocorrelation structure. No assumptions about return distribution, no Newey-West, no Hodrick, just the inequality.</p>
+<section id="data-sources" class="level2">
+<h2 class="anchored" data-anchor-id="data-sources">Data sources</h2>
+<p>The strategy reads from three external data providers, all snapshotted to local parquet files at commit time. No live network connections occur during a backtest.</p>
+<section id="optionmetrics-ivydb-us-option-chains" class="level3">
+<h3 class="anchored" data-anchor-id="optionmetrics-ivydb-us-option-chains">1. OptionMetrics IvyDB US (option chains)</h3>
+<p>Daily option chains 2012-2025 with <code>bid</code>, <code>ask</code>, <code>impl_volatility</code>, <code>delta</code>, <code>gamma</code>, <code>vega</code>, <code>theta</code>, <code>volume</code>, <code>open_interest</code> for the 12 instruments tested. Acquired from WRDS as a single CSV (<code>strat2.2.csv.gz</code>, 2.4 GB compressed, 68.4M rows) and split via <code>scripts/convert_optionmetrics_to_parquet.py</code> into per-ticker parquets at <code>data/processed/options_by_ticker/{TICKER}.parquet</code>. The engine prices entries and exits at real chain quotes (not Black-Scholes fallback) wherever available.</p>
 </section>
-<section id="threshold-semantics-pre-committed" class="level2">
-<h2 class="anchored" data-anchor-id="threshold-semantics-pre-committed">Threshold semantics (pre-committed)</h2>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 25%">
-<col style="width: 25%">
-<col style="width: 25%">
-<col style="width: 25%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Bound <code>≤ e^(−2t²N)</code></th>
-<th>Signal</th>
-<th>Interpretation</th>
-<th>Action</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>≥ 50%</td>
-<td>🟢 <strong>green</strong></td>
-<td>Observed underperformance plausibly chance</td>
-<td>Continue normally</td>
-</tr>
-<tr class="even">
-<td>25–50%</td>
-<td>🟡 <strong>yellow</strong></td>
-<td>Beliefs about regime probably no longer fully right</td>
-<td>Consider stake reduction</td>
-</tr>
-<tr class="odd">
-<td>10–25%</td>
-<td>🟠 <strong>red</strong></td>
-<td>Significant regime risk</td>
-<td>Substantial concern; review</td>
-</tr>
-<tr class="even">
-<td>&lt; 10%</td>
-<td>🔴 <strong>critical</strong></td>
-<td>Almost certain regime change</td>
-<td>Halt strategy and rethink</td>
-</tr>
-</tbody>
-</table>
-<p>These thresholds are pre-committed before live deployment. They are not numerical Sharpe targets, they are <strong>structural confidence-level cutoffs</strong> on the probability bound itself.</p>
+<section id="optionmetrics-ivydb-securities-per-ticker-underlying-ohlc" class="level3">
+<h3 class="anchored" data-anchor-id="optionmetrics-ivydb-securities-per-ticker-underlying-ohlc">2. OptionMetrics IvyDB Securities (per-ticker underlying OHLC)</h3>
+<p>Daily underlying open/high/low/close/volume for the 4 headline-basket tickers (AAPL, MSFT, WMT, GLD) and 6 ablation tickers (TLT, GOOGL, JNJ, KO, PG, JPM, PEP). Acquired from WRDS as <code>wheelstrat_data.gz</code> (760 KB) and split via <code>scripts/convert_wheelstrat_data.py</code> into per-ticker parquets at <code>data/raw/{TICKER}.parquet</code>. Spans 2012-01-03 to 2025-08-29. The IvyDB Securities file uses the same <code>secid</code> system as the option chains, so the join between underlying spot and chain quotes for the same security on the same date is exact.</p>
+<p>Daily closes match published exchange records on every spot-checked reference date (e.g.&nbsp;AAPL 2018-04-16 closes at $175.82, matching the public record).</p>
 </section>
-<section id="why-60-trade-rolling-window" class="level2">
-<h2 class="anchored" data-anchor-id="why-60-trade-rolling-window">Why 60-trade rolling window</h2>
-<p>Three constraints determine the window size:</p>
+<section id="interactive-brokers-tws-feed-snapshot-macro-factors" class="level3">
+<h3 class="anchored" data-anchor-id="interactive-brokers-tws-feed-snapshot-macro-factors">3. Interactive Brokers TWS feed snapshot (macro factors)</h3>
+<p>Frozen snapshots of CBOE volatility indices (VIX, VIX3M, VVIX, SKEW), Treasury yields from FRED via TWS (IRX, TNX), credit-stress proxies (HYG, LQD), broad equity tape (SPY, SPX bars). Stored at <code>data/raw/{TICKER}.parquet</code>. Read by <code>pd.Series.asof(today)</code> at trade-decision time so no look-ahead bias is possible. Used for the halt framework’s Layer 1 hard tail-event triggers, the ML stress head’s feature matrix, the friction model’s VIX-conditional slippage, and the risk-free baseline (IRX averaged over OOS = 2.33%).</p>
+</section>
+</section>
+<section id="literature-foundation" class="level2">
+<h2 class="anchored" data-anchor-id="literature-foundation">Literature foundation</h2>
+<p>The strategy and writeup are grounded in the following published references. None of these are course-internal materials, all are peer-reviewed.</p>
+<section id="variance-risk-premium" class="level3">
+<h3 class="anchored" data-anchor-id="variance-risk-premium">Variance risk premium</h3>
 <ul>
-<li><strong>Statistical power.</strong> At N = 60 trades, an observed underperformance of <code>t = 0.10</code> (10 percentage points below pre-committed win rate) gives a Hoeffding bound of <code>e^(−2·0.01·60) = e^(−1.2) ≈ 30%</code>. That puts a 10-point degradation in the <strong>yellow</strong> zone, which is the right level of sensitivity, not jumping at one bad week, not waiting for a year of declines.</li>
-<li><strong>Time-to-signal.</strong> With ~50–60 trades per year on the SPX iron condor at weekly cadence, 60 trades ≈ 1 year. The monitor produces a fresh signal monthly as the rolling window updates.</li>
-<li><strong>Distribution stability.</strong> Hoeffding holds for any bounded RV, but tighter bands of t for the same N require either more trades or larger underperformance magnitude. 60 is the smallest N at which the threshold-semantics resolution is meaningful for win-rate observations bounded in [0, 1].</li>
+<li><strong>Carr, P., and Wu, L. (2003 working paper, 2009 Review of Financial Studies).</strong> <em>Variance Risk Premia.</em> Documents the structural gap between option-implied and realized variance across U.S. equity indices. Provides the empirical t-statistics on the SPX cluster that anchor the project’s universe selection (SPX strongly supported, NDX weaker, RUT extrapolated, TLT and GLD are novel cross-asset extensions).</li>
+<li><strong>Bollerslev, T., Tauchen, G., and Zhou, H. (2009).</strong> <em>Expected Stock Returns and Variance Risk Premia.</em> Review of Financial Studies. Establishes the 63-trading-day quarterly horizon as empirically optimal for VRP-based forecasting and motivates the Hodrick-style standard errors used for any overlapping regression in this work.</li>
+<li><strong>Black, F., and Scholes, M. (1973).</strong> <em>The Pricing of Options and Corporate Liabilities.</em> Journal of Political Economy. The original closed-form pricing of European options. The empirical biases the paper documents in OTC option pricing (BS overvalues high-variance underlyings, undervalues low-variance) are the structural source of the volatility risk premium the strategy harvests.</li>
+<li><strong>Merton, R. C. (1973).</strong> <em>Theory of Rational Option Pricing.</em> Bell Journal of Economics and Management Science. Theorem 13 on early exercise of American puts on dividend-paying stocks frames the pricing approximation disclosed for the wheel-name positions.</li>
 </ul>
 </section>
-<section id="pre-committed-μ-baseline" class="level2">
-<h2 class="anchored" data-anchor-id="pre-committed-μ-baseline">Pre-committed μ baseline</h2>
-<p>The monitor’s reference parameter is the basket-level win rate observed over the full OOS backtest:</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 21%">
-<col style="width: 21%">
-<col style="width: 28%">
-<col style="width: 28%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Strategy</th>
-<th>OOS window</th>
-<th style="text-align: right;">n_trades</th>
-<th style="text-align: right;">μ committed (win rate)</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><strong>Headline (Wheel-3 + GLD halts_only put-only + Head 2 ML overlay)</strong></td>
-<td>2018-01-01 → 2024-12-31</td>
-<td style="text-align: right;"><strong>437</strong></td>
-<td style="text-align: right;"><strong>0.730</strong></td>
-</tr>
-</tbody>
-</table>
-<p>Live trading would use this μ = 0.73 as the reference; deviations downward trigger the threshold table above.</p>
-</section>
-<section id="worked-example-20182024-retrospective-on-the-headline-basket" class="level2">
-<h2 class="anchored" data-anchor-id="worked-example-20182024-retrospective-on-the-headline-basket">Worked example: 2018–2024 retrospective on the headline basket</h2>
-<p>This is a backtest of the monitoring framework itself, what would the monitor have flagged on each rolling-60-trade window over the OOS sample?</p>
-<iframe src="charts/hoeffding_trace.html" width="100%" height="500" frameborder="0"></iframe>
-<section id="bound-distribution-post-warmup-of-60-trades" class="level3">
-<h3 class="anchored" data-anchor-id="bound-distribution-post-warmup-of-60-trades">Bound distribution (post-warmup of 60 trades)</h3>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>Signal band</th>
-<th>Bound range</th>
-<th style="text-align: right;">Trades in band</th>
-<th style="text-align: right;">% of post-warmup OOS</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>🟢 green</td>
-<td>≥ 50%</td>
-<td style="text-align: right;">332</td>
-<td style="text-align: right;"><strong>88.1%</strong></td>
-</tr>
-<tr class="even">
-<td>🟡 yellow</td>
-<td>25–50%</td>
-<td style="text-align: right;">29</td>
-<td style="text-align: right;">7.7%</td>
-</tr>
-<tr class="odd">
-<td>🟠 red</td>
-<td>10–25%</td>
-<td style="text-align: right;">16</td>
-<td style="text-align: right;">4.2%</td>
-</tr>
-<tr class="even">
-<td>🔴 critical</td>
-<td>&lt; 10%</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;"><strong>0.0%</strong></td>
-</tr>
-</tbody>
-</table>
-<p>The framework operated as designed over the OOS sample: the basket’s rolling win rate stayed within the pre-committed regime expectations on 88% of trades. Yellow signals (7.7%) flagged short stretches of sub-baseline performance that were absorbed back into green within a few weeks. Red signals (4.2%) flagged genuine sustained dips. <strong>No critical signal fired</strong>, the basket never had a 60-trade rolling win-rate dip large enough to trigger a regime-shutdown alert during 2018-2024.</p>
-</section>
-<section id="stress-event-check" class="level3">
-<h3 class="anchored" data-anchor-id="stress-event-check">Stress-event check</h3>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 14%">
-<col style="width: 14%">
-<col style="width: 19%">
-<col style="width: 19%">
-<col style="width: 19%">
-<col style="width: 14%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Event</th>
-<th>Date probed</th>
-<th style="text-align: right;">Rolling X̄</th>
-<th style="text-align: right;">t = μ − X̄</th>
-<th style="text-align: right;">Bound</th>
-<th style="text-align: center;">Signal</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>Q4 2018 selloff</td>
-<td>2019-02-04</td>
-<td style="text-align: right;">0.700</td>
-<td style="text-align: right;">+0.030</td>
-<td style="text-align: right;">0.898</td>
-<td style="text-align: center;">🟢 green</td>
-</tr>
-<tr class="even">
-<td>COVID crash</td>
-<td>2020-01-13</td>
-<td style="text-align: right;">0.850</td>
-<td style="text-align: right;">0.000 (over)</td>
-<td style="text-align: right;">1.000</td>
-<td style="text-align: center;">🟢 green</td>
-</tr>
-<tr class="odd">
-<td>2022 bear market</td>
-<td>2023-04-17</td>
-<td style="text-align: right;">0.767</td>
-<td style="text-align: right;">0.000 (over)</td>
-<td style="text-align: right;">1.000</td>
-<td style="text-align: center;">🟢 green</td>
-</tr>
-<tr class="even">
-<td>Banking crisis</td>
-<td>2023-04-17</td>
-<td style="text-align: right;">0.767</td>
-<td style="text-align: right;">0.000 (over)</td>
-<td style="text-align: right;">1.000</td>
-<td style="text-align: center;">🟢 green</td>
-</tr>
-</tbody>
-</table>
-<p>Notable: the headline basket’s rolling win rate at the COVID crash check-date (60-trade window ending Jan 2020) was 85%, actually <em>above</em> the pre-committed μ. The defined-risk put-credit-spread structure with halt framework absorbed the COVID stress without measurable win-rate degradation in the rolling window. This is the strategy’s halt framework + cross-asset diversification doing exactly what they were designed to do.</p>
-<p>The framework demonstrates three properties on this retrospective:</p>
-<ol type="1">
-<li><strong>Not noise-driven</strong>, 88% of windows stay green, indicating low false-positive rate from random monthly fluctuations.</li>
-<li><strong>Sensitive enough to flag genuine dips</strong>, 4.2% of windows reach the red zone (10-25% bound), meaning the framework would have alerted human attention at those moments.</li>
-<li><strong>No catastrophic firing</strong>, 0% critical signals over 7 years means the strategy did not experience a regime-degradation event large enough to trigger a forced shutdown. Validation that the basket is robust within its pre-committed expectations.</li>
-</ol>
-</section>
-</section>
-<section id="what-the-framework-does-not-do" class="level2">
-<h2 class="anchored" data-anchor-id="what-the-framework-does-not-do">What the framework does NOT do</h2>
+<section id="multiple-testing-correction" class="level3">
+<h3 class="anchored" data-anchor-id="multiple-testing-correction">Multiple-testing correction</h3>
 <ul>
-<li>It does not predict that a regime change is about to happen. It detects degradation that has already occurred.</li>
-<li>It does not distinguish between bad luck on a small sample and a true regime change. The bound is a <strong>probability</strong> statement, not a binary decision. Reading the bound at 30% means “this could be bad luck, possible, but it could also be regime degradation; the monitor flags it for human attention.”</li>
-<li>It does not adapt μ over time. We commit μ from the OOS backtest and hold it. If we update μ live, we lose the pre-commitment property and the framework becomes circular.</li>
+<li><strong>Bailey, D. H., and López de Prado, M. (2014).</strong> <em>The Deflated Sharpe Ratio: Correcting for Selection Bias, Backtest Overfitting, and Non-Normality.</em> Journal of Portfolio Management. Equation 9 of this paper provides the implied-independent-trials adjustment N̂ = ρ̄ + (1 − ρ̄) · M used to deflate the headline Sharpe against the 12-trial selection-bias noise floor.</li>
+<li><strong>Bailey, D. H., Borwein, J. M., López de Prado, M., and Zhu, Q. J. (2015).</strong> <em>The Probability of Backtest Overfitting.</em> Journal of Computational Finance. Defines the Probability of Backtest Overfitting via combinatorially symmetric cross-validation. Uses S = 16 partitions, C(16, 8) = 12,870 logit combinations to compute PBO = 0.0402 on the project’s per-instrument return matrix.</li>
 </ul>
 </section>
-<section id="implementation" class="level2">
-<h2 class="anchored" data-anchor-id="implementation">Implementation</h2>
-<p>The monitor is implemented in <code>src/metrics/hoeffding.py</code> and <code>scripts/hoeffding_monitor.py</code>. It reads per-instrument trade outcomes, computes the rolling-60 win rate, applies the bound, and emits a dated alert log to <code>data/processed/hoeffding_signals/{TICKER}_signals.parquet</code>.</p>
-<p>Cadence in production: weekly run, one signal per Monday morning before any new entries fire. Output: per-instrument signal status + book-level signal aggregated across the 5 VRP and 9 wheel positions.</p>
+<section id="live-monitoring" class="level3">
+<h3 class="anchored" data-anchor-id="live-monitoring">Live monitoring</h3>
+<ul>
+<li><strong>Hoeffding, W. (1963).</strong> <em>Probability Inequalities for Sums of Bounded Random Variables.</em> Journal of the American Statistical Association. The bound P[X̄ − μ ≥ t | H₀] ≤ exp(−2 t² N) for any bounded random variable underpins the live-monitoring framework’s threshold semantics.</li>
+</ul>
 </section>
-<section id="what-this-answers" class="level2">
-<h2 class="anchored" data-anchor-id="what-this-answers">What this answers</h2>
-<p>For the question <strong>“how will you know if the strategy is performing as expected?”</strong>, the bound stays ≥ 50% (green). Performance is plausibly within the OOS regime.</p>
-<p>For the question <strong>“how will you quantify when it stops working?”</strong>, when the bound drops to 10% or below, the strategy has degraded enough that random chance is an implausible explanation. That is the trip-wire. It is dated, quantitative, distribution-free, and pre-committed.</p>
+<section id="calibration" class="level3">
+<h3 class="anchored" data-anchor-id="calibration">Calibration</h3>
+<ul>
+<li><strong>Niculescu-Mizil, A., and Caruana, R. (2005).</strong> <em>Predicting Good Probabilities with Supervised Learning.</em> Proceedings of the 22nd International Conference on Machine Learning. Provides the sample-size threshold (n_pos minority class ≈ 200) that the auto-select between Platt scaling and isotonic regression uses in <code>src/models/calibration.py</code>.</li>
+</ul>
+</section>
+<section id="time-series-statistics" class="level3">
+<h3 class="anchored" data-anchor-id="time-series-statistics">Time-series statistics</h3>
+<ul>
+<li><strong>Hodrick, R. J. (1992).</strong> <em>Dividend Yields and Expected Stock Returns: Alternative Procedures for Inference and Measurement.</em> Review of Financial Studies. Defines the variance estimator for overlapping multi-period predictive regressions that the project’s regression diagnostics use, in preference to naive Newey-West standard errors.</li>
+</ul>
+</section>
+</section>
+<section id="data-limitations-and-how-they-shape-the-writeup" class="level2">
+<h2 class="anchored" data-anchor-id="data-limitations-and-how-they-shape-the-writeup">Data limitations and how they shape the writeup</h2>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Limitation</th>
+<th>Where the writeup acknowledges it</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>OptionMetrics has 7-15% NaN on Greeks at deep-OTM/ITM strikes</td>
+<td><a href="./limitations.html">Limitations §9</a></td>
+</tr>
+<tr class="even">
+<td>Per-instrument bars from a separate WRDS query (not from the chain file itself)</td>
+<td><a href="./limitations.html">Limitations §14</a></td>
+</tr>
+<tr class="odd">
+<td>TWS-sourced macro factors are point-in-time but not as-of-decision-time stamped</td>
+<td><a href="./limitations.html">Limitations §13</a></td>
+</tr>
+<tr class="even">
+<td>Daily-frequency RV in the engine, not 5-minute intraday</td>
+<td><a href="./limitations.html">Limitations §7</a></td>
+</tr>
+<tr class="odd">
+<td>OOS sample only 7 years long</td>
+<td><a href="./limitations.html">Limitations §3</a></td>
+</tr>
+<tr class="even">
+<td>RUT and NDX dropped because their underlying OHLC was not available locally</td>
+<td><a href="./pre_commitments.html">Pre-commitments</a></td>
+</tr>
+</tbody>
+</table>
 
 
 <!-- -->
@@ -1092,111 +931,65 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 });
 </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
 <div class="sourceCode" id="cb1" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Live Monitoring Framework"</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="an">subtitle:</span><span class="co"> "How we know the strategy works, and when it stops"</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>This is the answer to the two questions every trading-system writeup is supposed to address:</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>**Going forward, how will you know that your strategy's performance is in line with what you expect from the backtest?**</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>**How will you quantify when the strategy stops working?**</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Data and Literature"</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">## Data sources</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>The strategy reads from three external data providers, all snapshotted to local parquet files at commit time. No live network connections occur during a backtest.</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">### 1. OptionMetrics IvyDB US (option chains)</span></span>
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>Both questions are answered with one framework: **Hoeffding's inequality, applied in the trader form**.</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>Daily option chains 2012-2025 with <span class="in">`bid`</span>, <span class="in">`ask`</span>, <span class="in">`impl_volatility`</span>, <span class="in">`delta`</span>, <span class="in">`gamma`</span>, <span class="in">`vega`</span>, <span class="in">`theta`</span>, <span class="in">`volume`</span>, <span class="in">`open_interest`</span> for the 12 instruments tested. Acquired from WRDS as a single CSV (<span class="in">`strat2.2.csv.gz`</span>, 2.4 GB compressed, 68.4M rows) and split via <span class="in">`scripts/convert_optionmetrics_to_parquet.py`</span> into per-ticker parquets at <span class="in">`data/processed/options_by_ticker/{TICKER}.parquet`</span>. The engine prices entries and exits at real chain quotes (not Black-Scholes fallback) wherever available.</span>
 <span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="fu">## The framework</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="fu">### 2. OptionMetrics IvyDB Securities (per-ticker underlying OHLC)</span></span>
 <span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>Pre-commit a baseline performance metric <span class="in">`μ`</span> from the OOS backtest, for our headline strategy, that's the rolling-60-trade win rate observed over 2018–2024. Then, going forward, observe the live realized win rate <span class="in">`X̄`</span> over the same rolling-60-trade window. Apply:</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>Daily underlying open/high/low/close/volume for the 4 headline-basket tickers (AAPL, MSFT, WMT, GLD) and 6 ablation tickers (TLT, GOOGL, JNJ, KO, PG, JPM, PEP). Acquired from WRDS as <span class="in">`wheelstrat_data.gz`</span> (760 KB) and split via <span class="in">`scripts/convert_wheelstrat_data.py`</span> into per-ticker parquets at <span class="in">`data/raw/{TICKER}.parquet`</span>. Spans 2012-01-03 to 2025-08-29. The IvyDB Securities file uses the same <span class="in">`secid`</span> system as the option chains, so the join between underlying spot and chain quotes for the same security on the same date is exact.</span>
 <span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>P<span class="co">[</span><span class="ot">\,\bar X - \mu \geq t \mid H_0\,</span><span class="co">]</span> \;\leq\; e^{-2 t^2 N}</span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>Daily closes match published exchange records on every spot-checked reference date (e.g. AAPL 2018-04-16 closes at $175.82, matching the public record).</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="fu">### 3. Interactive Brokers TWS feed snapshot (macro factors)</span></span>
 <span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>where <span class="in">`t = μ − X̄`</span> is the realized underperformance, <span class="in">`N`</span> is the number of trades in the rolling window (60), and the bound is the **maximum probability** that the observed underperformance is due to chance alone, given the regime hypothesis <span class="in">`H₀`</span> (= "the OOS regime persists going forward").</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>Frozen snapshots of CBOE volatility indices (VIX, VIX3M, VVIX, SKEW), Treasury yields from FRED via TWS (IRX, TNX), credit-stress proxies (HYG, LQD), broad equity tape (SPY, SPX bars). Stored at <span class="in">`data/raw/{TICKER}.parquet`</span>. Read by <span class="in">`pd.Series.asof(today)`</span> at trade-decision time so no look-ahead bias is possible. Used for the halt framework's Layer 1 hard tail-event triggers, the ML stress head's feature matrix, the friction model's VIX-conditional slippage, and the risk-free baseline (IRX averaged over OOS = 2.33%).</span>
 <span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>The bound is a **distribution-free, worst-case** probability. It holds for any bounded random variable regardless of the underlying distribution or autocorrelation structure. No assumptions about return distribution, no Newey-West, no Hodrick, just the inequality.</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a><span class="fu">## Literature foundation</span></span>
 <span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a><span class="fu">## Threshold semantics (pre-committed)</span></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>The strategy and writeup are grounded in the following published references. None of these are course-internal materials, all are peer-reviewed.</span>
 <span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>| Bound <span class="in">`≤ e^(−2t²N)`</span> | Signal | Interpretation | Action |</span>
-<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>|---|---|---|---|</span>
-<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>| ≥ 50% | 🟢 **green** | Observed underperformance plausibly chance | Continue normally |</span>
-<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>| 25–50% | 🟡 **yellow** | Beliefs about regime probably no longer fully right | Consider stake reduction |</span>
-<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>| 10–25% | 🟠 **red** | Significant regime risk | Substantial concern; review |</span>
-<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>| &lt; 10% | 🔴 **critical** | Almost certain regime change | Halt strategy and rethink |</span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a><span class="fu">### Variance risk premium</span></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Carr, P., and Wu, L. (2003 working paper, 2009 Review of Financial Studies).** *Variance Risk Premia.* Documents the structural gap between option-implied and realized variance across U.S. equity indices. Provides the empirical t-statistics on the SPX cluster that anchor the project's universe selection (SPX strongly supported, NDX weaker, RUT extrapolated, TLT and GLD are novel cross-asset extensions).</span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Bollerslev, T., Tauchen, G., and Zhou, H. (2009).** *Expected Stock Returns and Variance Risk Premia.* Review of Financial Studies. Establishes the 63-trading-day quarterly horizon as empirically optimal for VRP-based forecasting and motivates the Hodrick-style standard errors used for any overlapping regression in this work.</span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Black, F., and Scholes, M. (1973).** *The Pricing of Options and Corporate Liabilities.* Journal of Political Economy. The original closed-form pricing of European options. The empirical biases the paper documents in OTC option pricing (BS overvalues high-variance underlyings, undervalues low-variance) are the structural source of the volatility risk premium the strategy harvests.</span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Merton, R. C. (1973).** *Theory of Rational Option Pricing.* Bell Journal of Economics and Management Science. Theorem 13 on early exercise of American puts on dividend-paying stocks frames the pricing approximation disclosed for the wheel-name positions.</span>
 <span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>These thresholds are pre-committed before live deployment. They are not numerical Sharpe targets, they are **structural confidence-level cutoffs** on the probability bound itself.</span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a><span class="fu">### Multiple-testing correction</span></span>
 <span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a><span class="fu">## Why 60-trade rolling window</span></span>
-<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a>Three constraints determine the window size:</span>
-<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Statistical power.** At N = 60 trades, an observed underperformance of `t = 0.10` (10 percentage points below pre-committed win rate) gives a Hoeffding bound of `e^(−2·0.01·60) = e^(−1.2) ≈ 30%`. That puts a 10-point degradation in the **yellow** zone, which is the right level of sensitivity, not jumping at one bad week, not waiting for a year of declines.</span>
-<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Time-to-signal.** With ~50–60 trades per year on the SPX iron condor at weekly cadence, 60 trades ≈ 1 year. The monitor produces a fresh signal monthly as the rolling window updates.</span>
-<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Distribution stability.** Hoeffding holds for any bounded RV, but tighter bands of t for the same N require either more trades or larger underperformance magnitude. 60 is the smallest N at which the threshold-semantics resolution is meaningful for win-rate observations bounded in <span class="co">[</span><span class="ot">0, 1</span><span class="co">]</span>.</span>
-<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a><span class="fu">## Pre-committed μ baseline</span></span>
-<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a>The monitor's reference parameter is the basket-level win rate observed over the full OOS backtest:</span>
-<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a>| Strategy | OOS window | n_trades | μ committed (win rate) |</span>
-<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a>|---|---|---:|---:|</span>
-<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a>| **Headline (Wheel-3 + GLD halts_only put-only + Head 2 ML overlay)** | 2018-01-01 → 2024-12-31 | **437** | **0.730** |</span>
-<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a>Live trading would use this μ = 0.73 as the reference; deviations downward trigger the threshold table above.</span>
-<span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a><span class="fu">## Worked example: 2018–2024 retrospective on the headline basket</span></span>
-<span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-56"><a href="#cb1-56" aria-hidden="true" tabindex="-1"></a>This is a backtest of the monitoring framework itself, what would the monitor have flagged on each rolling-60-trade window over the OOS sample?</span>
-<span id="cb1-57"><a href="#cb1-57" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-58"><a href="#cb1-58" aria-hidden="true" tabindex="-1"></a><span class="in">```{=html}</span></span>
-<span id="cb1-59"><a href="#cb1-59" aria-hidden="true" tabindex="-1"></a><span class="in">&lt;iframe src="charts/hoeffding_trace.html" width="100%" height="500" frameborder="0"&gt;&lt;/iframe&gt;</span></span>
-<span id="cb1-60"><a href="#cb1-60" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb1-61"><a href="#cb1-61" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-62"><a href="#cb1-62" aria-hidden="true" tabindex="-1"></a><span class="fu">### Bound distribution (post-warmup of 60 trades)</span></span>
-<span id="cb1-63"><a href="#cb1-63" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-64"><a href="#cb1-64" aria-hidden="true" tabindex="-1"></a>| Signal band | Bound range | Trades in band | % of post-warmup OOS |</span>
-<span id="cb1-65"><a href="#cb1-65" aria-hidden="true" tabindex="-1"></a>|---|---|---:|---:|</span>
-<span id="cb1-66"><a href="#cb1-66" aria-hidden="true" tabindex="-1"></a>| 🟢 green | ≥ 50% | 332 | **88.1%** |</span>
-<span id="cb1-67"><a href="#cb1-67" aria-hidden="true" tabindex="-1"></a>| 🟡 yellow | 25–50% | 29 | 7.7% |</span>
-<span id="cb1-68"><a href="#cb1-68" aria-hidden="true" tabindex="-1"></a>| 🟠 red | 10–25% | 16 | 4.2% |</span>
-<span id="cb1-69"><a href="#cb1-69" aria-hidden="true" tabindex="-1"></a>| 🔴 critical | &lt; 10% | 0 | **0.0%** |</span>
-<span id="cb1-70"><a href="#cb1-70" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-71"><a href="#cb1-71" aria-hidden="true" tabindex="-1"></a>The framework operated as designed over the OOS sample: the basket's rolling win rate stayed within the pre-committed regime expectations on 88% of trades. Yellow signals (7.7%) flagged short stretches of sub-baseline performance that were absorbed back into green within a few weeks. Red signals (4.2%) flagged genuine sustained dips. **No critical signal fired**, the basket never had a 60-trade rolling win-rate dip large enough to trigger a regime-shutdown alert during 2018-2024.</span>
-<span id="cb1-72"><a href="#cb1-72" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-73"><a href="#cb1-73" aria-hidden="true" tabindex="-1"></a><span class="fu">### Stress-event check</span></span>
-<span id="cb1-74"><a href="#cb1-74" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-75"><a href="#cb1-75" aria-hidden="true" tabindex="-1"></a>| Event | Date probed | Rolling X̄ | t = μ − X̄ | Bound | Signal |</span>
-<span id="cb1-76"><a href="#cb1-76" aria-hidden="true" tabindex="-1"></a>|---|---|---:|---:|---:|:-:|</span>
-<span id="cb1-77"><a href="#cb1-77" aria-hidden="true" tabindex="-1"></a>| Q4 2018 selloff | 2019-02-04 | 0.700 | +0.030 | 0.898 | 🟢 green |</span>
-<span id="cb1-78"><a href="#cb1-78" aria-hidden="true" tabindex="-1"></a>| COVID crash | 2020-01-13 | 0.850 | 0.000 (over) | 1.000 | 🟢 green |</span>
-<span id="cb1-79"><a href="#cb1-79" aria-hidden="true" tabindex="-1"></a>| 2022 bear market | 2023-04-17 | 0.767 | 0.000 (over) | 1.000 | 🟢 green |</span>
-<span id="cb1-80"><a href="#cb1-80" aria-hidden="true" tabindex="-1"></a>| Banking crisis | 2023-04-17 | 0.767 | 0.000 (over) | 1.000 | 🟢 green |</span>
-<span id="cb1-81"><a href="#cb1-81" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-82"><a href="#cb1-82" aria-hidden="true" tabindex="-1"></a>Notable: the headline basket's rolling win rate at the COVID crash check-date (60-trade window ending Jan 2020) was 85%, actually *above* the pre-committed μ. The defined-risk put-credit-spread structure with halt framework absorbed the COVID stress without measurable win-rate degradation in the rolling window. This is the strategy's halt framework + cross-asset diversification doing exactly what they were designed to do.</span>
-<span id="cb1-83"><a href="#cb1-83" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-84"><a href="#cb1-84" aria-hidden="true" tabindex="-1"></a>The framework demonstrates three properties on this retrospective:</span>
-<span id="cb1-85"><a href="#cb1-85" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-86"><a href="#cb1-86" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>**Not noise-driven**, 88% of windows stay green, indicating low false-positive rate from random monthly fluctuations.</span>
-<span id="cb1-87"><a href="#cb1-87" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>**Sensitive enough to flag genuine dips**, 4.2% of windows reach the red zone (10-25% bound), meaning the framework would have alerted human attention at those moments.</span>
-<span id="cb1-88"><a href="#cb1-88" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>**No catastrophic firing**, 0% critical signals over 7 years means the strategy did not experience a regime-degradation event large enough to trigger a forced shutdown. Validation that the basket is robust within its pre-committed expectations.</span>
-<span id="cb1-89"><a href="#cb1-89" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-90"><a href="#cb1-90" aria-hidden="true" tabindex="-1"></a><span class="fu">## What the framework does NOT do</span></span>
-<span id="cb1-91"><a href="#cb1-91" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-92"><a href="#cb1-92" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>It does not predict that a regime change is about to happen. It detects degradation that has already occurred.</span>
-<span id="cb1-93"><a href="#cb1-93" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>It does not distinguish between bad luck on a small sample and a true regime change. The bound is a **probability** statement, not a binary decision. Reading the bound at 30% means "this could be bad luck, possible, but it could also be regime degradation; the monitor flags it for human attention."</span>
-<span id="cb1-94"><a href="#cb1-94" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>It does not adapt μ over time. We commit μ from the OOS backtest and hold it. If we update μ live, we lose the pre-commitment property and the framework becomes circular.</span>
-<span id="cb1-95"><a href="#cb1-95" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-96"><a href="#cb1-96" aria-hidden="true" tabindex="-1"></a><span class="fu">## Implementation</span></span>
-<span id="cb1-97"><a href="#cb1-97" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-98"><a href="#cb1-98" aria-hidden="true" tabindex="-1"></a>The monitor is implemented in <span class="in">`src/metrics/hoeffding.py`</span> and <span class="in">`scripts/hoeffding_monitor.py`</span>. It reads per-instrument trade outcomes, computes the rolling-60 win rate, applies the bound, and emits a dated alert log to <span class="in">`data/processed/hoeffding_signals/{TICKER}_signals.parquet`</span>.</span>
-<span id="cb1-99"><a href="#cb1-99" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-100"><a href="#cb1-100" aria-hidden="true" tabindex="-1"></a>Cadence in production: weekly run, one signal per Monday morning before any new entries fire. Output: per-instrument signal status + book-level signal aggregated across the 5 VRP and 9 wheel positions.</span>
-<span id="cb1-101"><a href="#cb1-101" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-102"><a href="#cb1-102" aria-hidden="true" tabindex="-1"></a><span class="fu">## What this answers</span></span>
-<span id="cb1-103"><a href="#cb1-103" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-104"><a href="#cb1-104" aria-hidden="true" tabindex="-1"></a>For the question **"how will you know if the strategy is performing as expected?"**, the bound stays ≥ 50% (green). Performance is plausibly within the OOS regime.</span>
-<span id="cb1-105"><a href="#cb1-105" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-106"><a href="#cb1-106" aria-hidden="true" tabindex="-1"></a>For the question **"how will you quantify when it stops working?"**, when the bound drops to 10% or below, the strategy has degraded enough that random chance is an implausible explanation. That is the trip-wire. It is dated, quantitative, distribution-free, and pre-committed.</span></code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Bailey, D. H., and López de Prado, M. (2014).** *The Deflated Sharpe Ratio: Correcting for Selection Bias, Backtest Overfitting, and Non-Normality.* Journal of Portfolio Management. Equation 9 of this paper provides the implied-independent-trials adjustment N̂ = ρ̄ + (1 − ρ̄) · M used to deflate the headline Sharpe against the 12-trial selection-bias noise floor.</span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Bailey, D. H., Borwein, J. M., López de Prado, M., and Zhu, Q. J. (2015).** *The Probability of Backtest Overfitting.* Journal of Computational Finance. Defines the Probability of Backtest Overfitting via combinatorially symmetric cross-validation. Uses S = 16 partitions, C(16, 8) = 12,870 logit combinations to compute PBO = 0.0402 on the project's per-instrument return matrix.</span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a><span class="fu">### Live monitoring</span></span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Hoeffding, W. (1963).** *Probability Inequalities for Sums of Bounded Random Variables.* Journal of the American Statistical Association. The bound P<span class="co">[</span><span class="ot">X̄ − μ ≥ t | H₀</span><span class="co">]</span> ≤ exp(−2 t² N) for any bounded random variable underpins the live-monitoring framework's threshold semantics.</span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a><span class="fu">### Calibration</span></span>
+<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Niculescu-Mizil, A., and Caruana, R. (2005).** *Predicting Good Probabilities with Supervised Learning.* Proceedings of the 22nd International Conference on Machine Learning. Provides the sample-size threshold (n_pos minority class ≈ 200) that the auto-select between Platt scaling and isotonic regression uses in <span class="in">`src/models/calibration.py`</span>.</span>
+<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a><span class="fu">### Time-series statistics</span></span>
+<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Hodrick, R. J. (1992).** *Dividend Yields and Expected Stock Returns: Alternative Procedures for Inference and Measurement.* Review of Financial Studies. Defines the variance estimator for overlapping multi-period predictive regressions that the project's regression diagnostics use, in preference to naive Newey-West standard errors.</span>
+<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a><span class="fu">## Data limitations and how they shape the writeup</span></span>
+<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a>| Limitation | Where the writeup acknowledges it |</span>
+<span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a>|---|---|</span>
+<span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a>| OptionMetrics has 7-15% NaN on Greeks at deep-OTM/ITM strikes | <span class="co">[</span><span class="ot">Limitations §9</span><span class="co">](limitations.qmd)</span> |</span>
+<span id="cb1-56"><a href="#cb1-56" aria-hidden="true" tabindex="-1"></a>| Per-instrument bars from a separate WRDS query (not from the chain file itself) | <span class="co">[</span><span class="ot">Limitations §14</span><span class="co">](limitations.qmd)</span> |</span>
+<span id="cb1-57"><a href="#cb1-57" aria-hidden="true" tabindex="-1"></a>| TWS-sourced macro factors are point-in-time but not as-of-decision-time stamped | <span class="co">[</span><span class="ot">Limitations §13</span><span class="co">](limitations.qmd)</span> |</span>
+<span id="cb1-58"><a href="#cb1-58" aria-hidden="true" tabindex="-1"></a>| Daily-frequency RV in the engine, not 5-minute intraday | <span class="co">[</span><span class="ot">Limitations §7</span><span class="co">](limitations.qmd)</span> |</span>
+<span id="cb1-59"><a href="#cb1-59" aria-hidden="true" tabindex="-1"></a>| OOS sample only 7 years long | <span class="co">[</span><span class="ot">Limitations §3</span><span class="co">](limitations.qmd)</span> |</span>
+<span id="cb1-60"><a href="#cb1-60" aria-hidden="true" tabindex="-1"></a>| RUT and NDX dropped because their underlying OHLC was not available locally | <span class="co">[</span><span class="ot">Pre-commitments</span><span class="co">](pre_commitments.qmd)</span> |</span></code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
 <footer class="footer">
