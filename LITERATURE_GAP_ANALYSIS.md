@@ -168,18 +168,151 @@ For each of the 8 papers in `/home/mht120/projects/FinTech533/Literature/`, what
 
 ---
 
-## Summary table
+## Summary table (post-full-read update)
 
 | Paper | Severity | Fix LOC est | Fix time |
 |---|---|---|---|
-| 1. DSR — Eq. 9 + wiring | **ship-blocking** | 50 | 2h |
-| 2. PBO via CSCV | **ship-blocking** | 250 | 6h |
+| 1. DSR — Eq. 9 + wiring | **ship-blocking** | 50 | 2h | ✅ DONE (`fbdc979`) |
+| 2. PBO via CSCV | **ship-blocking** | 250 | 6h | ✅ DONE (`fbdc979`) |
 | 3. Niculescu-Mizil — calibration method auto-select | ship-improving | 30 | 1h |
 | 4. Egger/Vestal — trader-application monitoring | ship-improving | 100 | 3h |
 | 5. Carr/Wu — universe stratification disclosure | ship-improving (writeup) | — | 1h |
-| 6. Bollerslev/Tauchen/Zhou — VRP feature | ship-improving | 20 | 1h |
+| 6. BTZ — VRP-as-feature | ship-improving | 20 | 1h | ✅ pre-committed in §5.1 |
 | 7. Black-Scholes | no gap | — | — |
 | 8. Merton — early-exercise disclosure | ship-improving (writeup) | — | 0.5h |
-| **Total** | | ~450 LOC | **~14.5h** |
 
-**Critical-path ship-blockers:** 1 + 2 = 8h on top of Phase A–B work.
+**Critical-path ship-blockers:** 1 + 2 = 8h. Both DONE.
+
+---
+
+## ADDITIONAL GAPS — surfaced by full reads (not in original analysis)
+
+### 9. BTZ — Hodrick 1992 SEs vs Newey-West for overlapping forecasts
+
+**Source:** BTZ 2009 Section 3 footnote 21, citing Ang & Bekaert 2007.
+
+**Prescribes:**
+For predictive regressions with overlapping multi-period observations, **Hodrick (1992) standard errors** (summing regressors backward in time) are "generally more reliable" than Newey-West (summing residuals forward).
+
+**Codebase state:**
+- `src/metrics/bootstrap.py` — block bootstrap (different problem; OK).
+- No Hodrick-SE implementation in codebase.
+- Head 2 evaluation will compute OOS Brier scores; these are NOT predictive-regression t-stats but the same overlap problem applies.
+
+**Severity:** **ship-improving.** Strictly speaking, Brier-score evaluation doesn't need Hodrick SEs (binary cross-entropy not a regression coefficient). But IF we report any predictive-regression-style analysis (e.g., "Head 2 score predicts forward stress with t-stat X"), Hodrick is required. Phase F results page may include this for the writeup.
+
+**Fix:**
+- Add `src/metrics/hodrick_se.py` implementing the Hodrick (1992) overlapping-regression SE estimator. ~50 LOC. Used only in the results-page reporting layer.
+- Pre-committed in PRE_COMMITMENT_VRP §5.1.
+
+### 10. BTZ — Daily-frequency RV vs 5-minute intraday
+
+**Source:** BTZ 2009 Section 3.2.1.
+
+**Prescribes:**
+"Estimation of the same predictive regressions based on the traditional Black–Scholes implied variances and/or realized variances constructed from lower frequency daily data does not give rise to nearly as significant results." BTZ uses 78 within-day 5-minute squared returns + close-to-open overnight return per trading day.
+
+**Codebase state:**
+- `data/raw/SPX_HV.parquet` and `data/raw/SPX_IV.parquet` — historical and implied volatility, daily frequency.
+- HAR-RV components in features.parquet are computed from daily returns.
+- No 5-minute intraday data on disk.
+
+**Severity:** **ship-improving / disclosed limitation.** Acquiring 5-min intraday data is out of scope for the capstone (would require new data pipeline). Document the gap honestly per BTZ's own caveat. Pre-committed in PRE_COMMITMENT_VRP §5.3.
+
+**Fix:**
+- Disclosure-only. Writeup limitations section explicitly cites BTZ Section 3.2.1 caveat.
+
+### 11. BS — pricing bias on high-variance underlyings (wheel basket implications)
+
+**Source:** Black-Scholes 1973 page 16 empirical test on 545 OTC options.
+
+**Prescribes:**
+BS systematically overvalues options on high-variance securities and undervalues on low-variance securities. This bias is itself the structural source of VRP.
+
+**Codebase state:**
+- `src/strategy/black_scholes.py` — BS pricer used as fallback when OptionMetrics IV missing.
+- All wheel basket pricing currently uses BS-equivalent pricing (no American early-exercise correction).
+- `src/strategy/vol_regime.py` Layer 2 widens strikes when per-name RV > 35% (which approximately corrects for the high-variance bias by being more conservative — but not via BS adjustment).
+
+**Severity:** **ship-improving (writeup) + already partially mitigated by Layer 2.** Wheel Layer 2's RV>35% widening rule is a heuristic correction for BS's known bias on high-RV names. This is structurally aligned with BS's empirical finding.
+
+**Fix:**
+- Wheel mechanics page (Phase F task F3) discloses BS's known overvaluation bias on high-RV names AND notes that Layer 2 widening is a heuristic mitigation.
+
+### 12. Merton — American early-exercise risk on dividend-paying wheel names
+
+**Source:** Merton 1973 Theorem 13 (Section 4) and Section 7 (continuous-dividend BS PDE).
+
+**Prescribes:**
+American puts on dividend-paying stocks ALWAYS have positive probability of premature exercise. Sufficient condition for no premature exercise on continuous-dividend stock at constant rate r: E > d/r. American puts on non-dividend stocks (e.g., GOOGL) and dividend-paying stocks differ: GOOGL American puts ≈ European puts; dividend-paying American puts strictly more valuable.
+
+**Codebase state:**
+- All wheel basket pricing uses BS European-style pricing.
+- 8 of 9 wheel names pay dividends (all except GOOGL).
+- Engine handles assignment when ITM at expiry; does not model early-exercise probability.
+
+**Severity:** **ship-improving (writeup) + magnitude small for OTM positions.** Our 16-25-delta short puts are typically OTM at entry, so early-exercise premium is small. Magnitude grows when underlying drops and put becomes ITM near ex-dividend dates. For retail-sized positions, this is a modest pricing approximation.
+
+**Fix:**
+- Wheel mechanics page (Phase F task F3) discloses American early-exercise risk on dividend-paying names. Notes that BS approximation undervalues American puts; magnitude small for OTM at entry.
+
+### 13. Carr/Wu — Newey-West-30 SEs
+
+**Source:** Carr/Wu 2003 Section 6.1 (Equation 52 footnote and following).
+
+**Prescribes:**
+For their 30-day VRP regressions on overlapping observations, Carr/Wu use Newey-West (1987) with 30 lags.
+
+**Codebase state:**
+- No NW-30 SE implementation; bootstrap.py has block bootstrap (different).
+
+**Severity:** **ship-improving (writeup)** — Carr/Wu's preferred SE. BTZ's Hodrick-1992 is preferred for our specific use case (overlapping multi-period predictive regressions per BTZ footnote 21). For DESCRIPTIVE statistics on rolling Sharpe / rolling win-rate where the question is "are these means significantly different from 0," NW-30 may be appropriate.
+
+**Fix:**
+- Optional: implement NW-30 in `src/metrics/newey_west.py`. Phase F results page can report both for transparency.
+
+### 14. Niculescu-Mizil — Multiclass extension caveat
+
+**Source:** Niculescu-Mizil & Caruana 2005 Section 2 footnote.
+
+**Prescribes:**
+Platt and Isotonic are designed for binary classification. Multiclass requires reduction-to-binary + recombine.
+
+**Codebase state:**
+- All 3 ML heads are binary classification (quality, regime stress, skew direction) — no multiclass concern.
+
+**Severity:** **no gap** — already binary-only.
+
+### 15. Carr/Wu — American option IV via binomial tree
+
+**Source:** Carr/Wu 2003 Section 5 (data preparation).
+
+**Prescribes:**
+For American options on individual stocks, OptionMetrics extracts IV via binomial tree (handles early-exercise premium). For European-style index options, IV is direct from BS inversion.
+
+**Codebase state:**
+- Our OptionMetrics file has both put and call IVs. The `iv` column for individual-stock options is presumably already binomial-tree-derived per OptionMetrics convention.
+- We don't separately handle American vs European IV in our code; we treat the IV column as opaque.
+
+**Severity:** **no gap** if OptionMetrics' binomial-tree IV is what we're consuming. Verify post-hoc.
+
+**Fix:**
+- Validation check: confirm OptionMetrics documentation that wheel-basket (American) IVs use binomial tree. Adds a one-line note in the OptionMetrics loader docstring.
+
+---
+
+## Updated total
+
+| Item | Status | Fix time |
+|---|---|---|
+| Original ship-blockers (DSR Eq.9 + PBO) | ✅ DONE | 8h done |
+| Calibration method auto-select | pending | 1h |
+| Egger/Vestal monitoring runner | pending | 3h |
+| BS high-var disclosure (wheel) | writeup-only | 0.5h |
+| Merton early-exercise (wheel) | writeup-only | 0.5h |
+| Carr/Wu universe stratification | writeup-only | 1h |
+| Hodrick SEs (BTZ) | writeup-supporting | 1h |
+| Daily-RV vs intraday-RV (BTZ) | writeup-only | 0.5h |
+| Newey-West-30 (Carr/Wu) | optional | 1h |
+
+Total remaining (excluding writeup-only): **~5h of code work.**

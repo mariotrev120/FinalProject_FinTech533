@@ -102,6 +102,94 @@ All heads use XGBoost with **isotonic calibration on out-of-fold predictions** v
 - **Book scaler:** aggregate book size = base × (1 − p_stress). One scaler shared across all 5 instruments.
 - **Acceptance criterion:** Head 2 must beat naive "use trailing 1-month average stress rate" baseline OOS by ≥ 5% Brier-score reduction. If it fails, Head 2 is dropped and book scaler defaults to 1.0. Negative finding is reported.
 
+### §5.1 Head 2 stress definition (locked, sourced)
+
+The §5 spec text "VIX > 30 sustained, drawdown event in equity benchmarks, credit-spread blowout" was originally drafted as a programmatic threshold definition. After verifying the literature against this approach, the threshold values are NOT supported by the 8 reference papers — Bollerslev/Tauchen/Zhou treat VRP magnitude as a continuous predictor and use NBER recession bars as a visual overlay only; Carr/Wu study VRP across instruments without dichotomizing into stress/non-stress regimes. Inventing programmatic thresholds (`VIX > 30 sustained 2 days`, `SPX DD > 5% from 60d max`, `credit > 2 SD`, etc.) would require defending each value without literature support.
+
+**Approach (locked): labeled-event source.** Stress labels come from the 5 vetted historical stress events already locked in `scripts/stress_events.py` `EVENTS` constant from v1 audit work:
+
+| Event | Peak date |
+|---|---|
+| Aug2015 China devaluation | 2015-08-24 |
+| Feb2018 Volmageddon | 2018-02-05 |
+| Q4-2018 selloff | 2018-12-24 |
+| Mar2020 COVID crash | 2020-03-23 |
+| Mar2023 banking crisis | 2023-03-13 |
+
+Source: vetted in v1 audit (commit `abdd644` and earlier). No threshold values invented; every label is traceable to a named historical episode.
+
+**Forward-window horizon: 63 trading days (one quarter).**
+Source: Bollerslev/Tauchen/Zhou 2009 (`ExpectedStockReturns_and_VarianceRiskPremia.pdf`), Section 3 "Forecasting Stock Market Returns" Table 2 and Figure 3. Specifically:
+
+- **Monthly (h=1) horizon**: VRP slope coefficient 0.39, robust t-stat 1.76, adjusted R² = 1.07%.
+- **Quarterly (h=3) horizon**: VRP slope coefficient 0.47, robust t-stat 2.86, adjusted R² = 6.82%. **This is the maximum.**
+- 6-month horizon: 0.30, t=2.15, R²=5.42%.
+- 9-month horizon: 0.17, t=1.36, R²=2.30% (no longer significant at 5%).
+- 12-month: t=1.00, R²=1.23%.
+- 24-month: t=0.11, R²=−0.50%.
+
+BTZ Section 3.1: "The quarterly return regression results in a much more impressive t-statistic of 2.86 and a corresponding R² of 6.82%. The t-statistic remains significant at the six-month horizon, but the numerical values and significance then gradually taper off for longer return horizons." This anchors Head 2 to the forecast horizon at which VRP-based predictability is empirically strongest, with explicit numerical evidence.
+
+**With control variables added** (Table 4, multiple regression), quarterly R² rises to 16.76% (VRP+P/E), 17.42% (+CAY), 19.74% (+TMSP+RREL). VRP coefficient stays significant in every joint regression.
+
+**Labeling logic (locked):**
+For each trading day D in the trading calendar (taken from `features.parquet.index`):
+
+- Forward window = trading-day positions `(pos(D), pos(D)+63]` — inclusive of D+63, **exclusive of D itself**.
+- Label is positive if any of the 5 peak dates has its trading-day position in this window.
+- Equivalently, for each peak P at trading-day position `pp`, mark trading-day positions `[pp-63, pp-1]` as positive.
+- Peak day itself: position `pp` is at the *end* of the slice (excluded) → negative label. Warning is for the future, not the present.
+- Days after peak: negative (no peak in their forward window unless another event is ahead).
+
+Total positive label count is bounded above by 5 × 63 = 315 trading days; actual count is lower if any pair of windows overlaps (which they do not for these 5 dates, separated by 18+ months minimum).
+
+**Naive baseline forecast: trailing 22-day mean of `stress_today`.**
+~1 trading month. No literature anchor; flagged as a methodology choice. Brier-score acceptance gate compares model OOS Brier to baseline OOS Brier on the same `forward_stress_label` target.
+
+**Feature set (locked):**
+- All columns of `data/processed/features.parquet`: vix, vix3m, vix3m_minus_vix, vvix, vrp_30d, vrp_60d, yc_c0, yc_c1, plus the additional 7 features in that file.
+- **VRP itself** (`vrp_30d` and `vrp_60d`) is the strongest single predictor at the quarterly horizon per BTZ 2009 Section 3.1 Table 2 and Carr/Wu 2003 Section 6.1 Tables 5–6. Both papers establish VRP magnitude as a continuous predictor of next-quarter realized variance and excess returns. Including VRP as a Head 2 feature directly leverages this empirical finding.
+- **Vol-regime quadrant** (`vol_regime_quadrant` from `src/strategy/vol_regime.py`) — categorical 0..3 based on VIX (level z, derivative z) signs. Per the dual-role design (PRE_COMMITMENT_VRP §7), this is BOTH a Head 1 input AND a standalone gate ablation.
+- **Optional**: HMM regime probabilities (`hmm_regimes.parquet`) — 2-state Gaussian HMM. Already in v1 codebase.
+
+**Standard errors for evaluation:**
+**Hodrick (1992) standard errors**, NOT Newey-West, for overlapping multi-period forecast significance testing. Source: BTZ 2009 footnote 21 — "Ang and Bekaert (2007) have forcefully shown that in the context of predictive regressions with overlapping observations, the standard errors obtained by summing the regressors in the past, as advocated by Hodrick (1992), are generally more reliable than the more traditional standard errors based on the summation of the residuals into the future as in, for example, Newey and West (1987)." Our 63-day forward window with daily-frequency observations creates exactly this overlap pattern.
+
+**R² interpretation caveat:**
+Per Boudoukh, Richardson & Whitelaw (2008) as cited in BTZ Section 3 footnote 22: "even in the absence of any increase in the true predictability, the values of the R²s with highly persistent predictor variables and overlapping returns will by construction increase roughly proportional with the return horizon and the length of the overlap." We will report Hodrick-adjusted t-stats as the PRIMARY significance measure, not raw R². R² is reported descriptively only.
+
+**Acceptance gate (unchanged from §5):** Head 2 OOS Brier must be ≥ 5% lower than the naive baseline. Failure → drop Head 2; book scaler defaults to 1.0; report negative finding.
+
+### §5.2 Head 2 limitations and disclosures (writeup-required)
+
+Head 2 is trained on 5 archetypes of regime break, with multiple methodological gaps relative to the literature's preferred specifications. The following must be disclosed in the writeup limitations section:
+
+1. **Pattern coverage.** The model can only flag regime breaks that *resemble* the 5 historical archetypes — vol-spike-driven sharp peaks. Slow grinding bears (e.g., 2022-style) and structural-shift regimes (e.g., 2008 GFC, which is outside our 2012-2024 sample) are NOT in the training distribution and will not be flagged with high confidence.
+
+2. **Generalization.** Performance OOS depends on future stress regimes resembling the 5 historical archetypes. Disclose explicitly that Head 2 is a "pattern-match against past archetypes" head, not a general-purpose stress detector.
+
+3. **Sample-size disclosure.** Five labeled stress peaks × 63-day forward window ≤ 315 positive-class days against ~3,500 total trading days = ~9% positive base rate. XGBoost can learn signal at this rate but the effective sample size for the rare-class is small. The Brier-score gate is calibrated to be informative at this sample size.
+
+4. **Effective independent observations.** Our 63-day forward window with daily observations creates a high-overlap predictive setup. Effective independent windows ≈ 12 years × 252 trading days / 63 = ~48 non-overlapping windows. BTZ 2009 Section 3 footnote 23 explicitly cautions: "Our limited post-1990 sample prevents us from effectively studying issues having to do with longer return horizons spanning multiple years." Our sample is shorter than BTZ's (12 vs 17 years).
+
+5. **R² inflation per Boudoukh-Richardson-Whitelaw 2008.** Even in the absence of any increase in true predictability, R²s with highly persistent predictors and overlapping returns inflate proportionally with horizon × overlap. We report Hodrick-adjusted t-stats as primary significance measure, R² descriptively only.
+
+6. **Calibration sample-size note.** Niculescu-Mizil & Caruana 2005 Section 5 (learning-curve analysis) shows isotonic calibration overfits when calibration set < ~200 cases. Head 2 with ~300 pooled cross-asset events is borderline. Production training will switch to Platt scaling if any per-fold calibration set falls below 200 cases.
+
+These six disclosures are required in the limitations / going-forward section of the writeup. Failure to disclose them is a methodology breach.
+
+### §5.3 Methodological gaps relative to BTZ's preferred specification
+
+These are documented in the writeup as known approximations, NOT as bugs:
+
+1. **Daily-frequency RV components, not 5-minute intraday.** BTZ Section 3.2.1: "Estimation of the same predictive regressions based on the traditional Black–Scholes implied variances and/or realized variances constructed from lower frequency daily data does not give rise to nearly as significant results." Our HAR-RV inputs use daily-frequency RV. Effect: lower expected R² and weaker t-stats than BTZ's intraday baseline. Magnitude unknown; documented honestly.
+
+2. **Sample length.** BTZ 1990–2007 = 17 years. Our 2012–2024 = 12 years. Effect: smaller effective sample size; wider Hodrick-adjusted CIs.
+
+3. **No stochastic-volatility model layer.** BTZ's underlying theoretical model has explicit volatility-of-volatility process (qt). We treat VRP as a black-box predictor without modeling the underlying vol-of-vol structure. Effect: Head 2 captures empirical regularities but not the structural mechanism. This is consistent with the project's empirical-not-theoretical orientation.
+
+---
+
 ### Head 3 — skew direction (per-instrument, dynamic strike selection)
 
 - **Target:** which side (put or call) realizes higher loss probability over the next 30 days, given current skew, term, and momentum.
