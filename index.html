@@ -207,7 +207,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="headline" class="level2">
 <h2 class="anchored" data-anchor-id="headline">Headline result</h2>
-<p><strong>Excess Sharpe +0.371</strong> over OOS 2018-2024, beating the v1.5 single-name SPX put-only baseline (+0.286) by 0.085 with cross-asset diversification and 2× the trade sample.</p>
+<p><strong>Excess Sharpe +0.371</strong> over OOS 2018-2024, beating the single-instrument SPX put-only baseline (+0.286) by 0.085 with cross-asset diversification and 2× the trade sample.</p>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 42%">
@@ -221,7 +221,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><strong>Sharpe (excess of risk-free, with Head 2 ML overlay)</strong></td>
+<td><strong>Sharpe (excess of risk-free, with regime-stress ML overlay)</strong></td>
 <td style="text-align: right;"><strong>+0.371</strong></td>
 </tr>
 <tr class="even">
@@ -271,7 +271,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><strong>Releases alpha budget</strong> for higher-conviction directional bets. A portfolio manager who would otherwise hold cash to manage drawdown can instead allocate that cash to this sleeve and earn a premium on the dry powder.</li>
 <li><strong>Adds a low-correlated return stream</strong>. Cross-instrument correlation inside the basket is 0.26; correlation against a broad-market directional book is materially lower because the strategy harvests the volatility premium rather than the equity premium.</li>
 </ul>
-<p>The 0.371 excess Sharpe is the result of a tight volatility denominator, not a large numerator. That is the design intent. A defensive sleeve should be measured by its consistency and downside containment, not by raw return magnitude. Read the +0.085 outperformance versus the v1.5 anchor as evidence the architecture (cross-asset basket, halt framework, ML stress overlay) compounds risk-adjusted advantage over a single-instrument baseline.</p>
+<p>The 0.371 excess Sharpe is the result of a tight volatility denominator, not a large numerator. That is the design intent. A defensive sleeve should be measured by its consistency and downside containment, not by raw return magnitude. Read the +0.085 outperformance versus the SPX baseline as evidence the architecture (cross-asset basket, halt framework, ML stress overlay) compounds risk-adjusted advantage over a single-instrument baseline.</p>
 </section>
 <section id="live-monitoring-framework" class="level2">
 <h2 class="anchored" data-anchor-id="live-monitoring-framework">Live-monitoring framework</h2>
@@ -279,7 +279,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="what-was-tested-but-not-used" class="level2">
 <h2 class="anchored" data-anchor-id="what-was-tested-but-not-used">What was tested but not used</h2>
-<p>The headline is one of five baskets tested. The four others (SPX-only put-credit-spread, ETF-3 cluster, full 6-instrument book, iron condor variants on the 3-instrument cluster) underperformed the v1.5 anchor. They are reported transparently in the <a href="./ablations.html">Ablations</a> page, the iron condor variant is particularly informative: adding the call wing systematically lost in the 2018-2024 trending-equity regime.</p>
+<p>The headline is one of five baskets tested. The four others (SPX-only put-credit-spread, 3-ETF basket, full 6-instrument book, iron condor variants on the 3-instrument cluster) underperformed the SPX baseline. They are reported transparently in the <a href="./ablations.html">Ablations</a> page, the iron condor variant is particularly informative: adding the call wing systematically lost in the 2018-2024 trending-equity regime.</p>
 
 
 <!-- -->
@@ -913,11 +913,11 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="fu">## Headline result {#headline}</span></span>
 <span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>**Excess Sharpe +0.371** over OOS 2018-2024, beating the v1.5 single-name SPX put-only baseline (+0.286) by 0.085 with cross-asset diversification and 2× the trade sample.</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>**Excess Sharpe +0.371** over OOS 2018-2024, beating the single-instrument SPX put-only baseline (+0.286) by 0.085 with cross-asset diversification and 2× the trade sample.</span>
 <span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>| Metric | Value |</span>
 <span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>|---|---:|</span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>| **Sharpe (excess of risk-free, with Head 2 ML overlay)** | **+0.371** |</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>| **Sharpe (excess of risk-free, with regime-stress ML overlay)** | **+0.371** |</span>
 <span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>| Risk-free baseline (avg IRX 2018-2024) | 2.33% |</span>
 <span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>| Annualized return | +2.41% |</span>
 <span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>| Max drawdown over 7 years | -0.13% |</span>
@@ -945,7 +945,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Releases alpha budget** for higher-conviction directional bets. A portfolio manager who would otherwise hold cash to manage drawdown can instead allocate that cash to this sleeve and earn a premium on the dry powder.</span>
 <span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Adds a low-correlated return stream**. Cross-instrument correlation inside the basket is 0.26; correlation against a broad-market directional book is materially lower because the strategy harvests the volatility premium rather than the equity premium.</span>
 <span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a>The 0.371 excess Sharpe is the result of a tight volatility denominator, not a large numerator. That is the design intent. A defensive sleeve should be measured by its consistency and downside containment, not by raw return magnitude. Read the +0.085 outperformance versus the v1.5 anchor as evidence the architecture (cross-asset basket, halt framework, ML stress overlay) compounds risk-adjusted advantage over a single-instrument baseline.</span>
+<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a>The 0.371 excess Sharpe is the result of a tight volatility denominator, not a large numerator. That is the design intent. A defensive sleeve should be measured by its consistency and downside containment, not by raw return magnitude. Read the +0.085 outperformance versus the SPX baseline as evidence the architecture (cross-asset basket, halt framework, ML stress overlay) compounds risk-adjusted advantage over a single-instrument baseline.</span>
 <span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a><span class="fu">## Live-monitoring framework</span></span>
 <span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a></span>
@@ -953,7 +953,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a><span class="fu">## What was tested but not used</span></span>
 <span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a>The headline is one of five baskets tested. The four others (SPX-only put-credit-spread, ETF-3 cluster, full 6-instrument book, iron condor variants on the 3-instrument cluster) underperformed the v1.5 anchor. They are reported transparently in the <span class="co">[</span><span class="ot">Ablations</span><span class="co">](ablations.qmd)</span> page, the iron condor variant is particularly informative: adding the call wing systematically lost in the 2018-2024 trending-equity regime.</span></code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
+<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a>The headline is one of five baskets tested. The four others (SPX-only put-credit-spread, 3-ETF basket, full 6-instrument book, iron condor variants on the 3-instrument cluster) underperformed the SPX baseline. They are reported transparently in the <span class="co">[</span><span class="ot">Ablations</span><span class="co">](ablations.qmd)</span> page, the iron condor variant is particularly informative: adding the call wing systematically lost in the 2018-2024 trending-equity regime.</span></code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
 <footer class="footer">

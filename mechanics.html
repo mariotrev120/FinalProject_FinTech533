@@ -512,7 +512,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><strong>Pooled regime stress (Head 2)</strong></td>
+<td><strong>Regime-stress overlay</strong></td>
 <td>XGBoost on 15 macro features (VIX, VIX3M, VVIX, yield-curve, SPY-Treasury correlation, HYG-LQD spread, etc.) with 5 hand-curated stress event peaks as labels. Calibration auto-select: Platt for small folds, isotonic for larger.</td>
 <td>OOS Brier 0.1079 vs naive baseline 0.1256 = <strong>+14.1% reduction</strong>, above the 5% acceptance gate.</td>
 <td><strong>Activated as <code>(1 − p_stress)</code> book scaler.</strong></td>
@@ -1234,7 +1234,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb1-89"><a href="#cb1-89" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-90"><a href="#cb1-90" aria-hidden="true" tabindex="-1"></a>| Component | Architecture | Result | Status |</span>
 <span id="cb1-91"><a href="#cb1-91" aria-hidden="true" tabindex="-1"></a>|---|---|---|---|</span>
-<span id="cb1-92"><a href="#cb1-92" aria-hidden="true" tabindex="-1"></a>| **Pooled regime stress (Head 2)** | XGBoost on 15 macro features (VIX, VIX3M, VVIX, yield-curve, SPY-Treasury correlation, HYG-LQD spread, etc.) with 5 hand-curated stress event peaks as labels. Calibration auto-select: Platt for small folds, isotonic for larger. | OOS Brier 0.1079 vs naive baseline 0.1256 = **+14.1% reduction**, above the 5% acceptance gate. | **Activated as `(1 − p_stress)` book scaler.** |</span>
+<span id="cb1-92"><a href="#cb1-92" aria-hidden="true" tabindex="-1"></a>| **Regime-stress overlay** | XGBoost on 15 macro features (VIX, VIX3M, VVIX, yield-curve, SPY-Treasury correlation, HYG-LQD spread, etc.) with 5 hand-curated stress event peaks as labels. Calibration auto-select: Platt for small folds, isotonic for larger. | OOS Brier 0.1079 vs naive baseline 0.1256 = **+14.1% reduction**, above the 5% acceptance gate. | **Activated as `(1 − p_stress)` book scaler.** |</span>
 <span id="cb1-93"><a href="#cb1-93" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-94"><a href="#cb1-94" aria-hidden="true" tabindex="-1"></a>Book exposure on day t is scaled by <span class="in">`(1 − p_stress_t)`</span>, where <span class="in">`p_stress_t`</span> is the calibrated probability of a stress-event peak in the next 63 trading days. Mean <span class="in">`p_stress`</span> over the OOS window is 18%; days with <span class="in">`p_stress &gt; 30%`</span> are 14.6% of the sample. The scaler contributes +0.012 excess Sharpe to the headline (from +0.359 base to +0.371 with overlay) and tightens max drawdown from -0.13% to -0.12%.</span>
 <span id="cb1-95"><a href="#cb1-95" aria-hidden="true" tabindex="-1"></a></span>
