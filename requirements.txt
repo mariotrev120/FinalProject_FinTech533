@@ -25,6 +25,13 @@ matplotlib>=3.8
 pytest>=7.4
 pytest-cov>=4.1
 
+# Web
+flask>=3.0
+gunicorn>=21.2
+
+# Testing extras
+pytest-json-report>=1.5
+
 # Tooling
 ruff>=0.1
 black>=23.10

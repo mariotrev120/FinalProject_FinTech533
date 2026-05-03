@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+{% block title %}Tests{% endblock %}
+
+{% block content %}
+
+<!-- ── Page header ───────────────────────────────────────────────────────── -->
+<div class="d-flex align-items-baseline gap-3 mb-4 flex-wrap">
+  <h1 class="page-title mb-0">Test Suite</h1>
+  {% if generated_at %}
+    <span class="last-updated">Run {{ generated_at }}</span>
+  {% endif %}
+</div>
+
+{% if has_data and test_summary %}
+<!-- ── Summary row ────────────────────────────────────────────────────────── -->
+<div class="row g-3 mb-4">
+
+  <div class="col-md-3 col-6">
+    <div class="test-summary-donut">
+      <div id="test-donut" style="height:180px;"></div>
+    </div>
+  </div>
+
+  <div class="col-md-9 col-6">
+    <div class="row g-3 h-100 align-content-center">
+
+      <div class="col-6 col-lg-3">
+        <div class="metric-card metric-pass">
+          <div class="metric-label">Passed</div>
+          <div class="metric-value text-success">{{ test_summary.get("passed", 0) }}</div>
+        </div>
+      </div>
+
+      <div class="col-6 col-lg-3">
+        <div class="metric-card metric-fail">
+          <div class="metric-label">Failed</div>
+          <div class="metric-value {% if test_summary.get('failed', 0) > 0 %}text-danger{% endif %}">
+            {{ test_summary.get("failed", 0) }}
+          </div>
+        </div>
+      </div>
+
+      <div class="col-6 col-lg-3">
+        <div class="metric-card">
+          <div class="metric-label">Errors</div>
+          <div class="metric-value {% if test_summary.get('error', 0) > 0 %}text-warning{% endif %}">
+            {{ test_summary.get("error", 0) }}
+          </div>
+        </div>
+      </div>
+
+      <div class="col-6 col-lg-3">
+        <div class="metric-card">
+          <div class="metric-label">Duration</div>
+          <div class="metric-value">{{ duration }}s</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<!-- ── Per-module collapsible sections ───────────────────────────────────── -->
+{% for module, tests in grouped.items() %}
+  {% set mod_passed  = tests | selectattr("outcome", "equalto", "passed")  | list | length %}
+  {% set mod_failed  = tests | selectattr("outcome", "in", ["failed", "error"]) | list | length %}
+  {% set mod_ok      = mod_failed == 0 %}
+
+  <div class="accordion-module mb-3">
+    <button class="module-header {% if mod_ok %}module-ok{% else %}module-fail{% endif %}"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#mod-{{ loop.index }}"
+            aria-expanded="{{ 'false' if mod_ok else 'true' }}">
+      <span class="module-name">{{ module }}</span>
+      <span class="module-counts">
+        <span class="badge bg-success">{{ mod_passed }} passed</span>
+        {% if mod_failed > 0 %}
+          <span class="badge bg-danger">{{ mod_failed }} failed</span>
+        {% endif %}
+        <span class="module-chevron">▾</span>
+      </span>
+    </button>
+
+    <div class="collapse {% if not mod_ok %}show{% endif %}" id="mod-{{ loop.index }}">
+      <div class="test-list">
+        {% for t in tests %}
+          {% set outcome = t.outcome | lower %}
+          <div class="test-row test-{{ outcome }}">
+            <span class="test-status-badge status-{{ outcome }}">
+              {% if outcome == "passed" %}✓{% elif outcome == "failed" %}✗{% elif outcome == "error" %}!{% else %}–{% endif %}
+            </span>
+            <span class="test-cls {% if not t.cls_name %}text-muted{% endif %}">
+              {{ t.cls_name or "" }}
+            </span>
+            <span class="test-name">{{ t.display_name }}</span>
+            {% if t.get("duration") %}
+              <span class="test-duration">{{ "%.3f"|format(t.duration) }}s</span>
+            {% endif %}
+          </div>
+
+          {% if outcome in ["failed", "error"] and t.get("call") and t.call.get("longrepr") %}
+            <div class="test-longrepr">
+              <pre class="longrepr-pre">{{ t.call.longrepr | truncate(600) }}</pre>
+            </div>
+          {% endif %}
+
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+{% endfor %}
+
+{% else %}
+<!-- ── No data placeholder ───────────────────────────────────────────────── -->
+<div class="empty-state mt-5">
+  <div class="empty-icon">🧪</div>
+  <div class="empty-text">No test results found</div>
+  <div class="empty-sub mt-2">
+    Run the test suite and export results:
+    <br>
+    <code class="cmd-snippet">
+      pytest --json-report --json-report-file=website/data/test_results.json
+    </code>
+  </div>
+</div>
+{% endif %}
+
+{% endblock %}
+
+{% block scripts %}
+{% if has_data and test_summary %}
+<script>
+  renderTestDonut(
+    "test-donut",
+    {{ test_summary.get("passed",  0) }},
+    {{ test_summary.get("failed",  0) + test_summary.get("error", 0) }},
+    {{ test_summary.get("skipped", 0) }}
+  );
+</script>
+{% endif %}
+{% endblock %}

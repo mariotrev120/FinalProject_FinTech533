@@ -1,0 +1,298 @@
+{% extends "base.html" %}
+{% block title %}Strategy Overview{% endblock %}
+
+{% block content %}
+
+<!-- ── Hero ──────────────────────────────────────────────────────────────── -->
+<section class="hero mb-5">
+  <div class="hero-eyebrow">FinTech 533 Final Project</div>
+  <h1 class="hero-title">
+    SPX Volatility Risk Premium<br>
+    <span class="hero-highlight">Harvesting Strategy</span>
+  </h1>
+  <p class="hero-sub">
+    Systematic put credit spreads on XSP with an XGBoost entry gate and
+    a five-layer halt framework — designed to capture the implied/realized vol gap
+    while bounding drawdown in regime shifts.
+  </p>
+  <div class="hero-cta-row">
+    <a href="{{ url_for('results') }}" class="btn btn-primary btn-sm px-4">View Results →</a>
+    <a href="{{ url_for('tests_view') }}" class="btn btn-outline-secondary btn-sm px-4">Test Suite</a>
+  </div>
+</section>
+
+<!-- ── Quick-fact grid ───────────────────────────────────────────────────── -->
+<div class="row g-3 mb-5" id="fact-grid">
+
+  <div class="col-6 col-md-3">
+    <div class="fact-card">
+      <div class="fact-label">Instrument</div>
+      <div class="fact-value">XSP Puts</div>
+      <div class="fact-sub">SPX Mini options (1/10 notional)</div>
+    </div>
+  </div>
+
+  <div class="col-6 col-md-3">
+    <div class="fact-card">
+      <div class="fact-label">Structure</div>
+      <div class="fact-value">5-pt PCS</div>
+      <div class="fact-sub">Put credit spread, 30–45 DTE</div>
+    </div>
+  </div>
+
+  <div class="col-6 col-md-3">
+    <div class="fact-card">
+      <div class="fact-label">Short Strike</div>
+      <div class="fact-value">≈ 16Δ</div>
+      <div class="fact-sub">Closest to 0.16 delta on chain</div>
+    </div>
+  </div>
+
+  <div class="col-6 col-md-3">
+    <div class="fact-card">
+      <div class="fact-label">Entry Cadence</div>
+      <div class="fact-value">Weekly</div>
+      <div class="fact-sub">Monday open, subject to ML gate</div>
+    </div>
+  </div>
+
+  <div class="col-6 col-md-3">
+    <div class="fact-card">
+      <div class="fact-label">Profit Target</div>
+      <div class="fact-value">50% credit</div>
+      <div class="fact-sub">Close when spread ≤ 0.50 × open credit</div>
+    </div>
+  </div>
+
+  <div class="col-6 col-md-3">
+    <div class="fact-card">
+      <div class="fact-label">Stop Loss</div>
+      <div class="fact-value">200% credit</div>
+      <div class="fact-sub">Gap-aware: executes at open price</div>
+    </div>
+  </div>
+
+  <div class="col-6 col-md-3">
+    <div class="fact-card">
+      <div class="fact-label">Time Exit</div>
+      <div class="fact-value">21 DTE</div>
+      <div class="fact-sub">Avoid gamma-risk zone</div>
+    </div>
+  </div>
+
+  <div class="col-6 col-md-3">
+    <div class="fact-card">
+      <div class="fact-label">Emergency Exit</div>
+      <div class="fact-value">Δ > 0.50</div>
+      <div class="fact-sub">Short leg delta exceeds 0.50 intraday</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ── ML Gate ───────────────────────────────────────────────────────────── -->
+<section class="content-section mb-5">
+  <h2 class="section-title">ML Entry Gate</h2>
+  <div class="row g-4">
+    <div class="col-md-6">
+      <h3 class="subsection-title">XGBoost Classifier</h3>
+      <p class="body-text">
+        A gradient-boosted classifier trained on 16 exogenous market features predicts
+        whether a spread opened today will close at profit target. Entry is gated at a
+        calibrated probability threshold of <strong>p ≥ 0.55</strong>.
+      </p>
+      <p class="body-text">
+        The model is trained in an expanding-window walk-forward loop (annual refit,
+        nested cross-validation with Optuna hyperparameter search, isotonic calibration).
+        An elastic-net logistic benchmark provides a lower bound.
+      </p>
+    </div>
+    <div class="col-md-6">
+      <h3 class="subsection-title">Feature Set (16 inputs)</h3>
+      <div class="feature-grid">
+        <span class="feature-tag">VIX spot</span>
+        <span class="feature-tag">VIX3M</span>
+        <span class="feature-tag">VVIX</span>
+        <span class="feature-tag">VRP 30d</span>
+        <span class="feature-tag">VRP 60d</span>
+        <span class="feature-tag">Yield curve β₀</span>
+        <span class="feature-tag">Yield curve β₁</span>
+        <span class="feature-tag">Yield curve β₂</span>
+        <span class="feature-tag">Yield curve β₃</span>
+        <span class="feature-tag">SPY–TLT corr</span>
+        <span class="feature-tag">SPY–GLD corr</span>
+        <span class="feature-tag">HYG–LQD spread</span>
+        <span class="feature-tag">SPY 20d return</span>
+        <span class="feature-tag">SPY vs 200d MA</span>
+        <span class="feature-tag">MA cross state</span>
+        <span class="feature-tag">Realized vol 30d</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Halt Framework ────────────────────────────────────────────────────── -->
+<section class="content-section mb-5">
+  <h2 class="section-title">Five-Layer Halt Framework</h2>
+  <p class="body-text mb-4">
+    The halt framework operates independently of the ML gate, providing mechanical
+    circuit breakers that prevent new entries during adverse regimes. Layers 2–5
+    are "soft halts" — existing positions remain open; only new entries are blocked.
+  </p>
+  <div class="halt-grid">
+
+    <div class="halt-card halt-hard">
+      <div class="halt-layer">Layer 1 · Hard Halt</div>
+      <div class="halt-title">Extreme Vol Spike</div>
+      <div class="halt-body">
+        VIX day-over-day ≥ 50%, SPX ±6% intraday, or VIX exceeds VIX3M by ≥ 3 pts.
+        Closes <em>all</em> positions immediately; blocks new entries until reset.
+      </div>
+    </div>
+
+    <div class="halt-card halt-soft">
+      <div class="halt-layer">Layer 2 · Soft Halt</div>
+      <div class="halt-title">ML Confidence Drought</div>
+      <div class="halt-body">
+        Five consecutive trading days with model probability &lt; 0.55.
+        New entries blocked; existing positions managed normally.
+      </div>
+    </div>
+
+    <div class="halt-card halt-soft">
+      <div class="halt-layer">Layer 3 · Hoeffding Halt</div>
+      <div class="halt-title">Statistical Win-Rate Deviation</div>
+      <div class="halt-body">
+        Hoeffding bound test flags realized win rate significantly below 60% historical target.
+        Requires minimum trade count before activating.
+      </div>
+    </div>
+
+    <div class="halt-card halt-soft">
+      <div class="halt-layer">Layer 4 · Drawdown Halt</div>
+      <div class="halt-title">Portfolio Drawdown Limit</div>
+      <div class="halt-body">
+        Portfolio NAV drawdown exceeds configurable threshold from peak equity.
+        Blocks new entries; resumes on partial recovery.
+      </div>
+    </div>
+
+    <div class="halt-card halt-resume">
+      <div class="halt-layer">Layer 5 · Auto-Resume Gate</div>
+      <div class="halt-title">Four-Condition Conjunction</div>
+      <div class="halt-body">
+        All four must hold simultaneously: VIX &lt; 25, VIX in contango, model p ≥ 0.55,
+        SPX above 200-day MA. Any single failure keeps the halt active.
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ── Sizing & Friction ─────────────────────────────────────────────────── -->
+<section class="content-section mb-5">
+  <h2 class="section-title">Position Sizing &amp; Friction Model</h2>
+  <div class="row g-4">
+    <div class="col-md-6">
+      <h3 class="subsection-title">Sizing Formula</h3>
+      <p class="body-text">
+        Contract count is derived from Quarter-Kelly multiplied by a VIX vol scalar
+        (15 ÷ VIX) and a stress multiplier (0.5× when SPY–TLT correlation &gt; 0.50).
+        The result is hard-capped at 1% of portfolio equity to prevent oversizing
+        in low-vol environments.
+      </p>
+      <div class="formula-block">
+        <code>n = min(¼K · (15/VIX) · stress_mult, floor(0.01·NAV / margin))</code>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <h3 class="subsection-title">Realistic Friction</h3>
+      <p class="body-text">
+        Four VIX-tiered bid-ask slippage buckets (0.30–1.00 per side), plus per-leg
+        commission (min $1.30), financing cost on margin, and Section 1256 tax treatment
+        (60% LTCG / 40% STCG on all XSP options regardless of holding period).
+      </p>
+      <div class="friction-table">
+        <div class="ft-row ft-header">
+          <span>VIX Range</span><span>Slippage</span>
+        </div>
+        <div class="ft-row"><span>&lt; 15</span><span>$0.30 / side</span></div>
+        <div class="ft-row"><span>15–25</span><span>$0.50 / side</span></div>
+        <div class="ft-row"><span>25–40</span><span>$0.75 / side</span></div>
+        <div class="ft-row"><span>&gt; 40</span><span>$1.00 / side</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Ablation Modes ─────────────────────────────────────────────────────── -->
+<section class="content-section mb-5">
+  <h2 class="section-title">Ablation Study Design</h2>
+  <p class="body-text mb-4">
+    Four modes isolate the contribution of each component. All modes share the same
+    universe, position sizing, and friction model — only the entry gate and halt
+    framework differ.
+  </p>
+  <div class="row g-3">
+    <div class="col-sm-6 col-lg-3">
+      <div class="ablation-card mode-naked">
+        <div class="ablation-label">Naked Baseline</div>
+        <div class="ablation-desc">Sells every Monday. No ML gate. No halts. Pure unfiltered exposure.</div>
+      </div>
+    </div>
+    <div class="col-sm-6 col-lg-3">
+      <div class="ablation-card mode-ml">
+        <div class="ablation-label">ML Gate Only</div>
+        <div class="ablation-desc">XGBoost gate active (p ≥ 0.55). Halt framework disabled. Isolates ML value-add.</div>
+      </div>
+    </div>
+    <div class="col-sm-6 col-lg-3">
+      <div class="ablation-card mode-halts">
+        <div class="ablation-label">Halts Only</div>
+        <div class="ablation-desc">No ML filter. All five halt layers active. Isolates halt framework contribution.</div>
+      </div>
+    </div>
+    <div class="col-sm-6 col-lg-3">
+      <div class="ablation-card mode-full">
+        <div class="ablation-label">Full Strategy</div>
+        <div class="ablation-desc">Both ML gate and all five halt layers active. The strategy as designed.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Rubric Answers ─────────────────────────────────────────────────────── -->
+<section class="content-section mb-5">
+  <h2 class="section-title">Vestal Rubric Questions</h2>
+  <div class="row g-4">
+
+    <div class="col-md-6">
+      <div class="rubric-card">
+        <div class="rubric-q">How would you monitor live performance?</div>
+        <div class="rubric-a">
+          Daily NAV reconciliation against IBKR position ledger; Hoeffding bound on rolling
+          win rate (alerts if p-value &lt; 0.05 vs. 60% baseline); VIX regime tracker to
+          detect distribution shift between training and live environments; ML model score
+          histogram drift (KL divergence alert); hard halt auto-triggers as circuit breakers.
+          This dashboard's Results tab provides the primary monitoring surface.
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="rubric-card">
+        <div class="rubric-q">How do you quantify strategy failure?</div>
+        <div class="rubric-a">
+          Strategy failure is declared if: (1) OOS Sharpe &lt; 0.5 for any 12-month
+          rolling window, (2) max drawdown exceeds 25% of peak NAV, (3) realized win rate
+          falls below 45% over any 40-trade window, or (4) the ML gate's Brier score exceeds
+          0.30 (no better than naive baseline). The ablation study quantifies which components
+          are responsible for underperformance if triggered.
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+{% endblock %}

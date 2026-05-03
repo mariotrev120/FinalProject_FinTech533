@@ -1,0 +1,242 @@
+{% extends "base.html" %}
+{% block title %}Results{% endblock %}
+
+{% block content %}
+
+<!-- ── Page header ───────────────────────────────────────────────────────── -->
+<div class="d-flex align-items-baseline gap-3 mb-4 flex-wrap">
+  <h1 class="page-title mb-0">Backtest Results</h1>
+  {% if last_updated %}
+    <span class="last-updated">Updated {{ last_updated }}</span>
+  {% endif %}
+</div>
+
+<!-- ── Status banner ─────────────────────────────────────────────────────── -->
+{% if has_data %}
+  {% if strategy_status == "running" %}
+    <div class="status-banner status-running mb-4">
+      <span class="status-dot"></span>
+      Strategy Active
+      {% if halt_layer %}· Halt Layer {{ halt_layer }} engaged{% endif %}
+    </div>
+  {% elif strategy_status == "halted" %}
+    <div class="status-banner status-halted mb-4">
+      <span class="status-dot"></span>
+      Strategy Halted
+      {% if halt_layer %}— Layer {{ halt_layer }}{% endif %}
+    </div>
+  {% else %}
+    <div class="status-banner status-idle mb-4">
+      <span class="status-dot"></span>
+      Backtest Complete
+    </div>
+  {% endif %}
+{% else %}
+  <div class="status-banner status-placeholder mb-4">
+    <span class="status-dot"></span>
+    Awaiting backtest data — run <code>python -m src.backtest.engine</code> to populate
+  </div>
+{% endif %}
+
+<!-- ── Mode selector ──────────────────────────────────────────────────────── -->
+<div class="mode-selector mb-4" role="tablist" aria-label="Ablation mode">
+  {% for m in modes %}
+    <a href="{{ url_for('results', mode=m) }}"
+       class="mode-pill {% if m == current_mode %}active{% endif %}"
+       role="tab" aria-selected="{{ 'true' if m == current_mode else 'false' }}">
+      {{ mode_labels[m] }}
+    </a>
+  {% endfor %}
+</div>
+
+{% if current_mode in mode_descriptions %}
+  <p class="mode-description mb-4">{{ mode_descriptions[current_mode] }}</p>
+{% endif %}
+
+<!-- ── KPI metric cards ───────────────────────────────────────────────────── -->
+<div class="row g-3 mb-5" id="metric-cards">
+
+  {% set mm = mode_metrics or {} %}
+
+  {% macro metric_card(key, label, fmt, suffix="") %}
+    <div class="col-6 col-md-4 col-xl-2">
+      <div class="metric-card"
+           data-bs-toggle="tooltip" data-bs-placement="top"
+           title="{{ metric_defs.get(key, '') }}">
+        <div class="metric-label">{{ label }}</div>
+        {% if mm.get(key) is not none %}
+          <div class="metric-value">
+            {% if fmt == "pct" %}{{ "%.1f"|format(mm[key] * 100) }}%
+            {% elif fmt == "dollar" %}${{ "{:,.0f}".format(mm[key]) }}
+            {% elif fmt == "2f" %}{{ "%.2f"|format(mm[key]) }}{{ suffix }}
+            {% elif fmt == "int" %}{{ mm[key]|int }}
+            {% else %}{{ mm[key] }}{% endif %}
+          </div>
+        {% else %}
+          <div class="metric-value metric-empty">—</div>
+        {% endif %}
+      </div>
+    </div>
+  {% endmacro %}
+
+  {{ metric_card("sharpe",             "Sharpe Ratio",      "2f") }}
+  {{ metric_card("sortino",            "Sortino Ratio",     "2f") }}
+  {{ metric_card("win_rate",           "Win Rate",          "pct") }}
+  {{ metric_card("total_return",       "Total Return",      "pct") }}
+  {{ metric_card("max_drawdown",       "Max Drawdown",      "pct") }}
+  {{ metric_card("profit_factor",      "Profit Factor",     "2f") }}
+  {{ metric_card("total_trades",       "Total Trades",      "int") }}
+  {{ metric_card("avg_trade_duration", "Avg Duration",      "2f", "d") }}
+  {{ metric_card("avg_return_per_trade","Avg P&L / Trade",  "dollar") }}
+
+</div>
+
+<!-- ── Equity curve ───────────────────────────────────────────────────────── -->
+<section class="mb-5">
+  <h2 class="section-title">Equity Curve</h2>
+  <div class="chart-container" id="equity-curve-chart" style="height:320px;"></div>
+</section>
+
+<!-- ── Fate breakdown + Monthly returns ─────────────────────────────────── -->
+<div class="row g-4 mb-5">
+  <div class="col-md-5">
+    <h2 class="section-title">Trade Fate Breakdown</h2>
+    <div class="chart-container" id="fate-chart" style="height:260px;"></div>
+  </div>
+  <div class="col-md-7">
+    <h2 class="section-title">Monthly P&amp;L</h2>
+    <div class="chart-container" id="monthly-chart" style="height:260px;"></div>
+  </div>
+</div>
+
+<!-- ── Trade blotter ─────────────────────────────────────────────────────── -->
+<section class="mb-5">
+  <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+    <h2 class="section-title mb-0">Trade Blotter</h2>
+    {% if blotter %}
+      <span class="blotter-count">{{ blotter|length }} most recent trades</span>
+    {% endif %}
+  </div>
+
+  {% if blotter %}
+    <div class="table-responsive blotter-wrap">
+      <table class="table blotter-table">
+        <thead>
+          <tr>
+            <th>Entry</th>
+            <th>Exit</th>
+            <th class="text-end">Short Strike</th>
+            <th class="text-end">Long Strike</th>
+            <th class="text-end">DTE</th>
+            <th class="text-end">Contracts</th>
+            <th class="text-end">Credit</th>
+            <th class="text-end">Net P&amp;L</th>
+            <th>Fate</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for trade in blotter %}
+            <tr>
+              <td class="mono">{{ trade.entry_date or "—" }}</td>
+              <td class="mono">{{ trade.exit_date or "—" }}</td>
+              <td class="mono text-end">{{ trade.short_strike or "—" }}</td>
+              <td class="mono text-end">{{ trade.long_strike or "—" }}</td>
+              <td class="mono text-end">{{ trade.dte or "—" }}</td>
+              <td class="mono text-end">{{ trade.contracts or "—" }}</td>
+              <td class="mono text-end">
+                {% if trade.open_credit is not none %}
+                  ${{ "%.2f"|format(trade.open_credit) }}
+                {% else %}—{% endif %}
+              </td>
+              <td class="mono text-end {% if trade.net_pnl and trade.net_pnl >= 0 %}text-profit{% elif trade.net_pnl %}text-loss{% endif %}">
+                {% if trade.net_pnl is not none %}
+                  {{ "$%+,.0f"|format(trade.net_pnl) }}
+                {% else %}—{% endif %}
+              </td>
+              <td>
+                <span class="fate-badge fate-{{ trade.fate or 'unknown' }}">
+                  {{ trade.fate | replace("_", " ") | title if trade.fate else "—" }}
+                </span>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <div class="empty-state">
+      <div class="empty-icon">📋</div>
+      <div class="empty-text">No trades yet — blotter populates after first backtest run</div>
+    </div>
+  {% endif %}
+</section>
+
+<!-- ── Ablation comparison table ─────────────────────────────────────────── -->
+{% if has_data and metrics and metrics.get("modes") %}
+<section class="mb-5">
+  <h2 class="section-title">Ablation Comparison</h2>
+  <div class="table-responsive">
+    <table class="table ablation-table">
+      <thead>
+        <tr>
+          <th>Mode</th>
+          <th class="text-end">Sharpe</th>
+          <th class="text-end">Win Rate</th>
+          <th class="text-end">Total Return</th>
+          <th class="text-end">Max DD</th>
+          <th class="text-end">Trades</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for m in modes %}
+          {% set mdata = metrics.get("modes", {}).get(m, {}) %}
+          <tr class="{% if m == current_mode %}active-mode-row{% endif %}">
+            <td>
+              <span class="mode-label-badge mode-{{ m }}">{{ mode_labels[m] }}</span>
+            </td>
+            <td class="mono text-end">
+              {{ "%.2f"|format(mdata.sharpe) if mdata.get("sharpe") is not none else "—" }}
+            </td>
+            <td class="mono text-end">
+              {{ "%.1f"|format(mdata.win_rate * 100) ~ "%" if mdata.get("win_rate") is not none else "—" }}
+            </td>
+            <td class="mono text-end">
+              {{ "%.1f"|format(mdata.total_return * 100) ~ "%" if mdata.get("total_return") is not none else "—" }}
+            </td>
+            <td class="mono text-end text-loss">
+              {{ "%.1f"|format(mdata.max_drawdown * 100) ~ "%" if mdata.get("max_drawdown") is not none else "—" }}
+            </td>
+            <td class="mono text-end">
+              {{ mdata.total_trades|int if mdata.get("total_trades") is not none else "—" }}
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endif %}
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+  // Data injected by Flask
+  const equityCurveData = {{ equity_curve | safe }};
+  const fateCounts      = {{ fate_counts  | safe }};
+  const stressEvents    = {{ stress_events | safe }};
+
+  // Blotter data for monthly chart (embedded as JSON from the route)
+  const blotterData     = {{ blotter | tojson | safe }};
+
+  // Render all charts
+  renderEquityCurve("equity-curve-chart", equityCurveData, stressEvents);
+  renderFateChart("fate-chart", fateCounts);
+  renderMonthlyReturns("monthly-chart", blotterData);
+
+  // Bootstrap tooltips
+  document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(el => {
+    new bootstrap.Tooltip(el);
+  });
+</script>
+{% endblock %}
