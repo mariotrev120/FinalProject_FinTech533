@@ -10,22 +10,18 @@ website:
     left:
       - href: index.qmd
         text: Home
-      - href: thesis.qmd
-        text: Thesis
       - href: mechanics.qmd
-        text: Mechanics
-      - href: pre_commitments.qmd
-        text: Pre-commitments
+        text: Strategy
       - href: results.qmd
         text: Results
       - href: ablations.qmd
-        text: Ablations
+        text: Variants
       - href: monitoring.qmd
         text: "Live Monitoring"
       - href: limitations.qmd
         text: Limitations
-      - href: reproducibility.qmd
-        text: Reproducibility
+      - href: data_and_literature.qmd
+        text: "Data & Sources"
   page-footer:
     center: "R & M Trade Desk · Robert Lanni and Mario Treviño · FinTech 533 · Duke MEng FinTech"
 

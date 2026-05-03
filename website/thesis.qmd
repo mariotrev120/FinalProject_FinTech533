@@ -22,7 +22,7 @@ Specifically:
 ## What this strategy does NOT claim
 
 - Not statistical arbitrage. The premium is a real risk premium, paid for a real risk (left-tail variance shocks). Sellers earn the premium in normal regimes and pay back in stress. Sharpe is bounded; tails are real.
-- Not market-timing. We do not predict when vol spikes will occur. We size positions for capacity to absorb spikes and exit when current spreads breach pre-committed exit triggers.
+- Not market-timing. We do not predict when vol spikes will occur. We size positions for capacity to absorb spikes and exit when current spreads breach exit triggers.
 - Not idiosyncratic-stock-picking. The wheel basket is selected by liquidity and structural-criteria thresholds, not by subjective conviction. The 9 names are the universe, not picks.
 
 ## The capacity-versus-edge tradeoff
@@ -61,8 +61,8 @@ Merton's 1973 extension covers American early-exercise (relevant for the wheel b
 ## What you'll find in the rest of the writeup
 
 - [Mechanics](mechanics.qmd): exact entry/exit logic, halt framework, ML stack, sizing
-- [Pre-commitments](pre_commitments.qmd): the locked methodology before any backtest fired
-- [Results](results.qmd): headline OOS numbers with DSR/PBO multiple-testing correction
-- [Ablations](ablations.qmd): naked / halts / vol-regime / ML / regime+halts / full
+- [Results](results.qmd): headline OOS numbers, blotter, ledger, multiple-testing correction
+- [Ablations](ablations.qmd): basket variants, iron-condor vs put-only, naked vs halts
 - [Live monitoring](monitoring.qmd): how to know it works, how to know it stopped
 - [Limitations](limitations.qmd): what this strategy cannot promise
+- [Data and Literature](data_and_literature.qmd): data sources and reference reading

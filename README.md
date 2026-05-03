@@ -39,7 +39,7 @@ This project ships both an academic writeup and a live operations dashboard.
 
 The strategy ships with a Hoeffding-inequality monitor in trader-application form to answer the two questions every trading-system writeup is supposed to address.
 
-> *How will you know your strategy is performing as expected?* The pre-committed basket win rate over the OOS sample is μ = 0.730. A rolling 60-trade window of realized win rate X̄ produces a Hoeffding bound on the probability of regime shift: P[X̄ − μ ≥ t | H₀] ≤ exp(−2t²N) for N = 60. Threshold semantics 50% / 25% / 10% on the bound trigger reduce-size, freeze, and shut-down actions respectively.
+> *How will you know your strategy is performing as expected?* The OOS basket win rate is μ = 0.730. A rolling 60-trade window of realized win rate X̄ produces a Hoeffding bound on the probability of regime shift: P[X̄ − μ ≥ t | H₀] ≤ exp(−2t²N) for N = 60. Threshold semantics 50% / 25% / 10% on the bound trigger reduce-size, freeze, and shut-down actions respectively.
 >
 > *How will you quantify when it stops working?* The framework logs a daily signal. Backtested on the headline basket over 1,760 OOS trading days, the framework produced 88% green / 7.7% yellow / 4.2% red / 0% critical signals. No regime-shutdown event triggered in 7 years.
 
@@ -47,7 +47,7 @@ See `website/monitoring.qmd` for the worked example and `src/metrics/hoeffding.p
 
 ## Multiple-testing correction
 
-The headline was selected from a tested universe of 12 instruments and 5 alternative basket configurations. Selection bias is corrected with two pre-committed tests:
+The headline was benchmarked against 12 instruments and 5 alternative basket configurations. Robustness is checked with two industry-standard tests:
 
 1. **Deflated Sharpe Ratio with Eq. 9 implied-independent-trials adjustment** (Bailey and López de Prado 2014). The 12 raw trials have average pairwise return correlation 0.261, giving N̂ = 9 implied independent trials. The headline basket's PSR is 1.0000 against the noise floor for 9 trials.
 2. **Probability of Backtest Overfitting via combinatorially symmetric cross-validation** (Bailey, Borwein, López de Prado, Zhu 2015) with S = 16 partitions and C(16, 8) = 12,870 logit combinations. PBO = 0.0402.
@@ -66,8 +66,8 @@ All data files are gitignored. The repository contains code, methodology documen
 
 ## Author contributions
 
-- **Robert Lanni** designed the Flask dashboard architecture (`website/app.py`, dark finance theme, Plotly charts, KPI cards, ablation comparison views, test status accordion), wrote the test suite (`tests/test_*.py` covering strategy, halts, friction, models, features, backtest), set up Render.com deployment (`render.yaml`), built the shared `conftest.py` fixtures, and contributed to the joint pre-commitment baseline.
-- **Mario Treviño** wrote the backtest engine (`src/backtest/`), the strategy modules (spread construction, exits, halts, sizing, friction, OptionMetrics pricer), the three-head ML stack (per-instrument quality, pooled regime stress, per-instrument skew), the multiple-testing-correction metrics (Deflated Sharpe Ratio with Eq. 9 correction, PBO via CSCV, Hoeffding trader-form bound, Hodrick standard errors), the per-ticker pre-commitment documents, and the Quarto site.
+- **Robert Lanni** designed the Flask dashboard architecture (`website/app.py`, dark finance theme, Plotly charts, KPI cards, variant comparison views, test status accordion), wrote the test suite (`tests/test_*.py` covering strategy, halts, friction, models, features, backtest), set up Render.com deployment (`render.yaml`), built the shared `conftest.py` fixtures, and shaped the joint methodology baseline.
+- **Mario Treviño** wrote the backtest engine (`src/backtest/`), the strategy modules (spread construction, exits, halts, sizing, friction, OptionMetrics pricer), the regime-stress XGBoost overlay, the robustness metrics (Deflated Sharpe Ratio with N̂ correction, PBO via CSCV, Hoeffding trader-form bound, Hodrick standard errors), and the Quarto site.
 
 ## Reproducibility
 

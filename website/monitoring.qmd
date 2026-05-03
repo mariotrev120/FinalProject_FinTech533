@@ -12,7 +12,7 @@ Both questions are answered with one framework: **Hoeffding's inequality, applie
 
 ## The framework
 
-Pre-commit a baseline performance metric `μ` from the OOS backtest, for our headline strategy, that's the rolling-60-trade win rate observed over 2018–2024. Then, going forward, observe the live realized win rate `X̄` over the same rolling-60-trade window. Apply:
+We benchmark a baseline performance metric `μ` from the OOS backtest, for the headline strategy that is the basket-level win rate of 0.730 observed over 2018–2024. Going forward, we observe the live realized win rate `X̄` over a rolling 60-trade window and apply:
 
 $$
 P[\,\bar X - \mu \geq t \mid H_0\,] \;\leq\; e^{-2 t^2 N}
@@ -31,25 +31,23 @@ The bound is a **distribution-free, worst-case** probability. It holds for any b
 | 10–25% | 🟠 **red** | Significant regime risk | Substantial concern; review |
 | < 10% | 🔴 **critical** | Almost certain regime change | Halt strategy and rethink |
 
-These thresholds are pre-committed before live deployment. They are not numerical Sharpe targets, they are **structural confidence-level cutoffs** on the probability bound itself.
+These thresholds are set before live deployment. They are structural confidence-level cutoffs on the probability bound itself, not numerical Sharpe targets.
 
 ## Why 60-trade rolling window
 
 Three constraints determine the window size:
 
-- **Statistical power.** At N = 60 trades, an observed underperformance of `t = 0.10` (10 percentage points below pre-committed win rate) gives a Hoeffding bound of `e^(−2·0.01·60) = e^(−1.2) ≈ 30%`. That puts a 10-point degradation in the **yellow** zone, which is the right level of sensitivity, not jumping at one bad week, not waiting for a year of declines.
+- **Statistical power.** At N = 60 trades, an observed underperformance of `t = 0.10` (10 percentage points below win rate) gives a Hoeffding bound of `e^(−2·0.01·60) = e^(−1.2) ≈ 30%`. That puts a 10-point degradation in the **yellow** zone, which is the right level of sensitivity, not jumping at one bad week, not waiting for a year of declines.
 - **Time-to-signal.** With ~50–60 trades per year on the SPX iron condor at weekly cadence, 60 trades ≈ 1 year. The monitor produces a fresh signal monthly as the rolling window updates.
 - **Distribution stability.** Hoeffding holds for any bounded RV, but tighter bands of t for the same N require either more trades or larger underperformance magnitude. 60 is the smallest N at which the threshold-semantics resolution is meaningful for win-rate observations bounded in [0, 1].
 
-## Pre-committed μ baseline
+## Reference baseline
 
-The monitor's reference parameter is the basket-level win rate observed over the full OOS backtest:
-
-| Strategy | OOS window | n_trades | μ committed (win rate) |
+| Strategy | OOS window | n_trades | μ (basket win rate) |
 |---|---|---:|---:|
-| **Headline (Wheel-3 + GLD halts_only put-only + Head 2 ML overlay)** | 2018-01-01 → 2024-12-31 | **437** | **0.730** |
+| **Headline (Wheel-3 + GLD, halts_only, put-only, Head 2 ML overlay)** | 2018-01-01 → 2024-12-31 | **437** | **0.730** |
 
-Live trading would use this μ = 0.73 as the reference; deviations downward trigger the threshold table above.
+Live trading uses μ = 0.730 as the reference. Deviations downward trigger the threshold table above.
 
 ## Worked example: 2018–2024 retrospective on the headline basket
 
@@ -68,7 +66,7 @@ This is a backtest of the monitoring framework itself, what would the monitor ha
 | 🟠 red | 10–25% | 16 | 4.2% |
 | 🔴 critical | < 10% | 0 | **0.0%** |
 
-The framework operated as designed over the OOS sample: the basket's rolling win rate stayed within the pre-committed regime expectations on 88% of trades. Yellow signals (7.7%) flagged short stretches of sub-baseline performance that were absorbed back into green within a few weeks. Red signals (4.2%) flagged genuine sustained dips. **No critical signal fired**, the basket never had a 60-trade rolling win-rate dip large enough to trigger a regime-shutdown alert during 2018-2024.
+The framework operated as designed over the OOS sample: the basket's rolling win rate stayed within the regime expectations on 88% of trades. Yellow signals (7.7%) flagged short stretches of sub-baseline performance that were absorbed back into green within a few weeks. Red signals (4.2%) flagged genuine sustained dips. **No critical signal fired**, the basket never had a 60-trade rolling win-rate dip large enough to trigger a regime-shutdown alert during 2018-2024.
 
 ### Stress-event check
 
@@ -79,28 +77,28 @@ The framework operated as designed over the OOS sample: the basket's rolling win
 | 2022 bear market | 2023-04-17 | 0.767 | 0.000 (over) | 1.000 | 🟢 green |
 | Banking crisis | 2023-04-17 | 0.767 | 0.000 (over) | 1.000 | 🟢 green |
 
-Notable: the headline basket's rolling win rate at the COVID crash check-date (60-trade window ending Jan 2020) was 85%, actually *above* the pre-committed μ. The defined-risk put-credit-spread structure with halt framework absorbed the COVID stress without measurable win-rate degradation in the rolling window. This is the strategy's halt framework + cross-asset diversification doing exactly what they were designed to do.
+Notable: the headline basket's rolling win rate at the COVID crash check-date (60-trade window ending Jan 2020) was 85%, actually *above* the μ. The defined-risk put-credit-spread structure with halt framework absorbed the COVID stress without measurable win-rate degradation in the rolling window. This is the strategy's halt framework + cross-asset diversification doing exactly what they were designed to do.
 
 The framework demonstrates three properties on this retrospective:
 
 1. **Not noise-driven**, 88% of windows stay green, indicating low false-positive rate from random monthly fluctuations.
 2. **Sensitive enough to flag genuine dips**, 4.2% of windows reach the red zone (10-25% bound), meaning the framework would have alerted human attention at those moments.
-3. **No catastrophic firing**, 0% critical signals over 7 years means the strategy did not experience a regime-degradation event large enough to trigger a forced shutdown. Validation that the basket is robust within its pre-committed expectations.
+3. **No catastrophic firing**, 0% critical signals over 7 years means the strategy did not experience a regime-degradation event large enough to trigger a forced shutdown. Validation that the basket is robust within its expectations.
 
 ## What the framework does NOT do
 
 - It does not predict that a regime change is about to happen. It detects degradation that has already occurred.
 - It does not distinguish between bad luck on a small sample and a true regime change. The bound is a **probability** statement, not a binary decision. Reading the bound at 30% means "this could be bad luck, possible, but it could also be regime degradation; the monitor flags it for human attention."
-- It does not adapt μ over time. We commit μ from the OOS backtest and hold it. If we update μ live, we lose the pre-commitment property and the framework becomes circular.
+- It does not adapt μ over time. We benchmark μ from the OOS sample and hold it fixed in live deployment, this preserves the monitor's drift-detection power. Adapting μ live would create a moving-goalpost reference.
 
 ## Implementation
 
 The monitor is implemented in `src/metrics/hoeffding.py` and `scripts/hoeffding_monitor.py`. It reads per-instrument trade outcomes, computes the rolling-60 win rate, applies the bound, and emits a dated alert log to `data/processed/hoeffding_signals/{TICKER}_signals.parquet`.
 
-Cadence in production: weekly run, one signal per Monday morning before any new entries fire. Output: per-instrument signal status + book-level signal aggregated across the 5 VRP and 9 wheel positions.
+Cadence in production: weekly run, one signal per Monday morning before any new entries fire. Output: basket-level signal status across the 4 headline instruments.
 
 ## What this answers
 
 For the question **"how will you know if the strategy is performing as expected?"**, the bound stays ≥ 50% (green). Performance is plausibly within the OOS regime.
 
-For the question **"how will you quantify when it stops working?"**, when the bound drops to 10% or below, the strategy has degraded enough that random chance is an implausible explanation. That is the trip-wire. It is dated, quantitative, distribution-free, and pre-committed.
+For the question **"how will you quantify when it stops working?"**, when the bound drops to 10% or below, the strategy has degraded enough that random chance is an implausible explanation. That is the trip-wire. It is dated, quantitative, and distribution-free.

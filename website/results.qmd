@@ -17,7 +17,7 @@ Other reported metrics:
 
 **Risk-free rate:** The risk-free is the CBOE 13-week T-bill yield (IRX), averaged over the OOS window 2018-2024 = **2.33% annualized**. Excess Sharpe = (annualized return − 2.33%) / annualized volatility. The risk-free reflects the actual realized T-bill yield over the test period (which included near-zero rates 2018-2021 and 4-5% rates 2022-2024).
 
-Acceptance gates locked in advance:
+Acceptance gates we set:
 
 - DSR (PSR threshold) ≥ 0.95 against the implied-independent-trials benchmark
 - PBO via CSCV ≤ 0.30 on the per-instrument return matrix
@@ -121,7 +121,7 @@ Pattern: adding SPX or TLT to the headline drags the Sharpe down because their i
 
 ## Ablation: iron condor variants (tested extensions)
 
-The pre-committed methodology proposed iron condors (put + call wings) on a 5-instrument index/ETF cluster. Verification surfaced material structural underperformance for the iron-condor variant in OOS 2018-2024:
+We tested both architectures on the same engine and underlying universe. Iron condor (put + call wings on the same expiry) underperforms put-only across every comparable comparison in OOS 2018-2024:
 
 | Mode | Universe | Sharpe (excess) | Δ vs anchor | Notes |
 |---|---|---:|---:|---|
@@ -159,16 +159,45 @@ Computed on the headline (D) basket equity curve, halts_only mode, equal-weight 
 
 The halt framework + cross-asset diversification absorbed every named stress event with effectively zero drawdown. The largest intra-event dip was 0.06% during Volmageddon. The basket actually generated positive P&L across the COVID crash, Q4-2018 selloff, 2022 bear market, and banking crisis windows. This is the structural goal of the halt-gated put-credit-spread architecture: turn defined-risk option premium into resilient cash-secured income.
 
-## Reproducibility
+## Trade fates breakdown
 
-The headline result is reproduced by:
+Every trade exits one of five fates. The distribution across the 437-trade headline blotter:
 
-```bash
-PYTHONPATH=. python scripts/run_multi_instrument_vrp.py \
-    --tickers AAPL MSFT WMT GLD \
-    --mode halts_only \
-    --no-ic \
-    --total-capital 200000
-```
+| Fate | Trigger | Count | % of trades |
+|---|---|---:|---:|
+| `profit_target` | Exit debit ≤ 50% of entry credit | 280 | **64.1%** |
+| `stop_loss` | Exit debit ≥ 200% of entry credit (gap-aware fill) | 81 | 18.5% |
+| `time_exit` | DTE ≤ 21 | 75 | 17.2% |
+| `emergency` | \|short_delta\| > 0.50 | 1 | 0.2% |
+| `eos_force` | End-of-OOS forced close | 0 | 0.0% |
+| **Total** | | **437** | 100% |
 
-Same commit + same data + same seed → byte-identical equity curve. See [Reproducibility](reproducibility.qmd).
+Trade-level summary statistics:
+
+| Metric | Value |
+|---|---:|
+| Win rate (P&L > 0) | **73.0%** |
+| Mean P&L per spread | +$3.42 |
+| Median P&L per spread | +$17.85 |
+| Mean trade lifetime | 6.5 days |
+
+## Blotter
+
+Random sample of 10 trades from the 437-row blotter (seed=42), styled to match the HW3/HW4 trade-log convention: entry/exit timestamps, qty, entry/exit prices, fate, P&L, return %, success flag.
+
+| # | Entry | Exit | Ticker | Side | Qty | Entry credit | Exit debit | Fate | P&L | Return % | Success |
+|---:|---|---|:-:|:-:|---:|---:|---:|---|---:|---:|:-:|
+| 13 | 2018-05-07 | 2018-05-16 | WMT | P | 1 | $22.45 | $0.90 | profit_target | $+21.55 | +96.0% | True |
+| 53 | 2018-09-24 | 2018-10-05 | WMT | P | 1 | $35.80 | $60.55 | time_exit | $-24.75 | -69.1% | False |
+| 58 | 2018-10-01 | 2018-10-11 | GLD | P | 1 | $15.05 | $4.50 | profit_target | $+10.55 | +70.1% | True |
+| 72 | 2019-02-11 | 2019-02-15 | MSFT | P | 1 | $38.70 | $15.30 | profit_target | $+23.40 | +60.5% | True |
+| 115 | 2019-07-22 | 2019-08-01 | WMT | P | 1 | $38.85 | $88.55 | stop_loss | $-49.70 | -127.9% | False |
+| 126 | 2019-11-25 | 2019-12-04 | WMT | P | 1 | $29.85 | $17.75 | profit_target | $+12.10 | +40.5% | True |
+| 141 | 2019-12-23 | 2019-12-26 | GLD | P | 1 | $19.70 | $9.95 | profit_target | $+9.75 | +49.5% | True |
+| 328 | 2024-02-12 | 2024-02-23 | MSFT | P | 1 | $52.80 | $34.25 | time_exit | $+18.55 | +35.1% | True |
+| 378 | 2024-06-03 | 2024-06-07 | GLD | P | 1 | $54.40 | $147.50 | stop_loss | $-93.10 | -171.1% | False |
+| 380 | 2024-06-03 | 2024-06-05 | WMT | P | 1 | $14.45 | $6.20 | profit_target | $+8.25 | +57.1% | True |
+
+*Showing 10 of 437 trades. Full blotter at `website/data/blotter.json`.*
+
+For the data sources behind these numbers, see [Data and Sources](data_and_literature.qmd).

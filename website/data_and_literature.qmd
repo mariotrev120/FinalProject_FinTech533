@@ -1,0 +1,60 @@
+---
+title: "Data and Literature"
+---
+
+## Data sources
+
+The strategy reads from three external data providers, all snapshotted to local parquet files at commit time. No live network connections occur during a backtest.
+
+### 1. OptionMetrics IvyDB US (option chains)
+
+Daily option chains 2012-2025 with `bid`, `ask`, `impl_volatility`, `delta`, `gamma`, `vega`, `theta`, `volume`, `open_interest` for the 12 instruments tested. Acquired from WRDS as a single CSV (`strat2.2.csv.gz`, 2.4 GB compressed, 68.4M rows) and split via `scripts/convert_optionmetrics_to_parquet.py` into per-ticker parquets at `data/processed/options_by_ticker/{TICKER}.parquet`. The engine prices entries and exits at real chain quotes (not Black-Scholes fallback) wherever available.
+
+### 2. OptionMetrics IvyDB Securities (per-ticker underlying OHLC)
+
+Daily underlying open/high/low/close/volume for the 4 headline-basket tickers (AAPL, MSFT, WMT, GLD) and 6 ablation tickers (TLT, GOOGL, JNJ, KO, PG, JPM, PEP). Acquired from WRDS as `wheelstrat_data.gz` (760 KB) and split via `scripts/convert_wheelstrat_data.py` into per-ticker parquets at `data/raw/{TICKER}.parquet`. Spans 2012-01-03 to 2025-08-29. The IvyDB Securities file uses the same `secid` system as the option chains, so the join between underlying spot and chain quotes for the same security on the same date is exact.
+
+Daily closes match published exchange records on every spot-checked reference date (e.g. AAPL 2018-04-16 closes at $175.82, matching the public record).
+
+### 3. Interactive Brokers TWS feed snapshot (macro factors)
+
+Frozen snapshots of CBOE volatility indices (VIX, VIX3M, VVIX, SKEW), Treasury yields from FRED via TWS (IRX, TNX), credit-stress proxies (HYG, LQD), broad equity tape (SPY, SPX bars). Stored at `data/raw/{TICKER}.parquet`. Read by `pd.Series.asof(today)` at trade-decision time so no look-ahead bias is possible. Used for the halt framework's Layer 1 hard tail-event triggers, the ML stress head's feature matrix, the friction model's VIX-conditional slippage, and the risk-free baseline (IRX averaged over OOS = 2.33%).
+
+## Literature foundation
+
+The strategy and writeup are grounded in the following published references. None of these are course-internal materials, all are peer-reviewed.
+
+### Variance risk premium
+
+- **Carr, P., and Wu, L. (2003 working paper, 2009 Review of Financial Studies).** *Variance Risk Premia.* Documents the structural gap between option-implied and realized variance across U.S. equity indices. Provides the empirical t-statistics on the SPX cluster that anchor the project's universe selection (SPX strongly supported, NDX weaker, RUT extrapolated, TLT and GLD are novel cross-asset extensions).
+- **Bollerslev, T., Tauchen, G., and Zhou, H. (2009).** *Expected Stock Returns and Variance Risk Premia.* Review of Financial Studies. Establishes the 63-trading-day quarterly horizon as empirically optimal for VRP-based forecasting and motivates the Hodrick-style standard errors used for any overlapping regression in this work.
+- **Black, F., and Scholes, M. (1973).** *The Pricing of Options and Corporate Liabilities.* Journal of Political Economy. The original closed-form pricing of European options. The empirical biases the paper documents in OTC option pricing (BS overvalues high-variance underlyings, undervalues low-variance) are the structural source of the volatility risk premium the strategy harvests.
+- **Merton, R. C. (1973).** *Theory of Rational Option Pricing.* Bell Journal of Economics and Management Science. Theorem 13 on early exercise of American puts on dividend-paying stocks frames the pricing approximation disclosed for the wheel-name positions.
+
+### Multiple-testing correction
+
+- **Bailey, D. H., and López de Prado, M. (2014).** *The Deflated Sharpe Ratio: Correcting for Selection Bias, Backtest Overfitting, and Non-Normality.* Journal of Portfolio Management. Equation 9 of this paper provides the implied-independent-trials adjustment N̂ = ρ̄ + (1 − ρ̄) · M used to deflate the headline Sharpe against the 12-trial selection-bias noise floor.
+- **Bailey, D. H., Borwein, J. M., López de Prado, M., and Zhu, Q. J. (2015).** *The Probability of Backtest Overfitting.* Journal of Computational Finance. Defines the Probability of Backtest Overfitting via combinatorially symmetric cross-validation. Uses S = 16 partitions, C(16, 8) = 12,870 logit combinations to compute PBO = 0.0402 on the project's per-instrument return matrix.
+
+### Live monitoring
+
+- **Hoeffding, W. (1963).** *Probability Inequalities for Sums of Bounded Random Variables.* Journal of the American Statistical Association. The bound P[X̄ − μ ≥ t | H₀] ≤ exp(−2 t² N) for any bounded random variable underpins the live-monitoring framework's threshold semantics.
+
+### Calibration
+
+- **Niculescu-Mizil, A., and Caruana, R. (2005).** *Predicting Good Probabilities with Supervised Learning.* Proceedings of the 22nd International Conference on Machine Learning. Provides the sample-size threshold (n_pos minority class ≈ 200) that the auto-select between Platt scaling and isotonic regression uses in `src/models/calibration.py`.
+
+### Time-series statistics
+
+- **Hodrick, R. J. (1992).** *Dividend Yields and Expected Stock Returns: Alternative Procedures for Inference and Measurement.* Review of Financial Studies. Defines the variance estimator for overlapping multi-period predictive regressions that the project's regression diagnostics use, in preference to naive Newey-West standard errors.
+
+## Data limitations and how they shape the writeup
+
+| Limitation | Where the writeup acknowledges it |
+|---|---|
+| OptionMetrics has 7-15% NaN on Greeks at deep-OTM/ITM strikes | [Limitations §9](limitations.qmd) |
+| Per-instrument bars from a separate WRDS query (not from the chain file itself) | [Limitations §14](limitations.qmd) |
+| TWS-sourced macro factors are point-in-time but not as-of-decision-time stamped | [Limitations §13](limitations.qmd) |
+| Daily-frequency RV in the engine, not 5-minute intraday | [Limitations §7](limitations.qmd) |
+| OOS sample only 7 years long | [Limitations §3](limitations.qmd) |
+| RUT and NDX dropped because their underlying OHLC was not available locally | [Limitations](limitations.qmd#data-limitations) |

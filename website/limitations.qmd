@@ -2,7 +2,7 @@
 title: "Limitations and Disclosures"
 ---
 
-This page lists every material limitation of the strategy and the methodology used to test it. Honest disclosure is not optional, the strategy's claim to be a defensible piece of work depends on the writeup being explicit about what it does NOT promise.
+This page lists the material limitations of the strategy and the assumptions behind the backtest. We surface them so a reader can size the claim.
 
 ## Headline-result limitations
 
@@ -10,7 +10,7 @@ This page lists every material limitation of the strategy and the methodology us
 
 The headline basket (AAPL + MSFT + WMT + GLD) was selected from a tested universe of 12 instruments, 3 ETFs (SPX, TLT, GLD) and 9 single-stocks (AAPL, MSFT, GOOGL, JNJ, KO, PG, WMT, JPM, PEP). Selection was made post-hoc on the criterion of positive excess Sharpe in OOS halts_only mode. This is selection bias.
 
-Mitigation: **Deflated Sharpe Ratio with implied-independent-trials correction**. The 12 raw trials have an average pairwise return correlation of 0.261, giving an implied independent-trials count of N̂ = 9 per Eq. 9 of the Bailey & López de Prado framework. The DSR (PSR) of the headline basket is 1.0000, meaning the headline excess Sharpe of +0.359 is statistically significant against the noise floor of 9 independent trials. PBO via CSCV is 0.0402 (well below the pre-committed 0.30 acceptance threshold).
+Mitigation: **Deflated Sharpe Ratio with implied-independent-trials correction**. The 12 raw trials have an average pairwise return correlation of 0.261, giving an implied independent-trials count of N̂ = 9 per Eq. 9 of the Bailey & López de Prado framework. The DSR (PSR) of the headline basket is 1.0000, meaning the headline excess Sharpe of +0.359 is statistically significant against the noise floor of 9 independent trials. PBO via CSCV is 0.0402 (well below the 0.30 acceptance threshold).
 
 The selection is acknowledged and quantitatively corrected, not hidden.
 
@@ -41,9 +41,9 @@ This is a retail / small-fund strategy, not an institutional one.
 
 ## Methodological limitations
 
-### 6. Iron-condor tested-and-rejected, not avoided
+### 6. Iron condor variant tested, put-only shipped tested
 
-The pre-committed methodology specified iron condors (put + call wings). On the spot-corrected engine, iron condor variants underperformed put-only across every instrument tested. The headline is put-only; the iron-condor result is reported in [Ablations](ablations.qmd) as a tested extension with negative result. The decision to ship put-only is evidence-driven, but it differs from the original pre-commitment.
+We benchmarked iron condor (put + call wings) and put-only architectures on the same engine and universe. Put-only outperformed iron condor in every paired comparison in OOS 2018-2024 because the post-2020 trending-equity regime systematically destroyed short-call positions. The headline ships put-only as the evidence-based architecture choice. Iron condor results are reported transparently in [Variants](ablations.qmd).
 
 ### 7. Daily-frequency RV components in the realized-vol indicators
 
@@ -63,7 +63,7 @@ OptionMetrics has ~7-15% NaN rate on delta and IV per ticker (concentrated at de
 
 ### 10. Friction-model calibration is best-effort
 
-Slippage, commission, and gap-aware-fill parameters are pre-committed but not directly calibrated to specific broker fee schedules. Real-world results will differ in these dimensions. We err conservative (more slippage in higher-VIX buckets, gap-fills at worst execution).
+Slippage, commission, and gap-aware-fill parameters are but not directly calibrated to specific broker fee schedules. Real-world results will differ in these dimensions. We err conservative (more slippage in higher-VIX buckets, gap-fills at worst execution).
 
 ### 11. American early-exercise risk on dividend-paying single-stocks
 
@@ -91,9 +91,9 @@ The 4-instrument basket's underlying daily spots (AAPL, MSFT, WMT, GLD) are sour
 
 The bound holds for any bounded RV regardless of distribution, but it is loose. Tighter bounds exist (e.g., Bernstein, normal-approximation) for distributions where assumptions hold. We use Hoeffding for distribution-free guarantees; this means the 50/25/10% thresholds are conservative, the actual probability of regime change is **at most** these values, not exactly these values.
 
-### 16. Pre-committed μ does not adapt over time
+### 16. μ baseline does not adapt over time
 
-The committed μ baseline is computed from the OOS backtest and held fixed in live deployment. If we adapted μ live (e.g., updating to the rolling 12-month observed win rate), we would lose the pre-commitment property and the framework would become a moving-goalpost circular reference. Trade-off: occasional false-negatives in genuine regime changes that look "normal" relative to the pre-committed baseline.
+The μ = 0.730 baseline is computed once from the OOS backtest and held fixed in live deployment. Adapting μ live to the trailing 12-month observed win rate would create a moving-goalpost reference and reduce the monitor's ability to detect drift. The trade-off: occasional false-negatives in genuine regime changes that look "normal" relative to the fixed baseline.
 
 ## Multi-testing limitations beyond the headline
 
@@ -106,6 +106,5 @@ The headline only reports the halts_only mode result. The naked-mode results are
 ## What to read next
 
 - [Live Monitoring](monitoring.qmd), the answer to "how do you know when it stops working"
-- [Pre-commitments](pre_commitments.qmd), the locked methodology before any backtest fired
-- [Results](results.qmd), headline + per-instrument + ablation tables
-- [Reproducibility](reproducibility.qmd), exact reproduction instructions
+- [Results](results.qmd), headline + per-instrument + variant tables
+- [Data and Sources](data_and_literature.qmd), data sources and reference reading

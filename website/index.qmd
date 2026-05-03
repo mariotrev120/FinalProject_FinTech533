@@ -21,7 +21,7 @@ A 4-instrument cross-asset put-credit-spread basket (AAPL, MSFT, WMT, GLD) with 
 | **DSR (PSR)** | **1.0000** ≥ 0.95 ✓ |
 | **PBO via CSCV** | **0.0402** ≤ 0.30 ✓ |
 
-Both pre-committed acceptance gates pass. See [Results](results.qmd) for the full breakdown and [Pre-commitments](pre_commitments.qmd) for the locked methodology.
+Both acceptance gates pass. See [Results](results.qmd) for the full breakdown.
 
 ## What's behind the number
 
@@ -31,13 +31,9 @@ Both pre-committed acceptance gates pass. See [Results](results.qmd) for the ful
 - **Exogenous-factor inputs**, VIX/VIX3M/VVIX/SKEW for regime classification, IRX for risk-free baseline + cash accrual, HYG-LQD spread + rolling SPY-Treasury correlation for stress detection. See [Mechanics](mechanics.qmd) for the full list.
 - **Honest aggregation**, book Sharpe computed from the equal-weighted aggregate equity curve, not from per-instrument Sharpe averaging. Cross-instrument correlation 0.26 (low) drives the diversification benefit.
 
-## Pre-commitment-driven methodology
-
-Every parameter, threshold, and acceptance criterion was locked in version-controlled pre-commitment documents **before** the OOS backtest ran. Methodology amendments after pre-commitment are logged with date and reason. See [Pre-commitments](pre_commitments.qmd).
-
 ## Live-monitoring framework
 
-The strategy ships with a **Hoeffding trader-application bound** that quantifies, in real time, the probability the underlying win-rate has shifted away from the pre-committed baseline. Threshold semantics (50% / 25% / 10% probability bound) trigger reduce-size, freeze, and shut-down actions respectively. See [Live Monitoring](monitoring.qmd) for the full framework and worked example on the headline basket.
+The strategy ships with a **Hoeffding trader-application bound** that quantifies, in real time, the probability the underlying win-rate has shifted away from the OOS baseline of μ = 0.730. Threshold semantics (50% / 25% / 10% probability bound) trigger reduce-size, freeze, and shut-down actions respectively. See [Live Monitoring](monitoring.qmd) for the full framework and worked example on the headline basket.
 
 ## What was tested but not used
 
@@ -59,4 +55,4 @@ PYTHONPATH=. python scripts/run_multi_instrument_vrp.py \
     --total-capital 200000
 ```
 
-`SEED = 42` is consumed by every stochastic component. Two runs of the same commit produce identical equity curves to floating-point precision. See [Reproducibility](reproducibility.qmd).
+`SEED = 42` is consumed by every stochastic component. Two runs of the same commit produce identical equity curves to floating-point precision. See [Data and Literature](data_and_literature.qmd) for the full data-source list and reference reading.

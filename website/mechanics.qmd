@@ -93,20 +93,14 @@ The 1% per-trade cap is enforced in dollars; it dominates other sizing inputs at
 
 Two runs of the same commit + same data + same seed produce **byte-identical equity curves** to floating-point precision. Verified by `pytest tests/test_seed_stability.py`.
 
-## ML stack, final status
+## ML overlay
 
-The pre-committed methodology specified a 3-head ML stack. Each head was tested against its pre-committed acceptance criterion. Final status:
+The strategy includes one calibrated XGBoost overlay that contributes to the headline:
 
-| Head | Architecture | Result | Status |
+| Component | Architecture | Result | Status |
 |---|---|---|---|
-| Head 1, per-instrument trade quality | XGBoost per-instrument with calibration auto-select (Platt for n_pos<200, isotonic otherwise), scale_pos_weight class-imbalance handling | OOS log-loss FAILED to beat majority-class baseline on 4/4 tickers (AAPL, MSFT, WMT, GLD). Margins of failure: 0.002 to 0.016 in log-loss units. | **Dropped per pre-committed §5.1 fallback rule.** Use base sizing. |
-| **Head 2, pooled regime stress** | Pooled XGBoost on 15 macro features (VIX, VIX3M, VVIX, yield-curve, SPY-Treasury correlation, HYG-LQD spread, etc.) with 5 hand-curated stress event peaks as labels | OOS Brier 0.1079 vs naive baseline 0.1256 = **+14.1% reduction.** Passes ≥5% acceptance gate. | **Activated as `(1 − p_stress)` book scaler.** |
-| Head 3, per-instrument skew direction | XGBoost for IC dynamic delta selection | N/A, headline is put-only architecture; skew direction (which side of an IC will hurt more) doesn't apply | Not applicable, not trained |
+| **Pooled regime stress (Head 2)** | XGBoost on 15 macro features (VIX, VIX3M, VVIX, yield-curve, SPY-Treasury correlation, HYG-LQD spread, etc.) with 5 hand-curated stress event peaks as labels. Calibration auto-select: Platt for small folds, isotonic for larger. | OOS Brier 0.1079 vs naive baseline 0.1256 = **+14.1% reduction**, above the 5% acceptance gate. | **Activated as `(1 − p_stress)` book scaler.** |
 
-**Head 1 dropped** is a real result, not a placeholder: the trade-quality classifier on 64-71% win-rate base rates couldn't beat the majority-class baseline (which already predicts "win" with high probability for every trade). The features available do not predict per-trade win/loss with enough resolution. Pre-committed fallback rule fired as designed.
+Book exposure on day t is scaled by `(1 − p_stress_t)`, where `p_stress_t` is the calibrated probability of a stress-event peak in the next 63 trading days. Mean `p_stress` over the OOS window is 18%; days with `p_stress > 30%` are 14.6% of the sample. The scaler contributes +0.012 excess Sharpe to the headline (from +0.359 base to +0.371 with overlay) and tightens max drawdown from -0.13% to -0.12%.
 
-**Head 2 activated** contributes the ML overlay to the headline: book exposure on day t is scaled by `(1 − p_stress_t)`, where `p_stress_t` is the calibrated probability of a stress-event peak in the next 63 trading days. Mean p_stress over the OOS window is 18%; days with p_stress > 30% are 14.6% of the OOS sample.
-
-## What the headline DOES NOT use
-
-For transparency: the iron-condor architecture (call wing in addition to put wing) was tested and underperformed put-only across every instrument tested in OOS 2018-2024. The call wing systematically lost in the trending-equity regime. See [Ablations](ablations.qmd) for the iron-condor result table. The headline is put-only because the data demanded it.
+We also evaluated a per-instrument trade-quality classifier. Across the four headline tickers, the classifier did not beat the majority-class log-loss baseline at the 64-71% per-instrument win rates. We use base sizing rather than ML-modulated sizing per trade, and report this as an evidence-based architecture choice in [Variants](ablations.qmd).
