@@ -242,7 +242,7 @@ The distribution is right-skewed by design: a 16-delta short put expires worthle
 | 2024-11 | 12 | +$181.80 | +$1,418.88 |
 | 2024-12 | 12 | +$75.25 | +$1,494.13 |
 
-*Showing 12 of 84 months from January 2018 to December 2024. Net P&L in dollars per spread (per-contract basis at $100 multiplier). The full 84-month ledger and the 437-row blotter are at `website/data/blotter.json`.*
+*Showing 12 of 84 months from January 2018 to December 2024. Net P&L in dollars per spread (per-contract basis at $100 multiplier). Full ledger and blotter: [blotter.json](https://github.com/mariotrev120/FinalProject_FinTech533/blob/mario/data-pipeline/website/data/blotter.json) (437 trades, all fields).*
 
 ## Blotter
 
@@ -263,7 +263,7 @@ Random sample of 10 trades from the 437-row blotter (seed=42).
 
 The `trd_prd` index encodes year + ISO week as a single decimal. Entries on the same Monday share the same `trd_prd`.
 
-*Showing 10 of 437 trades. Full blotter at `website/data/blotter.json`.*
+*Showing 10 of 437 trades. Full blotter: [blotter.json](https://github.com/mariotrev120/FinalProject_FinTech533/blob/mario/data-pipeline/website/data/blotter.json) (all 437 entries with every field).*
 
 ## How will you know the strategy is performing as expected?
 
