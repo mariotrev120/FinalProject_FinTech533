@@ -185,18 +185,20 @@ Trade-level summary statistics:
 
 Random sample of 10 trades from the 437-row blotter (seed=42), styled to match the HW3/HW4 trade-log convention: entry/exit timestamps, qty, entry/exit prices, fate, P&L, return %, success flag.
 
-| # | Entry | Exit | Ticker | Side | Qty | Entry credit | Exit debit | Fate | P&L | Return % | Success |
-|---:|---|---|:-:|:-:|---:|---:|---:|---|---:|---:|:-:|
-| 13 | 2018-05-07 | 2018-05-16 | WMT | P | 1 | $22.45 | $0.90 | profit_target | $+21.55 | +96.0% | True |
-| 53 | 2018-09-24 | 2018-10-05 | WMT | P | 1 | $35.80 | $60.55 | time_exit | $-24.75 | -69.1% | False |
-| 58 | 2018-10-01 | 2018-10-11 | GLD | P | 1 | $15.05 | $4.50 | profit_target | $+10.55 | +70.1% | True |
-| 72 | 2019-02-11 | 2019-02-15 | MSFT | P | 1 | $38.70 | $15.30 | profit_target | $+23.40 | +60.5% | True |
-| 115 | 2019-07-22 | 2019-08-01 | WMT | P | 1 | $38.85 | $88.55 | stop_loss | $-49.70 | -127.9% | False |
-| 126 | 2019-11-25 | 2019-12-04 | WMT | P | 1 | $29.85 | $17.75 | profit_target | $+12.10 | +40.5% | True |
-| 141 | 2019-12-23 | 2019-12-26 | GLD | P | 1 | $19.70 | $9.95 | profit_target | $+9.75 | +49.5% | True |
-| 328 | 2024-02-12 | 2024-02-23 | MSFT | P | 1 | $52.80 | $34.25 | time_exit | $+18.55 | +35.1% | True |
-| 378 | 2024-06-03 | 2024-06-07 | GLD | P | 1 | $54.40 | $147.50 | stop_loss | $-93.10 | -171.1% | False |
-| 380 | 2024-06-03 | 2024-06-05 | WMT | P | 1 | $14.45 | $6.20 | profit_target | $+8.25 | +57.1% | True |
+| trd_prd | Entry | Exit | Ticker | Side | Qty | Entry credit | Exit debit | Fate | P&L | Return % | Success |
+|---|---|---|:-:|:-:|---:|---:|---:|---|---:|---:|:-:|
+| 2018.19 | 2018-05-07 | 2018-05-16 | WMT | P | 1 | $22.45 | $0.90 | profit_target | $+21.55 | +96.0% | True |
+| 2018.39 | 2018-09-24 | 2018-10-05 | WMT | P | 1 | $35.80 | $60.55 | time_exit | $-24.75 | -69.1% | False |
+| 2018.40 | 2018-10-01 | 2018-10-11 | GLD | P | 1 | $15.05 | $4.50 | profit_target | $+10.55 | +70.1% | True |
+| 2019.07 | 2019-02-11 | 2019-02-15 | MSFT | P | 1 | $38.70 | $15.30 | profit_target | $+23.40 | +60.5% | True |
+| 2019.30 | 2019-07-22 | 2019-08-01 | WMT | P | 1 | $38.85 | $88.55 | stop_loss | $-49.70 | -127.9% | False |
+| 2019.48 | 2019-11-25 | 2019-12-04 | WMT | P | 1 | $29.85 | $17.75 | profit_target | $+12.10 | +40.5% | True |
+| 2019.52 | 2019-12-23 | 2019-12-26 | GLD | P | 1 | $19.70 | $9.95 | profit_target | $+9.75 | +49.5% | True |
+| 2024.07 | 2024-02-12 | 2024-02-23 | MSFT | P | 1 | $52.80 | $34.25 | time_exit | $+18.55 | +35.1% | True |
+| 2024.23 | 2024-06-03 | 2024-06-07 | GLD | P | 1 | $54.40 | $147.50 | stop_loss | $-93.10 | -171.1% | False |
+| 2024.23 | 2024-06-03 | 2024-06-05 | WMT | P | 1 | $14.45 | $6.20 | profit_target | $+8.25 | +57.1% | True |
+
+The `trd_prd` index encodes year + ISO week as a single decimal (matches HW2/HW3 trade-period convention). Entries on the same Monday share the same `trd_prd`.
 
 *Showing 10 of 437 trades. Full blotter at `website/data/blotter.json`.*
 
