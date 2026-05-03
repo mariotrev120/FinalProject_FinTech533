@@ -10,15 +10,22 @@
 
 ## 1. Universe (locked)
 
-| Ticker | Class            | Section 1256 | Tax disclosure        | Strike increment | Wing width pts |
-| ------ | ---------------- | ------------ | --------------------- | ---------------- | -------------- |
-| SPX    | Cash index       | Yes          | 60/40 LTCG/STCG       | 5                | 5              |
-| RUT    | Cash index       | Yes          | 60/40                 | 5                | 5              |
-| NDX    | Cash index       | Yes          | 60/40                 | 25               | 25             |
-| TLT    | Long-bond ETF    | No           | Asymmetric ST/LT      | 1                | 1              |
-| GLD    | Gold ETF         | No           | Asymmetric ST/LT      | 1                | 1              |
+| Ticker | Class            | Section 1256 | Tax disclosure        | Strike increment | Wing width pts | VRP evidence base |
+| ------ | ---------------- | ------------ | --------------------- | ---------------- | -------------- | ----------------- |
+| SPX    | Cash index       | Yes          | 60/40 LTCG/STCG       | 5                | 5              | **Strongly supported** |
+| RUT    | Cash index       | Yes          | 60/40                 | 5                | 5              | Inferred (similar to SPX) |
+| NDX    | Cash index       | Yes          | 60/40                 | 25               | 25             | Weaker support |
+| TLT    | Long-bond ETF    | No           | Asymmetric ST/LT      | 1                | 1              | Novel application |
+| GLD    | Gold ETF         | No           | Asymmetric ST/LT      | 1                | 1              | Novel application |
 
-**Why this set, not bigger:** Carr & Wu (2003/2004) document strongly negative VRP for S&P 500 indexes, smaller-magnitude negative VRP for NDX and most individual stocks. Indexes diversify across-name idiosyncratic risk, isolating the volatility-of-volatility premium itself. TLT and GLD diversify *across asset class*, so the cluster is not just a leveraged bet on equity vol regime. The trade-off: TLT/GLD lose 1256 treatment and are smaller in liquidity. We accept this and disclose tax asymmetry explicitly.
+**VRP evidence base column — sourced per Carr & Wu (2003/2004) Section 6 Table 5:**
+
+- **SPX (and OEX, DJX in the original paper) — strongly supported.** Carr/Wu §6.1: "the largest t-statistics come from the S&P 500 and S&P 100 indexes and the Dow Jones Industrial Average, which are strongly significant for both variance risk premia and log variance risk premia." Mean log VRP magnitude exceeds −50% per month for S&P and Dow. RP form: t-statistics highly significant. LRP form: t-statistics highly significant.
+- **RUT — inferred.** Not in Carr/Wu's original 5-index sample (which was SPX, OEX, DJX, NDX, and the Nasdaq-100 tracking stock QQQ). RUT is a large-cap-equivalent US index; we treat it as similar in VRP structure to SPX, but this is an extrapolation, not direct empirical evidence.
+- **NDX — weaker support.** Carr/Wu §6.1: "The Nasdaq-100 index and its tracking stock generate t-statistics that are much lower. The t-statistics on the two Nasdaq indexes are not statistically significant for the variance risk premia RP, albeit significant for the log variance risk premia LRP." Smaller-magnitude negative VRP than SPX.
+- **TLT, GLD — novel application of the framework.** Carr/Wu studied 5 stock indexes and 35 individual stocks. Bond ETFs (TLT) and commodity ETFs (GLD) were not in their sample. Theoretical VRP framework (variance swap rate as risk-neutral expected variance, realized variance as ex-post counterpart) carries over to any underlying with a liquid options market. We apply it to TLT and GLD as a novel extension; empirical magnitude is to be measured by the OOS results, with no prior literature anchor.
+
+**Why this set, not bigger:** Indexes diversify across-name idiosyncratic risk, isolating the volatility-of-volatility premium itself. TLT and GLD diversify *across asset class*, so the cluster is not just a leveraged bet on equity vol regime. The trade-off: TLT/GLD lose 1256 treatment, smaller liquidity, and lack direct Carr/Wu empirical support. We accept these and disclose explicitly. The writeup limitations section will state that any positive VRP harvest on TLT and GLD is a novel finding without prior-literature replication.
 
 **Why not PEP / not 6+:** PEP is currently active in the wheel basket (PRE_COMMITMENT_WHEEL.md §1, 9-name primary), not in the VRP cluster. The VRP universe is 5 instruments locked. Adding more dilutes the per-instrument sample size below the ML acceptance threshold (~60 trades/instrument/fold).
 
