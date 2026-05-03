@@ -40,26 +40,26 @@ The engine uses these macro/regime indicators at every trade decision. All are *
 |---|---|---|
 | **VIX** (CBOE) | TWS feed | Slippage scaling (per-VIX-bucket bid-ask half-spread fraction); vol-multiplier in sizing |
 | **VIX3M** (CBOE) | TWS feed | Vol-term-structure context for regime classification |
-| **VVIX** (CBOE) | TWS feed | Vol-of-vol, Layer 1 hard halt threshold input |
+| **VVIX** (CBOE) | TWS feed | Vol-of-vol, tail-event halt threshold input |
 | **SKEW** (CBOE) | TWS feed | Tail-risk indicator |
 | **IRX** (3M T-bill yield) | FRED via TWS feed | Risk-free baseline for daily cash accrual + Sharpe denominator |
 | **TNX** (10Y Treasury yield) | FRED via TWS feed | Term-structure curvature context |
-| **HYG − LQD spread** | TWS feeds | Credit-stress proxy, Layer 1 hard halt input |
+| **HYG − LQD spread** | TWS feeds | Credit-stress proxy, tail-event halt input |
 | **SPY × Treasury rolling 20-day correlation** | computed from SPY + TNX | Stress-multiplier in sizing when correlation regime shifts (risk-off pattern: equity-down, rates-down both moving) |
-| **SPX bars (open / close)** | TWS feed | Market-wide gap-skip signal (Monday gap ≥ 3% → skip all entries that day); Layer 1 hard halt move thresholds |
+| **SPX bars (open / close)** | TWS feed | Market-wide gap-skip signal (Monday gap ≥ 3% → skip all entries that day); tail-event halt move thresholds |
 | **Per-ticker bars** (4 underlyings) | OptionMetrics IvyDB Securities | Strike selection; entry/exit price recording; wing computation |
 
 The headline result is **conditioned on the entire macro context above**, not just the option chains for AAPL/MSFT/WMT/GLD. The engine reads each series asof the trade-decision timestamp via `pd.Series.asof(today)`.
 
 ## Halt framework, 3 active layers
 
-| Layer | What it does | Status |
-|---|---|---|
-| **Layer 1** Hard tail-event | Halt on extreme single-day market shocks (VIX +50%/d, VVIX > 150, HYG-LQD > 3 SD, SPX one-day move beyond threshold) | **Active** |
-| Layer 2 Soft halt | Dropped post-v1 audit (-9.0pp Sharpe lift, $413 of profitable trades blocked) | Removed |
-| Layer 3 Slow halt | Dropped post-v1 audit (-10.1pp Sharpe lift, $1,233 of profitable trades blocked) | Removed |
-| **Layer 4** Drawdown halt | Halt on >90 days underwater OR >15% drawdown, measured in **trailing 90-day window** | **Active** |
-| **Layer 5** Auto-resume | Lift halt when 3 market-regime conditions clear simultaneously OR 60-trading-day time fallback fires | **Active** |
+| Layer | What it does |
+|---|---|
+| **Tail-event halt** | Halt on extreme single-day market shocks: VIX up 50% or more in a day, VVIX above 150, HYG-LQD spread breaching 3 standard deviations, or SPX moving beyond a single-day threshold. |
+| **Drawdown halt** | Halt when the basket has been underwater for more than 90 days OR drawdown exceeds 15% within a trailing 90-day window. |
+| **Auto-resume** | Lift halt when three market-regime conditions clear simultaneously OR a 60-trading-day time fallback fires. |
+
+Two earlier halt layers were tested in development and dropped after audit; details available in the source repository.
 
 ## Per-trade sizing
 

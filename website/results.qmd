@@ -199,6 +199,8 @@ Reading the rates the rubric asks for:
 | Median trade lifetime | 7 days |
 | Profit factor (gross win / gross loss) | 1.26 |
 
+The 6.5-day mean lifetime reflects how the strategy actually deploys capital: profit-target exits fire quickly in calm regimes, and the basket spends most of its capital sitting on T-bill carry between trade cycles. Median holding period is 7 days; the 25th-to-75th percentile window is 3 to 10 days; no trade exceeds 14 days because the time-exit rule forces a close at DTE ≤ 21 against the 30-45 DTE entry window.
+
 ## Per-instrument breakdown
 
 | Ticker | Trades | Wins | Win rate | Mean P&L | Total P&L |

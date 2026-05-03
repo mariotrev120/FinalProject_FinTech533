@@ -253,17 +253,18 @@ def chart_ablation_baskets():
                   annotation_font=dict(size=10, color=COLOR_GOLD))
     fig.add_vline(x=0, line_color=COLOR_GRAY, line_width=1)
 
-    layout = {**LAYOUT_BASE, "margin": dict(l=320, r=90, t=100, b=60)}
+    layout = {**LAYOUT_BASE, "margin": dict(l=380, r=160, t=110, b=70)}
     fig.update_layout(
         **layout,
         title=dict(
-            text="<b>Variants evaluated · excess Sharpe across all baskets</b>"
-                 "<br><sup style='color:#666'>Headline (D′) is one of 6 configurations tested · "
-                 "navy = headline · green = beats anchor · gold = positive but below · red = negative</sup>",
-            x=0.04, xanchor="left",
+            text="<b>Variants evaluated, excess Sharpe across all baskets</b>"
+                 "<br><sup style='color:#666'>Six configurations tested · "
+                 "navy is the headline · green beats baseline · gold positive but below · red negative</sup>",
+            x=0.04, xanchor="left", y=0.97,
         ),
-        height=480,
-        xaxis=dict(title="Excess Sharpe (rf = 2.33%)", gridcolor="#E5E7EB", zeroline=False),
+        height=520,
+        xaxis=dict(title="Excess Sharpe (rf = 2.33%)", gridcolor="#E5E7EB",
+                   zeroline=False, range=[-0.75, 0.50]),
         yaxis=dict(title="", gridcolor="#E5E7EB", autorange="reversed"),
         showlegend=False,
         bargap=0.25,

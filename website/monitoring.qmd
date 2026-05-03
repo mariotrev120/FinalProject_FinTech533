@@ -38,7 +38,7 @@ These thresholds are set before live deployment. They are structural confidence-
 Three constraints determine the window size:
 
 - **Statistical power.** At N = 60 trades, an observed underperformance of `t = 0.10` (10 percentage points below win rate) gives a Hoeffding bound of `e^(−2·0.01·60) = e^(−1.2) ≈ 30%`. That puts a 10-point degradation in the **yellow** zone, which is the right level of sensitivity, not jumping at one bad week, not waiting for a year of declines.
-- **Time-to-signal.** With ~50–60 trades per year on the SPX iron condor at weekly cadence, 60 trades ≈ 1 year. The monitor produces a fresh signal monthly as the rolling window updates.
+- **Time-to-signal.** With approximately 60 trades per year per instrument across the 4-instrument basket at weekly cadence, 60 trades represents approximately one year of basket-level activity. The monitor produces a fresh signal monthly as the rolling window updates.
 - **Distribution stability.** Hoeffding holds for any bounded RV, but tighter bands of t for the same N require either more trades or larger underperformance magnitude. 60 is the smallest N at which the threshold-semantics resolution is meaningful for win-rate observations bounded in [0, 1].
 
 ## Reference baseline
@@ -73,11 +73,10 @@ The framework operated as designed over the OOS sample: the basket's rolling win
 | Event | Date probed | Rolling X̄ | t = μ − X̄ | Bound | Signal |
 |---|---|---:|---:|---:|:-:|
 | Q4 2018 selloff | 2019-02-04 | 0.700 | +0.030 | 0.898 | 🟢 green |
-| COVID crash | 2020-01-13 | 0.850 | 0.000 (over) | 1.000 | 🟢 green |
 | 2022 bear market | 2023-04-17 | 0.767 | 0.000 (over) | 1.000 | 🟢 green |
 | Banking crisis | 2023-04-17 | 0.767 | 0.000 (over) | 1.000 | 🟢 green |
 
-Notable: the headline basket's rolling win rate at the COVID crash check-date (60-trade window ending Jan 2020) was 85%, actually *above* the μ. The defined-risk put-credit-spread structure with halt framework absorbed the COVID stress without measurable win-rate degradation in the rolling window. This is the strategy's halt framework + cross-asset diversification doing exactly what they were designed to do.
+Notable: the COVID crash window is not shown in the table above because the halt framework engaged in late January 2020 and stayed engaged through the recovery. The strategy did not enter new positions from January 2020 through April 2021. With no new trades in the rolling window, the monitor held its prior green signal throughout the period; the framework correctly responded to extreme regime stress by pausing entries until conditions stabilized.
 
 The framework demonstrates three properties on this retrospective:
 

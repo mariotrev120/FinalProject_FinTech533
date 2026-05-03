@@ -57,13 +57,12 @@ The halt framework's contribution is consistently positive: every instrument has
 
 ## ML overlays evaluated
 
-Three calibrated XGBoost overlays were evaluated. One is activated in the headline; two are not.
+Two calibrated XGBoost overlays were evaluated. One is activated in the headline; the other is not.
 
 | Overlay | What it does | Result | Activated in headline? |
 |---|---|---|:-:|
 | Per-trade quality classifier | Per-instrument XGBoost predicting whether a trade closes at profit-target | Out-of-sample log-loss worse than majority-class baseline on 4 of 4 tickers (margins 0.002 to 0.016) | ✗ (not activated, base sizing used) |
 | **Regime-stress overlay** | Pooled XGBoost predicting probability of a stress event in the next quarter (63 trading days) | Out-of-sample Brier 0.1079 vs naive baseline 0.1256, a **14.1% reduction**, well above the 5% acceptance gate | ✓ (applied as `(1 − p_stress)` book-exposure scaler) |
-| Skew-direction model | XGBoost picking which side of an iron condor will hurt more, used to dynamically tilt delta | Not applicable, the headline architecture is put-only | ✗ (not applicable) |
 
 The per-trade quality classifier did not beat the majority-class baseline because the base win rate of 64-71% per instrument leaves the "always predict win" baseline log-loss already low. The features available do not predict per-trade outcomes with enough resolution to improve on it.
 
