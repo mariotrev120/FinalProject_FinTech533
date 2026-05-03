@@ -3,8 +3,8 @@ project:
   output-dir: _site
 
 website:
-  title: "Defined-Risk Volatility-Risk-Premium Harvesting"
-  description: "FinTech 533 capstone — 4-instrument cross-asset put-credit-spread basket (Wheel-3 + GLD) with halt framework + Head 2 ML overlay; excess Sharpe +0.371 OOS 2018-2024"
+  title: "R & M Trade Desk"
+  description: "Robert Lanni and Mario Treviño · FinTech 533 capstone · 4-instrument cross-asset put-credit-spread basket with halt framework and stress-adaptive sizing; excess Sharpe +0.371 OOS 2018-2024"
   navbar:
     background: dark
     left:
@@ -27,7 +27,7 @@ website:
       - href: reproducibility.qmd
         text: Reproducibility
   page-footer:
-    center: "FinTech 533 capstone · Mario Treviño · Duke MEng FinTech"
+    center: "R & M Trade Desk · Robert Lanni and Mario Treviño · FinTech 533 · Duke MEng FinTech"
 
 format:
   html:

@@ -1,6 +1,6 @@
 ---
-title: "Defined-Risk Volatility-Risk-Premium Harvesting"
-subtitle: "FinTech 533 capstone · Mario Treviño · Duke MEng FinTech"
+title: "R & M Trade Desk"
+subtitle: "Defined-Risk Volatility-Risk-Premium Harvesting · Robert Lanni and Mario Treviño · FinTech 533 · Duke MEng FinTech"
 ---
 
 ## The strategy in one sentence
