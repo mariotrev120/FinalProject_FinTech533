@@ -283,11 +283,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><strong>Sharpe (excess of risk-free), with regime-stress ML overlay</strong></td>
+<td><strong>Sharpe ratio (excess of risk-free, ML overlay engaged)</strong></td>
 <td style="text-align: right;"><strong>+0.371</strong></td>
 </tr>
 <tr class="even">
-<td>Sharpe (excess), without the ML overlay</td>
+<td>Sharpe ratio (excess), without ML overlay</td>
 <td style="text-align: right;">+0.359</td>
 </tr>
 <tr class="odd">
@@ -303,20 +303,44 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td style="text-align: right;">2.33%</td>
 </tr>
 <tr class="even">
-<td>Annualized return (geometric)</td>
-<td style="text-align: right;">+2.41%</td>
+<td><strong>Geometric mean return (GMRR, annualized)</strong></td>
+<td style="text-align: right;"><strong>+2.41%</strong></td>
 </tr>
 <tr class="odd">
 <td>Annualized volatility</td>
 <td style="text-align: right;">0.21% (with ML) / 0.23% (without)</td>
 </tr>
 <tr class="even">
+<td><strong>Alpha vs SPY (annualized OLS intercept × 252)</strong></td>
+<td style="text-align: right;"><strong>+2.37%</strong></td>
+</tr>
+<tr class="odd">
+<td><strong>Beta vs SPY (OLS slope, daily simple returns)</strong></td>
+<td style="text-align: right;"><strong>+0.0014</strong></td>
+</tr>
+<tr class="even">
+<td>Correlation with SPY (daily returns)</td>
+<td style="text-align: right;">0.12</td>
+</tr>
+<tr class="odd">
 <td>Max drawdown over OOS (7 years)</td>
 <td style="text-align: right;"><strong>-0.12%</strong> (with ML) / -0.13% (without)</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>Trades total (sum across 4 instruments)</td>
 <td style="text-align: right;">437</td>
+</tr>
+<tr class="odd">
+<td>Average trades per year</td>
+<td style="text-align: right;">62.8</td>
+</tr>
+<tr class="even">
+<td>Average return per trade</td>
+<td style="text-align: right;">+8.25% (median +$17.85 net P&amp;L per spread)</td>
+</tr>
+<tr class="odd">
+<td>Win rate (basket aggregate)</td>
+<td style="text-align: right;">73.0%</td>
 </tr>
 <tr class="even">
 <td>OOS span</td>
@@ -332,6 +356,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 </tbody>
 </table>
+<p>Mapping to the HW3 / HW4 rubric: <strong>GMRR</strong> is the geometric mean return (annualized) row; <strong>Alpha</strong> and <strong>Beta</strong> are computed by daily OLS of basket returns vs SPY over the full 1,760-day OOS window (per the project’s <code>src/metrics/portfolio.py</code>); <strong>Sharpe</strong>, <strong>Annualized Volatility</strong>, <strong>Max Drawdown</strong>, <strong>Avg Return per Trade</strong>, <strong>Trades per Year</strong>, and <strong>Total Trades</strong> are reported above. Beta is essentially zero because the strategy harvests volatility risk premium on a defined-risk wing-protected structure rather than holding directional equity beta.</p>
 <section id="multiple-testing-validation" class="level3">
 <h3 class="anchored" data-anchor-id="multiple-testing-validation">Multiple-testing validation</h3>
 <p>The basket was selected from a tested universe of 12 instruments (3 ETFs: SPX, TLT, GLD; 9 single-stocks: AAPL, MSFT, GOOGL, JNJ, KO, PG, WMT, JPM, PEP). Selection bias is corrected via DSR + PBO:</p>
@@ -1519,7 +1544,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
     var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
     var mailtoRegex = new RegExp(/^mailto:/);
-      var filterRegex = new RegExp('/' + window.location.host + '/');
+      var filterRegex = new RegExp("https:\/\/mariotrev120\.github\.io\/FinalProject_FinTech533\/");
     var isInternal = (href) => {
         return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
     }
@@ -1884,245 +1909,253 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>| Headline metric | Value |</span>
 <span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a>|---|---:|</span>
-<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a>| **Sharpe (excess of risk-free), with regime-stress ML overlay** | **+0.371** |</span>
-<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a>| Sharpe (excess), without the ML overlay | +0.359 |</span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a>| **Sharpe ratio (excess of risk-free, ML overlay engaged)** | **+0.371** |</span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a>| Sharpe ratio (excess), without ML overlay | +0.359 |</span>
 <span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a>| SPX baseline (single-instrument, predecessor implementation) | +0.286 |</span>
 <span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a>| **Δ vs SPX baseline** | **+0.085** ✓ |</span>
 <span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a>| Risk-free baseline (avg IRX 2018-2024) | 2.33% |</span>
-<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a>| Annualized return (geometric) | +2.41% |</span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a>| **Geometric mean return (GMRR, annualized)** | **+2.41%** |</span>
 <span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a>| Annualized volatility | 0.21% (with ML) / 0.23% (without) |</span>
-<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a>| Max drawdown over OOS (7 years) | **-0.12%** (with ML) / -0.13% (without) |</span>
-<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a>| Trades total (sum across 4 instruments) | 437 |</span>
-<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a>| OOS span | 2018-01-01 → 2024-12-31 (1,760 trading days) |</span>
-<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a>| ML overlay | Regime-stress scaler <span class="in">`(1 − p_stress)`</span> applied to daily book exposure |</span>
-<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a>| ML acceptance gate | Brier-score reduction +14.1% vs naive baseline (gate at ≥5%) ✓ |</span>
-<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a><span class="fu">### Multiple-testing validation</span></span>
-<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a>The basket was selected from a tested universe of 12 instruments (3 ETFs: SPX, TLT, GLD; 9 single-stocks: AAPL, MSFT, GOOGL, JNJ, KO, PG, WMT, JPM, PEP). Selection bias is corrected via DSR + PBO:</span>
-<span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a>| Correction | Value | Acceptance | Pass? |</span>
-<span id="cb1-56"><a href="#cb1-56" aria-hidden="true" tabindex="-1"></a>|---|---:|---|:-:|</span>
-<span id="cb1-57"><a href="#cb1-57" aria-hidden="true" tabindex="-1"></a>| Raw trials tested (N) | 12 | informational | n/a |</span>
-<span id="cb1-58"><a href="#cb1-58" aria-hidden="true" tabindex="-1"></a>| Avg pairwise return correlation (ρ̄) | 0.261 | informational | n/a |</span>
-<span id="cb1-59"><a href="#cb1-59" aria-hidden="true" tabindex="-1"></a>| Implied independent trials (N̂)  | 9 | informational | n/a |</span>
-<span id="cb1-60"><a href="#cb1-60" aria-hidden="true" tabindex="-1"></a>| Deflated Sharpe (PSR) | 1.0000 | ≥ 0.95 | ✓ |</span>
-<span id="cb1-61"><a href="#cb1-61" aria-hidden="true" tabindex="-1"></a>| PBO via CSCV (S=16, 12,870 logits) | 0.0402 | ≤ 0.30 | ✓ |</span>
+<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a>| **Alpha vs SPY (annualized OLS intercept × 252)** | **+2.37%** |</span>
+<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a>| **Beta vs SPY (OLS slope, daily simple returns)** | **+0.0014** |</span>
+<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a>| Correlation with SPY (daily returns) | 0.12 |</span>
+<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a>| Max drawdown over OOS (7 years) | **-0.12%** (with ML) / -0.13% (without) |</span>
+<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a>| Trades total (sum across 4 instruments) | 437 |</span>
+<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a>| Average trades per year | 62.8 |</span>
+<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a>| Average return per trade | +8.25% (median +$17.85 net P&amp;L per spread) |</span>
+<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a>| Win rate (basket aggregate) | 73.0% |</span>
+<span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a>| OOS span | 2018-01-01 → 2024-12-31 (1,760 trading days) |</span>
+<span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a>| ML overlay | Regime-stress scaler <span class="in">`(1 − p_stress)`</span> applied to daily book exposure |</span>
+<span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a>| ML acceptance gate | Brier-score reduction +14.1% vs naive baseline (gate at ≥5%) ✓ |</span>
+<span id="cb1-56"><a href="#cb1-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-57"><a href="#cb1-57" aria-hidden="true" tabindex="-1"></a>Mapping to the HW3 / HW4 rubric: **GMRR** is the geometric mean return (annualized) row; **Alpha** and **Beta** are computed by daily OLS of basket returns vs SPY over the full 1,760-day OOS window (per the project's `src/metrics/portfolio.py`); **Sharpe**, **Annualized Volatility**, **Max Drawdown**, **Avg Return per Trade**, **Trades per Year**, and **Total Trades** are reported above. Beta is essentially zero because the strategy harvests volatility risk premium on a defined-risk wing-protected structure rather than holding directional equity beta.</span>
+<span id="cb1-58"><a href="#cb1-58" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-59"><a href="#cb1-59" aria-hidden="true" tabindex="-1"></a><span class="fu">### Multiple-testing validation</span></span>
+<span id="cb1-60"><a href="#cb1-60" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-61"><a href="#cb1-61" aria-hidden="true" tabindex="-1"></a>The basket was selected from a tested universe of 12 instruments (3 ETFs: SPX, TLT, GLD; 9 single-stocks: AAPL, MSFT, GOOGL, JNJ, KO, PG, WMT, JPM, PEP). Selection bias is corrected via DSR + PBO:</span>
 <span id="cb1-62"><a href="#cb1-62" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-63"><a href="#cb1-63" aria-hidden="true" tabindex="-1"></a>Both gates pass. The headline is statistically significant after correction for the 12-trial selection.</span>
-<span id="cb1-64"><a href="#cb1-64" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-65"><a href="#cb1-65" aria-hidden="true" tabindex="-1"></a><span class="fu">### Equity curve</span></span>
-<span id="cb1-66"><a href="#cb1-66" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-67"><a href="#cb1-67" aria-hidden="true" tabindex="-1"></a><span class="in">```{=html}</span></span>
-<span id="cb1-68"><a href="#cb1-68" aria-hidden="true" tabindex="-1"></a><span class="in">&lt;iframe src="charts/equity_headline_vs_anchor.html" width="100%" height="560" frameborder="0"&gt;&lt;/iframe&gt;</span></span>
-<span id="cb1-69"><a href="#cb1-69" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb1-63"><a href="#cb1-63" aria-hidden="true" tabindex="-1"></a>| Correction | Value | Acceptance | Pass? |</span>
+<span id="cb1-64"><a href="#cb1-64" aria-hidden="true" tabindex="-1"></a>|---|---:|---|:-:|</span>
+<span id="cb1-65"><a href="#cb1-65" aria-hidden="true" tabindex="-1"></a>| Raw trials tested (N) | 12 | informational | n/a |</span>
+<span id="cb1-66"><a href="#cb1-66" aria-hidden="true" tabindex="-1"></a>| Avg pairwise return correlation (ρ̄) | 0.261 | informational | n/a |</span>
+<span id="cb1-67"><a href="#cb1-67" aria-hidden="true" tabindex="-1"></a>| Implied independent trials (N̂)  | 9 | informational | n/a |</span>
+<span id="cb1-68"><a href="#cb1-68" aria-hidden="true" tabindex="-1"></a>| Deflated Sharpe (PSR) | 1.0000 | ≥ 0.95 | ✓ |</span>
+<span id="cb1-69"><a href="#cb1-69" aria-hidden="true" tabindex="-1"></a>| PBO via CSCV (S=16, 12,870 logits) | 0.0402 | ≤ 0.30 | ✓ |</span>
 <span id="cb1-70"><a href="#cb1-70" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-71"><a href="#cb1-71" aria-hidden="true" tabindex="-1"></a>The headline ends at 1.18× starting equity over 7 years (CAGR 2.41%). The SPX baseline (Sharpe 0.286, ann_ret 2.49%) ends very close in absolute terms. The Sharpe advantage (+0.085 with the ML overlay engaged) shows up not in absolute return but in volatility: the headline runs at 0.21% annualized volatility versus the SPX baseline's 0.55%, so the same return is more risk-efficient.</span>
+<span id="cb1-71"><a href="#cb1-71" aria-hidden="true" tabindex="-1"></a>Both gates pass. The headline is statistically significant after correction for the 12-trial selection.</span>
 <span id="cb1-72"><a href="#cb1-72" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-73"><a href="#cb1-73" aria-hidden="true" tabindex="-1"></a><span class="fu">### Drawdown</span></span>
+<span id="cb1-73"><a href="#cb1-73" aria-hidden="true" tabindex="-1"></a><span class="fu">### Equity curve</span></span>
 <span id="cb1-74"><a href="#cb1-74" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-75"><a href="#cb1-75" aria-hidden="true" tabindex="-1"></a><span class="in">```{=html}</span></span>
-<span id="cb1-76"><a href="#cb1-76" aria-hidden="true" tabindex="-1"></a><span class="in">&lt;iframe src="charts/drawdown_headline.html" width="100%" height="460" frameborder="0"&gt;&lt;/iframe&gt;</span></span>
+<span id="cb1-76"><a href="#cb1-76" aria-hidden="true" tabindex="-1"></a><span class="in">&lt;iframe src="charts/equity_headline_vs_anchor.html" width="100%" height="560" frameborder="0"&gt;&lt;/iframe&gt;</span></span>
 <span id="cb1-77"><a href="#cb1-77" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb1-78"><a href="#cb1-78" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-79"><a href="#cb1-79" aria-hidden="true" tabindex="-1"></a>Maximum drawdown of -0.13% over the 7-year OOS sample. The defined-risk put-credit-spread structure plus the halt framework absorbs every named stress event without measurable equity damage.</span>
+<span id="cb1-79"><a href="#cb1-79" aria-hidden="true" tabindex="-1"></a>The headline ends at 1.18× starting equity over 7 years (CAGR 2.41%). The SPX baseline (Sharpe 0.286, ann_ret 2.49%) ends very close in absolute terms. The Sharpe advantage (+0.085 with the ML overlay engaged) shows up not in absolute return but in volatility: the headline runs at 0.21% annualized volatility versus the SPX baseline's 0.55%, so the same return is more risk-efficient.</span>
 <span id="cb1-80"><a href="#cb1-80" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-81"><a href="#cb1-81" aria-hidden="true" tabindex="-1"></a><span class="fu">### Per-instrument breakdown</span></span>
+<span id="cb1-81"><a href="#cb1-81" aria-hidden="true" tabindex="-1"></a><span class="fu">### Drawdown</span></span>
 <span id="cb1-82"><a href="#cb1-82" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-83"><a href="#cb1-83" aria-hidden="true" tabindex="-1"></a>| Ticker | Sharpe (excess) | n_trades | Win rate | Max DD | Ann. return | Final $ (from $50K start) |</span>
-<span id="cb1-84"><a href="#cb1-84" aria-hidden="true" tabindex="-1"></a>|---|---:|---:|---:|---:|---:|---:|</span>
-<span id="cb1-85"><a href="#cb1-85" aria-hidden="true" tabindex="-1"></a>| AAPL | +0.264 | 112 | 74.1% | -0.50% | +2.44% | $59,170 |</span>
-<span id="cb1-86"><a href="#cb1-86" aria-hidden="true" tabindex="-1"></a>| MSFT | +0.269 | 112 | 73.2% | -0.37% | +2.42% | $59,124 |</span>
-<span id="cb1-87"><a href="#cb1-87" aria-hidden="true" tabindex="-1"></a>| WMT  | +0.263 | 107 | 69.2% | -0.18% | +2.40% | $59,017 |</span>
-<span id="cb1-88"><a href="#cb1-88" aria-hidden="true" tabindex="-1"></a>| GLD  | +0.138 | 106 | 75.5% | -0.23% | +2.40% | $59,008 |</span>
-<span id="cb1-89"><a href="#cb1-89" aria-hidden="true" tabindex="-1"></a>| **Aggregate (equal-weight 4)** | **+0.359** | 437 | 73.0% | **-0.13%** | +2.41% | $231,313 |</span>
+<span id="cb1-83"><a href="#cb1-83" aria-hidden="true" tabindex="-1"></a><span class="in">```{=html}</span></span>
+<span id="cb1-84"><a href="#cb1-84" aria-hidden="true" tabindex="-1"></a><span class="in">&lt;iframe src="charts/drawdown_headline.html" width="100%" height="460" frameborder="0"&gt;&lt;/iframe&gt;</span></span>
+<span id="cb1-85"><a href="#cb1-85" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb1-86"><a href="#cb1-86" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-87"><a href="#cb1-87" aria-hidden="true" tabindex="-1"></a>Maximum drawdown of -0.13% over the 7-year OOS sample. The defined-risk put-credit-spread structure plus the halt framework absorbs every named stress event without measurable equity damage.</span>
+<span id="cb1-88"><a href="#cb1-88" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-89"><a href="#cb1-89" aria-hidden="true" tabindex="-1"></a><span class="fu">### Per-instrument breakdown</span></span>
 <span id="cb1-90"><a href="#cb1-90" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-91"><a href="#cb1-91" aria-hidden="true" tabindex="-1"></a>The book aggregate has higher Sharpe than the per-instrument average because cross-instrument correlation is low (mean pairwise 0.26), so equal-weighting reduces volatility without proportional return loss.</span>
-<span id="cb1-92"><a href="#cb1-92" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-93"><a href="#cb1-93" aria-hidden="true" tabindex="-1"></a><span class="in">```{=html}</span></span>
-<span id="cb1-94"><a href="#cb1-94" aria-hidden="true" tabindex="-1"></a><span class="in">&lt;iframe src="charts/per_instrument_sharpe.html" width="100%" height="490" frameborder="0"&gt;&lt;/iframe&gt;</span></span>
-<span id="cb1-95"><a href="#cb1-95" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb1-96"><a href="#cb1-96" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-97"><a href="#cb1-97" aria-hidden="true" tabindex="-1"></a><span class="fu">## Anchor comparison vs SPX baseline</span></span>
+<span id="cb1-91"><a href="#cb1-91" aria-hidden="true" tabindex="-1"></a>| Ticker | Sharpe (excess) | n_trades | Win rate | Max DD | Ann. return | Final $ (from $50K start) |</span>
+<span id="cb1-92"><a href="#cb1-92" aria-hidden="true" tabindex="-1"></a>|---|---:|---:|---:|---:|---:|---:|</span>
+<span id="cb1-93"><a href="#cb1-93" aria-hidden="true" tabindex="-1"></a>| AAPL | +0.264 | 112 | 74.1% | -0.50% | +2.44% | $59,170 |</span>
+<span id="cb1-94"><a href="#cb1-94" aria-hidden="true" tabindex="-1"></a>| MSFT | +0.269 | 112 | 73.2% | -0.37% | +2.42% | $59,124 |</span>
+<span id="cb1-95"><a href="#cb1-95" aria-hidden="true" tabindex="-1"></a>| WMT  | +0.263 | 107 | 69.2% | -0.18% | +2.40% | $59,017 |</span>
+<span id="cb1-96"><a href="#cb1-96" aria-hidden="true" tabindex="-1"></a>| GLD  | +0.138 | 106 | 75.5% | -0.23% | +2.40% | $59,008 |</span>
+<span id="cb1-97"><a href="#cb1-97" aria-hidden="true" tabindex="-1"></a>| **Aggregate (equal-weight 4)** | **+0.359** | 437 | 73.0% | **-0.13%** | +2.41% | $231,313 |</span>
 <span id="cb1-98"><a href="#cb1-98" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-99"><a href="#cb1-99" aria-hidden="true" tabindex="-1"></a>| Strategy | Architecture | Sharpe (excess) | Trades | OOS window |</span>
-<span id="cb1-100"><a href="#cb1-100" aria-hidden="true" tabindex="-1"></a>|---|---|---:|---:|---|</span>
-<span id="cb1-101"><a href="#cb1-101" aria-hidden="true" tabindex="-1"></a>| SPX baseline (predecessor implementation, historical reference) | SPX put-only with halts engaged | +0.286 | 210 | 2018–2024 |</span>
-<span id="cb1-102"><a href="#cb1-102" aria-hidden="true" tabindex="-1"></a>| **Headline** | **4-instrument basket, put-only, halts engaged, regime-stress ML overlay** | **+0.371** | 437 | 2018–2024 |</span>
-<span id="cb1-103"><a href="#cb1-103" aria-hidden="true" tabindex="-1"></a>| **Δ vs SPX baseline** | (same OOS window, both halts engaged put-only) | **+0.085** | +227 | 2018–2024 |</span>
+<span id="cb1-99"><a href="#cb1-99" aria-hidden="true" tabindex="-1"></a>The book aggregate has higher Sharpe than the per-instrument average because cross-instrument correlation is low (mean pairwise 0.26), so equal-weighting reduces volatility without proportional return loss.</span>
+<span id="cb1-100"><a href="#cb1-100" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-101"><a href="#cb1-101" aria-hidden="true" tabindex="-1"></a><span class="in">```{=html}</span></span>
+<span id="cb1-102"><a href="#cb1-102" aria-hidden="true" tabindex="-1"></a><span class="in">&lt;iframe src="charts/per_instrument_sharpe.html" width="100%" height="490" frameborder="0"&gt;&lt;/iframe&gt;</span></span>
+<span id="cb1-103"><a href="#cb1-103" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb1-104"><a href="#cb1-104" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-105"><a href="#cb1-105" aria-hidden="true" tabindex="-1"></a>The new headline beats the SPX baseline on excess Sharpe, with roughly 2× the trade sample, comparable max drawdown, and cross-asset diversification (equity + commodity) the baseline lacks. The SPX baseline (the predecessor implementation) is included as a historical reference; reproducing its exact equity curve is not supported on the current engine version because the engine has materially evolved since the baseline was recorded.</span>
+<span id="cb1-105"><a href="#cb1-105" aria-hidden="true" tabindex="-1"></a><span class="fu">## Anchor comparison vs SPX baseline</span></span>
 <span id="cb1-106"><a href="#cb1-106" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-107"><a href="#cb1-107" aria-hidden="true" tabindex="-1"></a><span class="fu">## Variants tested: alternative baskets</span></span>
-<span id="cb1-108"><a href="#cb1-108" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-109"><a href="#cb1-109" aria-hidden="true" tabindex="-1"></a>All baskets below are run with halts engaged, equal-weighted at $50,000 per instrument. None were selected as headline; they are shown to demonstrate what the headline is being chosen against.</span>
-<span id="cb1-110"><a href="#cb1-110" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-111"><a href="#cb1-111" aria-hidden="true" tabindex="-1"></a>| Basket | n_inst | Sharpe (excess) | AnnRet | AnnVol | MaxDD | Δ vs SPX baseline (+0.286) |</span>
-<span id="cb1-112"><a href="#cb1-112" aria-hidden="true" tabindex="-1"></a>|---|:-:|---:|---:|---:|---:|---:|</span>
-<span id="cb1-113"><a href="#cb1-113" aria-hidden="true" tabindex="-1"></a>| (A) SPX put-only alone | 1 | -0.347 | +2.04% | 0.84% | -0.78% | -0.633 |</span>
-<span id="cb1-114"><a href="#cb1-114" aria-hidden="true" tabindex="-1"></a>| (B) 3-name basket (AAPL+MSFT+WMT) | 3 | +0.350 | +2.42% | 0.26% | -0.19% | +0.064 |</span>
-<span id="cb1-115"><a href="#cb1-115" aria-hidden="true" tabindex="-1"></a>| (C) 3-ETF basket (SPX + TLT + GLD put-only) | 3 | -0.312 | +2.22% | 0.35% | -0.31% | -0.598 |</span>
-<span id="cb1-116"><a href="#cb1-116" aria-hidden="true" tabindex="-1"></a>| **(D) the 4-instrument basket ← HEADLINE** | **4** | **+0.359** | **+2.41%** | **0.23%** | **-0.13%** | **+0.073** |</span>
-<span id="cb1-117"><a href="#cb1-117" aria-hidden="true" tabindex="-1"></a>| (E) Full 6-instrument book (3-ETF basket + 3-name basket) | 6 | -0.036 | +2.32% | 0.26% | -0.17% | -0.322 |</span>
+<span id="cb1-107"><a href="#cb1-107" aria-hidden="true" tabindex="-1"></a>| Strategy | Architecture | Sharpe (excess) | Trades | OOS window |</span>
+<span id="cb1-108"><a href="#cb1-108" aria-hidden="true" tabindex="-1"></a>|---|---|---:|---:|---|</span>
+<span id="cb1-109"><a href="#cb1-109" aria-hidden="true" tabindex="-1"></a>| SPX baseline (predecessor implementation, historical reference) | SPX put-only with halts engaged | +0.286 | 210 | 2018–2024 |</span>
+<span id="cb1-110"><a href="#cb1-110" aria-hidden="true" tabindex="-1"></a>| **Headline** | **4-instrument basket, put-only, halts engaged, regime-stress ML overlay** | **+0.371** | 437 | 2018–2024 |</span>
+<span id="cb1-111"><a href="#cb1-111" aria-hidden="true" tabindex="-1"></a>| **Δ vs SPX baseline** | (same OOS window, both halts engaged put-only) | **+0.085** | +227 | 2018–2024 |</span>
+<span id="cb1-112"><a href="#cb1-112" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-113"><a href="#cb1-113" aria-hidden="true" tabindex="-1"></a>The new headline beats the SPX baseline on excess Sharpe, with roughly 2× the trade sample, comparable max drawdown, and cross-asset diversification (equity + commodity) the baseline lacks. The SPX baseline (the predecessor implementation) is included as a historical reference; reproducing its exact equity curve is not supported on the current engine version because the engine has materially evolved since the baseline was recorded.</span>
+<span id="cb1-114"><a href="#cb1-114" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-115"><a href="#cb1-115" aria-hidden="true" tabindex="-1"></a><span class="fu">## Variants tested: alternative baskets</span></span>
+<span id="cb1-116"><a href="#cb1-116" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-117"><a href="#cb1-117" aria-hidden="true" tabindex="-1"></a>All baskets below are run with halts engaged, equal-weighted at $50,000 per instrument. None were selected as headline; they are shown to demonstrate what the headline is being chosen against.</span>
 <span id="cb1-118"><a href="#cb1-118" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-119"><a href="#cb1-119" aria-hidden="true" tabindex="-1"></a>Pattern: adding SPX or TLT to the headline drags the Sharpe down because their individual put-credit-spread excess Sharpes are negative (-0.35 and -0.43 respectively over OOS). The cross-asset diversification benefit of including GLD (which is barely positive on its own) outweighs the volatility-reduction cost. Adding more drag-instruments (SPX, TLT) does not produce a net benefit.</span>
-<span id="cb1-120"><a href="#cb1-120" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-121"><a href="#cb1-121" aria-hidden="true" tabindex="-1"></a><span class="fu">## Variants tested: iron condor architecture</span></span>
-<span id="cb1-122"><a href="#cb1-122" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-123"><a href="#cb1-123" aria-hidden="true" tabindex="-1"></a>We tested both architectures on the same engine and underlying universe. Iron condor (put + call wings on the same expiry) underperforms put-only across every comparable comparison in OOS 2018-2024:</span>
-<span id="cb1-124"><a href="#cb1-124" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-125"><a href="#cb1-125" aria-hidden="true" tabindex="-1"></a>| Mode | Universe | Sharpe (excess) | Δ vs SPX baseline | Notes |</span>
-<span id="cb1-126"><a href="#cb1-126" aria-hidden="true" tabindex="-1"></a>|---|---|---:|---:|---|</span>
-<span id="cb1-127"><a href="#cb1-127" aria-hidden="true" tabindex="-1"></a>| Iron condor, SPX only | 1 inst | -1.882 | -2.168 | Call wing destroyed by post-2020 SPX rally |</span>
-<span id="cb1-128"><a href="#cb1-128" aria-hidden="true" tabindex="-1"></a>| Iron condor, 3-instrument cluster | SPX/TLT/GLD | -2.292 | -2.578 | Same pattern across all three IC instruments |</span>
-<span id="cb1-129"><a href="#cb1-129" aria-hidden="true" tabindex="-1"></a>| Put-only, SPX | 1 inst | -0.347 | -0.633 | Same engine, IC removed |</span>
-<span id="cb1-130"><a href="#cb1-130" aria-hidden="true" tabindex="-1"></a>| Put-only, 3-instrument cluster | SPX/TLT/GLD | -0.369 | -0.655 | Same engine, IC removed |</span>
-<span id="cb1-131"><a href="#cb1-131" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-132"><a href="#cb1-132" aria-hidden="true" tabindex="-1"></a>Iron condor underperforms put-only in every comparison. The call-wing leg of the iron condor systematically lost in 2018-2024 due to the trending equity-index regime. Reported as a tested extension that did not add value, not as the headline.</span>
-<span id="cb1-133"><a href="#cb1-133" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-134"><a href="#cb1-134" aria-hidden="true" tabindex="-1"></a><span class="fu">## Halts engaged vs disengaged</span></span>
-<span id="cb1-135"><a href="#cb1-135" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-136"><a href="#cb1-136" aria-hidden="true" tabindex="-1"></a>Demonstrates that the halt framework is doing real work, every instrument has higher Sharpe (excess) when halts are active vs naked.</span>
-<span id="cb1-137"><a href="#cb1-137" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-138"><a href="#cb1-138" aria-hidden="true" tabindex="-1"></a>| Ticker | Sharpe with halts disengaged | Halts Sharpe | Δ from halts |</span>
-<span id="cb1-139"><a href="#cb1-139" aria-hidden="true" tabindex="-1"></a>|---|---:|---:|---:|</span>
-<span id="cb1-140"><a href="#cb1-140" aria-hidden="true" tabindex="-1"></a>| AAPL | +0.155 | +0.264 | +0.109 |</span>
-<span id="cb1-141"><a href="#cb1-141" aria-hidden="true" tabindex="-1"></a>| MSFT | +0.037 | +0.269 | +0.232 |</span>
-<span id="cb1-142"><a href="#cb1-142" aria-hidden="true" tabindex="-1"></a>| WMT  | +0.063 | +0.263 | +0.200 |</span>
-<span id="cb1-143"><a href="#cb1-143" aria-hidden="true" tabindex="-1"></a>| GLD  | -0.971 | +0.138 | +1.109 |</span>
-<span id="cb1-144"><a href="#cb1-144" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-145"><a href="#cb1-145" aria-hidden="true" tabindex="-1"></a>The halt framework's contribution is measurable per instrument and consistently positive. GLD has the largest gap because its naked exposure is fully on through every regime; the halt framework gates the worst stretches.</span>
-<span id="cb1-146"><a href="#cb1-146" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-147"><a href="#cb1-147" aria-hidden="true" tabindex="-1"></a><span class="fu">## Stress-event behavior</span></span>
-<span id="cb1-148"><a href="#cb1-148" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-149"><a href="#cb1-149" aria-hidden="true" tabindex="-1"></a>Computed on the headline basket equity curve, halts engaged, equal-weight $50K per instrument (basket starting equity $200K). Drawdown is peak-to-trough WITHIN each window using a running cumulative max.</span>
-<span id="cb1-150"><a href="#cb1-150" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-151"><a href="#cb1-151" aria-hidden="true" tabindex="-1"></a>| Event | Window probed | Net P&amp;L | Peak-to-trough DD | Trough date |</span>
-<span id="cb1-152"><a href="#cb1-152" aria-hidden="true" tabindex="-1"></a>|---|---|---:|---:|---|</span>
-<span id="cb1-153"><a href="#cb1-153" aria-hidden="true" tabindex="-1"></a>| Volmageddon | 2018-01-22 → 2018-02-16 | -$35 | **-0.099%** | 2018-02-07 |</span>
-<span id="cb1-154"><a href="#cb1-154" aria-hidden="true" tabindex="-1"></a>| Q4 2018 selloff | 2018-11-26 → 2019-01-24 | +$783 | 0.000% | (curve monotonic up) |</span>
-<span id="cb1-155"><a href="#cb1-155" aria-hidden="true" tabindex="-1"></a>| COVID crash | 2020-02-24 → 2020-04-23 | +$102 | 0.000% | (curve monotonic up) |</span>
-<span id="cb1-156"><a href="#cb1-156" aria-hidden="true" tabindex="-1"></a>| 2022 bear market | 2022-01-03 → 2022-12-30 | +$4,223 | 0.000% | (curve monotonic up) |</span>
-<span id="cb1-157"><a href="#cb1-157" aria-hidden="true" tabindex="-1"></a>| Banking crisis | 2023-02-13 → 2023-04-13 | +$1,652 | 0.000% | (curve monotonic up) |</span>
+<span id="cb1-119"><a href="#cb1-119" aria-hidden="true" tabindex="-1"></a>| Basket | n_inst | Sharpe (excess) | AnnRet | AnnVol | MaxDD | Δ vs SPX baseline (+0.286) |</span>
+<span id="cb1-120"><a href="#cb1-120" aria-hidden="true" tabindex="-1"></a>|---|:-:|---:|---:|---:|---:|---:|</span>
+<span id="cb1-121"><a href="#cb1-121" aria-hidden="true" tabindex="-1"></a>| (A) SPX put-only alone | 1 | -0.347 | +2.04% | 0.84% | -0.78% | -0.633 |</span>
+<span id="cb1-122"><a href="#cb1-122" aria-hidden="true" tabindex="-1"></a>| (B) 3-name basket (AAPL+MSFT+WMT) | 3 | +0.350 | +2.42% | 0.26% | -0.19% | +0.064 |</span>
+<span id="cb1-123"><a href="#cb1-123" aria-hidden="true" tabindex="-1"></a>| (C) 3-ETF basket (SPX + TLT + GLD put-only) | 3 | -0.312 | +2.22% | 0.35% | -0.31% | -0.598 |</span>
+<span id="cb1-124"><a href="#cb1-124" aria-hidden="true" tabindex="-1"></a>| **(D) the 4-instrument basket ← HEADLINE** | **4** | **+0.359** | **+2.41%** | **0.23%** | **-0.13%** | **+0.073** |</span>
+<span id="cb1-125"><a href="#cb1-125" aria-hidden="true" tabindex="-1"></a>| (E) Full 6-instrument book (3-ETF basket + 3-name basket) | 6 | -0.036 | +2.32% | 0.26% | -0.17% | -0.322 |</span>
+<span id="cb1-126"><a href="#cb1-126" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-127"><a href="#cb1-127" aria-hidden="true" tabindex="-1"></a>Pattern: adding SPX or TLT to the headline drags the Sharpe down because their individual put-credit-spread excess Sharpes are negative (-0.35 and -0.43 respectively over OOS). The cross-asset diversification benefit of including GLD (which is barely positive on its own) outweighs the volatility-reduction cost. Adding more drag-instruments (SPX, TLT) does not produce a net benefit.</span>
+<span id="cb1-128"><a href="#cb1-128" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-129"><a href="#cb1-129" aria-hidden="true" tabindex="-1"></a><span class="fu">## Variants tested: iron condor architecture</span></span>
+<span id="cb1-130"><a href="#cb1-130" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-131"><a href="#cb1-131" aria-hidden="true" tabindex="-1"></a>We tested both architectures on the same engine and underlying universe. Iron condor (put + call wings on the same expiry) underperforms put-only across every comparable comparison in OOS 2018-2024:</span>
+<span id="cb1-132"><a href="#cb1-132" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-133"><a href="#cb1-133" aria-hidden="true" tabindex="-1"></a>| Mode | Universe | Sharpe (excess) | Δ vs SPX baseline | Notes |</span>
+<span id="cb1-134"><a href="#cb1-134" aria-hidden="true" tabindex="-1"></a>|---|---|---:|---:|---|</span>
+<span id="cb1-135"><a href="#cb1-135" aria-hidden="true" tabindex="-1"></a>| Iron condor, SPX only | 1 inst | -1.882 | -2.168 | Call wing destroyed by post-2020 SPX rally |</span>
+<span id="cb1-136"><a href="#cb1-136" aria-hidden="true" tabindex="-1"></a>| Iron condor, 3-instrument cluster | SPX/TLT/GLD | -2.292 | -2.578 | Same pattern across all three IC instruments |</span>
+<span id="cb1-137"><a href="#cb1-137" aria-hidden="true" tabindex="-1"></a>| Put-only, SPX | 1 inst | -0.347 | -0.633 | Same engine, IC removed |</span>
+<span id="cb1-138"><a href="#cb1-138" aria-hidden="true" tabindex="-1"></a>| Put-only, 3-instrument cluster | SPX/TLT/GLD | -0.369 | -0.655 | Same engine, IC removed |</span>
+<span id="cb1-139"><a href="#cb1-139" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-140"><a href="#cb1-140" aria-hidden="true" tabindex="-1"></a>Iron condor underperforms put-only in every comparison. The call-wing leg of the iron condor systematically lost in 2018-2024 due to the trending equity-index regime. Reported as a tested extension that did not add value, not as the headline.</span>
+<span id="cb1-141"><a href="#cb1-141" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-142"><a href="#cb1-142" aria-hidden="true" tabindex="-1"></a><span class="fu">## Halts engaged vs disengaged</span></span>
+<span id="cb1-143"><a href="#cb1-143" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-144"><a href="#cb1-144" aria-hidden="true" tabindex="-1"></a>Demonstrates that the halt framework is doing real work, every instrument has higher Sharpe (excess) when halts are active vs naked.</span>
+<span id="cb1-145"><a href="#cb1-145" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-146"><a href="#cb1-146" aria-hidden="true" tabindex="-1"></a>| Ticker | Sharpe with halts disengaged | Halts Sharpe | Δ from halts |</span>
+<span id="cb1-147"><a href="#cb1-147" aria-hidden="true" tabindex="-1"></a>|---|---:|---:|---:|</span>
+<span id="cb1-148"><a href="#cb1-148" aria-hidden="true" tabindex="-1"></a>| AAPL | +0.155 | +0.264 | +0.109 |</span>
+<span id="cb1-149"><a href="#cb1-149" aria-hidden="true" tabindex="-1"></a>| MSFT | +0.037 | +0.269 | +0.232 |</span>
+<span id="cb1-150"><a href="#cb1-150" aria-hidden="true" tabindex="-1"></a>| WMT  | +0.063 | +0.263 | +0.200 |</span>
+<span id="cb1-151"><a href="#cb1-151" aria-hidden="true" tabindex="-1"></a>| GLD  | -0.971 | +0.138 | +1.109 |</span>
+<span id="cb1-152"><a href="#cb1-152" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-153"><a href="#cb1-153" aria-hidden="true" tabindex="-1"></a>The halt framework's contribution is measurable per instrument and consistently positive. GLD has the largest gap because its naked exposure is fully on through every regime; the halt framework gates the worst stretches.</span>
+<span id="cb1-154"><a href="#cb1-154" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-155"><a href="#cb1-155" aria-hidden="true" tabindex="-1"></a><span class="fu">## Stress-event behavior</span></span>
+<span id="cb1-156"><a href="#cb1-156" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-157"><a href="#cb1-157" aria-hidden="true" tabindex="-1"></a>Computed on the headline basket equity curve, halts engaged, equal-weight $50K per instrument (basket starting equity $200K). Drawdown is peak-to-trough WITHIN each window using a running cumulative max.</span>
 <span id="cb1-158"><a href="#cb1-158" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-159"><a href="#cb1-159" aria-hidden="true" tabindex="-1"></a>The 0.000% peak-to-trough entries are not measurement error. They reflect a structural feature of the halt-gated put-credit-spread architecture: during these stress windows the halt framework reduced or paused new entries, the open positions either expired profitably or hit stop-loss within their wing-width bound, and the unutilized capital continued earning the realized T-bill rate. Net trading P&amp;L plus cash carry was positive on every trading day through these windows, so the equity curve never made a new low.</span>
-<span id="cb1-160"><a href="#cb1-160" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-161"><a href="#cb1-161" aria-hidden="true" tabindex="-1"></a>Volmageddon is the one exception. The early-2018 timing meant the basket was fully deployed when the VIX spike hit, and the resulting -$35 net P&amp;L (-0.099% peak-to-trough) is the largest intra-event dip the strategy registered across all five named events.</span>
-<span id="cb1-162"><a href="#cb1-162" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-163"><a href="#cb1-163" aria-hidden="true" tabindex="-1"></a><span class="fu">## Trade fates and rates</span></span>
-<span id="cb1-164"><a href="#cb1-164" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-165"><a href="#cb1-165" aria-hidden="true" tabindex="-1"></a>Every trade exits one of five fates. The distribution across the 437-trade headline blotter:</span>
+<span id="cb1-159"><a href="#cb1-159" aria-hidden="true" tabindex="-1"></a>| Event | Window probed | Net P&amp;L | Peak-to-trough DD | Trough date |</span>
+<span id="cb1-160"><a href="#cb1-160" aria-hidden="true" tabindex="-1"></a>|---|---|---:|---:|---|</span>
+<span id="cb1-161"><a href="#cb1-161" aria-hidden="true" tabindex="-1"></a>| Volmageddon | 2018-01-22 → 2018-02-16 | -$35 | **-0.099%** | 2018-02-07 |</span>
+<span id="cb1-162"><a href="#cb1-162" aria-hidden="true" tabindex="-1"></a>| Q4 2018 selloff | 2018-11-26 → 2019-01-24 | +$783 | 0.000% | (curve monotonic up) |</span>
+<span id="cb1-163"><a href="#cb1-163" aria-hidden="true" tabindex="-1"></a>| COVID crash | 2020-02-24 → 2020-04-23 | +$102 | 0.000% | (curve monotonic up) |</span>
+<span id="cb1-164"><a href="#cb1-164" aria-hidden="true" tabindex="-1"></a>| 2022 bear market | 2022-01-03 → 2022-12-30 | +$4,223 | 0.000% | (curve monotonic up) |</span>
+<span id="cb1-165"><a href="#cb1-165" aria-hidden="true" tabindex="-1"></a>| Banking crisis | 2023-02-13 → 2023-04-13 | +$1,652 | 0.000% | (curve monotonic up) |</span>
 <span id="cb1-166"><a href="#cb1-166" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-167"><a href="#cb1-167" aria-hidden="true" tabindex="-1"></a>| Fate | Trigger | Count | % of trades |</span>
-<span id="cb1-168"><a href="#cb1-168" aria-hidden="true" tabindex="-1"></a>|---|---|---:|---:|</span>
-<span id="cb1-169"><a href="#cb1-169" aria-hidden="true" tabindex="-1"></a>| <span class="in">`profit_target`</span> | Exit debit ≤ 50% of entry credit | 280 | **64.1%** |</span>
-<span id="cb1-170"><a href="#cb1-170" aria-hidden="true" tabindex="-1"></a>| <span class="in">`stop_loss`</span> | Exit debit ≥ 200% of entry credit (gap-aware fill) | 81 | 18.5% |</span>
-<span id="cb1-171"><a href="#cb1-171" aria-hidden="true" tabindex="-1"></a>| <span class="in">`time_exit`</span> | DTE ≤ 21 | 75 | 17.2% |</span>
-<span id="cb1-172"><a href="#cb1-172" aria-hidden="true" tabindex="-1"></a>| <span class="in">`emergency`</span> | \|short_delta\| &gt; 0.50 | 1 | 0.2% |</span>
-<span id="cb1-173"><a href="#cb1-173" aria-hidden="true" tabindex="-1"></a>| <span class="in">`eos_force`</span> | End-of-OOS forced close | 0 | 0.0% |</span>
-<span id="cb1-174"><a href="#cb1-174" aria-hidden="true" tabindex="-1"></a>| **Total** | | **437** | 100% |</span>
-<span id="cb1-175"><a href="#cb1-175" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-176"><a href="#cb1-176" aria-hidden="true" tabindex="-1"></a>Reading the rates the rubric asks for:</span>
-<span id="cb1-177"><a href="#cb1-177" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-178"><a href="#cb1-178" aria-hidden="true" tabindex="-1"></a>| Rate | Value |</span>
-<span id="cb1-179"><a href="#cb1-179" aria-hidden="true" tabindex="-1"></a>|---|---:|</span>
-<span id="cb1-180"><a href="#cb1-180" aria-hidden="true" tabindex="-1"></a>| **Success rate** (P&amp;L &gt; 0) | **73.0%** |</span>
-<span id="cb1-181"><a href="#cb1-181" aria-hidden="true" tabindex="-1"></a>| **Stop-loss rate** | 18.5% |</span>
-<span id="cb1-182"><a href="#cb1-182" aria-hidden="true" tabindex="-1"></a>| **Timeout rate** (<span class="in">`time_exit`</span>) | 17.2% |</span>
-<span id="cb1-183"><a href="#cb1-183" aria-hidden="true" tabindex="-1"></a>| **Emergency-exit rate** | 0.2% |</span>
-<span id="cb1-184"><a href="#cb1-184" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-185"><a href="#cb1-185" aria-hidden="true" tabindex="-1"></a><span class="fu">## Per-trade summary statistics</span></span>
-<span id="cb1-186"><a href="#cb1-186" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-187"><a href="#cb1-187" aria-hidden="true" tabindex="-1"></a>| Metric | Value |</span>
-<span id="cb1-188"><a href="#cb1-188" aria-hidden="true" tabindex="-1"></a>|---|---:|</span>
-<span id="cb1-189"><a href="#cb1-189" aria-hidden="true" tabindex="-1"></a>| Total trades | 437 |</span>
-<span id="cb1-190"><a href="#cb1-190" aria-hidden="true" tabindex="-1"></a>| Winning trades | 319 |</span>
-<span id="cb1-191"><a href="#cb1-191" aria-hidden="true" tabindex="-1"></a>| Losing trades | 118 |</span>
-<span id="cb1-192"><a href="#cb1-192" aria-hidden="true" tabindex="-1"></a>| Mean P&amp;L per spread | +$3.42 |</span>
-<span id="cb1-193"><a href="#cb1-193" aria-hidden="true" tabindex="-1"></a>| Median P&amp;L per spread | +$17.85 |</span>
-<span id="cb1-194"><a href="#cb1-194" aria-hidden="true" tabindex="-1"></a>| Standard deviation of P&amp;L | $37.66 |</span>
-<span id="cb1-195"><a href="#cb1-195" aria-hidden="true" tabindex="-1"></a>| Largest single win | +$49.50 |</span>
-<span id="cb1-196"><a href="#cb1-196" aria-hidden="true" tabindex="-1"></a>| Largest single loss | -$186.00 |</span>
-<span id="cb1-197"><a href="#cb1-197" aria-hidden="true" tabindex="-1"></a>| Mean trade return | +8.25% |</span>
-<span id="cb1-198"><a href="#cb1-198" aria-hidden="true" tabindex="-1"></a>| Mean trade lifetime | 6.5 days |</span>
-<span id="cb1-199"><a href="#cb1-199" aria-hidden="true" tabindex="-1"></a>| Median trade lifetime | 7 days |</span>
-<span id="cb1-200"><a href="#cb1-200" aria-hidden="true" tabindex="-1"></a>| Profit factor (gross win / gross loss) | 1.26 |</span>
-<span id="cb1-201"><a href="#cb1-201" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-202"><a href="#cb1-202" aria-hidden="true" tabindex="-1"></a>The 6.5-day mean lifetime reflects how the strategy actually deploys capital: profit-target exits fire quickly in calm regimes, and the basket spends most of its capital sitting on T-bill carry between trade cycles. Median holding period is 7 days; the 25th-to-75th percentile window is 3 to 10 days; no trade exceeds 14 days because the time-exit rule forces a close at DTE ≤ 21 against the 30-45 DTE entry window.</span>
-<span id="cb1-203"><a href="#cb1-203" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-204"><a href="#cb1-204" aria-hidden="true" tabindex="-1"></a><span class="fu">## Per-instrument breakdown</span></span>
-<span id="cb1-205"><a href="#cb1-205" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-206"><a href="#cb1-206" aria-hidden="true" tabindex="-1"></a>| Ticker | Trades | Wins | Win rate | Mean P&amp;L | Total P&amp;L |</span>
-<span id="cb1-207"><a href="#cb1-207" aria-hidden="true" tabindex="-1"></a>|---|---:|---:|---:|---:|---:|</span>
-<span id="cb1-208"><a href="#cb1-208" aria-hidden="true" tabindex="-1"></a>| AAPL | 112 | 83 | 74.1% | +$4.11 | +$460.23 |</span>
-<span id="cb1-209"><a href="#cb1-209" aria-hidden="true" tabindex="-1"></a>| MSFT | 112 | 82 | 73.2% | +$3.54 | +$396.33 |</span>
-<span id="cb1-210"><a href="#cb1-210" aria-hidden="true" tabindex="-1"></a>| GLD  | 106 | 80 | 75.5% | +$3.06 | +$324.70 |</span>
-<span id="cb1-211"><a href="#cb1-211" aria-hidden="true" tabindex="-1"></a>| WMT  | 107 | 74 | 69.2% | +$2.92 | +$312.87 |</span>
-<span id="cb1-212"><a href="#cb1-212" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-213"><a href="#cb1-213" aria-hidden="true" tabindex="-1"></a><span class="fu">## P&amp;L per trade across OOS</span></span>
-<span id="cb1-214"><a href="#cb1-214" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-215"><a href="#cb1-215" aria-hidden="true" tabindex="-1"></a><span class="in">```{=html}</span></span>
-<span id="cb1-216"><a href="#cb1-216" aria-hidden="true" tabindex="-1"></a><span class="in">&lt;iframe src="charts/pnl_per_trade.html" width="100%" height="510" frameborder="0"&gt;&lt;/iframe&gt;</span></span>
-<span id="cb1-217"><a href="#cb1-217" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb1-218"><a href="#cb1-218" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-219"><a href="#cb1-219" aria-hidden="true" tabindex="-1"></a><span class="fu">## Trade-return distribution</span></span>
+<span id="cb1-167"><a href="#cb1-167" aria-hidden="true" tabindex="-1"></a>The 0.000% peak-to-trough entries are not measurement error. They reflect a structural feature of the halt-gated put-credit-spread architecture: during these stress windows the halt framework reduced or paused new entries, the open positions either expired profitably or hit stop-loss within their wing-width bound, and the unutilized capital continued earning the realized T-bill rate. Net trading P&amp;L plus cash carry was positive on every trading day through these windows, so the equity curve never made a new low.</span>
+<span id="cb1-168"><a href="#cb1-168" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-169"><a href="#cb1-169" aria-hidden="true" tabindex="-1"></a>Volmageddon is the one exception. The early-2018 timing meant the basket was fully deployed when the VIX spike hit, and the resulting -$35 net P&amp;L (-0.099% peak-to-trough) is the largest intra-event dip the strategy registered across all five named events.</span>
+<span id="cb1-170"><a href="#cb1-170" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-171"><a href="#cb1-171" aria-hidden="true" tabindex="-1"></a><span class="fu">## Trade fates and rates</span></span>
+<span id="cb1-172"><a href="#cb1-172" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-173"><a href="#cb1-173" aria-hidden="true" tabindex="-1"></a>Every trade exits one of five fates. The distribution across the 437-trade headline blotter:</span>
+<span id="cb1-174"><a href="#cb1-174" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-175"><a href="#cb1-175" aria-hidden="true" tabindex="-1"></a>| Fate | Trigger | Count | % of trades |</span>
+<span id="cb1-176"><a href="#cb1-176" aria-hidden="true" tabindex="-1"></a>|---|---|---:|---:|</span>
+<span id="cb1-177"><a href="#cb1-177" aria-hidden="true" tabindex="-1"></a>| <span class="in">`profit_target`</span> | Exit debit ≤ 50% of entry credit | 280 | **64.1%** |</span>
+<span id="cb1-178"><a href="#cb1-178" aria-hidden="true" tabindex="-1"></a>| <span class="in">`stop_loss`</span> | Exit debit ≥ 200% of entry credit (gap-aware fill) | 81 | 18.5% |</span>
+<span id="cb1-179"><a href="#cb1-179" aria-hidden="true" tabindex="-1"></a>| <span class="in">`time_exit`</span> | DTE ≤ 21 | 75 | 17.2% |</span>
+<span id="cb1-180"><a href="#cb1-180" aria-hidden="true" tabindex="-1"></a>| <span class="in">`emergency`</span> | \|short_delta\| &gt; 0.50 | 1 | 0.2% |</span>
+<span id="cb1-181"><a href="#cb1-181" aria-hidden="true" tabindex="-1"></a>| <span class="in">`eos_force`</span> | End-of-OOS forced close | 0 | 0.0% |</span>
+<span id="cb1-182"><a href="#cb1-182" aria-hidden="true" tabindex="-1"></a>| **Total** | | **437** | 100% |</span>
+<span id="cb1-183"><a href="#cb1-183" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-184"><a href="#cb1-184" aria-hidden="true" tabindex="-1"></a>Reading the rates the rubric asks for:</span>
+<span id="cb1-185"><a href="#cb1-185" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-186"><a href="#cb1-186" aria-hidden="true" tabindex="-1"></a>| Rate | Value |</span>
+<span id="cb1-187"><a href="#cb1-187" aria-hidden="true" tabindex="-1"></a>|---|---:|</span>
+<span id="cb1-188"><a href="#cb1-188" aria-hidden="true" tabindex="-1"></a>| **Success rate** (P&amp;L &gt; 0) | **73.0%** |</span>
+<span id="cb1-189"><a href="#cb1-189" aria-hidden="true" tabindex="-1"></a>| **Stop-loss rate** | 18.5% |</span>
+<span id="cb1-190"><a href="#cb1-190" aria-hidden="true" tabindex="-1"></a>| **Timeout rate** (<span class="in">`time_exit`</span>) | 17.2% |</span>
+<span id="cb1-191"><a href="#cb1-191" aria-hidden="true" tabindex="-1"></a>| **Emergency-exit rate** | 0.2% |</span>
+<span id="cb1-192"><a href="#cb1-192" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-193"><a href="#cb1-193" aria-hidden="true" tabindex="-1"></a><span class="fu">## Per-trade summary statistics</span></span>
+<span id="cb1-194"><a href="#cb1-194" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-195"><a href="#cb1-195" aria-hidden="true" tabindex="-1"></a>| Metric | Value |</span>
+<span id="cb1-196"><a href="#cb1-196" aria-hidden="true" tabindex="-1"></a>|---|---:|</span>
+<span id="cb1-197"><a href="#cb1-197" aria-hidden="true" tabindex="-1"></a>| Total trades | 437 |</span>
+<span id="cb1-198"><a href="#cb1-198" aria-hidden="true" tabindex="-1"></a>| Winning trades | 319 |</span>
+<span id="cb1-199"><a href="#cb1-199" aria-hidden="true" tabindex="-1"></a>| Losing trades | 118 |</span>
+<span id="cb1-200"><a href="#cb1-200" aria-hidden="true" tabindex="-1"></a>| Mean P&amp;L per spread | +$3.42 |</span>
+<span id="cb1-201"><a href="#cb1-201" aria-hidden="true" tabindex="-1"></a>| Median P&amp;L per spread | +$17.85 |</span>
+<span id="cb1-202"><a href="#cb1-202" aria-hidden="true" tabindex="-1"></a>| Standard deviation of P&amp;L | $37.66 |</span>
+<span id="cb1-203"><a href="#cb1-203" aria-hidden="true" tabindex="-1"></a>| Largest single win | +$49.50 |</span>
+<span id="cb1-204"><a href="#cb1-204" aria-hidden="true" tabindex="-1"></a>| Largest single loss | -$186.00 |</span>
+<span id="cb1-205"><a href="#cb1-205" aria-hidden="true" tabindex="-1"></a>| Mean trade return | +8.25% |</span>
+<span id="cb1-206"><a href="#cb1-206" aria-hidden="true" tabindex="-1"></a>| Mean trade lifetime | 6.5 days |</span>
+<span id="cb1-207"><a href="#cb1-207" aria-hidden="true" tabindex="-1"></a>| Median trade lifetime | 7 days |</span>
+<span id="cb1-208"><a href="#cb1-208" aria-hidden="true" tabindex="-1"></a>| Profit factor (gross win / gross loss) | 1.26 |</span>
+<span id="cb1-209"><a href="#cb1-209" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-210"><a href="#cb1-210" aria-hidden="true" tabindex="-1"></a>The 6.5-day mean lifetime reflects how the strategy actually deploys capital: profit-target exits fire quickly in calm regimes, and the basket spends most of its capital sitting on T-bill carry between trade cycles. Median holding period is 7 days; the 25th-to-75th percentile window is 3 to 10 days; no trade exceeds 14 days because the time-exit rule forces a close at DTE ≤ 21 against the 30-45 DTE entry window.</span>
+<span id="cb1-211"><a href="#cb1-211" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-212"><a href="#cb1-212" aria-hidden="true" tabindex="-1"></a><span class="fu">## Per-instrument breakdown</span></span>
+<span id="cb1-213"><a href="#cb1-213" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-214"><a href="#cb1-214" aria-hidden="true" tabindex="-1"></a>| Ticker | Trades | Wins | Win rate | Mean P&amp;L | Total P&amp;L |</span>
+<span id="cb1-215"><a href="#cb1-215" aria-hidden="true" tabindex="-1"></a>|---|---:|---:|---:|---:|---:|</span>
+<span id="cb1-216"><a href="#cb1-216" aria-hidden="true" tabindex="-1"></a>| AAPL | 112 | 83 | 74.1% | +$4.11 | +$460.23 |</span>
+<span id="cb1-217"><a href="#cb1-217" aria-hidden="true" tabindex="-1"></a>| MSFT | 112 | 82 | 73.2% | +$3.54 | +$396.33 |</span>
+<span id="cb1-218"><a href="#cb1-218" aria-hidden="true" tabindex="-1"></a>| GLD  | 106 | 80 | 75.5% | +$3.06 | +$324.70 |</span>
+<span id="cb1-219"><a href="#cb1-219" aria-hidden="true" tabindex="-1"></a>| WMT  | 107 | 74 | 69.2% | +$2.92 | +$312.87 |</span>
 <span id="cb1-220"><a href="#cb1-220" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-221"><a href="#cb1-221" aria-hidden="true" tabindex="-1"></a><span class="in">```{=html}</span></span>
-<span id="cb1-222"><a href="#cb1-222" aria-hidden="true" tabindex="-1"></a><span class="in">&lt;iframe src="charts/trade_return_distribution.html" width="100%" height="490" frameborder="0"&gt;&lt;/iframe&gt;</span></span>
-<span id="cb1-223"><a href="#cb1-223" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb1-224"><a href="#cb1-224" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-225"><a href="#cb1-225" aria-hidden="true" tabindex="-1"></a>The distribution is right-skewed by design: a 16-delta short put expires worthless ~84% of the time under lognormal assumptions, and <span class="in">`profit_target`</span> closes wins early at 50% of credit. Losses are bounded by the wing-width stop. The 1.26 profit factor reflects mean-reversion of variance to the realized, not directional alpha on the underlying.</span>
+<span id="cb1-221"><a href="#cb1-221" aria-hidden="true" tabindex="-1"></a><span class="fu">## P&amp;L per trade across OOS</span></span>
+<span id="cb1-222"><a href="#cb1-222" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-223"><a href="#cb1-223" aria-hidden="true" tabindex="-1"></a><span class="in">```{=html}</span></span>
+<span id="cb1-224"><a href="#cb1-224" aria-hidden="true" tabindex="-1"></a><span class="in">&lt;iframe src="charts/pnl_per_trade.html" width="100%" height="510" frameborder="0"&gt;&lt;/iframe&gt;</span></span>
+<span id="cb1-225"><a href="#cb1-225" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb1-226"><a href="#cb1-226" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-227"><a href="#cb1-227" aria-hidden="true" tabindex="-1"></a><span class="fu">## Ledger (monthly P&amp;L sample)</span></span>
+<span id="cb1-227"><a href="#cb1-227" aria-hidden="true" tabindex="-1"></a><span class="fu">## Trade-return distribution</span></span>
 <span id="cb1-228"><a href="#cb1-228" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-229"><a href="#cb1-229" aria-hidden="true" tabindex="-1"></a>| Month | Trades closed | Net P&amp;L | Cumulative P&amp;L |</span>
-<span id="cb1-230"><a href="#cb1-230" aria-hidden="true" tabindex="-1"></a>|---|---:|---:|---:|</span>
-<span id="cb1-231"><a href="#cb1-231" aria-hidden="true" tabindex="-1"></a>| 2018-01 | 7 | +$36.75 | +$36.75 |</span>
-<span id="cb1-232"><a href="#cb1-232" aria-hidden="true" tabindex="-1"></a>| 2018-02 | 5 | -$193.88 | -$157.13 |</span>
-<span id="cb1-233"><a href="#cb1-233" aria-hidden="true" tabindex="-1"></a>| 2018-05 | 9 | +$97.05 | -$60.08 |</span>
-<span id="cb1-234"><a href="#cb1-234" aria-hidden="true" tabindex="-1"></a>| 2018-08 | 17 | +$191.15 | +$179.58 |</span>
-<span id="cb1-235"><a href="#cb1-235" aria-hidden="true" tabindex="-1"></a>| 2018-09 | 12 | +$175.50 | +$355.08 |</span>
-<span id="cb1-236"><a href="#cb1-236" aria-hidden="true" tabindex="-1"></a>| 2018-10 | 11 | -$290.25 | +$64.83 |</span>
-<span id="cb1-237"><a href="#cb1-237" aria-hidden="true" tabindex="-1"></a>| 2019-07 | 19 | +$315.85 | +$369.58 |</span>
-<span id="cb1-238"><a href="#cb1-238" aria-hidden="true" tabindex="-1"></a>| 2019-12 | 18 | +$321.70 | +$529.38 |</span>
-<span id="cb1-239"><a href="#cb1-239" aria-hidden="true" tabindex="-1"></a>| 2020-03 | 14 | -$11.20 | +$612.10 |</span>
-<span id="cb1-240"><a href="#cb1-240" aria-hidden="true" tabindex="-1"></a>| ... | ... | ... | ... |</span>
-<span id="cb1-241"><a href="#cb1-241" aria-hidden="true" tabindex="-1"></a>| 2024-08 | 5 | -$361.65 | +$1,237.08 |</span>
-<span id="cb1-242"><a href="#cb1-242" aria-hidden="true" tabindex="-1"></a>| 2024-11 | 12 | +$181.80 | +$1,418.88 |</span>
-<span id="cb1-243"><a href="#cb1-243" aria-hidden="true" tabindex="-1"></a>| 2024-12 | 12 | +$75.25 | +$1,494.13 |</span>
-<span id="cb1-244"><a href="#cb1-244" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-245"><a href="#cb1-245" aria-hidden="true" tabindex="-1"></a>*Showing 12 of 84 months from January 2018 to December 2024. Net P&amp;L in dollars per spread (per-contract basis at $100 multiplier). Full monthly ledger: [monthly_ledger.csv](https://github.com/mariotrev120/FinalProject_FinTech533/blob/mario/data-pipeline/website/data/monthly_ledger.csv) (renders as a sortable table on GitHub).*</span>
-<span id="cb1-246"><a href="#cb1-246" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-247"><a href="#cb1-247" aria-hidden="true" tabindex="-1"></a><span class="fu">## Blotter</span></span>
-<span id="cb1-248"><a href="#cb1-248" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-249"><a href="#cb1-249" aria-hidden="true" tabindex="-1"></a>Random sample of 10 trades from the 437-row blotter (seed=42).</span>
-<span id="cb1-250"><a href="#cb1-250" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-251"><a href="#cb1-251" aria-hidden="true" tabindex="-1"></a>| trd_prd | Entry | Exit | Ticker | Side | Qty | Entry credit | Exit debit | Fate | P&amp;L | Return % | Success |</span>
-<span id="cb1-252"><a href="#cb1-252" aria-hidden="true" tabindex="-1"></a>|---|---|---|:-:|:-:|---:|---:|---:|---|---:|---:|:-:|</span>
-<span id="cb1-253"><a href="#cb1-253" aria-hidden="true" tabindex="-1"></a>| 2018.19 | 2018-05-07 | 2018-05-16 | WMT | P | 1 | $22.45 | $0.90 | profit_target | $+21.55 | +96.0% | True |</span>
-<span id="cb1-254"><a href="#cb1-254" aria-hidden="true" tabindex="-1"></a>| 2018.39 | 2018-09-24 | 2018-10-05 | WMT | P | 1 | $35.80 | $60.55 | time_exit | $-24.75 | -69.1% | False |</span>
-<span id="cb1-255"><a href="#cb1-255" aria-hidden="true" tabindex="-1"></a>| 2018.40 | 2018-10-01 | 2018-10-11 | GLD | P | 1 | $15.05 | $4.50 | profit_target | $+10.55 | +70.1% | True |</span>
-<span id="cb1-256"><a href="#cb1-256" aria-hidden="true" tabindex="-1"></a>| 2019.07 | 2019-02-11 | 2019-02-15 | MSFT | P | 1 | $38.70 | $15.30 | profit_target | $+23.40 | +60.5% | True |</span>
-<span id="cb1-257"><a href="#cb1-257" aria-hidden="true" tabindex="-1"></a>| 2019.30 | 2019-07-22 | 2019-08-01 | WMT | P | 1 | $38.85 | $88.55 | stop_loss | $-49.70 | -127.9% | False |</span>
-<span id="cb1-258"><a href="#cb1-258" aria-hidden="true" tabindex="-1"></a>| 2019.48 | 2019-11-25 | 2019-12-04 | WMT | P | 1 | $29.85 | $17.75 | profit_target | $+12.10 | +40.5% | True |</span>
-<span id="cb1-259"><a href="#cb1-259" aria-hidden="true" tabindex="-1"></a>| 2019.52 | 2019-12-23 | 2019-12-26 | GLD | P | 1 | $19.70 | $9.95 | profit_target | $+9.75 | +49.5% | True |</span>
-<span id="cb1-260"><a href="#cb1-260" aria-hidden="true" tabindex="-1"></a>| 2024.07 | 2024-02-12 | 2024-02-23 | MSFT | P | 1 | $52.80 | $34.25 | time_exit | $+18.55 | +35.1% | True |</span>
-<span id="cb1-261"><a href="#cb1-261" aria-hidden="true" tabindex="-1"></a>| 2024.23 | 2024-06-03 | 2024-06-07 | GLD | P | 1 | $54.40 | $147.50 | stop_loss | $-93.10 | -171.1% | False |</span>
-<span id="cb1-262"><a href="#cb1-262" aria-hidden="true" tabindex="-1"></a>| 2024.23 | 2024-06-03 | 2024-06-05 | WMT | P | 1 | $14.45 | $6.20 | profit_target | $+8.25 | +57.1% | True |</span>
-<span id="cb1-263"><a href="#cb1-263" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-264"><a href="#cb1-264" aria-hidden="true" tabindex="-1"></a>The <span class="in">`trd_prd`</span> index encodes year + ISO week as a single decimal. Entries on the same Monday share the same <span class="in">`trd_prd`</span>.</span>
-<span id="cb1-265"><a href="#cb1-265" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-266"><a href="#cb1-266" aria-hidden="true" tabindex="-1"></a>*Showing 10 of 437 trades. Full blotter: [blotter.csv](https://github.com/mariotrev120/FinalProject_FinTech533/blob/mario/data-pipeline/website/data/blotter.csv) (all 437 entries, renders as a sortable table on GitHub).*</span>
-<span id="cb1-267"><a href="#cb1-267" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-268"><a href="#cb1-268" aria-hidden="true" tabindex="-1"></a><span class="fu">## How will you know the strategy is performing as expected?</span></span>
-<span id="cb1-269"><a href="#cb1-269" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-270"><a href="#cb1-270" aria-hidden="true" tabindex="-1"></a>A rolling 60-trade window of the realized win rate is compared against the OOS baseline of μ = 0.730. The Hoeffding inequality bounds the probability that observed underperformance is due to chance: while the bound stays at or above 50%, the strategy is operating within its modeled regime and trading continues at full size. Backtested over the 2018-2024 OOS sample, the bound was at or above 50% on 88% of post-warmup trades.</span>
+<span id="cb1-229"><a href="#cb1-229" aria-hidden="true" tabindex="-1"></a><span class="in">```{=html}</span></span>
+<span id="cb1-230"><a href="#cb1-230" aria-hidden="true" tabindex="-1"></a><span class="in">&lt;iframe src="charts/trade_return_distribution.html" width="100%" height="490" frameborder="0"&gt;&lt;/iframe&gt;</span></span>
+<span id="cb1-231"><a href="#cb1-231" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb1-232"><a href="#cb1-232" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-233"><a href="#cb1-233" aria-hidden="true" tabindex="-1"></a>The distribution is right-skewed by design: a 16-delta short put expires worthless ~84% of the time under lognormal assumptions, and <span class="in">`profit_target`</span> closes wins early at 50% of credit. Losses are bounded by the wing-width stop. The 1.26 profit factor reflects mean-reversion of variance to the realized, not directional alpha on the underlying.</span>
+<span id="cb1-234"><a href="#cb1-234" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-235"><a href="#cb1-235" aria-hidden="true" tabindex="-1"></a><span class="fu">## Ledger (monthly P&amp;L sample)</span></span>
+<span id="cb1-236"><a href="#cb1-236" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-237"><a href="#cb1-237" aria-hidden="true" tabindex="-1"></a>| Month | Trades closed | Net P&amp;L | Cumulative P&amp;L |</span>
+<span id="cb1-238"><a href="#cb1-238" aria-hidden="true" tabindex="-1"></a>|---|---:|---:|---:|</span>
+<span id="cb1-239"><a href="#cb1-239" aria-hidden="true" tabindex="-1"></a>| 2018-01 | 7 | +$36.75 | +$36.75 |</span>
+<span id="cb1-240"><a href="#cb1-240" aria-hidden="true" tabindex="-1"></a>| 2018-02 | 5 | -$193.88 | -$157.13 |</span>
+<span id="cb1-241"><a href="#cb1-241" aria-hidden="true" tabindex="-1"></a>| 2018-05 | 9 | +$97.05 | -$60.08 |</span>
+<span id="cb1-242"><a href="#cb1-242" aria-hidden="true" tabindex="-1"></a>| 2018-08 | 17 | +$191.15 | +$179.58 |</span>
+<span id="cb1-243"><a href="#cb1-243" aria-hidden="true" tabindex="-1"></a>| 2018-09 | 12 | +$175.50 | +$355.08 |</span>
+<span id="cb1-244"><a href="#cb1-244" aria-hidden="true" tabindex="-1"></a>| 2018-10 | 11 | -$290.25 | +$64.83 |</span>
+<span id="cb1-245"><a href="#cb1-245" aria-hidden="true" tabindex="-1"></a>| 2019-07 | 19 | +$315.85 | +$369.58 |</span>
+<span id="cb1-246"><a href="#cb1-246" aria-hidden="true" tabindex="-1"></a>| 2019-12 | 18 | +$321.70 | +$529.38 |</span>
+<span id="cb1-247"><a href="#cb1-247" aria-hidden="true" tabindex="-1"></a>| 2020-03 | 14 | -$11.20 | +$612.10 |</span>
+<span id="cb1-248"><a href="#cb1-248" aria-hidden="true" tabindex="-1"></a>| ... | ... | ... | ... |</span>
+<span id="cb1-249"><a href="#cb1-249" aria-hidden="true" tabindex="-1"></a>| 2024-08 | 5 | -$361.65 | +$1,237.08 |</span>
+<span id="cb1-250"><a href="#cb1-250" aria-hidden="true" tabindex="-1"></a>| 2024-11 | 12 | +$181.80 | +$1,418.88 |</span>
+<span id="cb1-251"><a href="#cb1-251" aria-hidden="true" tabindex="-1"></a>| 2024-12 | 12 | +$75.25 | +$1,494.13 |</span>
+<span id="cb1-252"><a href="#cb1-252" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-253"><a href="#cb1-253" aria-hidden="true" tabindex="-1"></a>*Showing 12 of 84 months from January 2018 to December 2024. Net P&amp;L in dollars per spread (per-contract basis at $100 multiplier). Full monthly ledger: [monthly_ledger.csv](https://github.com/mariotrev120/FinalProject_FinTech533/blob/mario/data-pipeline/website/data/monthly_ledger.csv) (renders as a sortable table on GitHub).*</span>
+<span id="cb1-254"><a href="#cb1-254" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-255"><a href="#cb1-255" aria-hidden="true" tabindex="-1"></a><span class="fu">## Blotter</span></span>
+<span id="cb1-256"><a href="#cb1-256" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-257"><a href="#cb1-257" aria-hidden="true" tabindex="-1"></a>Random sample of 10 trades from the 437-row blotter (seed=42).</span>
+<span id="cb1-258"><a href="#cb1-258" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-259"><a href="#cb1-259" aria-hidden="true" tabindex="-1"></a>| trd_prd | Entry | Exit | Ticker | Side | Qty | Entry credit | Exit debit | Fate | P&amp;L | Return % | Success |</span>
+<span id="cb1-260"><a href="#cb1-260" aria-hidden="true" tabindex="-1"></a>|---|---|---|:-:|:-:|---:|---:|---:|---|---:|---:|:-:|</span>
+<span id="cb1-261"><a href="#cb1-261" aria-hidden="true" tabindex="-1"></a>| 2018.19 | 2018-05-07 | 2018-05-16 | WMT | P | 1 | $22.45 | $0.90 | profit_target | $+21.55 | +96.0% | True |</span>
+<span id="cb1-262"><a href="#cb1-262" aria-hidden="true" tabindex="-1"></a>| 2018.39 | 2018-09-24 | 2018-10-05 | WMT | P | 1 | $35.80 | $60.55 | time_exit | $-24.75 | -69.1% | False |</span>
+<span id="cb1-263"><a href="#cb1-263" aria-hidden="true" tabindex="-1"></a>| 2018.40 | 2018-10-01 | 2018-10-11 | GLD | P | 1 | $15.05 | $4.50 | profit_target | $+10.55 | +70.1% | True |</span>
+<span id="cb1-264"><a href="#cb1-264" aria-hidden="true" tabindex="-1"></a>| 2019.07 | 2019-02-11 | 2019-02-15 | MSFT | P | 1 | $38.70 | $15.30 | profit_target | $+23.40 | +60.5% | True |</span>
+<span id="cb1-265"><a href="#cb1-265" aria-hidden="true" tabindex="-1"></a>| 2019.30 | 2019-07-22 | 2019-08-01 | WMT | P | 1 | $38.85 | $88.55 | stop_loss | $-49.70 | -127.9% | False |</span>
+<span id="cb1-266"><a href="#cb1-266" aria-hidden="true" tabindex="-1"></a>| 2019.48 | 2019-11-25 | 2019-12-04 | WMT | P | 1 | $29.85 | $17.75 | profit_target | $+12.10 | +40.5% | True |</span>
+<span id="cb1-267"><a href="#cb1-267" aria-hidden="true" tabindex="-1"></a>| 2019.52 | 2019-12-23 | 2019-12-26 | GLD | P | 1 | $19.70 | $9.95 | profit_target | $+9.75 | +49.5% | True |</span>
+<span id="cb1-268"><a href="#cb1-268" aria-hidden="true" tabindex="-1"></a>| 2024.07 | 2024-02-12 | 2024-02-23 | MSFT | P | 1 | $52.80 | $34.25 | time_exit | $+18.55 | +35.1% | True |</span>
+<span id="cb1-269"><a href="#cb1-269" aria-hidden="true" tabindex="-1"></a>| 2024.23 | 2024-06-03 | 2024-06-07 | GLD | P | 1 | $54.40 | $147.50 | stop_loss | $-93.10 | -171.1% | False |</span>
+<span id="cb1-270"><a href="#cb1-270" aria-hidden="true" tabindex="-1"></a>| 2024.23 | 2024-06-03 | 2024-06-05 | WMT | P | 1 | $14.45 | $6.20 | profit_target | $+8.25 | +57.1% | True |</span>
 <span id="cb1-271"><a href="#cb1-271" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-272"><a href="#cb1-272" aria-hidden="true" tabindex="-1"></a><span class="fu">## How will you quantify when the strategy stops working?</span></span>
+<span id="cb1-272"><a href="#cb1-272" aria-hidden="true" tabindex="-1"></a>The <span class="in">`trd_prd`</span> index encodes year + ISO week as a single decimal. Entries on the same Monday share the same <span class="in">`trd_prd`</span>.</span>
 <span id="cb1-273"><a href="#cb1-273" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-274"><a href="#cb1-274" aria-hidden="true" tabindex="-1"></a>The same Hoeffding bound. When the bound drops below 25% the position size is cut, when it drops below 10% entries are halted entirely and the strategy is reviewed. The thresholds are pre-set, distribution-free, and apply uniformly across the 4-instrument basket. The OOS sample produced no critical signal across 1,760 trading days; full bound-trace and worked example on the <span class="co">[</span><span class="ot">Live Monitoring</span><span class="co">](monitoring.qmd)</span> page.</span>
+<span id="cb1-274"><a href="#cb1-274" aria-hidden="true" tabindex="-1"></a>*Showing 10 of 437 trades. Full blotter: [blotter.csv](https://github.com/mariotrev120/FinalProject_FinTech533/blob/mario/data-pipeline/website/data/blotter.csv) (all 437 entries, renders as a sortable table on GitHub).*</span>
 <span id="cb1-275"><a href="#cb1-275" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-276"><a href="#cb1-276" aria-hidden="true" tabindex="-1"></a>For the data sources behind these numbers, see <span class="co">[</span><span class="ot">Data and Sources</span><span class="co">](data_and_literature.qmd)</span>.</span></code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
+<span id="cb1-276"><a href="#cb1-276" aria-hidden="true" tabindex="-1"></a><span class="fu">## How will you know the strategy is performing as expected?</span></span>
+<span id="cb1-277"><a href="#cb1-277" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-278"><a href="#cb1-278" aria-hidden="true" tabindex="-1"></a>A rolling 60-trade window of the realized win rate is compared against the OOS baseline of μ = 0.730. The Hoeffding inequality bounds the probability that observed underperformance is due to chance: while the bound stays at or above 50%, the strategy is operating within its modeled regime and trading continues at full size. Backtested over the 2018-2024 OOS sample, the bound was at or above 50% on 88% of post-warmup trades.</span>
+<span id="cb1-279"><a href="#cb1-279" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-280"><a href="#cb1-280" aria-hidden="true" tabindex="-1"></a><span class="fu">## How will you quantify when the strategy stops working?</span></span>
+<span id="cb1-281"><a href="#cb1-281" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-282"><a href="#cb1-282" aria-hidden="true" tabindex="-1"></a>The same Hoeffding bound. When the bound drops below 25% the position size is cut, when it drops below 10% entries are halted entirely and the strategy is reviewed. The thresholds are pre-set, distribution-free, and apply uniformly across the 4-instrument basket. The OOS sample produced no critical signal across 1,760 trading days; full bound-trace and worked example on the <span class="co">[</span><span class="ot">Live Monitoring</span><span class="co">](monitoring.qmd)</span> page.</span>
+<span id="cb1-283"><a href="#cb1-283" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-284"><a href="#cb1-284" aria-hidden="true" tabindex="-1"></a>For the data sources behind these numbers, see <span class="co">[</span><span class="ot">Data and Sources</span><span class="co">](data_and_literature.qmd)</span>.</span></code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
 <footer class="footer">
