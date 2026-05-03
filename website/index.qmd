@@ -1,0 +1,63 @@
+---
+title: "Defined-Risk Volatility-Risk-Premium Harvesting"
+subtitle: "FinTech 533 capstone · Mario Treviño · Duke MEng FinTech"
+---
+
+## Overview
+
+This project designs and tests a defined-risk options strategy on a 5-instrument index-and-ETF cluster (SPX, RUT, NDX, TLT, GLD) and a 9-name adaptive wheel basket. The strategy harvests the volatility risk premium — the structural gap between options-implied and realized volatility — using iron condors and cash-secured puts.
+
+The work covers:
+
+- **Design.** 5-instrument iron condor cluster with 16-delta short legs, 5-fates per-side independent management, 5-layer halt framework with auto-resume + 60-day fallback, and a 5-layer adaptive wheel including regime-conditional delta selection and per-name realized-volatility forecaster.
+- **Testing.** Multi-year out-of-sample backtest 2018–2024 with realistic friction modeling (VIX-scaled slippage, gap-aware stops, per-instrument tax overlays). Statistical significance reported with the **Deflated Sharpe Ratio** (Bailey & López de Prado 2014, with Eq. 9 implied-independent-trials correction) and **Probability of Backtest Overfitting** via combinatorially symmetric cross-validation.
+- **Live monitoring.** [Hoeffding-bounded](monitoring.qmd) regime-change detection in the trader-application form — pre-committed `μ` from OOS, rolling 60-trade `X̄`, threshold semantics 50/25/10% on the probability bound.
+- **3-head ML stack.** Calibrated XGBoost with auto-selected isotonic vs Platt scaling per Niculescu-Mizil & Caruana 2005 sample-size threshold, scale-pos-weight handling for class imbalance, and full pre-committed acceptance criteria with documented fallback rules for negative findings.
+
+## Pre-commitment-driven methodology
+
+Every parameter, threshold, and acceptance criterion is locked in version-controlled pre-commitment documents **before** the OOS backtest runs:
+
+- [PRE_COMMITMENT_VRP.md](pre_commitments.qmd#vrp): 5-instrument iron condor cluster
+- [PRE_COMMITMENT_WHEEL.md](pre_commitments.qmd#wheel): 9-name adaptive wheel
+- [LITERATURE_FINDINGS.md](pre_commitments.qmd#literature): Per-paper methodology audit across the 8 reference papers
+- [LITERATURE_GAP_ANALYSIS.md](pre_commitments.qmd#gaps): Identified ship-blocking and ship-improving gaps
+
+Methodology amendments after pre-commitment are explicitly logged with date, reason, and disclosure (see §4.1 amendment, §5.1 amendment in the VRP doc).
+
+## Headline results
+
+(Filled in post-multi-instrument-run)
+
+| Mode | Sharpe (raw) | Sharpe (DSR-adjusted) | PBO | OOS n_trades | Max DD |
+|---|---:|---:|---:|---:|---:|
+| naked (single SPX put-credit, v1.5 baseline) | 0.142 | _TBD_ | _TBD_ | 210 | _TBD_ |
+| halts_only (SPX iron condor, post-Layer-4-fix) | 0.497 | _TBD_ | _TBD_ | 364 | −4.59% |
+| **5-VRP halts_only book** | _TBD_ | _TBD_ | _TBD_ | _TBD_ | _TBD_ |
+| **9-wheel halts_only book** | _TBD_ | _TBD_ | _TBD_ | _TBD_ | _TBD_ |
+| **VRP + wheel combined** | _TBD_ | _TBD_ | _TBD_ | _TBD_ | _TBD_ |
+
+## Reproducibility
+
+Single-command reproduction from a fresh checkout:
+
+```bash
+git clone <repo>
+cd FinalProject_FinTech533
+python -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt
+PYTHONPATH=. python scripts/convert_optionmetrics_to_parquet.py   # one-time, ~80s
+PYTHONPATH=. python scripts/run_full_pipeline.py                  # full ablation matrix
+```
+
+`SEED = 42` is consumed by every stochastic component (XGBoost, isotonic/Platt CV split, block-bootstrap). Two runs of the same commit produce identical equity curves to floating-point precision.
+
+## Status
+
+Branch `mario/data-pipeline`; not yet merged to `main`. Major commits:
+
+- `8aa4b93` Layer 4 Option A: trailing-90-day drawdown reference (catch-22 fix)
+- `7090dbb` strategy/vol_regime: per-instrument quadrant classifier (Phase D D1)
+- `fbdc979` metrics: CSCV-based PBO + DSR Eq.9 — close 2 ship-blocking literature gaps
+- `b615d27` halts: wire Layer 5 auto-resume — convert evaluate_halts to latching state machine
+- `448691c` regime_stress: rewrite with labeled-event source per PRE_COMMITMENT_VRP §5.1

@@ -1,0 +1,68 @@
+---
+title: "Thesis: Why Variance Risk Premium"
+---
+
+## The empirical regularity
+
+Across stock indexes and individual stocks, the implied variance from option prices systematically exceeds the realized variance over matching forward windows. This gap — the **variance risk premium** — has been documented as strongly negative for the S&P 500, S&P 100, and Dow Jones indexes (large t-statistics on both raw and log forms), smaller-magnitude negative for the Nasdaq 100 and most individual stocks, and statistically distinguishable from zero across multiple decades of data.
+
+The premium is not arbitrageable away because hedging variance risk requires either long-vol options positions (which lose money on average if you collect the premium by selling) or continuous dynamic delta-hedging that incurs friction. Both reset the risk to a different form: short-vol exposure with tail risk, or vega-and-friction exposure to dynamic-hedge slippage.
+
+Investors are willing to pay this premium because variance shocks correlate negatively with index returns — variance risk is "insurance against market drawdowns," and insurance commands a premium. Classical CAPM beta captures only a small portion of the empirically observed magnitude. Fama-French three-factor models leave large residuals. The premium appears to compensate exposure to a separate volatility-risk factor.
+
+## What our strategy harvests
+
+The strategy systematically sells defined-risk volatility structures (iron condors and cash-secured puts) on instruments where the premium has been documented. We collect the option premium up front, accept the tail-risk exposure (capped by the wing widths on iron condors and by share-assignment mechanics on the wheel), and manage active positions with five exit fates.
+
+Specifically:
+
+- **5-instrument iron condor cluster** (SPX, RUT, NDX, TLT, GLD): captures equity-index VRP plus cross-asset (bond, gold) VRP. The strategy harvests the structurally negative VRP across asset classes; correlation diversification reduces portfolio variance without giving up expected return.
+- **9-name adaptive wheel basket** (AAPL, MSFT, GOOGL, JNJ, KO, PG, WMT, JPM, PEP): captures single-name VRP via cash-secured puts and covered calls. Strategy adapts strike delta to the prevailing volatility regime, widens strikes per name when realized vol is elevated, and uses an XGBoost realized-vol forecaster for sizing.
+
+## What this strategy does NOT claim
+
+- Not statistical arbitrage. The premium is a real risk premium, paid for a real risk (left-tail variance shocks). Sellers earn the premium in normal regimes and pay back in stress. Sharpe is bounded; tails are real.
+- Not market-timing. We do not predict when vol spikes will occur. We size positions for capacity to absorb spikes and exit when current spreads breach pre-committed exit triggers.
+- Not idiosyncratic-stock-picking. The wheel basket is selected by liquidity and structural-criteria thresholds, not by subjective conviction. The 9 names are the universe, not picks.
+
+## The capacity-versus-edge tradeoff
+
+Single-name short-vol structures generate higher per-trade premium but carry concentrated tail risk. Index-level structures generate smaller per-trade premium but diversify cross-name idiosyncratic risk.
+
+Our cluster mixes both:
+
+- Indexes (SPX, RUT, NDX) for diversified equity-VRP capture
+- ETFs (TLT, GLD) for cross-asset diversification (bond and gold vol have low correlation with equity vol over multi-year windows)
+- Individual names (wheel basket) for incremental premium with sector spread
+
+The expected payoff: combined book Sharpe higher than any single instrument, with maximum drawdown bounded by halt framework + per-instrument max-loss per spread.
+
+## Why iron condor over single-side spread
+
+The legacy strategy (v1.5 baseline) used put-credit spreads only. Adding the call wing converts to iron condor. Trade-offs:
+
+- **Premium captured per structure:** roughly doubles (both sides earn)
+- **Defined risk per structure:** wider per-structure max-loss (both wings can be in the money simultaneously, though rarely)
+- **Trend exposure:** put-side benefits from rising markets; call-side is hurt. Iron condor is delta-neutral at entry; one wing always offsets the other in trending regimes
+- **Volatility exposure:** symmetric — short vega on both sides. IV-crush after entry helps both wings
+
+In strong trending markets (like 2018-2024 SPX), the call wing is structurally disadvantaged: spot rallies hard, calls go in the money, losses on calls partially offset gains on puts. Result: iron condor naked-mode Sharpe is below put-only naked-mode Sharpe in trending regimes (we observed exactly this in our diagnostic).
+
+The strategy's edge over naked-mode iron condor comes from the **halt framework** — exiting when market regime shifts to high-realized-vol environments where short-vol positions of any kind underperform.
+
+## Foundational pricing: Black-Scholes and Merton
+
+Strike selection uses Black-Scholes Greeks: 16-delta short legs (one standard deviation OTM under the lognormal assumption), 5-point wings (or per-instrument-grid). The BS pricer is a fallback when OptionMetrics-published implied volatility is missing.
+
+Black-Scholes empirically *overvalues* options on high-variance underlyings and undervalues low-variance — this is the published finding from BS's own 1973 paper. That bias is itself the structural source of the volatility risk premium our strategy harvests. We do not "out-predict" the BS pricer; we systematically take the side of the trade where BS-implied premium exceeds realized variance over the holding window.
+
+Merton's 1973 extension covers American early-exercise (relevant for the wheel basket's dividend-paying names) and continuous-dividend pricing. American puts on dividend-paying stocks always have positive probability of premature exercise (Merton Theorem 13). The wheel mechanic accepts assignment as a feature: when assigned shares, write covered calls until called away.
+
+## What you'll find in the rest of the writeup
+
+- [Mechanics](mechanics.qmd): exact entry/exit logic, halt framework, ML stack, sizing
+- [Pre-commitments](pre_commitments.qmd): the locked methodology before any backtest fired
+- [Results](results.qmd): headline OOS numbers with DSR/PBO multiple-testing correction
+- [Ablations](ablations.qmd): naked / halts / vol-regime / ML / regime+halts / full
+- [Live monitoring](monitoring.qmd): how to know it works, how to know it stopped
+- [Limitations](limitations.qmd): what this strategy cannot promise

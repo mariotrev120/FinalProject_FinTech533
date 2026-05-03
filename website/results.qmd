@@ -1,0 +1,160 @@
+---
+title: "Results"
+---
+
+## How to read this page
+
+Every Sharpe ratio is reported in two forms:
+
+- **Raw Sharpe** (annualized) — the headline number
+- **Deflated Sharpe (DSR)** — Bailey & López de Prado 2014 correction for selection bias and non-Normality. Uses Eq. 9 implied-independent-trials count `N̂ = ρ̄ + (1−ρ̄)·M`, NOT raw N from the sensitivity grid
+
+Plus:
+
+- **PBO** (Probability of Backtest Overfitting) via CSCV — Bailey/Borwein/López de Prado/Zhu 2015. S=16, C(16,8) = 12,870 logit combos
+- **n_trades** and **win rate**
+- **Max drawdown** (signed, negative)
+- **Annualized return** (geometric)
+
+Pre-commitment-driven acceptance gates from PRE_COMMITMENT_VRP.md:
+
+- DSR (PSR threshold) ≥ 0.95 against the N̂-trial benchmark
+- PBO via CSCV ≤ 0.30 on the §11 sensitivity grid
+- Reproducibility: same commit, same data, same seed → byte-identical equity curve
+
+## SPX-only headline (anchor comparison vs v1.5 baseline)
+
+| Mode | Sharpe (raw) | Sharpe (DSR) | PBO | n_trades | Win rate | Max DD | Ann. return |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| **v1.5 baseline (put-only, halts_only)** | 0.286 | _TBD_ | _TBD_ | 210 | 69.0% | _TBD_ | _TBD_ |
+| naked iron condor (no halts) | -0.200 | _TBD_ | _TBD_ | 514 | _TBD_ | -9.24% | -0.23% |
+| **halts_only iron condor (post-Layer-4-fix)** | **0.497** | _TBD_ | _TBD_ | 364 | 41.8% | -4.59% | +0.48% |
+
+## 5-instrument VRP cluster (book-level + per-instrument)
+
+(Filled in post-multi-instrument run)
+
+### Per-instrument (naked mode)
+
+| Ticker | Sharpe | n_trades | Win rate | Max DD | Ann. return |
+|---|---:|---:|---:|---:|---:|
+| SPX | -0.200 | 514 | _TBD_ | -9.24% | -0.23% |
+| RUT | -3.275 | 383 | _TBD_ | -34.00% | -5.76% |
+| NDX | _TBD_ | _TBD_ | _TBD_ | _TBD_ | _TBD_ |
+| TLT | _TBD_ | _TBD_ | _TBD_ | _TBD_ | _TBD_ |
+| GLD | _TBD_ | _TBD_ | _TBD_ | _TBD_ | _TBD_ |
+| **BOOK (Σ per-ticker)** | _TBD_ | _TBD_ | n/a | _TBD_ | _TBD_ |
+
+### Per-instrument (halts_only mode)
+
+| Ticker | Sharpe | n_trades | Win rate | Max DD | Ann. return |
+|---|---:|---:|---:|---:|---:|
+| SPX | 0.497 | 364 | 41.8% | -4.59% | +0.48% |
+| RUT | _TBD_ | _TBD_ | _TBD_ | _TBD_ | _TBD_ |
+| NDX | _TBD_ | _TBD_ | _TBD_ | _TBD_ | _TBD_ |
+| TLT | _TBD_ | _TBD_ | _TBD_ | _TBD_ | _TBD_ |
+| GLD | _TBD_ | _TBD_ | _TBD_ | _TBD_ | _TBD_ |
+| **BOOK** | _TBD_ | _TBD_ | n/a | _TBD_ | _TBD_ |
+
+### Per-instrument (full mode = ML + halts)
+
+(Filled in after Head 1/2/3 acceptance evaluations)
+
+| Ticker | Sharpe | n_trades | Win rate | Max DD | Ann. return | ML status |
+|---|---:|---:|---:|---:|---:|---|
+| SPX | _TBD_ | _TBD_ | _TBD_ | _TBD_ | _TBD_ | _TBD_ |
+| RUT | _TBD_ | _TBD_ | _TBD_ | _TBD_ | _TBD_ | _TBD_ |
+| NDX | _TBD_ | _TBD_ | _TBD_ | _TBD_ | _TBD_ | _TBD_ |
+| TLT | _TBD_ | _TBD_ | _TBD_ | _TBD_ | _TBD_ | _TBD_ |
+| GLD | _TBD_ | _TBD_ | _TBD_ | _TBD_ | _TBD_ | _TBD_ |
+| **BOOK** | _TBD_ | _TBD_ | n/a | _TBD_ | _TBD_ | _TBD_ |
+
+## 9-name wheel basket
+
+(Filled in post-wheel-run)
+
+### Per-name (full mode)
+
+| Ticker | Sharpe | n_trades | Win rate | Max DD | Ann. return | Layer 3 status |
+|---|---:|---:|---:|---:|---:|---|
+| AAPL | _TBD_ | _TBD_ | _TBD_ | _TBD_ | _TBD_ | _TBD_ |
+| MSFT | _TBD_ | _TBD_ | _TBD_ | _TBD_ | _TBD_ | _TBD_ |
+| GOOGL | _TBD_ | _TBD_ | _TBD_ | _TBD_ | _TBD_ | _TBD_ |
+| JNJ | _TBD_ | _TBD_ | _TBD_ | _TBD_ | _TBD_ | _TBD_ |
+| KO | _TBD_ | _TBD_ | _TBD_ | _TBD_ | _TBD_ | _TBD_ |
+| PG | _TBD_ | _TBD_ | _TBD_ | _TBD_ | _TBD_ | _TBD_ |
+| WMT | _TBD_ | _TBD_ | _TBD_ | _TBD_ | _TBD_ | _TBD_ |
+| JPM | _TBD_ | _TBD_ | _TBD_ | _TBD_ | _TBD_ | _TBD_ |
+| PEP | _TBD_ | _TBD_ | _TBD_ | _TBD_ | _TBD_ | _TBD_ |
+| **BOOK (9-name)** | _TBD_ | _TBD_ | n/a | _TBD_ | _TBD_ | _TBD_ |
+
+### Robustness baskets
+
+| Basket | Sharpe (full) | Δ vs primary 9-name |
+|---|---:|---:|
+| 7-name strict (drops JPM, PEP) | _TBD_ | _TBD_ |
+| 8-name (adds JPM only) | _TBD_ | _TBD_ |
+| 9-name primary | _TBD_ | n/a |
+
+If the 9-name primary Sharpe is more than 0.05 below the 7-name strict basket, the strict basket becomes the headline and PEP/JPM activation is reported as net-negative.
+
+## Combined book (5 VRP + 9 wheel)
+
+| Mode | Sharpe (raw) | Sharpe (DSR) | PBO | Total trades | Max DD | Ann. return |
+|---|---:|---:|---:|---:|---:|---:|
+| naked | _TBD_ | _TBD_ | _TBD_ | _TBD_ | _TBD_ | _TBD_ |
+| halts_only | _TBD_ | _TBD_ | _TBD_ | _TBD_ | _TBD_ | _TBD_ |
+| **full (Head 1+2+3 + halts)** | _TBD_ | _TBD_ | _TBD_ | _TBD_ | _TBD_ | _TBD_ |
+
+## Per-regime breakdown (HMM-tagged)
+
+(Filled in after HMM regime classification on the OOS sample)
+
+| Regime | n trading days | Book Sharpe (in regime) | Mean trade PnL | Win rate |
+|---|---:|---:|---:|---:|
+| Calm | _TBD_ | _TBD_ | _TBD_ | _TBD_ |
+| Stressed | _TBD_ | _TBD_ | _TBD_ | _TBD_ |
+
+## Per-event drawdown attribution
+
+(Filled in after stress-event-window analysis)
+
+| Event | Window | Book PnL | Halt fired? | Trades closed early |
+|---|---|---:|---|---:|
+| Volmageddon | 2018-02-05 ± 2w | _TBD_ | _TBD_ | _TBD_ |
+| Q4-2018 selloff | 2018-12-24 ± 1m | _TBD_ | _TBD_ | _TBD_ |
+| COVID crash | 2020-03-23 ± 1m | _TBD_ | _TBD_ | _TBD_ |
+| 2022 bear market | (full year) | _TBD_ | _TBD_ | _TBD_ |
+| Banking crisis | 2023-03-13 ± 1m | _TBD_ | _TBD_ | _TBD_ |
+
+## Tax-overlay results
+
+(Filled in post-tax-aware reporting)
+
+| Mode | Sharpe (pre-tax) | Sharpe (after-tax 1256 60/40) | Δ |
+|---|---:|---:|---:|
+| 5-VRP halts_only book | _TBD_ | _TBD_ | _TBD_ |
+| 9-wheel halts_only book | _TBD_ | _TBD_ | _TBD_ |
+| Combined book | _TBD_ | _TBD_ | _TBD_ |
+
+(Section 1256 applies to SPX/RUT/NDX. TLT/GLD and the 9-wheel names are full-ST treatment.)
+
+## Sensitivity-grid + multiple-testing correction
+
+(Filled in post-grid run)
+
+- Total trials: 729 (3⁶ from the §11 grid in PRE_COMMITMENT_VRP)
+- Mean pairwise correlation ρ̄: _TBD_
+- Implied independent trials N̂ = ρ̄ + (1−ρ̄)·729 = _TBD_
+- DSR (PSR) of best-IS strategy under N̂-trial benchmark: _TBD_
+- PBO via CSCV (S=16, 12,780 combos): _TBD_
+
+Acceptance:
+
+- DSR ≥ 0.95: _TBD_
+- PBO ≤ 0.30: _TBD_
+- Headline classification: _TBD_
+
+## Headline summary (filled in post-pipeline)
+
+(Single paragraph summarizing the strategy's empirical case after all corrections.)

@@ -1,0 +1,115 @@
+---
+title: "Ablation Matrix"
+---
+
+## What an ablation matrix tests
+
+The ablation matrix isolates the contribution of each strategy component (halts, vol-regime gate, ML stack) by running the same backtest with that component turned off. The result tells us:
+
+- Which component is doing the actual work
+- Whether removing a component is harmful or harmless
+- Whether components stack (full > sum of parts) or cancel (full < sum of parts)
+
+## The 6 modes
+
+| Mode | Halts | Vol regime gate | ML (Head 1+3 + Head 2 scaler) |
+|---|:-:|:-:|:-:|
+| **naked** | ✗ | ✗ | ✗ |
+| **halts_only** | ✓ | ✗ | ✗ |
+| **vol-regime-only** | ✗ | ✓ | ✗ |
+| **ml_only** | ✗ | ✗ | ✓ |
+| **regime+halts** | ✓ | ✓ | ✗ |
+| **full** | ✓ | ✓ | ✓ |
+
+## SPX results (locked, post-Layer-4-fix)
+
+| Mode | Sharpe | n_trades | Win rate | Max DD | Ann. return |
+|---|---:|---:|---:|---:|---:|
+| naked | -0.200 | 514 | _TBD_ | -9.24% | -0.23% |
+| halts_only | **0.497** | 364 | 41.8% | -4.59% | +0.48% |
+| vol-regime-only | _TBD_ | _TBD_ | _TBD_ | _TBD_ | _TBD_ |
+| ml_only | _TBD_ | _TBD_ | _TBD_ | _TBD_ | _TBD_ |
+| regime+halts | _TBD_ | _TBD_ | _TBD_ | _TBD_ | _TBD_ |
+| full | _TBD_ | _TBD_ | _TBD_ | _TBD_ | _TBD_ |
+
+## 5-VRP book results
+
+(Filled in post-multi-instrument runs)
+
+| Mode | Sharpe | Total trades | Max DD | Ann. return |
+|---|---:|---:|---:|---:|
+| naked | _TBD_ | _TBD_ | _TBD_ | _TBD_ |
+| halts_only | _TBD_ | _TBD_ | _TBD_ | _TBD_ |
+| vol-regime-only | _TBD_ | _TBD_ | _TBD_ | _TBD_ |
+| ml_only | _TBD_ | _TBD_ | _TBD_ | _TBD_ |
+| regime+halts | _TBD_ | _TBD_ | _TBD_ | _TBD_ |
+| full | _TBD_ | _TBD_ | _TBD_ | _TBD_ |
+
+## 9-wheel book results
+
+(Filled in post-wheel runs)
+
+| Mode | Sharpe | Total trades | Max DD | Ann. return |
+|---|---:|---:|---:|---:|
+| naked | _TBD_ | _TBD_ | _TBD_ | _TBD_ |
+| halts_only | _TBD_ | _TBD_ | _TBD_ | _TBD_ |
+| vol-regime-only | _TBD_ | _TBD_ | _TBD_ | _TBD_ |
+| ml_only | _TBD_ | _TBD_ | _TBD_ | _TBD_ |
+| regime+halts | _TBD_ | _TBD_ | _TBD_ | _TBD_ |
+| full | _TBD_ | _TBD_ | _TBD_ | _TBD_ |
+
+## Paired bootstrap CI on Sharpe-difference
+
+For each mode pair (e.g., full vs naked), block-bootstrap CI on the Sharpe difference. B = 10,000 resamples; block size = 22 (one trading month) per Newey-West heuristic.
+
+(Filled in post-pipeline)
+
+| Mode A | Mode B | Δ Sharpe (point) | 5% CI | 95% CI | Significant at 95%? |
+|---|---|---:|---:|---:|:-:|
+| halts_only | naked | _TBD_ | _TBD_ | _TBD_ | _TBD_ |
+| full | naked | _TBD_ | _TBD_ | _TBD_ | _TBD_ |
+| full | halts_only | _TBD_ | _TBD_ | _TBD_ | _TBD_ |
+| ml_only | naked | _TBD_ | _TBD_ | _TBD_ | _TBD_ |
+| regime+halts | halts_only | _TBD_ | _TBD_ | _TBD_ | _TBD_ |
+
+## Multiple-testing correction (DSR over the 6-mode N)
+
+The ablation creates a 6-trial multiple-testing problem: best-of-6 mode selection inflates Sharpe by selection bias. DSR with N=6:
+
+(Filled in post-pipeline)
+
+| Mode | Raw Sharpe | DSR-adjusted (N=6 trials) |
+|---|---:|---:|
+| naked | _TBD_ | _TBD_ |
+| halts_only | _TBD_ | _TBD_ |
+| vol-regime-only | _TBD_ | _TBD_ |
+| ml_only | _TBD_ | _TBD_ |
+| regime+halts | _TBD_ | _TBD_ |
+| full | _TBD_ | _TBD_ |
+
+## Per-instrument component attribution
+
+For each instrument and each component (halts, vol-regime, ML), the marginal contribution to Sharpe.
+
+(Filled in post-pipeline; component_attribution.csv on disk)
+
+| Ticker | Naked Sharpe | Halts marginal | Vol-regime marginal | ML marginal | Full Sharpe |
+|---|---:|---:|---:|---:|---:|
+| SPX | _TBD_ | _TBD_ | _TBD_ | _TBD_ | _TBD_ |
+| RUT | _TBD_ | _TBD_ | _TBD_ | _TBD_ | _TBD_ |
+| NDX | _TBD_ | _TBD_ | _TBD_ | _TBD_ | _TBD_ |
+| TLT | _TBD_ | _TBD_ | _TBD_ | _TBD_ | _TBD_ |
+| GLD | _TBD_ | _TBD_ | _TBD_ | _TBD_ | _TBD_ |
+
+## Strike-snap robustness (separate sweep, not in main grid)
+
+| Policy | Headline-mode Sharpe | n_trades |
+|---|---:|---:|
+| Nearest-delta (canonical) | _TBD_ | _TBD_ |
+| Nearest-strike | _TBD_ | _TBD_ |
+
+If headline Sharpe differs by more than 0.05, flag as a robustness concern.
+
+## Headline conclusion (filled in post-pipeline)
+
+(Single paragraph: which component does the work, whether ML pays for itself after DSR correction, whether the full mode beats halts_only after correction.)

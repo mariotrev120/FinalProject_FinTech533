@@ -1,0 +1,48 @@
+project:
+  type: website
+  output-dir: _site
+
+website:
+  title: "Defined-Risk Volatility-Risk-Premium Harvesting"
+  description: "FinTech 533 capstone — 5-instrument iron-condor cluster + 9-name adaptive wheel"
+  navbar:
+    background: dark
+    left:
+      - href: index.qmd
+        text: Home
+      - href: thesis.qmd
+        text: Thesis
+      - href: mechanics.qmd
+        text: Mechanics
+      - href: pre_commitments.qmd
+        text: Pre-commitments
+      - href: results.qmd
+        text: Results
+      - href: ablations.qmd
+        text: Ablations
+      - href: monitoring.qmd
+        text: "Live Monitoring"
+      - href: limitations.qmd
+        text: Limitations
+      - href: reproducibility.qmd
+        text: Reproducibility
+  page-footer:
+    center: "FinTech 533 capstone · Mario Treviño · Duke MEng FinTech"
+
+format:
+  html:
+    theme:
+      light: cosmo
+      dark: darkly
+    css: styles.css
+    toc: true
+    toc-depth: 3
+    code-fold: false
+    code-tools: true
+    fig-cap-location: bottom
+    tbl-cap-location: top
+
+execute:
+  freeze: auto
+  echo: false
+  warning: false

@@ -6,8 +6,15 @@ backtest per ticker over OOS, and aggregates per-instrument equity
 curves into a book-level NAV.
 
 Capital allocation:
-  - This is the BASELINE multi-instrument run. Equal-weight: 1/N capital
-    per instrument. Aggregate book equity = Σ instrument_i_equity_t.
+  - This is the BASELINE multi-instrument run. Equal-weight: each ticker
+    runs as a standalone $100K-capital book ($500K total / 5 = $100K).
+    The per-instrument equity curves are reported on a $100K basis.
+    Aggregate book NAV = Σ instrument_i_equity_t (paper-portfolio sum).
+  - $100K per ticker is the floor for iron condor entries: the engine's
+    1% per-trade hard cap = $1000, which must clear the IC max-loss
+    per spread (~$400 SPX, ~$2000 NDX). At $20K/ticker the cap was $200,
+    blocking every entry → 0 trades. v1.5 baseline used $100K SPX-only,
+    so $100K/ticker is consistent with that anchor's sizing scale.
   - Quality-weighted allocation (w_i = p_quality_i / Σ p_quality_j) is a
     Phase B-2 task — requires Head 1 trained first, so deferred.
 
@@ -150,7 +157,11 @@ def main(argv: list[str] | None = None) -> int:
                         choices=["naked", "halts_only", "ml_only", "full"])
     parser.add_argument("--start", default=OOS_START)
     parser.add_argument("--end", default=OOS_END)
-    parser.add_argument("--total-capital", type=float, default=100_000.0)
+    parser.add_argument("--total-capital", type=float, default=500_000.0,
+                        help="Total book capital. Default $500K = $100K per ticker "
+                             "across 5 VRP instruments. Iron condor max-loss-per-spread "
+                             "(~$400 SPX, $2000 NDX) requires $100K+ per ticker for the "
+                             "1%% per-trade hard cap to allow entries.")
     parser.add_argument("--no-ic", action="store_true",
                         help="Disable iron condor (use put-only spreads).")
     parser.add_argument("--tickers", nargs="+", default=VRP_UNIVERSE,
@@ -210,7 +221,7 @@ def main(argv: list[str] | None = None) -> int:
         if result.trades:
             trades_df = pd.DataFrame([
                 dict(
-                    open_date=t.open_date, close_date=t.exit_date,
+                    entry_date=t.entry_date, exit_date=t.exit_date,
                     fate=t.fate, mode=t.mode,
                     pnl_per_spread=t.pnl_per_spread,
                     iron_condor_id=t.iron_condor_id,

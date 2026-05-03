@@ -1,0 +1,119 @@
+---
+title: "Reproducibility"
+---
+
+Two runs of the same commit + the same data + the same `SEED = 42` produce identical equity curves to floating-point precision. This page documents how to reproduce every number in the [results](results.qmd) page from a fresh checkout.
+
+## Environment
+
+- Python 3.12+ on Linux/macOS/WSL (tested on WSL Ubuntu 22.04)
+- ~16 GB RAM (4–6 GB working set; SPX parquet is the largest single load at ~750 MB on disk)
+- ~3 GB disk free for per-ticker parquets
+
+## One-time setup
+
+```bash
+git clone <repo-url> FinTech533_capstone
+cd FinTech533_capstone
+git checkout mario/data-pipeline   # not yet merged to main
+
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+## One-time data conversion
+
+The OptionMetrics CSV (`strat2.2.csv.gz`, ~2.4 GB compressed, 68.4M rows) is converted to per-ticker parquets via DuckDB streaming. Without this step, loading the CSV via pandas exhausts WSL memory and crashes the session.
+
+```bash
+PYTHONPATH=. python scripts/convert_optionmetrics_to_parquet.py
+```
+
+Expected runtime: ~80 seconds. Output: 14 parquets in `data/processed/options_by_ticker/{TICKER}.parquet`, parity-checked against original CSV row counts. Idempotent (re-running with parquets in place is a no-op unless `--force`).
+
+## Reproduce headline results
+
+```bash
+# 1. Verify parquet conversion (52 parity tests)
+PYTHONPATH=. pytest tests/test_optionmetrics_parquet_loader.py -v
+
+# 2. Run all logic tests (no data load required)
+PYTHONPATH=. pytest tests/ --ignore=tests/test_optionmetrics_parquet_loader.py -q
+# Expected: 92/92 PASS
+
+# 3. SPX halts_only diagnostic (sanity check on Layer 4 fix)
+PYTHONPATH=. python scripts/diagnose_spx_halts_only.py
+# Expected: Sharpe 0.497, 12 distinct halt periods, max 92 days
+
+# 4. Multi-instrument NAKED runner (5 VRP tickers, ~10 min)
+PYTHONPATH=. python scripts/run_multi_instrument_vrp.py --mode naked
+
+# 5. Multi-instrument halts_only runner (5 VRP tickers, ~10 min)
+PYTHONPATH=. python scripts/run_multi_instrument_vrp.py --mode halts_only
+
+# 6. ML head training (Heads 1, 2, 3 — Heads 1/3 reuse the multi-instrument output;
+#    Head 2 is independent and uses features.parquet)
+PYTHONPATH=. python scripts/run_head2_regime_stress.py
+PYTHONPATH=. python scripts/train_head1_per_instrument.py
+PYTHONPATH=. python scripts/train_head3_per_instrument.py
+
+# 7. Hoeffding live-monitoring backtrace
+PYTHONPATH=. python scripts/hoeffding_monitor.py
+```
+
+## Data inputs
+
+| File | Size | Source | Purpose |
+|---|---:|---|---|
+| `strat2.2.csv.gz` | 2.4 GB | OptionMetrics IvyDB (provided) | Raw options chains 2012–2025, 14 tickers |
+| `data/raw/VIX.parquet` | 95 KB | CBOE | VIX spot, daily |
+| `data/raw/VIX3M.parquet` | 92 KB | CBOE | VIX 3M, daily |
+| `data/raw/VVIX.parquet` | 107 KB | CBOE | Vol-of-VIX |
+| `data/raw/SPY.parquet` | 192 KB | (broker) | SPY OHLC |
+| `data/raw/IRX.parquet` | 76 KB | FRED | 3-month T-bill rate (rf) |
+| `data/raw/HYG.parquet` | 151 KB | (broker) | HYG ETF for HYG-LQD spread |
+| `data/raw/LQD.parquet` | 157 KB | (broker) | LQD ETF for HYG-LQD spread |
+| `data/raw/GLD.parquet` | 180 KB | (broker) | GLD spot |
+| `data/raw/TLT.parquet` | 125 KB | (broker) | TLT spot |
+| `data/raw/SKEW.parquet` | 89 KB | CBOE | Skew index |
+| `data/processed/features.parquet` | 405 KB | computed | 15-column ML feature matrix |
+| `data/processed/hmm_regimes.parquet` | 28 KB | computed | 2-state Gaussian HMM regime tags |
+
+## Determinism
+
+- `SEED = 42` (in `src/config.py`) consumed by:
+  - XGBoost `random_state` for every fit
+  - sklearn `IsotonicRegression` (no randomness, but `LogisticRegression` for Platt: `solver="lbfgs"` is deterministic)
+  - Block-bootstrap CI sampling
+  - HMM Baum-Welch (each of 20 random inits uses `seed + i`)
+- No `time()`-based randomness in the codebase
+- No floating-point reduction non-determinism (we don't use `numpy.einsum_path` optimization or BLAS-threaded sums)
+
+Verification: run any backtest twice on the same machine, save the equity curves, diff them — they should be byte-identical.
+
+## What's NOT included
+
+- Real broker fee schedules (we use pre-committed $0.65/contract slippage proxy)
+- Intraday tick data (HAR-RV uses daily close-to-close; this is a documented limitation)
+- Live trading deployment scripts (the strategy is paper-tested only)
+- The full sensitivity grid (729 trials) — this is a separate offline computation; instructions in `scripts/run_sensitivity_grid.py` (TBD)
+
+## Inspecting results
+
+After running the pipeline, key artifacts:
+
+```
+data/processed/per_instrument_results/{TICKER}_equity.parquet
+data/processed/per_instrument_results/{TICKER}_trades.parquet
+data/processed/per_instrument_results/{TICKER}_halt_log.parquet
+data/processed/aggregate_book_equity.parquet
+data/processed/p_stress_head2.parquet
+data/processed/hoeffding_signals/{TICKER}_signals.parquet
+logs/multi_instrument_vrp.log
+logs/head2_regime_stress.log
+logs/head1_per_instrument.log
+logs/hoeffding_monitor.log
+```
+
+All artifacts are gitignored (regenerable from the pipeline). Source-of-truth is the source code + the pre-commitment docs.

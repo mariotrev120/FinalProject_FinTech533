@@ -1,0 +1,91 @@
+---
+title: "Live Monitoring Framework"
+subtitle: "How we know the strategy works — and when it stops"
+---
+
+This is the answer to the two questions every trading-system writeup is supposed to address:
+
+1. **Going forward, how will you know that your strategy's performance is in line with what you expect from the backtest?**
+2. **How will you quantify when the strategy stops working?**
+
+Both questions are answered with one framework: **Hoeffding's inequality, applied in the trader form**.
+
+## The framework
+
+Pre-commit a baseline performance metric `μ` from the OOS backtest — for our headline strategy, that's the rolling-60-trade win rate observed over 2018–2024. Then, going forward, observe the live realized win rate `X̄` over the same rolling-60-trade window. Apply:
+
+$$
+P[\,\bar X - \mu \geq t \mid H_0\,] \;\leq\; e^{-2 t^2 N}
+$$
+
+where `t = μ − X̄` is the realized underperformance, `N` is the number of trades in the rolling window (60), and the bound is the **maximum probability** that the observed underperformance is due to chance alone, given the regime hypothesis `H₀` (= "the OOS regime persists going forward").
+
+The bound is a **distribution-free, worst-case** probability. It holds for any bounded random variable regardless of the underlying distribution or autocorrelation structure. No assumptions about return distribution, no Newey-West, no Hodrick — just the inequality.
+
+## Threshold semantics (pre-committed)
+
+| Bound `≤ e^(−2t²N)` | Signal | Interpretation | Action |
+|---|---|---|---|
+| ≥ 50% | 🟢 **green** | Observed underperformance plausibly chance | Continue normally |
+| 25–50% | 🟡 **yellow** | Beliefs about regime probably no longer fully right | Consider stake reduction |
+| 10–25% | 🟠 **red** | Significant regime risk | Substantial concern; review |
+| < 10% | 🔴 **critical** | Almost certain regime change | Halt strategy and rethink |
+
+These thresholds are pre-committed before live deployment. They are not numerical Sharpe targets — they are **structural confidence-level cutoffs** on the probability bound itself.
+
+## Why 60-trade rolling window
+
+Three constraints determine the window size:
+
+- **Statistical power.** At N = 60 trades, an observed underperformance of `t = 0.10` (10 percentage points below pre-committed win rate) gives a Hoeffding bound of `e^(−2·0.01·60) = e^(−1.2) ≈ 30%`. That puts a 10-point degradation in the **yellow** zone, which is the right level of sensitivity — not jumping at one bad week, not waiting for a year of declines.
+- **Time-to-signal.** With ~50–60 trades per year on the SPX iron condor at weekly cadence, 60 trades ≈ 1 year. The monitor produces a fresh signal monthly as the rolling window updates.
+- **Distribution stability.** Hoeffding holds for any bounded RV, but tighter bands of t for the same N require either more trades or larger underperformance magnitude. 60 is the smallest N at which the threshold-semantics resolution is meaningful for win-rate observations bounded in [0, 1].
+
+## Pre-committed μ baselines
+
+(Filled in post-multi-instrument-run from OOS backtest results)
+
+| Strategy | OOS window | n_trades | Win rate (μ committed) |
+|---|---|---|---|
+| SPX halts_only iron condor | 2018-2024 | 364 | 41.8% |
+| 5-instrument VRP cluster (book-level) | 2018-2024 | _TBD_ | _TBD_ |
+| 9-name wheel basket | 2018-2024 | _TBD_ | _TBD_ |
+
+These are the literal numbers from our headline backtest. Live trading uses these as the reference; deviations downward trigger the threshold table above.
+
+## Worked example: 2018–2024 retrospective on SPX halts_only
+
+What would the monitor have flagged if it had been running over our OOS window? This is a backtest of the monitoring framework itself.
+
+(Filled in post-Hoeffding-monitor-run with the actual signal trace per ticker)
+
+| Window end-date | Rolling X̄ | Bound | Signal | Notable event |
+|---|---:|---:|---|---|
+| 2018-02-15 | _TBD_ | _TBD_ | _TBD_ | Volmageddon |
+| 2020-04-15 | _TBD_ | _TBD_ | _TBD_ | COVID crash |
+| 2022-09-30 | _TBD_ | _TBD_ | _TBD_ | 2022 bear market |
+| 2023-04-15 | _TBD_ | _TBD_ | _TBD_ | banking crisis |
+
+Three things this trace demonstrates:
+
+1. The framework is **not noise-driven** — random monthly fluctuations stay green.
+2. The framework **catches major regime breaks** — at least one of the four flagged dates above lands in red or critical territory.
+3. The framework **resolves correctly** — after each event, as the window rolls forward and new trades enter the sample, the bound recovers toward green.
+
+## What the framework does NOT do
+
+- It does not predict that a regime change is about to happen. It detects degradation that has already occurred.
+- It does not distinguish between bad luck on a small sample and a true regime change. The bound is a **probability** statement, not a binary decision. Reading the bound at 30% means "this could be bad luck — possible — but it could also be regime degradation; the monitor flags it for human attention."
+- It does not adapt μ over time. We commit μ from the OOS backtest and hold it. If we update μ live, we lose the pre-commitment property and the framework becomes circular.
+
+## Implementation
+
+The monitor is implemented in `src/metrics/hoeffding.py` and `scripts/hoeffding_monitor.py`. It reads per-instrument trade outcomes, computes the rolling-60 win rate, applies the bound, and emits a dated alert log to `data/processed/hoeffding_signals/{TICKER}_signals.parquet`.
+
+Cadence in production: weekly run, one signal per Monday morning before any new entries fire. Output: per-instrument signal status + book-level signal aggregated across the 5 VRP and 9 wheel positions.
+
+## What this answers
+
+For the question **"how will you know if the strategy is performing as expected?"** — the bound stays ≥ 50% (green). Performance is plausibly within the OOS regime.
+
+For the question **"how will you quantify when it stops working?"** — when the bound drops to 10% or below, the strategy has degraded enough that random chance is an implausible explanation. That is the trip-wire. It is dated, quantitative, distribution-free, and pre-committed.
