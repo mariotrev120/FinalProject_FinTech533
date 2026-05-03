@@ -176,7 +176,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#halt-framework-3-active-layers" id="toc-halt-framework-3-active-layers" class="nav-link" data-scroll-target="#halt-framework-3-active-layers">Halt framework, 3 active layers</a></li>
   <li><a href="#per-trade-sizing" id="toc-per-trade-sizing" class="nav-link" data-scroll-target="#per-trade-sizing">Per-trade sizing</a></li>
   <li><a href="#friction-model" id="toc-friction-model" class="nav-link" data-scroll-target="#friction-model">Friction model</a></li>
-  <li><a href="#reproducibility" id="toc-reproducibility" class="nav-link" data-scroll-target="#reproducibility">Reproducibility</a></li>
   <li><a href="#ml-overlay" id="toc-ml-overlay" class="nav-link" data-scroll-target="#ml-overlay">ML overlay</a></li>
   </ul>
 </nav>
@@ -226,28 +225,28 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tr class="odd">
 <td>AAPL</td>
 <td>Single-stock equity</td>
-<td style="text-align: right;">1</td>
+<td style="text-align: right;">$1</td>
 <td style="text-align: right;">5</td>
 <td style="text-align: right;">$50,000</td>
 </tr>
 <tr class="even">
 <td>MSFT</td>
 <td>Single-stock equity</td>
-<td style="text-align: right;">1</td>
+<td style="text-align: right;">$1</td>
 <td style="text-align: right;">5</td>
 <td style="text-align: right;">$50,000</td>
 </tr>
 <tr class="odd">
 <td>WMT</td>
 <td>Single-stock equity</td>
-<td style="text-align: right;">1</td>
+<td style="text-align: right;">$1</td>
 <td style="text-align: right;">5</td>
 <td style="text-align: right;">$50,000</td>
 </tr>
 <tr class="even">
 <td>GLD</td>
 <td>Commodity ETF</td>
-<td style="text-align: right;">1</td>
+<td style="text-align: right;">$1</td>
 <td style="text-align: right;">5</td>
 <td style="text-align: right;">$50,000</td>
 </tr>
@@ -492,36 +491,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 </tbody>
 </table>
-</section>
-<section id="reproducibility" class="level2">
-<h2 class="anchored" data-anchor-id="reproducibility">Reproducibility</h2>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 50%">
-<col style="width: 50%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Determinism source</th>
-<th>Mechanism</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><code>SEED = 42</code></td>
-<td>Consumed by every stochastic component (XGBoost random_state, isotonic/Platt CV split if used, block-bootstrap resampling)</td>
-</tr>
-<tr class="even">
-<td>Engine</td>
-<td>Pure-Python single-threaded loop; no <code>numpy.einsum_path</code> optimization; no BLAS-threaded sums</td>
-</tr>
-<tr class="odd">
-<td>Data</td>
-<td>Per-ticker parquet snapshots in <code>data/processed/options_by_ticker/</code> and <code>data/raw/</code>. Frozen at commit time.</td>
-</tr>
-</tbody>
-</table>
-<p>Two runs of the same commit + same data + same seed produce <strong>byte-identical equity curves</strong> to floating-point precision. Verified by <code>pytest tests/test_seed_stability.py</code>.</p>
 </section>
 <section id="ml-overlay" class="level2">
 <h2 class="anchored" data-anchor-id="ml-overlay">ML overlay</h2>
@@ -1182,10 +1151,10 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>| Ticker | Class | Strike grid (pts) | Wing width (pts) | Capital (equal-weight) |</span>
 <span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>|---|---|---:|---:|---:|</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>| AAPL | Single-stock equity | 1 | 5 | $50,000 |</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>| MSFT | Single-stock equity | 1 | 5 | $50,000 |</span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>| WMT  | Single-stock equity | 1 | 5 | $50,000 |</span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>| GLD  | Commodity ETF | 1 | 5 | $50,000 |</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>| AAPL | Single-stock equity | $1 | 5 | $50,000 |</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>| MSFT | Single-stock equity | $1 | 5 | $50,000 |</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>| WMT  | Single-stock equity | $1 | 5 | $50,000 |</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>| GLD  | Commodity ETF       | $1 | 5 | $50,000 |</span>
 <span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>**Basket-level total capital: $200,000.** Cross-asset diversification: 3 single-stocks (idiosyncratic vol) + 1 commodity ETF (cross-asset uncorrelated vol). All positions are put-credit-spreads (defined-risk; long-put protection at short_strike − 5 pts).</span>
 <span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
@@ -1259,27 +1228,17 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb1-83"><a href="#cb1-83" aria-hidden="true" tabindex="-1"></a>| Monday gap rule | Gap ≥ 1.5% adds 50% slippage; gap ≥ 3% skips entry |</span>
 <span id="cb1-84"><a href="#cb1-84" aria-hidden="true" tabindex="-1"></a>| Quote source | Real OptionMetrics IvyDB chain bid/ask (not BS pricer) when available; BS pricer fallback if chain row missing |</span>
 <span id="cb1-85"><a href="#cb1-85" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-86"><a href="#cb1-86" aria-hidden="true" tabindex="-1"></a><span class="fu">## Reproducibility</span></span>
+<span id="cb1-86"><a href="#cb1-86" aria-hidden="true" tabindex="-1"></a><span class="fu">## ML overlay</span></span>
 <span id="cb1-87"><a href="#cb1-87" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-88"><a href="#cb1-88" aria-hidden="true" tabindex="-1"></a>| Determinism source | Mechanism |</span>
-<span id="cb1-89"><a href="#cb1-89" aria-hidden="true" tabindex="-1"></a>|---|---|</span>
-<span id="cb1-90"><a href="#cb1-90" aria-hidden="true" tabindex="-1"></a>| <span class="in">`SEED = 42`</span> | Consumed by every stochastic component (XGBoost random_state, isotonic/Platt CV split if used, block-bootstrap resampling) |</span>
-<span id="cb1-91"><a href="#cb1-91" aria-hidden="true" tabindex="-1"></a>| Engine | Pure-Python single-threaded loop; no <span class="in">`numpy.einsum_path`</span> optimization; no BLAS-threaded sums |</span>
-<span id="cb1-92"><a href="#cb1-92" aria-hidden="true" tabindex="-1"></a>| Data | Per-ticker parquet snapshots in <span class="in">`data/processed/options_by_ticker/`</span> and <span class="in">`data/raw/`</span>. Frozen at commit time. |</span>
+<span id="cb1-88"><a href="#cb1-88" aria-hidden="true" tabindex="-1"></a>The strategy includes one calibrated XGBoost overlay that contributes to the headline:</span>
+<span id="cb1-89"><a href="#cb1-89" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-90"><a href="#cb1-90" aria-hidden="true" tabindex="-1"></a>| Component | Architecture | Result | Status |</span>
+<span id="cb1-91"><a href="#cb1-91" aria-hidden="true" tabindex="-1"></a>|---|---|---|---|</span>
+<span id="cb1-92"><a href="#cb1-92" aria-hidden="true" tabindex="-1"></a>| **Pooled regime stress (Head 2)** | XGBoost on 15 macro features (VIX, VIX3M, VVIX, yield-curve, SPY-Treasury correlation, HYG-LQD spread, etc.) with 5 hand-curated stress event peaks as labels. Calibration auto-select: Platt for small folds, isotonic for larger. | OOS Brier 0.1079 vs naive baseline 0.1256 = **+14.1% reduction**, above the 5% acceptance gate. | **Activated as `(1 − p_stress)` book scaler.** |</span>
 <span id="cb1-93"><a href="#cb1-93" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-94"><a href="#cb1-94" aria-hidden="true" tabindex="-1"></a>Two runs of the same commit + same data + same seed produce **byte-identical equity curves** to floating-point precision. Verified by <span class="in">`pytest tests/test_seed_stability.py`</span>.</span>
+<span id="cb1-94"><a href="#cb1-94" aria-hidden="true" tabindex="-1"></a>Book exposure on day t is scaled by <span class="in">`(1 − p_stress_t)`</span>, where <span class="in">`p_stress_t`</span> is the calibrated probability of a stress-event peak in the next 63 trading days. Mean <span class="in">`p_stress`</span> over the OOS window is 18%; days with <span class="in">`p_stress &gt; 30%`</span> are 14.6% of the sample. The scaler contributes +0.012 excess Sharpe to the headline (from +0.359 base to +0.371 with overlay) and tightens max drawdown from -0.13% to -0.12%.</span>
 <span id="cb1-95"><a href="#cb1-95" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-96"><a href="#cb1-96" aria-hidden="true" tabindex="-1"></a><span class="fu">## ML overlay</span></span>
-<span id="cb1-97"><a href="#cb1-97" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-98"><a href="#cb1-98" aria-hidden="true" tabindex="-1"></a>The strategy includes one calibrated XGBoost overlay that contributes to the headline:</span>
-<span id="cb1-99"><a href="#cb1-99" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-100"><a href="#cb1-100" aria-hidden="true" tabindex="-1"></a>| Component | Architecture | Result | Status |</span>
-<span id="cb1-101"><a href="#cb1-101" aria-hidden="true" tabindex="-1"></a>|---|---|---|---|</span>
-<span id="cb1-102"><a href="#cb1-102" aria-hidden="true" tabindex="-1"></a>| **Pooled regime stress (Head 2)** | XGBoost on 15 macro features (VIX, VIX3M, VVIX, yield-curve, SPY-Treasury correlation, HYG-LQD spread, etc.) with 5 hand-curated stress event peaks as labels. Calibration auto-select: Platt for small folds, isotonic for larger. | OOS Brier 0.1079 vs naive baseline 0.1256 = **+14.1% reduction**, above the 5% acceptance gate. | **Activated as `(1 − p_stress)` book scaler.** |</span>
-<span id="cb1-103"><a href="#cb1-103" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-104"><a href="#cb1-104" aria-hidden="true" tabindex="-1"></a>Book exposure on day t is scaled by <span class="in">`(1 − p_stress_t)`</span>, where <span class="in">`p_stress_t`</span> is the calibrated probability of a stress-event peak in the next 63 trading days. Mean <span class="in">`p_stress`</span> over the OOS window is 18%; days with <span class="in">`p_stress &gt; 30%`</span> are 14.6% of the sample. The scaler contributes +0.012 excess Sharpe to the headline (from +0.359 base to +0.371 with overlay) and tightens max drawdown from -0.13% to -0.12%.</span>
-<span id="cb1-105"><a href="#cb1-105" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-106"><a href="#cb1-106" aria-hidden="true" tabindex="-1"></a>We also evaluated a per-instrument trade-quality classifier. Across the four headline tickers, the classifier did not beat the majority-class log-loss baseline at the 64-71% per-instrument win rates. We use base sizing rather than ML-modulated sizing per trade, and report this as an evidence-based architecture choice in <span class="co">[</span><span class="ot">Variants</span><span class="co">](ablations.qmd)</span>.</span></code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
+<span id="cb1-96"><a href="#cb1-96" aria-hidden="true" tabindex="-1"></a>We also evaluated a per-instrument trade-quality classifier. Across the four headline tickers, the classifier did not beat the majority-class log-loss baseline at the 64-71% per-instrument win rates. We use base sizing rather than ML-modulated sizing per trade, and report this as an evidence-based architecture choice in <span class="co">[</span><span class="ot">Variants</span><span class="co">](ablations.qmd)</span>.</span></code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
 <footer class="footer">

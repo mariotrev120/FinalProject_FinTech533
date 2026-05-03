@@ -357,22 +357,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="halt-framework-ablation-naked-vs-halts_only">Halt framework ablation (naked vs halts_only)</h2>
 <p>Demonstrates that the halt framework adds positive Sharpe on every instrument in the headline universe.</p>
 <table class="caption-top table">
-<colgroup>
-<col style="width: 13%">
-<col style="width: 17%">
-<col style="width: 17%">
-<col style="width: 17%">
-<col style="width: 17%">
-<col style="width: 17%">
-</colgroup>
 <thead>
 <tr class="header">
 <th>Ticker</th>
 <th style="text-align: right;">Naked Sharpe</th>
 <th style="text-align: right;">Halts_only Sharpe</th>
 <th style="text-align: right;">Δ from halts</th>
-<th style="text-align: right;">Halt periods</th>
-<th style="text-align: right;">Halted-day fraction</th>
 </tr>
 </thead>
 <tbody>
@@ -381,40 +371,30 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td style="text-align: right;">+0.155</td>
 <td style="text-align: right;">+0.264</td>
 <td style="text-align: right;">+0.109</td>
-<td style="text-align: right;">(per ticker)</td>
-<td style="text-align: right;"><em>TBD</em></td>
 </tr>
 <tr class="even">
 <td>MSFT</td>
 <td style="text-align: right;">+0.037</td>
 <td style="text-align: right;">+0.269</td>
 <td style="text-align: right;">+0.232</td>
-<td style="text-align: right;"><em>TBD</em></td>
-<td style="text-align: right;"><em>TBD</em></td>
 </tr>
 <tr class="odd">
 <td>WMT</td>
 <td style="text-align: right;">+0.063</td>
 <td style="text-align: right;">+0.263</td>
 <td style="text-align: right;">+0.200</td>
-<td style="text-align: right;"><em>TBD</em></td>
-<td style="text-align: right;"><em>TBD</em></td>
 </tr>
 <tr class="even">
 <td>GLD</td>
-<td style="text-align: right;">-0.008</td>
+<td style="text-align: right;">-0.971</td>
 <td style="text-align: right;">+0.138</td>
-<td style="text-align: right;">+0.146</td>
-<td style="text-align: right;"><em>TBD</em></td>
-<td style="text-align: right;"><em>TBD</em></td>
+<td style="text-align: right;">+1.109</td>
 </tr>
 <tr class="odd">
-<td>BOOK (D)</td>
-<td style="text-align: right;">-0.069</td>
-<td style="text-align: right;">+0.359</td>
+<td><strong>BOOK</strong></td>
+<td style="text-align: right;"><strong>-0.069</strong></td>
+<td style="text-align: right;"><strong>+0.359</strong></td>
 <td style="text-align: right;"><strong>+0.428</strong></td>
-<td style="text-align: right;">aggregate</td>
-<td style="text-align: right;">aggregate</td>
 </tr>
 </tbody>
 </table>
@@ -1171,13 +1151,13 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a>Demonstrates that the halt framework adds positive Sharpe on every instrument in the headline universe.</span>
 <span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a>| Ticker | Naked Sharpe | Halts_only Sharpe | Δ from halts | Halt periods | Halted-day fraction |</span>
-<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a>|---|---:|---:|---:|---:|---:|</span>
-<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a>| AAPL | +0.155 | +0.264 | +0.109 | (per ticker) | _TBD_ |</span>
-<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a>| MSFT | +0.037 | +0.269 | +0.232 | _TBD_ | _TBD_ |</span>
-<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a>| WMT  | +0.063 | +0.263 | +0.200 | _TBD_ | _TBD_ |</span>
-<span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a>| GLD  | -0.008 | +0.138 | +0.146 | _TBD_ | _TBD_ |</span>
-<span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a>| BOOK (D) | -0.069 | +0.359 | **+0.428** | aggregate | aggregate |</span>
+<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a>| Ticker | Naked Sharpe | Halts_only Sharpe | Δ from halts |</span>
+<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a>|---|---:|---:|---:|</span>
+<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a>| AAPL | +0.155 | +0.264 | +0.109 |</span>
+<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a>| MSFT | +0.037 | +0.269 | +0.232 |</span>
+<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a>| WMT  | +0.063 | +0.263 | +0.200 |</span>
+<span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a>| GLD  | -0.971 | +0.138 | +1.109 |</span>
+<span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a>| **BOOK** | **-0.069** | **+0.359** | **+0.428** |</span>
 <span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-56"><a href="#cb1-56" aria-hidden="true" tabindex="-1"></a>The halt framework's contribution is consistently positive, every instrument has higher Sharpe with halts active than without. The combined book benefit (+0.428 Sharpe at the basket level) is larger than the per-instrument average because of cross-instrument correlation reduction.</span>
 <span id="cb1-57"><a href="#cb1-57" aria-hidden="true" tabindex="-1"></a></span>
