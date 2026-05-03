@@ -89,7 +89,7 @@ The strategy includes one calibrated XGBoost overlay that contributes to the hea
 
 | Component | Architecture | Result | Status |
 |---|---|---|---|
-| **Pooled regime stress (Head 2)** | XGBoost on 15 macro features (VIX, VIX3M, VVIX, yield-curve, SPY-Treasury correlation, HYG-LQD spread, etc.) with 5 hand-curated stress event peaks as labels. Calibration auto-select: Platt for small folds, isotonic for larger. | OOS Brier 0.1079 vs naive baseline 0.1256 = **+14.1% reduction**, above the 5% acceptance gate. | **Activated as `(1 − p_stress)` book scaler.** |
+| **Regime-stress overlay** | XGBoost on 15 macro features (VIX, VIX3M, VVIX, yield-curve, SPY-Treasury correlation, HYG-LQD spread, etc.) with 5 hand-curated stress event peaks as labels. Calibration auto-select: Platt for small folds, isotonic for larger. | OOS Brier 0.1079 vs naive baseline 0.1256 = **+14.1% reduction**, above the 5% acceptance gate. | **Activated as `(1 − p_stress)` book scaler.** |
 
 Book exposure on day t is scaled by `(1 − p_stress_t)`, where `p_stress_t` is the calibrated probability of a stress-event peak in the next 63 trading days. Mean `p_stress` over the OOS window is 18%; days with `p_stress > 30%` are 14.6% of the sample. The scaler contributes +0.012 excess Sharpe to the headline (from +0.359 base to +0.371 with overlay) and tightens max drawdown from -0.13% to -0.12%.
 

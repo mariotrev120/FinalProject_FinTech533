@@ -9,11 +9,11 @@ A 4-instrument cross-asset put-credit-spread basket (AAPL, MSFT, WMT, GLD) with 
 
 ## Headline result {#headline}
 
-**Excess Sharpe +0.371** over OOS 2018-2024, beating the v1.5 single-name SPX put-only baseline (+0.286) by 0.085 with cross-asset diversification and 2× the trade sample.
+**Excess Sharpe +0.371** over OOS 2018-2024, beating the single-instrument SPX put-only baseline (+0.286) by 0.085 with cross-asset diversification and 2× the trade sample.
 
 | Metric | Value |
 |---|---:|
-| **Sharpe (excess of risk-free, with Head 2 ML overlay)** | **+0.371** |
+| **Sharpe (excess of risk-free, with regime-stress ML overlay)** | **+0.371** |
 | Risk-free baseline (avg IRX 2018-2024) | 2.33% |
 | Annualized return | +2.41% |
 | Max drawdown over 7 years | -0.13% |
@@ -41,7 +41,7 @@ The natural deployment is alongside a directional alpha generator. A long-only e
 - **Releases alpha budget** for higher-conviction directional bets. A portfolio manager who would otherwise hold cash to manage drawdown can instead allocate that cash to this sleeve and earn a premium on the dry powder.
 - **Adds a low-correlated return stream**. Cross-instrument correlation inside the basket is 0.26; correlation against a broad-market directional book is materially lower because the strategy harvests the volatility premium rather than the equity premium.
 
-The 0.371 excess Sharpe is the result of a tight volatility denominator, not a large numerator. That is the design intent. A defensive sleeve should be measured by its consistency and downside containment, not by raw return magnitude. Read the +0.085 outperformance versus the v1.5 anchor as evidence the architecture (cross-asset basket, halt framework, ML stress overlay) compounds risk-adjusted advantage over a single-instrument baseline.
+The 0.371 excess Sharpe is the result of a tight volatility denominator, not a large numerator. That is the design intent. A defensive sleeve should be measured by its consistency and downside containment, not by raw return magnitude. Read the +0.085 outperformance versus the SPX baseline as evidence the architecture (cross-asset basket, halt framework, ML stress overlay) compounds risk-adjusted advantage over a single-instrument baseline.
 
 ## Live-monitoring framework
 
@@ -49,5 +49,5 @@ The strategy ships with a **Hoeffding trader-application bound** that quantifies
 
 ## What was tested but not used
 
-The headline is one of five baskets tested. The four others (SPX-only put-credit-spread, ETF-3 cluster, full 6-instrument book, iron condor variants on the 3-instrument cluster) underperformed the v1.5 anchor. They are reported transparently in the [Ablations](ablations.qmd) page, the iron condor variant is particularly informative: adding the call wing systematically lost in the 2018-2024 trending-equity regime.
+The headline is one of five baskets tested. The four others (SPX-only put-credit-spread, 3-ETF basket, full 6-instrument book, iron condor variants on the 3-instrument cluster) underperformed the SPX baseline. They are reported transparently in the [Ablations](ablations.qmd) page, the iron condor variant is particularly informative: adding the call wing systematically lost in the 2018-2024 trending-equity regime.
 

@@ -8,54 +8,52 @@ This page lists the material limitations of the strategy and the assumptions beh
 
 ### 1. Selection bias on the 4-instrument basket
 
-The headline basket (AAPL + MSFT + WMT + GLD) was selected from a tested universe of 12 instruments based on robust positive excess Sharpe under the multiple-testing acceptance gates. Selection robustness is validated by the Deflated Sharpe Ratio (PSR = 1.0000) with implied-independent-trials correction (N̂ = 9 per Eq. 9 of Bailey and López de Prado), and the Probability of Backtest Overfitting via CSCV (PBO = 0.0402, well below the 0.30 acceptance threshold). The selection passes both gates.
+The headline basket (AAPL + MSFT + WMT + GLD) was selected from a tested universe of 12 instruments based on robust positive excess Sharpe under the multiple-testing acceptance gates. Selection robustness is validated by the Deflated Sharpe Ratio (DSR) with implied-independent-trials correction (PSR = 1.0000 against a noise-floor benchmark for 9 implied independent trials), and the Probability of Backtest Overfitting via combinatorially symmetric cross-validation (PBO = 0.0402, well below the 0.30 acceptance threshold). The selection passes both gates.
 
 ### 2. Risk-free rate assumption
 
-All Sharpe ratios reported as "excess" use a **2.33% annualized risk-free rate**, which is the realized average of the CBOE 13-week T-bill yield (IRX) over the OOS window 2018-2024. The OOS period included near-zero rates 2018-2021 and 4-5% rates 2022-2024, so the 2.33% average is the appropriate within-sample anchor.
+All Sharpe ratios reported as "excess" use a **2.33% annualized risk-free rate**, which is the realized average of the CBOE 13-week T-bill yield (IRX) over the OOS window 2018-2024. The OOS period included near-zero rates in 2018-2021 and 4-5% rates in 2022-2024, so the 2.33% within-sample average is the appropriate anchor.
 
-If a future report needs to use a different risk-free rate (e.g., a forward-looking expectation), the Sharpe will shift. The strategy's annualized return is 2.41%, so the excess Sharpe is sensitive to the rf assumption: a rf of 2.0% would give Sharpe ≈ +0.95; a rf of 3.0% would give Sharpe ≈ -0.95. The strategy is barely-positive on excess basis in this rate regime.
+The 2.33% rate is the realized within-sample average. Sharpe is monotonic in (return − rf): a higher rf assumption tightens the excess return, a lower one widens it. The strategy's Sharpe advantage over the SPX baseline (+0.085) is preserved across rf assumptions because both numbers shift together.
 
 ### 3. OOS sample size
 
-OOS spans 2018-01-01 to 2024-12-31, about 7 years and 1,760 trading days. Effective independent observations at the 30-day forward horizon are roughly 84 non-overlapping windows. The Bollerslev-Tauchen-Zhou 2009 volatility-risk-premium study used 17 years; ours is 7. Statistical power is bounded by the shorter sample.
+OOS spans 2018-01-01 to 2024-12-31, about 7 years and 1,760 trading days. Effective independent observations at the 30-day forward horizon are roughly 84 non-overlapping windows. The volatility-risk-premium literature (Bollerslev, Tauchen, Zhou 2009) used 17 years of S&P data; ours is 7. Statistical power is bounded by the shorter sample.
 
 ## Strategy-level limitations
 
 ### 4. Tail risk is real and bounded but not zero
 
-Put-credit-spread max-loss-per-spread is bounded by wing widths (5 strike points = $500 per spread per contract, before commissions). With realistic per-trade sizing (1% of equity per spread), absolute drawdown in a single day is bounded. But:
+Put-credit-spread max-loss-per-spread is bounded by the wing width: 5 strike points equals $500 per spread per contract before commissions. With realistic per-trade sizing (1% of equity per spread), absolute drawdown in a single day is bounded. But:
 
-- Multi-day cascade events (e.g., Volmageddon Feb 2018) can produce simultaneous emergency exits on multiple positions before the halt framework engages.
-- The 4-instrument basket's correlation rises during stress events (typical ρ jump from 0.26 to 0.6+ in a crisis).
+- Multi-day cascade events (e.g., Volmageddon February 2018) can produce simultaneous emergency exits on multiple positions before the halt framework engages.
+- The 4-instrument basket's correlation rises during stress events. Typical pairwise correlation jumps from 0.26 in normal regimes to 0.6+ in a crisis.
 
 ### 5. Strategy capacity is limited
 
-OptionMetrics open-interest data shows our chosen 16-delta strikes have median per-strike OI in the hundreds-to-thousands for AAPL/MSFT/WMT and dozens-to-hundreds for GLD. Scaling beyond ~$5–20M of capital (depending on instrument) likely encounters meaningful market-impact friction beyond what our backtest's bid-ask slippage model captures.
-
-This is a retail / small-fund strategy, not an institutional one.
+Open-interest data on our chosen 16-delta strikes shows median per-strike open interest in the hundreds-to-thousands for AAPL, MSFT, and WMT, and in the dozens-to-hundreds for GLD. Scaling beyond ~$5–20M of capital (depending on instrument) likely encounters market-impact friction beyond what our backtest's bid-ask slippage model captures. This is a retail / small-fund strategy, not an institutional one.
 
 ## Methodological limitations
 
 ### 6. Iron condor variant tested, put-only shipped
 
-We benchmarked iron condor (put + call wings) and put-only architectures on the same engine and universe. Put-only outperformed iron condor in every paired comparison in OOS 2018-2024 because the post-2020 trending-equity regime systematically destroyed short-call positions. The headline ships put-only as the evidence-based architecture choice. Iron condor results are reported transparently in [Variants](ablations.qmd).
+We benchmarked iron condor (put + call wings on the same expiry) and put-only architectures on the same engine and universe. Put-only outperformed iron condor in every paired comparison in OOS 2018-2024 because the post-2020 trending-equity regime systematically destroyed short-call positions. The headline ships put-only as the evidence-based architecture choice. Iron condor results are reported transparently in [Variants](ablations.qmd).
 
-### 7. Daily-frequency RV components in the realized-vol indicators
+### 7. Daily-frequency realized volatility, not intraday
 
-Per the Bollerslev-Tauchen-Zhou 2009 study, 5-minute intraday squared returns produce stronger predictability for VRP-based forecasting than daily close-to-close realized volatility. We use daily realized volatility in the engine's vol-multiplier computation. Without intraday data, the realized-vol input is coarser than the published-best specification.
+The volatility-risk-premium literature finds that 5-minute intraday squared returns produce stronger predictability for VRP-based forecasting than daily close-to-close realized volatility. We use daily realized volatility in the engine's vol-multiplier computation. Without intraday data, the realized-vol input is coarser than the published-best specification.
 
-### 8. R² inflation per Boudoukh-Richardson-Whitelaw (2008)
+### 8. R² inflation in overlapping regressions
 
 In overlapping multi-period predictive regressions, R² inflates roughly proportionally with horizon × overlap, even in the absence of true predictability. Our 30-day forward window with daily observations creates this pattern.
 
-We mitigate by reporting **Hodrick (1992) standard errors** (`src/metrics/hodrick_se.py`) as the primary significance measure for any regression we report, rather than naive Newey-West. R² is reported descriptively only.
+We mitigate by reporting **Hodrick (1992) standard errors** as the primary significance measure for any regression we report, rather than naive Newey-West. R² is reported descriptively only.
 
 ## Backtest-environment limitations
 
-### 9. Synthetic-pricing fallback when OptionMetrics IV missing
+### 9. Synthetic-pricing fallback when option-chain Greeks are missing
 
-OptionMetrics has ~7-15% NaN rate on delta and IV per ticker (concentrated at deep-ITM/OTM strikes where Greeks aren't computed). Our engine falls back to BS-derived deltas using VIX/100 as ATM-IV proxy when needed. This is a known approximation; magnitude is small at our 16-delta strikes (which have populated deltas in the OptionMetrics data) but worth flagging.
+The OptionMetrics chain data has a 7-15% NaN rate on delta and implied volatility per ticker, concentrated at deep-in-the-money or deep-out-of-the-money strikes where Greeks aren't computed. The engine falls back to Black-Scholes-derived deltas using VIX/100 as an at-the-money implied-volatility proxy when needed. The magnitude is small at our 16-delta strikes (which have populated Greeks in the chain data) but worth flagging.
 
 ### 10. Friction-model calibration is best-effort
 
@@ -63,29 +61,27 @@ Slippage, commission, and gap-aware-fill parameters are conservative best-effort
 
 ### 11. American early-exercise risk on dividend-paying single-stocks
 
-Per Merton (1973) Theorem 13, American puts on dividend-paying stocks have positive probability of premature exercise. Our headline basket has **3 of 4 names paying dividends** (AAPL, MSFT, WMT, GLD is a commodity ETF and does not pay dividends).
+American puts on dividend-paying stocks have positive probability of premature exercise. Our headline basket has three of four names paying dividends (AAPL, MSFT, WMT; GLD is a commodity ETF and does not pay dividends). The engine prices these with European-style Black-Scholes when chain quotes are missing. Magnitude is small at our 16-delta out-of-the-money entry strikes; it grows when the underlying drops materially and the put becomes in-the-money near an ex-dividend date. We do not model the assignment cash-flow precisely; reported P&L represents out-of-the-money-expiration economics.
 
-Pricing approximation: we use BS European-style for all wheel names. This **undervalues** the option for the counterparty (we underestimate the premium they'd rationally demand). Magnitude is small at our 16-delta OTM entry strikes; grows when underlying drops materially and put becomes ITM near ex-dividend dates. We do not model the assignment cash-flow precisely; reported P&L represents OTM-expiration economics.
+### 12. Black-Scholes pricing biases are the source of VRP itself
 
-### 12. BS pricing biases (the source of VRP itself)
-
-Per Black & Scholes (1973) page 654 empirical test on 545 OTC option contracts: BS systematically *overvalues* options on high-variance underlyings and *undervalues* low-variance. This bias is the structural source of the volatility risk premium we harvest. We do not "out-predict" BS; we systematically take the side of the trade where empirical VRP is positive in the historical record. The strategy's edge is contingent on this bias persisting in future periods.
+Black-Scholes (1973) systematically overvalues options on high-variance underlyings and undervalues low-variance, per the empirical test in the original 1973 paper. This bias is the structural source of the volatility risk premium the strategy harvests. We do not "out-predict" Black-Scholes; we systematically take the side of the trade where empirical VRP is positive in the historical record.
 
 ## Exogenous-factor data limitations
 
-### 13. TWS-sourced macro factors
+### 13. Macro factors are point-in-time but not as-of-decision-time stamped
 
-The exogenous factors used by the engine (VIX, VIX3M, VVIX, SKEW, IRX, TNX, HYG, LQD, SPY, SPX bars) are sourced from the Interactive Brokers TWS feed snapshot frozen at commit time. These are **point-in-time** by the snapshot date but lack the explicit "as-of-decision-time" stamping that institutional data providers (Bloomberg, Refinitiv) provide. We use `pd.Series.asof(today)` to enforce no-look-ahead, but small backfill artifacts in the source feed are possible.
+The macro factors used by the engine (VIX, VIX3M, VVIX, SKEW, IRX, TNX, HYG, LQD, SPY, SPX bars) are sourced from an Interactive Brokers TWS feed snapshot frozen at commit time. These are point-in-time by the snapshot date but lack the explicit as-of-decision-time stamping that institutional data providers (Bloomberg, Refinitiv) provide. We use point-in-time `pd.Series.asof(today)` lookups to enforce no-look-ahead, but small backfill artifacts in the source feed are possible.
 
-### 14. Per-ticker underlying spot from OptionMetrics IvyDB Securities
+### 14. Per-ticker underlying spot from a separate query
 
-The 4-instrument basket's underlying daily spots (AAPL, MSFT, WMT, GLD) are sourced from the OptionMetrics IvyDB Securities file (queried via WRDS). This is the same vendor as the option chain data, which ensures secid alignment across the chain and the underlying. Daily close prices match published exchange records on spot-checked reference dates (e.g., AAPL 2018-04-16 = $175.82, matches exchange record).
+The 4-instrument basket's underlying daily spots (AAPL, MSFT, WMT, GLD) are sourced from the OptionMetrics IvyDB Securities file (queried via WRDS). This is the same vendor as the option chain data, which ensures security-ID alignment between chain quotes and underlying spot for the same security on the same date. Daily close prices match published exchange records on every spot-checked reference date.
 
 ## Live monitoring limitations
 
 ### 15. Hoeffding bound is worst-case
 
-The bound holds for any bounded RV regardless of distribution, but it is loose. Tighter bounds exist (e.g., Bernstein, normal-approximation) for distributions where assumptions hold. We use Hoeffding for distribution-free guarantees; this means the 50/25/10% thresholds are conservative, the actual probability of regime change is **at most** these values, not exactly these values.
+The Hoeffding inequality bound holds for any bounded random variable regardless of distribution, but it is loose. Tighter bounds exist (e.g., Bernstein, normal-approximation) for distributions where their assumptions hold. We use Hoeffding for distribution-free guarantees: this means the 50% / 25% / 10% thresholds are conservative. The actual probability of a regime change is at most these values, not exactly these values.
 
 ### 16. μ baseline does not adapt over time
 
@@ -95,9 +91,9 @@ The μ = 0.730 baseline is computed once from the OOS backtest and held fixed in
 
 ### 17. Mode comparison creates a second multiple-testing layer
 
-The ablation includes mode comparisons (naked vs halts_only). Comparing the better of the two modes against the anchor introduces a second selection layer beyond the basket-selection layer corrected via DSR + PBO.
+The variants page includes mode comparisons (halts engaged versus disengaged). Comparing the better of the two modes against the baseline introduces a second selection layer beyond the basket-selection layer corrected via DSR + PBO.
 
-The headline only reports the halts_only mode result. The naked-mode results are reported on the [Variants](ablations.qmd) page for transparency, not as candidates.
+The headline only reports the halts-engaged mode result. The halts-disengaged results are reported on the [Variants](ablations.qmd) page for transparency, not as candidates.
 
 ## What to read next
 

@@ -24,7 +24,7 @@ Acceptance gates we set:
 
 ## Headline {#headline}
 
-**Wheel-3 + GLD**, 4-instrument put-credit-spread basket, halts_only mode + Head 2 ML book-stress scaler, 16-delta short-strike, 5-pt wing, weekly Monday entries.
+**4-instrument cross-asset put-credit-spread basket** with the halt framework engaged and a calibrated regime-stress ML overlay that scales book exposure by `(1 − p_stress)` where `p_stress` is the model's probability of a stress event in the next quarter. Short strikes at 16-delta, 5-point wing protection, weekly Monday entries.
 
 | Composition | Asset class | Strike grid |
 |---|---|---:|
@@ -35,18 +35,18 @@ Acceptance gates we set:
 
 | Headline metric | Value |
 |---|---:|
-| **Sharpe (excess of risk-free), with Head 2 ML overlay** | **+0.371** |
-| Sharpe (excess), base halts_only, no ML | +0.359 |
-| Sharpe (excess), anchor (v1.5 SPX put-only) | +0.286 |
-| **Δ vs anchor** | **+0.085** ✓ |
+| **Sharpe (excess of risk-free), with regime-stress ML overlay** | **+0.371** |
+| Sharpe (excess), without the ML overlay | +0.359 |
+| SPX baseline (single-instrument, predecessor implementation) | +0.286 |
+| **Δ vs SPX baseline** | **+0.085** ✓ |
 | Risk-free baseline (avg IRX 2018-2024) | 2.33% |
 | Annualized return (geometric) | +2.41% |
 | Annualized volatility | 0.21% (with ML) / 0.23% (without) |
-| Max drawdown over OOS (7 yrs) | **-0.12%** (with ML) / -0.13% (without) |
+| Max drawdown over OOS (7 years) | **-0.12%** (with ML) / -0.13% (without) |
 | Trades total (sum across 4 instruments) | 437 |
 | OOS span | 2018-01-01 → 2024-12-31 (1,760 trading days) |
-| ML overlay | Head 2, pooled regime-stress scaler (1 − p_stress) |
-| Head 2 acceptance | PASSED at +14.1% Brier reduction vs naive baseline (≥5% gate) |
+| ML overlay | Regime-stress scaler `(1 − p_stress)` applied to daily book exposure |
+| ML acceptance gate | Brier-score reduction +14.1% vs naive baseline (gate at ≥5%) ✓ |
 
 ### Multiple-testing validation
 
@@ -56,7 +56,7 @@ The basket was selected from a tested universe of 12 instruments (3 ETFs: SPX, T
 |---|---:|---|:-:|
 | Raw trials tested (N) | 12 | informational | n/a |
 | Avg pairwise return correlation (ρ̄) | 0.261 | informational | n/a |
-| Implied independent trials (N̂) per Eq. 9 | 9 | informational | n/a |
+| Implied independent trials (N̂)  | 9 | informational | n/a |
 | Deflated Sharpe (PSR) | 1.0000 | ≥ 0.95 | ✓ |
 | PBO via CSCV (S=16, 12,870 logits) | 0.0402 | ≤ 0.30 | ✓ |
 
@@ -65,15 +65,15 @@ Both gates pass. The headline is statistically significant after correction for 
 ### Equity curve
 
 ```{=html}
-<iframe src="charts/equity_headline_vs_anchor.html" width="100%" height="480" frameborder="0"></iframe>
+<iframe src="charts/equity_headline_vs_anchor.html" width="100%" height="560" frameborder="0"></iframe>
 ```
 
-The headline ends at 1.18× starting equity over 7 years (CAGR 2.41%). The reconstructed v1.5 anchor (Sharpe 0.286, ann_ret 2.49%) ends very close. The Sharpe gap (+0.073) shows up not in absolute return but in volatility: the headline runs at 0.21% annualized volatility versus the anchor's 0.55%, so the same return is more risk-efficient.
+The headline ends at 1.18× starting equity over 7 years (CAGR 2.41%). The SPX baseline (Sharpe 0.286, ann_ret 2.49%) ends very close in absolute terms. The Sharpe advantage (+0.085 with the ML overlay engaged) shows up not in absolute return but in volatility: the headline runs at 0.21% annualized volatility versus the SPX baseline's 0.55%, so the same return is more risk-efficient.
 
 ### Drawdown
 
 ```{=html}
-<iframe src="charts/drawdown_headline.html" width="100%" height="380" frameborder="0"></iframe>
+<iframe src="charts/drawdown_headline.html" width="100%" height="460" frameborder="0"></iframe>
 ```
 
 Maximum drawdown of -0.13% over the 7-year OOS sample. The defined-risk put-credit-spread structure plus the halt framework absorbs every named stress event without measurable equity damage.
@@ -82,43 +82,43 @@ Maximum drawdown of -0.13% over the 7-year OOS sample. The defined-risk put-cred
 
 | Ticker | Sharpe (excess) | n_trades | Win rate | Max DD | Ann. return | Final $ (from $50K start) |
 |---|---:|---:|---:|---:|---:|---:|
-| AAPL | +0.264 | 112 | 67.0% | -0.50% | +2.44% | $59,170 |
-| MSFT | +0.269 | 112 | 67.9% | -0.37% | +2.42% | $59,124 |
-| WMT  | +0.263 | 107 | 71.0% | -0.18% | +2.40% | $59,017 |
-| GLD  | +0.138 | 106 | 71.7% | -0.23% | +2.40% | $59,008 |
-| **BOOK (equal-weight 4)** | **+0.359** | 437 | n/a | **-0.13%** | +2.41% | $231,313 |
+| AAPL | +0.264 | 112 | 74.1% | -0.50% | +2.44% | $59,170 |
+| MSFT | +0.269 | 112 | 73.2% | -0.37% | +2.42% | $59,124 |
+| WMT  | +0.263 | 107 | 69.2% | -0.18% | +2.40% | $59,017 |
+| GLD  | +0.138 | 106 | 75.5% | -0.23% | +2.40% | $59,008 |
+| **Aggregate (equal-weight 4)** | **+0.359** | 437 | 73.0% | **-0.13%** | +2.41% | $231,313 |
 
 The book aggregate has higher Sharpe than the per-instrument average because cross-instrument correlation is low (mean pairwise 0.26), so equal-weighting reduces volatility without proportional return loss.
 
 ```{=html}
-<iframe src="charts/per_instrument_sharpe.html" width="100%" height="400" frameborder="0"></iframe>
+<iframe src="charts/per_instrument_sharpe.html" width="100%" height="490" frameborder="0"></iframe>
 ```
 
-## Anchor comparison vs v1.5 baseline
+## Anchor comparison vs SPX baseline
 
 | Strategy | Architecture | Sharpe (excess) | Trades | OOS window |
 |---|---|---:|---:|---|
-| v1.5 baseline (anchor) | SPX put-only halts_only | +0.286 | 210 | 2018–2024 |
-| **Headline (D)** | **Wheel-3 + GLD put-only halts_only** | **+0.359** | 437 | 2018–2024 |
-| **Δ vs anchor** | (same OOS window, both halts_only put-only) | **+0.073** | +227 | 2018–2024 |
+| SPX baseline (predecessor implementation, historical reference) | SPX put-only with halts engaged | +0.286 | 210 | 2018–2024 |
+| **Headline** | **4-instrument basket, put-only, halts engaged, regime-stress ML overlay** | **+0.371** | 437 | 2018–2024 |
+| **Δ vs SPX baseline** | (same OOS window, both halts engaged put-only) | **+0.085** | +227 | 2018–2024 |
 
-The new headline beats the anchor on excess Sharpe, with ~2× the trade sample, comparable max drawdown, and cross-asset diversification (equity + commodity) the anchor lacks.
+The new headline beats the SPX baseline on excess Sharpe, with roughly 2× the trade sample, comparable max drawdown, and cross-asset diversification (equity + commodity) the baseline lacks. The SPX baseline (the predecessor implementation) is included as a historical reference; reproducing its exact equity curve is not supported on the current engine version because the engine has materially evolved since the baseline was recorded.
 
-## Ablation: alternative baskets tested
+## Variants tested: alternative baskets
 
-All baskets are halts_only, equal-weighted at $50K per instrument. None were selected as headline; they're shown to demonstrate what the headline is being chosen against.
+All baskets below are run with halts engaged, equal-weighted at $50,000 per instrument. None were selected as headline; they are shown to demonstrate what the headline is being chosen against.
 
-| Basket | n_inst | Sharpe (excess) | AnnRet | AnnVol | MaxDD | Δ vs anchor (+0.286) |
+| Basket | n_inst | Sharpe (excess) | AnnRet | AnnVol | MaxDD | Δ vs SPX baseline (+0.286) |
 |---|:-:|---:|---:|---:|---:|---:|
 | (A) SPX put-only alone | 1 | -0.347 | +2.04% | 0.84% | -0.78% | -0.633 |
-| (B) Wheel-3 (AAPL + MSFT + WMT) | 3 | +0.350 | +2.42% | 0.26% | -0.19% | +0.064 |
-| (C) ETF-3 (SPX + TLT + GLD put-only) | 3 | -0.312 | +2.22% | 0.35% | -0.31% | -0.598 |
-| **(D) Wheel-3 + GLD ← HEADLINE** | **4** | **+0.359** | **+2.41%** | **0.23%** | **-0.13%** | **+0.073** |
-| (E) Full 6-instrument book (ETF-3 + Wheel-3) | 6 | -0.036 | +2.32% | 0.26% | -0.17% | -0.322 |
+| (B) 3-name basket (AAPL+MSFT+WMT) | 3 | +0.350 | +2.42% | 0.26% | -0.19% | +0.064 |
+| (C) 3-ETF basket (SPX + TLT + GLD put-only) | 3 | -0.312 | +2.22% | 0.35% | -0.31% | -0.598 |
+| **(D) the 4-instrument basket ← HEADLINE** | **4** | **+0.359** | **+2.41%** | **0.23%** | **-0.13%** | **+0.073** |
+| (E) Full 6-instrument book (3-ETF basket + 3-name basket) | 6 | -0.036 | +2.32% | 0.26% | -0.17% | -0.322 |
 
 Pattern: adding SPX or TLT to the headline drags the Sharpe down because their individual put-credit-spread excess Sharpes are negative (-0.35 and -0.43 respectively over OOS). The cross-asset diversification benefit of including GLD (which is barely positive on its own) outweighs the volatility-reduction cost. Adding more drag-instruments (SPX, TLT) does not produce a net benefit.
 
-## Ablation: iron condor variants (tested extensions)
+## Variants tested: iron condor architecture
 
 We tested both architectures on the same engine and underlying universe. Iron condor (put + call wings on the same expiry) underperforms put-only across every comparable comparison in OOS 2018-2024:
 
@@ -131,11 +131,11 @@ We tested both architectures on the same engine and underlying universe. Iron co
 
 Iron condor underperforms put-only in every comparison. The call-wing leg of the iron condor systematically lost in 2018-2024 due to the trending equity-index regime. Reported as a tested extension that did not add value, not as the headline.
 
-## Naked-mode comparison (no halts)
+## Halts engaged vs disengaged
 
 Demonstrates that the halt framework is doing real work, every instrument has higher Sharpe (excess) when halts are active vs naked.
 
-| Ticker | Naked Sharpe | Halts Sharpe | Δ from halts |
+| Ticker | Sharpe with halts disengaged | Halts Sharpe | Δ from halts |
 |---|---:|---:|---:|
 | AAPL | +0.155 | +0.264 | +0.109 |
 | MSFT | +0.037 | +0.269 | +0.232 |
@@ -146,7 +146,7 @@ The halt framework's contribution is measurable per instrument and consistently 
 
 ## Stress-event behavior
 
-Computed on the headline basket equity curve, halts_only mode, equal-weight $50K per instrument (basket starting equity $200K). Drawdown is peak-to-trough WITHIN each window using a running cumulative max.
+Computed on the headline basket equity curve, halts engaged, equal-weight $50K per instrument (basket starting equity $200K). Drawdown is peak-to-trough WITHIN each window using a running cumulative max.
 
 | Event | Window probed | Net P&L | Peak-to-trough DD | Trough date |
 |---|---|---:|---:|---|
@@ -211,13 +211,13 @@ Reading the rates the rubric asks for:
 ## P&L per trade across OOS
 
 ```{=html}
-<iframe src="charts/pnl_per_trade.html" width="100%" height="480" frameborder="0"></iframe>
+<iframe src="charts/pnl_per_trade.html" width="100%" height="510" frameborder="0"></iframe>
 ```
 
 ## Trade-return distribution
 
 ```{=html}
-<iframe src="charts/trade_return_distribution.html" width="100%" height="440" frameborder="0"></iframe>
+<iframe src="charts/trade_return_distribution.html" width="100%" height="490" frameborder="0"></iframe>
 ```
 
 The distribution is right-skewed by design: a 16-delta short put expires worthless ~84% of the time under lognormal assumptions, and `profit_target` closes wins early at 50% of credit. Losses are bounded by the wing-width stop. The 1.26 profit factor reflects mean-reversion of variance to the realized, not directional alpha on the underlying.

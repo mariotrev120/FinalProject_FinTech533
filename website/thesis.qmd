@@ -39,7 +39,7 @@ The expected payoff: combined book Sharpe higher than any single instrument, wit
 
 ## Why iron condor over single-side spread
 
-The legacy strategy (v1.5 baseline) used put-credit spreads only. Adding the call wing converts to iron condor. Trade-offs:
+The legacy strategy (SPX baseline) used put-credit spreads only. Adding the call wing converts to iron condor. Trade-offs:
 
 - **Premium captured per structure:** roughly doubles (both sides earn)
 - **Defined risk per structure:** wider per-structure max-loss (both wings can be in the money simultaneously, though rarely)

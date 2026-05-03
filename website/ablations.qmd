@@ -2,24 +2,24 @@
 title: "Variants Evaluated"
 ---
 
-We benchmarked the headline strategy against five alternative basket configurations and two architectural variants. The headline (Wheel-3 + GLD halts_only put-only + Head 2 ML overlay, excess Sharpe +0.371) was the strongest under the robustness checks. Every alternative is reported on this page with full numbers.
+We benchmarked the headline strategy against five alternative basket configurations and two architectural variants. The headline (the 4-instrument basket put-only with halts engaged plus the regime-stress ML overlay, excess Sharpe +0.371) was the strongest under the robustness checks. Every alternative is reported on this page with full numbers.
 
 ```{=html}
-<iframe src="charts/ablation_baskets.html" width="100%" height="440" frameborder="0"></iframe>
+<iframe src="charts/ablation_baskets.html" width="100%" height="540" frameborder="0"></iframe>
 ```
 
-## Basket-composition ablation (put-only halts_only)
+## Basket composition
 
-Equal-weight $50K per instrument. Mode = halts_only. No-IC (put-only). All on the spot-corrected engine over OOS 2018-01-01 to 2024-12-31.
+Equal-weight $50,000 per instrument, put-only architecture, halt framework engaged. All variants run over the same OOS window 2018-01-01 to 2024-12-31.
 
-| Basket | n_inst | Sharpe (excess) | AnnRet | AnnVol | MaxDD | Δ vs anchor (+0.286) |
+| Basket | n_inst | Sharpe (excess) | AnnRet | AnnVol | MaxDD | Δ vs SPX baseline (+0.286) |
 |---|:-:|---:|---:|---:|---:|---:|
 | (A) SPX put-only alone | 1 | -0.347 | +2.04% | 0.84% | -0.78% | -0.633 |
-| (B) Wheel-3 (AAPL + MSFT + WMT) | 3 | +0.350 | +2.42% | 0.26% | -0.19% | +0.064 |
-| (C) ETF-3 (SPX + TLT + GLD) | 3 | -0.312 | +2.22% | 0.35% | -0.31% | -0.598 |
-| **(D) Wheel-3 + GLD ← HEADLINE base** | **4** | **+0.359** | **+2.41%** | **0.23%** | **-0.13%** | **+0.073** |
-| (D′) Headline + Head 2 ML overlay | 4 | **+0.371** | +2.41% | 0.21% | -0.12% | +0.085 |
-| (E) Full 6 (ETF-3 + Wheel-3) | 6 | -0.036 | +2.32% | 0.26% | -0.17% | -0.322 |
+| (B) 3-name basket (AAPL+MSFT+WMT) | 3 | +0.350 | +2.42% | 0.26% | -0.19% | +0.064 |
+| (C) 3-ETF basket (SPX+TLT+GLD) | 3 | -0.312 | +2.22% | 0.35% | -0.31% | -0.598 |
+| **(D) the 4-instrument basket ← HEADLINE base** | **4** | **+0.359** | **+2.41%** | **0.23%** | **-0.13%** | **+0.073** |
+| (D′) Headline + regime-stress ML overlay | 4 | **+0.371** | +2.41% | 0.21% | -0.12% | +0.085 |
+| (E) Full 6 (3-ETF basket + 3-name basket) | 6 | -0.036 | +2.32% | 0.26% | -0.17% | -0.322 |
 
 Pattern: SPX and TLT have negative excess Sharpe individually in the post-2020 environment with put-credit-spread structure. Including them in the basket (variants C and E) drags the book toward zero. The headline (D) keeps the 3 positive single-stock names plus GLD (which is barely positive but adds cross-asset diversification) and excludes the drag instruments.
 
@@ -27,45 +27,47 @@ Pattern: SPX and TLT have negative excess Sharpe individually in the post-2020 e
 
 We evaluated put-credit-spreads against iron condors across the universe. Put-only outperformed iron condor in the 2018-2024 OOS window because the post-2020 trending-equity regime systematically destroyed short-call positions. We ship put-only.
 
-| Mode | Universe | Sharpe (excess) | Δ vs anchor (+0.286) | AnnRet | MaxDD |
+| Mode | Universe | Sharpe (excess) | Δ vs SPX baseline (+0.286) | AnnRet | MaxDD |
 |---|---|---:|---:|---:|---:|
 | Iron condor, SPX only | 1 inst | -1.882 | -2.168 | +0.48% | -4.59% |
 | Iron condor, 3-instrument cluster | SPX/TLT/GLD | -2.292 | -2.578 | +1.42% | -1.34% |
 | Put-only, SPX | 1 inst | -0.347 | -0.633 | +2.04% | -0.78% |
 | Put-only, 3-instrument cluster | SPX/TLT/GLD | -0.369 | -0.655 | +2.22% | -0.31% |
-| **Put-only, Wheel-3 + GLD** | **4 inst** | **+0.359** | **+0.073** | **+2.41%** | **-0.13%** |
+| **Put-only, the 4-instrument basket** | **4 inst** | **+0.359** | **+0.073** | **+2.41%** | **-0.13%** |
 
 Iron condor underperforms put-only by more than 1.5 Sharpe units in every paired comparison. The call wing loses on indices (SPX/TLT/GLD) that trended up post-2020, so adding it cannot improve a put-only strategy in this regime. Reported as a tested extension that did not add value.
 
 ```{=html}
-<iframe src="charts/iron_condor_vs_putonly.html" width="100%" height="440" frameborder="0"></iframe>
+<iframe src="charts/iron_condor_vs_putonly.html" width="100%" height="510" frameborder="0"></iframe>
 ```
 
-## Halt framework ablation (naked vs halts_only)
+## Halt framework: engaged vs disengaged
 
-Demonstrates that the halt framework adds positive Sharpe on every instrument in the headline universe.
+We compare the headline strategy with the halt framework engaged against the same strategy with the halt framework disengaged. Disengaged means every Monday is a candidate entry regardless of regime indicators; engaged means three layers of halts gate entries (tail-event halt on extreme single-day market shocks, drawdown halt on a trailing-90-day window, vol-regime auto-resume).
 
-| Ticker | Naked Sharpe | Halts_only Sharpe | Δ from halts |
+| Ticker | Halts disengaged | Halts engaged | Δ from halts |
 |---|---:|---:|---:|
 | AAPL | +0.155 | +0.264 | +0.109 |
 | MSFT | +0.037 | +0.269 | +0.232 |
 | WMT  | +0.063 | +0.263 | +0.200 |
 | GLD  | -0.971 | +0.138 | +1.109 |
-| **BOOK** | **-0.069** | **+0.359** | **+0.428** |
+| **Aggregate basket** | **-0.069** | **+0.359** | **+0.428** |
 
-The halt framework's contribution is consistently positive, every instrument has higher Sharpe with halts active than without. The combined book benefit (+0.428 Sharpe at the basket level) is larger than the per-instrument average because of cross-instrument correlation reduction.
+The halt framework's contribution is consistently positive: every instrument has higher Sharpe with halts engaged than disengaged. The aggregate-basket benefit (+0.428 Sharpe at the basket level) is larger than the per-instrument average because cross-instrument correlation falls when halts engage.
 
-## ML stack ablation (Head 1 + Head 2 + Head 3)
+## ML overlays evaluated
 
-| Head | What it does | Result | Activated in headline? |
+Three calibrated XGBoost overlays were evaluated. One is activated in the headline; two are not.
+
+| Overlay | What it does | Result | Activated in headline? |
 |---|---|---|:-:|
-| Head 1, trade quality | XGBoost per-instrument predicts pnl_per_spread > 0 | OOS log-loss worse than majority-class baseline on 4/4 tickers (margins 0.002 to 0.016) | ✗ (not activated, base sizing used) |
-| Head 2, regime stress | Pooled XGBoost predicts stress-event peak in next 63 trading days | OOS Brier 0.1079 vs naive 0.1256 = **+14.1% reduction** ≥ 5% gate | ✓ (book scaler `(1 − p_stress)`) |
-| Head 3, skew direction | XGBoost for IC dynamic delta | N/A (headline is put-only) | ✗ (not applicable) |
+| Per-trade quality classifier | Per-instrument XGBoost predicting whether a trade closes at profit-target | Out-of-sample log-loss worse than majority-class baseline on 4 of 4 tickers (margins 0.002 to 0.016) | ✗ (not activated, base sizing used) |
+| **Regime-stress overlay** | Pooled XGBoost predicting probability of a stress event in the next quarter (63 trading days) | Out-of-sample Brier 0.1079 vs naive baseline 0.1256, a **14.1% reduction**, well above the 5% acceptance gate | ✓ (applied as `(1 − p_stress)` book-exposure scaler) |
+| Skew-direction model | XGBoost picking which side of an iron condor will hurt more, used to dynamically tilt delta | Not applicable, the headline architecture is put-only | ✗ (not applicable) |
 
-Head 1 fails because base win rate (64-71% per instrument) is high enough that the majority-class baseline log-loss is already low; the model can't differentiate which trades will lose with enough resolution to improve over it. This is a real negative finding.
+The per-trade quality classifier did not beat the majority-class baseline because the base win rate of 64-71% per instrument leaves the "always predict win" baseline log-loss already low. The features available do not predict per-trade outcomes with enough resolution to improve on it.
 
-Head 2 passes because cross-asset macro features (VIX/VIX3M/VVIX/HYG-LQD/yield-curve) are diagnostic of upcoming regime breaks, and the model learns them.
+The regime-stress overlay passes because cross-asset macro features (volatility indices, yield curve, credit-stress proxies) are diagnostic of upcoming regime breaks at the basket-day level. The model learns those associations.
 
 ## Robustness checks
 
@@ -81,4 +83,4 @@ Both gates pass (DSR ≥ 0.95, PBO ≤ 0.30).
 
 ## Summary
 
-The headline is the strongest of 5 basket configurations × 2 architectures (IC vs put-only) × 2 modes (naked vs halts_only) × 2 ML conditions tested. Every configuration is reported above; we ship the configuration with the best risk-adjusted result.
+Six basket configurations were tested across put-only and iron-condor architectures, with the halt framework engaged and disengaged, and with and without the ML overlay. The headline is the strongest configuration across these tests.
