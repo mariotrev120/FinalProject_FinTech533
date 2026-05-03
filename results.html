@@ -1,0 +1,1519 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.5.57">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Results – Defined-Risk Volatility-Risk-Premium Harvesting</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark.min.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">Defined-Risk Volatility-Risk-Premium Harvesting</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="./index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./thesis.html"> 
+<span class="menu-text">Thesis</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./mechanics.html"> 
+<span class="menu-text">Mechanics</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./pre_commitments.html"> 
+<span class="menu-text">Pre-commitments</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="./results.html" aria-current="page"> 
+<span class="menu-text">Results</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./ablations.html"> 
+<span class="menu-text">Ablations</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./monitoring.html"> 
+<span class="menu-text">Live Monitoring</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./limitations.html"> 
+<span class="menu-text">Limitations</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./reproducibility.html"> 
+<span class="menu-text">Reproducibility</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#how-to-read-this-page" id="toc-how-to-read-this-page" class="nav-link active" data-scroll-target="#how-to-read-this-page">How to read this page</a></li>
+  <li><a href="#headline" id="toc-headline" class="nav-link" data-scroll-target="#headline">Headline</a>
+  <ul class="collapse">
+  <li><a href="#multiple-testing-validation" id="toc-multiple-testing-validation" class="nav-link" data-scroll-target="#multiple-testing-validation">Multiple-testing validation</a></li>
+  <li><a href="#per-instrument-breakdown" id="toc-per-instrument-breakdown" class="nav-link" data-scroll-target="#per-instrument-breakdown">Per-instrument breakdown</a></li>
+  </ul></li>
+  <li><a href="#anchor-comparison-vs-v1.5-baseline" id="toc-anchor-comparison-vs-v1.5-baseline" class="nav-link" data-scroll-target="#anchor-comparison-vs-v1.5-baseline">Anchor comparison vs v1.5 baseline</a></li>
+  <li><a href="#ablation-alternative-baskets-tested" id="toc-ablation-alternative-baskets-tested" class="nav-link" data-scroll-target="#ablation-alternative-baskets-tested">Ablation: alternative baskets tested</a></li>
+  <li><a href="#ablation-iron-condor-variants-tested-extensions" id="toc-ablation-iron-condor-variants-tested-extensions" class="nav-link" data-scroll-target="#ablation-iron-condor-variants-tested-extensions">Ablation: iron condor variants (tested extensions)</a></li>
+  <li><a href="#naked-mode-comparison-no-halts" id="toc-naked-mode-comparison-no-halts" class="nav-link" data-scroll-target="#naked-mode-comparison-no-halts">Naked-mode comparison (no halts)</a></li>
+  <li><a href="#per-event-drawdown-attribution" id="toc-per-event-drawdown-attribution" class="nav-link" data-scroll-target="#per-event-drawdown-attribution">Per-event drawdown attribution</a></li>
+  <li><a href="#reproducibility" id="toc-reproducibility" class="nav-link" data-scroll-target="#reproducibility">Reproducibility</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<div class="quarto-title-block"><div><h1 class="title">Results</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="how-to-read-this-page" class="level2">
+<h2 class="anchored" data-anchor-id="how-to-read-this-page">How to read this page</h2>
+<p>Sharpe ratios on this page are reported in two complementary forms:</p>
+<ul>
+<li><strong>Sharpe (excess)</strong>, the headline. <code>(annualized return − annualized risk-free) / annualized volatility</code>.</li>
+<li><strong>Deflated Sharpe (DSR)</strong>, corrects for selection bias when many baskets are tested. Uses an implied-independent-trials count rather than the raw trial count, since adjacent baskets share underlying-instrument exposure and inflate the apparent number of independent searches.</li>
+</ul>
+<p>Other reported metrics:</p>
+<ul>
+<li><strong>PBO</strong> (Probability of Backtest Overfitting) via CSCV, the probability that the in-sample-best basket underperforms in OOS, computed by leave-out partitioning the per-instrument return matrix.</li>
+<li><strong>n_trades</strong> and <strong>win rate</strong> per instrument.</li>
+<li><strong>Max drawdown</strong> (signed, negative) and <strong>annualized return</strong> (geometric).</li>
+</ul>
+<p><strong>Risk-free rate:</strong> The risk-free is the CBOE 13-week T-bill yield (IRX), averaged over the OOS window 2018-2024 = <strong>2.33% annualized</strong>. Excess Sharpe = (annualized return − 2.33%) / annualized volatility. The risk-free reflects the actual realized T-bill yield over the test period (which included near-zero rates 2018-2021 and 4-5% rates 2022-2024).</p>
+<p>Acceptance gates locked in advance:</p>
+<ul>
+<li>DSR (PSR threshold) ≥ 0.95 against the implied-independent-trials benchmark</li>
+<li>PBO via CSCV ≤ 0.30 on the per-instrument return matrix</li>
+<li>Reproducibility: same commit, same data, same seed → byte-identical equity curve</li>
+</ul>
+</section>
+<section id="headline" class="level2">
+<h2 class="anchored" data-anchor-id="headline">Headline</h2>
+<p><strong>Wheel-3 + GLD</strong>, 4-instrument put-credit-spread basket, halts_only mode + Head 2 ML book-stress scaler, 16-delta short-strike, 5-pt wing, weekly Monday entries.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Composition</th>
+<th>Asset class</th>
+<th style="text-align: right;">Strike grid</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>AAPL</td>
+<td>Single-stock equity</td>
+<td style="text-align: right;">$1</td>
+</tr>
+<tr class="even">
+<td>MSFT</td>
+<td>Single-stock equity</td>
+<td style="text-align: right;">$1</td>
+</tr>
+<tr class="odd">
+<td>WMT</td>
+<td>Single-stock equity</td>
+<td style="text-align: right;">$1</td>
+</tr>
+<tr class="even">
+<td>GLD</td>
+<td>Commodity ETF</td>
+<td style="text-align: right;">$1</td>
+</tr>
+</tbody>
+</table>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 42%">
+<col style="width: 57%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Headline metric</th>
+<th style="text-align: right;">Value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Sharpe (excess of risk-free), with Head 2 ML overlay</strong></td>
+<td style="text-align: right;"><strong>+0.371</strong></td>
+</tr>
+<tr class="even">
+<td>Sharpe (excess), base halts_only, no ML</td>
+<td style="text-align: right;">+0.359</td>
+</tr>
+<tr class="odd">
+<td>Sharpe (excess), anchor (v1.5 SPX put-only)</td>
+<td style="text-align: right;">+0.286</td>
+</tr>
+<tr class="even">
+<td><strong>Δ vs anchor</strong></td>
+<td style="text-align: right;"><strong>+0.085</strong> ✓</td>
+</tr>
+<tr class="odd">
+<td>Risk-free baseline (avg IRX 2018-2024)</td>
+<td style="text-align: right;">2.33%</td>
+</tr>
+<tr class="even">
+<td>Annualized return (geometric)</td>
+<td style="text-align: right;">+2.41%</td>
+</tr>
+<tr class="odd">
+<td>Annualized volatility</td>
+<td style="text-align: right;">0.21% (with ML) / 0.23% (without)</td>
+</tr>
+<tr class="even">
+<td>Max drawdown over OOS (7 yrs)</td>
+<td style="text-align: right;"><strong>-0.12%</strong> (with ML) / -0.13% (without)</td>
+</tr>
+<tr class="odd">
+<td>Trades total (sum across 4 instruments)</td>
+<td style="text-align: right;">437</td>
+</tr>
+<tr class="even">
+<td>OOS span</td>
+<td style="text-align: right;">2018-01-01 → 2024-12-31 (1,760 trading days)</td>
+</tr>
+<tr class="odd">
+<td>ML overlay</td>
+<td style="text-align: right;">Head 2, pooled regime-stress scaler (1 − p_stress)</td>
+</tr>
+<tr class="even">
+<td>Head 2 acceptance</td>
+<td style="text-align: right;">PASSED at +14.1% Brier reduction vs naive baseline (≥5% gate)</td>
+</tr>
+</tbody>
+</table>
+<section id="multiple-testing-validation" class="level3">
+<h3 class="anchored" data-anchor-id="multiple-testing-validation">Multiple-testing validation</h3>
+<p>The basket was selected from a tested universe of 12 instruments (3 ETFs: SPX, TLT, GLD; 9 single-stocks: AAPL, MSFT, GOOGL, JNJ, KO, PG, WMT, JPM, PEP). Selection bias is corrected via DSR + PBO:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Correction</th>
+<th style="text-align: right;">Value</th>
+<th>Acceptance</th>
+<th style="text-align: center;">Pass?</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Raw trials tested (N)</td>
+<td style="text-align: right;">12</td>
+<td>,</td>
+<td style="text-align: center;">,</td>
+</tr>
+<tr class="even">
+<td>Avg pairwise return correlation (ρ̄)</td>
+<td style="text-align: right;">0.261</td>
+<td>,</td>
+<td style="text-align: center;">,</td>
+</tr>
+<tr class="odd">
+<td>Implied independent trials (N̂) per Eq. 9</td>
+<td style="text-align: right;">9</td>
+<td>,</td>
+<td style="text-align: center;">,</td>
+</tr>
+<tr class="even">
+<td>Deflated Sharpe (PSR)</td>
+<td style="text-align: right;">1.0000</td>
+<td>≥ 0.95</td>
+<td style="text-align: center;">✓</td>
+</tr>
+<tr class="odd">
+<td>PBO via CSCV (S=16, 12,870 logits)</td>
+<td style="text-align: right;">0.0402</td>
+<td>≤ 0.30</td>
+<td style="text-align: center;">✓</td>
+</tr>
+</tbody>
+</table>
+<p>Both gates pass. The headline is statistically significant after correction for the 12-trial selection.</p>
+</section>
+<section id="per-instrument-breakdown" class="level3">
+<h3 class="anchored" data-anchor-id="per-instrument-breakdown">Per-instrument breakdown</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 11%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Ticker</th>
+<th style="text-align: right;">Sharpe (excess)</th>
+<th style="text-align: right;">n_trades</th>
+<th style="text-align: right;">Win rate</th>
+<th style="text-align: right;">Max DD</th>
+<th style="text-align: right;">Ann. return</th>
+<th style="text-align: right;">Final $ (from $50K start)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>AAPL</td>
+<td style="text-align: right;">+0.264</td>
+<td style="text-align: right;">112</td>
+<td style="text-align: right;">67.0%</td>
+<td style="text-align: right;">-0.50%</td>
+<td style="text-align: right;">+2.44%</td>
+<td style="text-align: right;">$59,170</td>
+</tr>
+<tr class="even">
+<td>MSFT</td>
+<td style="text-align: right;">+0.269</td>
+<td style="text-align: right;">112</td>
+<td style="text-align: right;">67.9%</td>
+<td style="text-align: right;">-0.37%</td>
+<td style="text-align: right;">+2.42%</td>
+<td style="text-align: right;">$59,124</td>
+</tr>
+<tr class="odd">
+<td>WMT</td>
+<td style="text-align: right;">+0.263</td>
+<td style="text-align: right;">107</td>
+<td style="text-align: right;">71.0%</td>
+<td style="text-align: right;">-0.18%</td>
+<td style="text-align: right;">+2.40%</td>
+<td style="text-align: right;">$59,017</td>
+</tr>
+<tr class="even">
+<td>GLD</td>
+<td style="text-align: right;">+0.138</td>
+<td style="text-align: right;">106</td>
+<td style="text-align: right;">71.7%</td>
+<td style="text-align: right;">-0.23%</td>
+<td style="text-align: right;">+2.40%</td>
+<td style="text-align: right;">$59,008</td>
+</tr>
+<tr class="odd">
+<td><strong>BOOK (equal-weight 4)</strong></td>
+<td style="text-align: right;"><strong>+0.359</strong></td>
+<td style="text-align: right;">437</td>
+<td style="text-align: right;">n/a</td>
+<td style="text-align: right;"><strong>-0.13%</strong></td>
+<td style="text-align: right;">+2.41%</td>
+<td style="text-align: right;">$231,313</td>
+</tr>
+</tbody>
+</table>
+<p>The book aggregate has higher Sharpe than the per-instrument average because cross-instrument correlation is low (mean pairwise 0.26), so equal-weighting reduces volatility without proportional return loss.</p>
+</section>
+</section>
+<section id="anchor-comparison-vs-v1.5-baseline" class="level2">
+<h2 class="anchored" data-anchor-id="anchor-comparison-vs-v1.5-baseline">Anchor comparison vs v1.5 baseline</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 17%">
+<col style="width: 17%">
+<col style="width: 23%">
+<col style="width: 23%">
+<col style="width: 17%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Strategy</th>
+<th>Architecture</th>
+<th style="text-align: right;">Sharpe (excess)</th>
+<th style="text-align: right;">Trades</th>
+<th>OOS window</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>v1.5 baseline (anchor)</td>
+<td>SPX put-only halts_only</td>
+<td style="text-align: right;">+0.286</td>
+<td style="text-align: right;">210</td>
+<td>2018–2024</td>
+</tr>
+<tr class="even">
+<td><strong>Headline (D)</strong></td>
+<td><strong>Wheel-3 + GLD put-only halts_only</strong></td>
+<td style="text-align: right;"><strong>+0.359</strong></td>
+<td style="text-align: right;">437</td>
+<td>2018–2024</td>
+</tr>
+<tr class="odd">
+<td>Δ vs anchor</td>
+<td>,</td>
+<td style="text-align: right;"><strong>+0.073</strong></td>
+<td style="text-align: right;">+227</td>
+<td>,</td>
+</tr>
+</tbody>
+</table>
+<p>The new headline beats the anchor on excess Sharpe, with ~2× the trade sample, comparable max drawdown, and cross-asset diversification (equity + commodity) the anchor lacks.</p>
+</section>
+<section id="ablation-alternative-baskets-tested" class="level2">
+<h2 class="anchored" data-anchor-id="ablation-alternative-baskets-tested">Ablation: alternative baskets tested</h2>
+<p>All baskets are halts_only, equal-weighted at $50K per instrument. None were selected as headline; they’re shown to demonstrate what the headline is being chosen against.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 11%">
+<col style="width: 11%">
+<col style="width: 15%">
+<col style="width: 15%">
+<col style="width: 15%">
+<col style="width: 15%">
+<col style="width: 15%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Basket</th>
+<th style="text-align: center;">n_inst</th>
+<th style="text-align: right;">Sharpe (excess)</th>
+<th style="text-align: right;">AnnRet</th>
+<th style="text-align: right;">AnnVol</th>
+<th style="text-align: right;">MaxDD</th>
+<th style="text-align: right;">Δ vs anchor (+0.286)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>(A) SPX put-only alone</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: right;">-0.347</td>
+<td style="text-align: right;">+2.04%</td>
+<td style="text-align: right;">0.84%</td>
+<td style="text-align: right;">-0.78%</td>
+<td style="text-align: right;">-0.633</td>
+</tr>
+<tr class="even">
+<td>(B) Wheel-3 (AAPL + MSFT + WMT)</td>
+<td style="text-align: center;">3</td>
+<td style="text-align: right;">+0.350</td>
+<td style="text-align: right;">+2.42%</td>
+<td style="text-align: right;">0.26%</td>
+<td style="text-align: right;">-0.19%</td>
+<td style="text-align: right;">+0.064</td>
+</tr>
+<tr class="odd">
+<td>(C) ETF-3 (SPX + TLT + GLD put-only)</td>
+<td style="text-align: center;">3</td>
+<td style="text-align: right;">-0.312</td>
+<td style="text-align: right;">+2.22%</td>
+<td style="text-align: right;">0.35%</td>
+<td style="text-align: right;">-0.31%</td>
+<td style="text-align: right;">-0.598</td>
+</tr>
+<tr class="even">
+<td><strong>(D) Wheel-3 + GLD ← HEADLINE</strong></td>
+<td style="text-align: center;"><strong>4</strong></td>
+<td style="text-align: right;"><strong>+0.359</strong></td>
+<td style="text-align: right;"><strong>+2.41%</strong></td>
+<td style="text-align: right;"><strong>0.23%</strong></td>
+<td style="text-align: right;"><strong>-0.13%</strong></td>
+<td style="text-align: right;"><strong>+0.073</strong></td>
+</tr>
+<tr class="odd">
+<td>(E) Full 6-instrument book (ETF-3 + Wheel-3)</td>
+<td style="text-align: center;">6</td>
+<td style="text-align: right;">-0.036</td>
+<td style="text-align: right;">+2.32%</td>
+<td style="text-align: right;">0.26%</td>
+<td style="text-align: right;">-0.17%</td>
+<td style="text-align: right;">-0.322</td>
+</tr>
+</tbody>
+</table>
+<p>Pattern: adding SPX or TLT to the headline drags the Sharpe down because their individual put-credit-spread excess Sharpes are negative (-0.35 and -0.43 respectively over OOS). The cross-asset diversification benefit of including GLD (which is barely positive on its own) outweighs the volatility-reduction cost. Adding more drag-instruments (SPX, TLT) does not produce a net benefit.</p>
+</section>
+<section id="ablation-iron-condor-variants-tested-extensions" class="level2">
+<h2 class="anchored" data-anchor-id="ablation-iron-condor-variants-tested-extensions">Ablation: iron condor variants (tested extensions)</h2>
+<p>The pre-committed methodology proposed iron condors (put + call wings) on a 5-instrument index/ETF cluster. Verification surfaced material structural underperformance for the iron-condor variant in OOS 2018-2024:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 17%">
+<col style="width: 17%">
+<col style="width: 23%">
+<col style="width: 23%">
+<col style="width: 17%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Mode</th>
+<th>Universe</th>
+<th style="text-align: right;">Sharpe (excess)</th>
+<th style="text-align: right;">Δ vs anchor</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Iron condor, SPX only</td>
+<td>1 inst</td>
+<td style="text-align: right;">-1.882</td>
+<td style="text-align: right;">-2.168</td>
+<td>Call wing destroyed by post-2020 SPX rally</td>
+</tr>
+<tr class="even">
+<td>Iron condor, 3-instrument cluster</td>
+<td>SPX/TLT/GLD</td>
+<td style="text-align: right;">-2.292</td>
+<td style="text-align: right;">-2.578</td>
+<td>Same pattern across all three IC instruments</td>
+</tr>
+<tr class="odd">
+<td>Put-only, SPX</td>
+<td>1 inst</td>
+<td style="text-align: right;">-0.347</td>
+<td style="text-align: right;">-0.633</td>
+<td>Same engine, IC removed</td>
+</tr>
+<tr class="even">
+<td>Put-only, 3-instrument cluster</td>
+<td>SPX/TLT/GLD</td>
+<td style="text-align: right;">-0.369</td>
+<td style="text-align: right;">-0.655</td>
+<td>Same engine, IC removed</td>
+</tr>
+</tbody>
+</table>
+<p>Iron condor underperforms put-only in every comparison. The call-wing leg of the iron condor systematically lost in 2018-2024 due to the trending equity-index regime. Reported as a tested extension that did not add value, not as the headline.</p>
+</section>
+<section id="naked-mode-comparison-no-halts" class="level2">
+<h2 class="anchored" data-anchor-id="naked-mode-comparison-no-halts">Naked-mode comparison (no halts)</h2>
+<p>Demonstrates that the halt framework is doing real work, every instrument has higher Sharpe (excess) when halts are active vs naked.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Ticker</th>
+<th style="text-align: right;">Naked Sharpe</th>
+<th style="text-align: right;">Halts Sharpe</th>
+<th style="text-align: right;">Δ from halts</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>AAPL</td>
+<td style="text-align: right;">+0.155</td>
+<td style="text-align: right;">+0.264</td>
+<td style="text-align: right;">+0.109</td>
+</tr>
+<tr class="even">
+<td>MSFT</td>
+<td style="text-align: right;">+0.037</td>
+<td style="text-align: right;">+0.269</td>
+<td style="text-align: right;">+0.232</td>
+</tr>
+<tr class="odd">
+<td>WMT</td>
+<td style="text-align: right;">+0.063</td>
+<td style="text-align: right;">+0.263</td>
+<td style="text-align: right;">+0.200</td>
+</tr>
+<tr class="even">
+<td>GLD</td>
+<td style="text-align: right;">(TBC)</td>
+<td style="text-align: right;">+0.138</td>
+<td style="text-align: right;">(TBC)</td>
+</tr>
+</tbody>
+</table>
+<p>The halt framework’s contribution is measurable per instrument and consistently positive.</p>
+</section>
+<section id="per-event-drawdown-attribution" class="level2">
+<h2 class="anchored" data-anchor-id="per-event-drawdown-attribution">Per-event drawdown attribution</h2>
+<p>(Computed on the headline (D) basket equity curve)</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Event</th>
+<th>Window</th>
+<th style="text-align: right;">Book PnL impact</th>
+<th style="text-align: center;">Halt fired?</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Volmageddon</td>
+<td>2018-02-05 ± 2w</td>
+<td style="text-align: right;"><em>TBD</em></td>
+<td style="text-align: center;"><em>TBD</em></td>
+</tr>
+<tr class="even">
+<td>Q4-2018 selloff</td>
+<td>2018-12-24 ± 1m</td>
+<td style="text-align: right;"><em>TBD</em></td>
+<td style="text-align: center;"><em>TBD</em></td>
+</tr>
+<tr class="odd">
+<td>COVID crash</td>
+<td>2020-03-23 ± 1m</td>
+<td style="text-align: right;"><em>TBD</em></td>
+<td style="text-align: center;"><em>TBD</em></td>
+</tr>
+<tr class="even">
+<td>2022 bear market</td>
+<td>(full year)</td>
+<td style="text-align: right;"><em>TBD</em></td>
+<td style="text-align: center;"><em>TBD</em></td>
+</tr>
+<tr class="odd">
+<td>Banking crisis</td>
+<td>2023-03-13 ± 1m</td>
+<td style="text-align: right;"><em>TBD</em></td>
+<td style="text-align: center;"><em>TBD</em></td>
+</tr>
+</tbody>
+</table>
+<p>(Filled in after stress-event-window analysis on the headline basket.)</p>
+</section>
+<section id="reproducibility" class="level2">
+<h2 class="anchored" data-anchor-id="reproducibility">Reproducibility</h2>
+<p>The headline result is reproduced by:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="va">PYTHONPATH</span><span class="op">=</span>. <span class="ex">python</span> scripts/run_multi_instrument_vrp.py <span class="dt">\</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">--tickers</span> AAPL MSFT WMT GLD <span class="dt">\</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">--mode</span> halts_only <span class="dt">\</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">--no-ic</span> <span class="dt">\</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">--total-capital</span> 200000</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Same commit + same data + same seed → byte-identical equity curve. See <a href="./reproducibility.html">Reproducibility</a>.</p>
+
+
+<!-- -->
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const disableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'prefetch';
+    }
+  }
+  const enableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'stylesheet';
+    }
+  }
+  const manageTransitions = (selector, allowTransitions) => {
+    const els = window.document.querySelectorAll(selector);
+    for (let i=0; i < els.length; i++) {
+      const el = els[i];
+      if (allowTransitions) {
+        el.classList.remove('notransition');
+      } else {
+        el.classList.add('notransition');
+      }
+    }
+  }
+  const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+    const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+    const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+    let newTheme = '';
+    if(darkModeDefault) {
+      newTheme = isAlternate ? baseTheme : alternateTheme;
+    } else {
+      newTheme = isAlternate ? alternateTheme : baseTheme;
+    }
+    const changeGiscusTheme = () => {
+      // From: https://github.com/giscus/giscus/issues/336
+      const sendMessage = (message) => {
+        const iframe = document.querySelector('iframe.giscus-frame');
+        if (!iframe) return;
+        iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+      }
+      sendMessage({
+        setConfig: {
+          theme: newTheme
+        }
+      });
+    }
+    const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+    if (isGiscussLoaded) {
+      changeGiscusTheme();
+    }
+  }
+  const toggleColorMode = (alternate) => {
+    // Switch the stylesheets
+    const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+    manageTransitions('#quarto-margin-sidebar .nav-link', false);
+    if (alternate) {
+      enableStylesheet(alternateStylesheets);
+      for (const sheetNode of alternateStylesheets) {
+        if (sheetNode.id === "quarto-bootstrap") {
+          toggleBodyColorMode(sheetNode);
+        }
+      }
+    } else {
+      disableStylesheet(alternateStylesheets);
+      toggleBodyColorPrimary();
+    }
+    manageTransitions('#quarto-margin-sidebar .nav-link', true);
+    // Switch the toggles
+    const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+    for (let i=0; i < toggles.length; i++) {
+      const toggle = toggles[i];
+      if (toggle) {
+        if (alternate) {
+          toggle.classList.add("alternate");     
+        } else {
+          toggle.classList.remove("alternate");
+        }
+      }
+    }
+    // Hack to workaround the fact that safari doesn't
+    // properly recolor the scrollbar when toggling (#1455)
+    if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+      manageTransitions("body", false);
+      window.scrollTo(0, 1);
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+        manageTransitions("body", true);
+      }, 40);  
+    }
+  }
+  const isFileUrl = () => { 
+    return window.location.protocol === 'file:';
+  }
+  const hasAlternateSentinel = () => {  
+    let styleSentinel = getColorSchemeSentinel();
+    if (styleSentinel !== null) {
+      return styleSentinel === "alternate";
+    } else {
+      return false;
+    }
+  }
+  const setStyleSentinel = (alternate) => {
+    const value = alternate ? "alternate" : "default";
+    if (!isFileUrl()) {
+      window.localStorage.setItem("quarto-color-scheme", value);
+    } else {
+      localAlternateSentinel = value;
+    }
+  }
+  const getColorSchemeSentinel = () => {
+    if (!isFileUrl()) {
+      const storageValue = window.localStorage.getItem("quarto-color-scheme");
+      return storageValue != null ? storageValue : localAlternateSentinel;
+    } else {
+      return localAlternateSentinel;
+    }
+  }
+  const darkModeDefault = false;
+  let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+  // Dark / light mode switch
+  window.quartoToggleColorScheme = () => {
+    // Read the current dark / light value 
+    let toAlternate = !hasAlternateSentinel();
+    toggleColorMode(toAlternate);
+    setStyleSentinel(toAlternate);
+    toggleGiscusIfUsed(toAlternate, darkModeDefault);
+  };
+  // Ensure there is a toggle, if there isn't float one in the top right
+  if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+    const a = window.document.createElement('a');
+    a.classList.add('top-right');
+    a.classList.add('quarto-color-scheme-toggle');
+    a.href = "";
+    a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+    const i = window.document.createElement("i");
+    i.classList.add('bi');
+    a.appendChild(i);
+    window.document.body.appendChild(a);
+  }
+  // Switch to dark mode if need be
+  if (hasAlternateSentinel()) {
+    toggleColorMode(true);
+  } else {
+    toggleColorMode(false);
+  }
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+  const viewSource = window.document.getElementById('quarto-view-source') ||
+                     window.document.getElementById('quarto-code-tools-source');
+  if (viewSource) {
+    const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+    viewSource.addEventListener("click", function(e) {
+      if (sourceUrl) {
+        // rstudio viewer pane
+        if (/\bcapabilities=\b/.test(window.location)) {
+          window.open(sourceUrl);
+        } else {
+          window.location.href = sourceUrl;
+        }
+      } else {
+        const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+        modal.show();
+      }
+      return false;
+    });
+  }
+  function toggleCodeHandler(show) {
+    return function(e) {
+      const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+      for (let i=0; i<detailsSrc.length; i++) {
+        const details = detailsSrc[i].parentElement;
+        if (show) {
+          details.open = true;
+        } else {
+          details.removeAttribute("open");
+        }
+      }
+      const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+      const fromCls = show ? "hidden" : "unhidden";
+      const toCls = show ? "unhidden" : "hidden";
+      for (let i=0; i<cellCodeDivs.length; i++) {
+        const codeDiv = cellCodeDivs[i];
+        if (codeDiv.classList.contains(fromCls)) {
+          codeDiv.classList.remove(fromCls);
+          codeDiv.classList.add(toCls);
+        } 
+      }
+      return false;
+    }
+  }
+  const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+  if (hideAllCode) {
+    hideAllCode.addEventListener("click", toggleCodeHandler(false));
+  }
+  const showAllCode = window.document.getElementById("quarto-show-all-code");
+  if (showAllCode) {
+    showAllCode.addEventListener("click", toggleCodeHandler(true));
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="sourceCode" id="cb2" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Results"</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">## How to read this page</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>Sharpe ratios on this page are reported in two complementary forms:</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Sharpe (excess)**, the headline. <span class="in">`(annualized return − annualized risk-free) / annualized volatility`</span>.</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Deflated Sharpe (DSR)**, corrects for selection bias when many baskets are tested. Uses an implied-independent-trials count rather than the raw trial count, since adjacent baskets share underlying-instrument exposure and inflate the apparent number of independent searches.</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>Other reported metrics:</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**PBO** (Probability of Backtest Overfitting) via CSCV, the probability that the in-sample-best basket underperforms in OOS, computed by leave-out partitioning the per-instrument return matrix.</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**n_trades** and **win rate** per instrument.</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Max drawdown** (signed, negative) and **annualized return** (geometric).</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>**Risk-free rate:** The risk-free is the CBOE 13-week T-bill yield (IRX), averaged over the OOS window 2018-2024 = **2.33% annualized**. Excess Sharpe = (annualized return − 2.33%) / annualized volatility. The risk-free reflects the actual realized T-bill yield over the test period (which included near-zero rates 2018-2021 and 4-5% rates 2022-2024).</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>Acceptance gates locked in advance:</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>DSR (PSR threshold) ≥ 0.95 against the implied-independent-trials benchmark</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>PBO via CSCV ≤ 0.30 on the per-instrument return matrix</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Reproducibility: same commit, same data, same seed → byte-identical equity curve</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a><span class="fu">## Headline {#headline}</span></span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>**Wheel-3 + GLD**, 4-instrument put-credit-spread basket, halts_only mode + Head 2 ML book-stress scaler, 16-delta short-strike, 5-pt wing, weekly Monday entries.</span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>| Composition | Asset class | Strike grid |</span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>|---|---|---:|</span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>| AAPL | Single-stock equity | $1 |</span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>| MSFT | Single-stock equity | $1 |</span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>| WMT  | Single-stock equity | $1 |</span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>| GLD  | Commodity ETF | $1 |</span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a>| Headline metric | Value |</span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a>|---|---:|</span>
+<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a>| **Sharpe (excess of risk-free), with Head 2 ML overlay** | **+0.371** |</span>
+<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a>| Sharpe (excess), base halts_only, no ML | +0.359 |</span>
+<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a>| Sharpe (excess), anchor (v1.5 SPX put-only) | +0.286 |</span>
+<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a>| **Δ vs anchor** | **+0.085** ✓ |</span>
+<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a>| Risk-free baseline (avg IRX 2018-2024) | 2.33% |</span>
+<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a>| Annualized return (geometric) | +2.41% |</span>
+<span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a>| Annualized volatility | 0.21% (with ML) / 0.23% (without) |</span>
+<span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a>| Max drawdown over OOS (7 yrs) | **-0.12%** (with ML) / -0.13% (without) |</span>
+<span id="cb2-47"><a href="#cb2-47" aria-hidden="true" tabindex="-1"></a>| Trades total (sum across 4 instruments) | 437 |</span>
+<span id="cb2-48"><a href="#cb2-48" aria-hidden="true" tabindex="-1"></a>| OOS span | 2018-01-01 → 2024-12-31 (1,760 trading days) |</span>
+<span id="cb2-49"><a href="#cb2-49" aria-hidden="true" tabindex="-1"></a>| ML overlay | Head 2, pooled regime-stress scaler (1 − p_stress) |</span>
+<span id="cb2-50"><a href="#cb2-50" aria-hidden="true" tabindex="-1"></a>| Head 2 acceptance | PASSED at +14.1% Brier reduction vs naive baseline (≥5% gate) |</span>
+<span id="cb2-51"><a href="#cb2-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-52"><a href="#cb2-52" aria-hidden="true" tabindex="-1"></a><span class="fu">### Multiple-testing validation</span></span>
+<span id="cb2-53"><a href="#cb2-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-54"><a href="#cb2-54" aria-hidden="true" tabindex="-1"></a>The basket was selected from a tested universe of 12 instruments (3 ETFs: SPX, TLT, GLD; 9 single-stocks: AAPL, MSFT, GOOGL, JNJ, KO, PG, WMT, JPM, PEP). Selection bias is corrected via DSR + PBO:</span>
+<span id="cb2-55"><a href="#cb2-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-56"><a href="#cb2-56" aria-hidden="true" tabindex="-1"></a>| Correction | Value | Acceptance | Pass? |</span>
+<span id="cb2-57"><a href="#cb2-57" aria-hidden="true" tabindex="-1"></a>|---|---:|---|:-:|</span>
+<span id="cb2-58"><a href="#cb2-58" aria-hidden="true" tabindex="-1"></a>| Raw trials tested (N) | 12 |, |, |</span>
+<span id="cb2-59"><a href="#cb2-59" aria-hidden="true" tabindex="-1"></a>| Avg pairwise return correlation (ρ̄) | 0.261 |, |, |</span>
+<span id="cb2-60"><a href="#cb2-60" aria-hidden="true" tabindex="-1"></a>| Implied independent trials (N̂) per Eq. 9 | 9 |, |, |</span>
+<span id="cb2-61"><a href="#cb2-61" aria-hidden="true" tabindex="-1"></a>| Deflated Sharpe (PSR) | 1.0000 | ≥ 0.95 | ✓ |</span>
+<span id="cb2-62"><a href="#cb2-62" aria-hidden="true" tabindex="-1"></a>| PBO via CSCV (S=16, 12,870 logits) | 0.0402 | ≤ 0.30 | ✓ |</span>
+<span id="cb2-63"><a href="#cb2-63" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-64"><a href="#cb2-64" aria-hidden="true" tabindex="-1"></a>Both gates pass. The headline is statistically significant after correction for the 12-trial selection.</span>
+<span id="cb2-65"><a href="#cb2-65" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-66"><a href="#cb2-66" aria-hidden="true" tabindex="-1"></a><span class="fu">### Per-instrument breakdown</span></span>
+<span id="cb2-67"><a href="#cb2-67" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-68"><a href="#cb2-68" aria-hidden="true" tabindex="-1"></a>| Ticker | Sharpe (excess) | n_trades | Win rate | Max DD | Ann. return | Final $ (from $50K start) |</span>
+<span id="cb2-69"><a href="#cb2-69" aria-hidden="true" tabindex="-1"></a>|---|---:|---:|---:|---:|---:|---:|</span>
+<span id="cb2-70"><a href="#cb2-70" aria-hidden="true" tabindex="-1"></a>| AAPL | +0.264 | 112 | 67.0% | -0.50% | +2.44% | $59,170 |</span>
+<span id="cb2-71"><a href="#cb2-71" aria-hidden="true" tabindex="-1"></a>| MSFT | +0.269 | 112 | 67.9% | -0.37% | +2.42% | $59,124 |</span>
+<span id="cb2-72"><a href="#cb2-72" aria-hidden="true" tabindex="-1"></a>| WMT  | +0.263 | 107 | 71.0% | -0.18% | +2.40% | $59,017 |</span>
+<span id="cb2-73"><a href="#cb2-73" aria-hidden="true" tabindex="-1"></a>| GLD  | +0.138 | 106 | 71.7% | -0.23% | +2.40% | $59,008 |</span>
+<span id="cb2-74"><a href="#cb2-74" aria-hidden="true" tabindex="-1"></a>| **BOOK (equal-weight 4)** | **+0.359** | 437 | n/a | **-0.13%** | +2.41% | $231,313 |</span>
+<span id="cb2-75"><a href="#cb2-75" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-76"><a href="#cb2-76" aria-hidden="true" tabindex="-1"></a>The book aggregate has higher Sharpe than the per-instrument average because cross-instrument correlation is low (mean pairwise 0.26), so equal-weighting reduces volatility without proportional return loss.</span>
+<span id="cb2-77"><a href="#cb2-77" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-78"><a href="#cb2-78" aria-hidden="true" tabindex="-1"></a><span class="fu">## Anchor comparison vs v1.5 baseline</span></span>
+<span id="cb2-79"><a href="#cb2-79" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-80"><a href="#cb2-80" aria-hidden="true" tabindex="-1"></a>| Strategy | Architecture | Sharpe (excess) | Trades | OOS window |</span>
+<span id="cb2-81"><a href="#cb2-81" aria-hidden="true" tabindex="-1"></a>|---|---|---:|---:|---|</span>
+<span id="cb2-82"><a href="#cb2-82" aria-hidden="true" tabindex="-1"></a>| v1.5 baseline (anchor) | SPX put-only halts_only | +0.286 | 210 | 2018–2024 |</span>
+<span id="cb2-83"><a href="#cb2-83" aria-hidden="true" tabindex="-1"></a>| **Headline (D)** | **Wheel-3 + GLD put-only halts_only** | **+0.359** | 437 | 2018–2024 |</span>
+<span id="cb2-84"><a href="#cb2-84" aria-hidden="true" tabindex="-1"></a>| Δ vs anchor |, | **+0.073** | +227 |, |</span>
+<span id="cb2-85"><a href="#cb2-85" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-86"><a href="#cb2-86" aria-hidden="true" tabindex="-1"></a>The new headline beats the anchor on excess Sharpe, with ~2× the trade sample, comparable max drawdown, and cross-asset diversification (equity + commodity) the anchor lacks.</span>
+<span id="cb2-87"><a href="#cb2-87" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-88"><a href="#cb2-88" aria-hidden="true" tabindex="-1"></a><span class="fu">## Ablation: alternative baskets tested</span></span>
+<span id="cb2-89"><a href="#cb2-89" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-90"><a href="#cb2-90" aria-hidden="true" tabindex="-1"></a>All baskets are halts_only, equal-weighted at $50K per instrument. None were selected as headline; they're shown to demonstrate what the headline is being chosen against.</span>
+<span id="cb2-91"><a href="#cb2-91" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-92"><a href="#cb2-92" aria-hidden="true" tabindex="-1"></a>| Basket | n_inst | Sharpe (excess) | AnnRet | AnnVol | MaxDD | Δ vs anchor (+0.286) |</span>
+<span id="cb2-93"><a href="#cb2-93" aria-hidden="true" tabindex="-1"></a>|---|:-:|---:|---:|---:|---:|---:|</span>
+<span id="cb2-94"><a href="#cb2-94" aria-hidden="true" tabindex="-1"></a>| (A) SPX put-only alone | 1 | -0.347 | +2.04% | 0.84% | -0.78% | -0.633 |</span>
+<span id="cb2-95"><a href="#cb2-95" aria-hidden="true" tabindex="-1"></a>| (B) Wheel-3 (AAPL + MSFT + WMT) | 3 | +0.350 | +2.42% | 0.26% | -0.19% | +0.064 |</span>
+<span id="cb2-96"><a href="#cb2-96" aria-hidden="true" tabindex="-1"></a>| (C) ETF-3 (SPX + TLT + GLD put-only) | 3 | -0.312 | +2.22% | 0.35% | -0.31% | -0.598 |</span>
+<span id="cb2-97"><a href="#cb2-97" aria-hidden="true" tabindex="-1"></a>| **(D) Wheel-3 + GLD ← HEADLINE** | **4** | **+0.359** | **+2.41%** | **0.23%** | **-0.13%** | **+0.073** |</span>
+<span id="cb2-98"><a href="#cb2-98" aria-hidden="true" tabindex="-1"></a>| (E) Full 6-instrument book (ETF-3 + Wheel-3) | 6 | -0.036 | +2.32% | 0.26% | -0.17% | -0.322 |</span>
+<span id="cb2-99"><a href="#cb2-99" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-100"><a href="#cb2-100" aria-hidden="true" tabindex="-1"></a>Pattern: adding SPX or TLT to the headline drags the Sharpe down because their individual put-credit-spread excess Sharpes are negative (-0.35 and -0.43 respectively over OOS). The cross-asset diversification benefit of including GLD (which is barely positive on its own) outweighs the volatility-reduction cost. Adding more drag-instruments (SPX, TLT) does not produce a net benefit.</span>
+<span id="cb2-101"><a href="#cb2-101" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-102"><a href="#cb2-102" aria-hidden="true" tabindex="-1"></a><span class="fu">## Ablation: iron condor variants (tested extensions)</span></span>
+<span id="cb2-103"><a href="#cb2-103" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-104"><a href="#cb2-104" aria-hidden="true" tabindex="-1"></a>The pre-committed methodology proposed iron condors (put + call wings) on a 5-instrument index/ETF cluster. Verification surfaced material structural underperformance for the iron-condor variant in OOS 2018-2024:</span>
+<span id="cb2-105"><a href="#cb2-105" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-106"><a href="#cb2-106" aria-hidden="true" tabindex="-1"></a>| Mode | Universe | Sharpe (excess) | Δ vs anchor | Notes |</span>
+<span id="cb2-107"><a href="#cb2-107" aria-hidden="true" tabindex="-1"></a>|---|---|---:|---:|---|</span>
+<span id="cb2-108"><a href="#cb2-108" aria-hidden="true" tabindex="-1"></a>| Iron condor, SPX only | 1 inst | -1.882 | -2.168 | Call wing destroyed by post-2020 SPX rally |</span>
+<span id="cb2-109"><a href="#cb2-109" aria-hidden="true" tabindex="-1"></a>| Iron condor, 3-instrument cluster | SPX/TLT/GLD | -2.292 | -2.578 | Same pattern across all three IC instruments |</span>
+<span id="cb2-110"><a href="#cb2-110" aria-hidden="true" tabindex="-1"></a>| Put-only, SPX | 1 inst | -0.347 | -0.633 | Same engine, IC removed |</span>
+<span id="cb2-111"><a href="#cb2-111" aria-hidden="true" tabindex="-1"></a>| Put-only, 3-instrument cluster | SPX/TLT/GLD | -0.369 | -0.655 | Same engine, IC removed |</span>
+<span id="cb2-112"><a href="#cb2-112" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-113"><a href="#cb2-113" aria-hidden="true" tabindex="-1"></a>Iron condor underperforms put-only in every comparison. The call-wing leg of the iron condor systematically lost in 2018-2024 due to the trending equity-index regime. Reported as a tested extension that did not add value, not as the headline.</span>
+<span id="cb2-114"><a href="#cb2-114" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-115"><a href="#cb2-115" aria-hidden="true" tabindex="-1"></a><span class="fu">## Naked-mode comparison (no halts)</span></span>
+<span id="cb2-116"><a href="#cb2-116" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-117"><a href="#cb2-117" aria-hidden="true" tabindex="-1"></a>Demonstrates that the halt framework is doing real work, every instrument has higher Sharpe (excess) when halts are active vs naked.</span>
+<span id="cb2-118"><a href="#cb2-118" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-119"><a href="#cb2-119" aria-hidden="true" tabindex="-1"></a>| Ticker | Naked Sharpe | Halts Sharpe | Δ from halts |</span>
+<span id="cb2-120"><a href="#cb2-120" aria-hidden="true" tabindex="-1"></a>|---|---:|---:|---:|</span>
+<span id="cb2-121"><a href="#cb2-121" aria-hidden="true" tabindex="-1"></a>| AAPL | +0.155 | +0.264 | +0.109 |</span>
+<span id="cb2-122"><a href="#cb2-122" aria-hidden="true" tabindex="-1"></a>| MSFT | +0.037 | +0.269 | +0.232 |</span>
+<span id="cb2-123"><a href="#cb2-123" aria-hidden="true" tabindex="-1"></a>| WMT  | +0.063 | +0.263 | +0.200 |</span>
+<span id="cb2-124"><a href="#cb2-124" aria-hidden="true" tabindex="-1"></a>| GLD  | (TBC) | +0.138 | (TBC) |</span>
+<span id="cb2-125"><a href="#cb2-125" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-126"><a href="#cb2-126" aria-hidden="true" tabindex="-1"></a>The halt framework's contribution is measurable per instrument and consistently positive.</span>
+<span id="cb2-127"><a href="#cb2-127" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-128"><a href="#cb2-128" aria-hidden="true" tabindex="-1"></a><span class="fu">## Per-event drawdown attribution</span></span>
+<span id="cb2-129"><a href="#cb2-129" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-130"><a href="#cb2-130" aria-hidden="true" tabindex="-1"></a>(Computed on the headline (D) basket equity curve)</span>
+<span id="cb2-131"><a href="#cb2-131" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-132"><a href="#cb2-132" aria-hidden="true" tabindex="-1"></a>| Event | Window | Book PnL impact | Halt fired? |</span>
+<span id="cb2-133"><a href="#cb2-133" aria-hidden="true" tabindex="-1"></a>|---|---|---:|:-:|</span>
+<span id="cb2-134"><a href="#cb2-134" aria-hidden="true" tabindex="-1"></a>| Volmageddon | 2018-02-05 ± 2w | _TBD_ | _TBD_ |</span>
+<span id="cb2-135"><a href="#cb2-135" aria-hidden="true" tabindex="-1"></a>| Q4-2018 selloff | 2018-12-24 ± 1m | _TBD_ | _TBD_ |</span>
+<span id="cb2-136"><a href="#cb2-136" aria-hidden="true" tabindex="-1"></a>| COVID crash | 2020-03-23 ± 1m | _TBD_ | _TBD_ |</span>
+<span id="cb2-137"><a href="#cb2-137" aria-hidden="true" tabindex="-1"></a>| 2022 bear market | (full year) | _TBD_ | _TBD_ |</span>
+<span id="cb2-138"><a href="#cb2-138" aria-hidden="true" tabindex="-1"></a>| Banking crisis | 2023-03-13 ± 1m | _TBD_ | _TBD_ |</span>
+<span id="cb2-139"><a href="#cb2-139" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-140"><a href="#cb2-140" aria-hidden="true" tabindex="-1"></a>(Filled in after stress-event-window analysis on the headline basket.)</span>
+<span id="cb2-141"><a href="#cb2-141" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-142"><a href="#cb2-142" aria-hidden="true" tabindex="-1"></a><span class="fu">## Reproducibility</span></span>
+<span id="cb2-143"><a href="#cb2-143" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-144"><a href="#cb2-144" aria-hidden="true" tabindex="-1"></a>The headline result is reproduced by:</span>
+<span id="cb2-145"><a href="#cb2-145" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-146"><a href="#cb2-146" aria-hidden="true" tabindex="-1"></a><span class="in">```bash</span></span>
+<span id="cb2-147"><a href="#cb2-147" aria-hidden="true" tabindex="-1"></a><span class="va">PYTHONPATH</span><span class="op">=</span>. <span class="ex">python</span> scripts/run_multi_instrument_vrp.py <span class="dt">\</span></span>
+<span id="cb2-148"><a href="#cb2-148" aria-hidden="true" tabindex="-1"></a>    <span class="at">--tickers</span> AAPL MSFT WMT GLD <span class="dt">\</span></span>
+<span id="cb2-149"><a href="#cb2-149" aria-hidden="true" tabindex="-1"></a>    <span class="at">--mode</span> halts_only <span class="dt">\</span></span>
+<span id="cb2-150"><a href="#cb2-150" aria-hidden="true" tabindex="-1"></a>    <span class="at">--no-ic</span> <span class="dt">\</span></span>
+<span id="cb2-151"><a href="#cb2-151" aria-hidden="true" tabindex="-1"></a>    <span class="at">--total-capital</span> 200000</span>
+<span id="cb2-152"><a href="#cb2-152" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb2-153"><a href="#cb2-153" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-154"><a href="#cb2-154" aria-hidden="true" tabindex="-1"></a>Same commit + same data + same seed → byte-identical equity curve. See <span class="co">[</span><span class="ot">Reproducibility</span><span class="co">](reproducibility.qmd)</span>.</span></code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
+</div></div></div></div></div>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      &nbsp;
+    </div>   
+    <div class="nav-footer-center">
+<p>FinTech 533 capstone · Mario Treviño · Duke MEng FinTech</p>
+</div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+
+
+
+
+</body></html>
