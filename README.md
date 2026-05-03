@@ -1,39 +1,56 @@
 # R & M Trade Desk
 
 **FinTech 533 Final Project · Duke MEng Financial Technology**
-**Authors:** Robert Lanni and Mario Treviño
+**Authors:** Robert Lanni · Mario Treviño
 
-A defined-risk options strategy that harvests the volatility risk premium across a four-instrument cross-asset basket, with a three-layer halt framework and a calibrated XGBoost stress overlay that contracts book exposure during predicted regime breaks.
+A defined-risk options strategy that harvests the volatility risk premium across a four-instrument cross-asset basket, with a halt framework and a calibrated XGBoost stress overlay that contracts book exposure during predicted regime breaks.
 
-**Live site:** https://mariotrev120.github.io/FinalProject_FinTech533/
+## Quick Start
+
+| Where | Link |
+|---|---|
+| 📊 **Live writeup (Quarto site)** | https://mariotrev120.github.io/FinalProject_FinTech533/ |
+| 📈 **Headline result** | [Results page](https://mariotrev120.github.io/FinalProject_FinTech533/results.html) |
+| 🛡️ **Live monitoring framework** | [Monitoring page](https://mariotrev120.github.io/FinalProject_FinTech533/monitoring.html) |
+| 🧪 **Variants tested** | [Variants page](https://mariotrev120.github.io/FinalProject_FinTech533/ablations.html) |
+| 📋 **Trade blotter (437 trades, sortable)** | [`website/data/blotter.csv`](website/data/blotter.csv) |
+| 📅 **Monthly ledger** | [`website/data/monthly_ledger.csv`](website/data/monthly_ledger.csv) |
+| 🖥️ **Flask operations dashboard** | `flask --app website/app.py run` (Render.com via [`render.yaml`](render.yaml)) |
+| 📐 **Strategy mechanics** | [Mechanics page](https://mariotrev120.github.io/FinalProject_FinTech533/mechanics.html) |
+
+![Equity curve vs SPX baseline](website/charts/equity_curve_static.png)
 
 ## Headline result
 
 | Metric | Value |
 |---|---:|
-| Excess Sharpe (with Head 2 ML overlay) | **+0.371** |
-| Excess Sharpe (halts_only base, no ML) | +0.359 |
-| Anchor (v1.5 SPX put-only halts_only) | +0.286 |
-| Δ vs anchor | +0.085 |
-| Risk-free rate (avg IRX 2018-2024) | 2.33% |
-| Annualized return | +2.41% |
-| Max drawdown over 7 years OOS | -0.13% |
-| Trades total (4 instruments) | 437 |
-| Deflated Sharpe (PSR) ≥ 0.95 gate | 1.0000 ✓ |
-| PBO via CSCV ≤ 0.30 gate | 0.0402 ✓ |
+| **Sharpe ratio (excess of risk-free, ML overlay engaged)** | **+0.371** |
+| Sharpe (excess), without ML overlay | +0.359 |
+| SPX baseline (single-instrument predecessor) | +0.286 |
+| **Δ vs SPX baseline** | **+0.085** ✓ |
+| **Geometric mean return (GMRR, annualized)** | **+2.41%** |
+| Annualized volatility | 0.21% |
+| Alpha vs SPY (annualized OLS × 252) | +2.37% |
+| Beta vs SPY (OLS slope, daily) | +0.0014 |
+| Max drawdown over 7 years OOS | **-0.12%** |
+| Total trades · Trades per year · Avg return per trade | 437 · 62.8 · +8.25% |
+| Win rate (basket aggregate) | 73.0% |
+| Risk-free baseline (avg IRX 2018-2024) | 2.33% |
+| **Deflated Sharpe (PSR), gate ≥ 0.95** | **1.0000** ✓ |
+| **PBO via CSCV, gate ≤ 0.30** | **0.0402** ✓ |
 
-OOS window 2018-01-01 to 2024-12-31. Headline basket: AAPL, MSFT, WMT, GLD. Selected from a 12-instrument tested universe; selection bias corrected via DSR with implied-independent-trials adjustment (N̂ = 9 from average pairwise correlation 0.261) and PBO via CSCV (S = 16, 12,870 logits).
+OOS window 2018-01-02 to 2024-12-31 (1,760 trading days). Headline basket: AAPL, MSFT, WMT, GLD. Selected from a 12-instrument tested universe; selection bias corrected via Deflated Sharpe Ratio with implied-independent-trials adjustment (N̂ = 9 from average pairwise correlation 0.261) and Probability of Backtest Overfitting via combinatorially symmetric cross-validation (S = 16, 12,870 logits).
 
 ## Strategy in one paragraph
 
-Sell weekly 16-delta put credit spreads with 5-point wing protection on each of the four instruments. Hold for 30 to 45 days. Exit on profit target (50% of credit), stop loss (200% of credit, gap-aware), time decay (DTE ≤ 21), or delta blow-out (|Δ| > 0.50). Halt entries when Layer 1 (extreme tail-event), Layer 4 (trailing 90-day drawdown), or Layer 5 (vol-regime auto-resume) conditions fire. Scale book exposure each day by `(1 - p_stress)` where `p_stress` is a calibrated XGBoost probability over 15 macro features. Risk-free cash on the unutilized portion of the book accrues at the 13-week T-bill rate (CBOE IRX).
+Sell weekly 16-delta put credit spreads with 5-point wing protection on each of the four instruments. Hold for 30-45 days. Exit on profit target (50% of credit), stop loss (200% of credit, gap-aware), time decay (DTE ≤ 21), or delta blow-out (|Δ| > 0.50). Halt entries when a tail-event signal, trailing-90-day drawdown gate, or vol-regime auto-resume condition fires. Scale book exposure each day by `(1 − p_stress)` where `p_stress` is a calibrated XGBoost probability over 15 macro features. Idle cash on the unutilized portion of the book accrues at the 13-week T-bill rate (CBOE IRX).
 
 ## Two writeups in one repo
 
 This project ships both an academic writeup and a live operations dashboard.
 
-- **Quarto static site** under `website/_quarto.yml` and `website/*.qmd`. Nine pages covering thesis, mechanics, exogenous-factor inputs, halt framework, ML stack, ablation matrix, live-monitoring framework, limitations, and reproducibility. Renders with `cd website && quarto render` to `website/_site/`. Published on GitHub Pages.
-- **Flask dashboard** under `website/app.py` with templates in `website/templates/`. KPIs per mode, equity curve with stress-event annotations, blotter, ablation comparison, test status. Reads `website/data/{metrics,blotter,test_results}.json`. Deployment via Render.com using `render.yaml`. Local: `flask --app website/app.py run`.
+- **Quarto static site** under `website/_quarto.yml` and `website/*.qmd`. Pages covering thesis, mechanics, results, variants tested, live-monitoring framework, limitations, and data sources. Renders with `cd website && quarto render` to `website/_site/`. Published on GitHub Pages.
+- **Flask dashboard** under `website/app.py` with templates in `website/templates/`. KPIs per mode, equity curve with stress-event annotations, blotter, variant comparison, test status. Reads `website/data/{metrics,blotter,test_results}.json`. Deployment via Render.com using `render.yaml`. Local: `flask --app website/app.py run`.
 
 ## Live monitoring framework
 
@@ -49,7 +66,7 @@ See `website/monitoring.qmd` for the worked example and `src/metrics/hoeffding.p
 
 The headline was benchmarked against 12 instruments and 5 alternative basket configurations. Robustness is checked with two industry-standard tests:
 
-1. **Deflated Sharpe Ratio with Eq. 9 implied-independent-trials adjustment** (Bailey and López de Prado 2014). The 12 raw trials have average pairwise return correlation 0.261, giving N̂ = 9 implied independent trials. The headline basket's PSR is 1.0000 against the noise floor for 9 trials.
+1. **Deflated Sharpe Ratio with implied-independent-trials adjustment** (Bailey and López de Prado 2014). The 12 raw trials have average pairwise return correlation 0.261, giving N̂ = 9 implied independent trials. The headline basket's PSR is 1.0000 against the noise floor for 9 trials.
 2. **Probability of Backtest Overfitting via combinatorially symmetric cross-validation** (Bailey, Borwein, López de Prado, Zhu 2015) with S = 16 partitions and C(16, 8) = 12,870 logit combinations. PBO = 0.0402.
 
 Both gates pass.
@@ -59,10 +76,10 @@ Both gates pass.
 | Source | What it provides |
 |---|---|
 | OptionMetrics IvyDB US (via WRDS) | Daily option chains 2012-2025 with bid/ask/IV/Greeks. Stored as per-ticker parquets at `data/processed/options_by_ticker/{TICKER}.parquet`. |
-| OptionMetrics IvyDB Securities (via WRDS) | Daily underlying OHLC for the 4 headline-basket tickers and 6 ablation tickers, 2012 to 2025. Same secid system as the chains, ensuring clean joins on date and security. Stored under `data/raw/{TICKER}.parquet`. |
+| OptionMetrics IvyDB Securities (via WRDS) | Daily underlying OHLC for the 4 headline-basket tickers and 6 ablation tickers, 2012-2025. Same secid system as the chains, ensuring clean joins on date and security. Stored under `data/raw/{TICKER}.parquet`. |
 | Interactive Brokers TWS feed snapshot | VIX, VIX3M, VVIX, SKEW, IRX, TNX, HYG, LQD, SPY, SPX index OHLC. Frozen to local parquet at commit time. No live network connection during a backtest. |
 
-All data files are gitignored. The repository contains code, methodology documents, and the rendered Quarto site.
+All raw data files are gitignored. The repository contains code, methodology documents, the rendered Quarto site, the trade blotter, and the monthly ledger.
 
 ## Author contributions
 
@@ -83,8 +100,6 @@ PYTHONPATH=. python scripts/convert_optionmetrics_to_parquet.py
 # Reproduce the headline result
 PYTHONPATH=. python scripts/run_multi_instrument_vrp.py \
     --tickers AAPL MSFT WMT GLD \
-    --mode halts_only \
-    --no-ic \
     --total-capital 200000
 ```
 
