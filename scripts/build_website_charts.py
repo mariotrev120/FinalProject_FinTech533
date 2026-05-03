@@ -48,17 +48,18 @@ LAYOUT_BASE = dict(
 )
 
 
-def add_stress_annotations(fig, y_position, color="#666"):
-    """Add vertical dotted lines + small labels for the 5 stress events."""
+def add_stress_annotations(fig, y_position=1.06, color="#9CA3AF"):
+    """Add vertical dotted lines for the 5 stress events with labels placed
+    ABOVE the plot area (in the top margin) so they never overlap chart data.
+    Caller must provide enough top margin (margin.t >= 110) for room."""
     for label, date_str in STRESS_EVENTS:
         fig.add_shape(type="line", x0=date_str, x1=date_str,
                       y0=0, y1=1, yref="paper",
                       line=dict(color=color, width=1, dash="dot"))
         fig.add_annotation(x=date_str, y=y_position, yref="paper",
                            text=label, showarrow=False,
-                           font=dict(size=10, color=color),
-                           textangle=-90, xshift=-6,
-                           bgcolor="white", borderpad=2)
+                           font=dict(size=9, color=color),
+                           textangle=-30, xanchor="left", yanchor="bottom")
 
 
 def write_chart(fig, name: str):
@@ -100,22 +101,23 @@ def chart_equity_headline_vs_anchor():
     ))
     fig.add_hline(y=1.0, line_color=COLOR_GRAY, line_dash="dot", line_width=1)
 
-    add_stress_annotations(fig, y_position=0.92, color=COLOR_GRAY)
+    add_stress_annotations(fig)
 
+    layout = {**LAYOUT_BASE, "margin": dict(l=70, r=30, t=130, b=60)}
     fig.update_layout(
-        **LAYOUT_BASE,
+        **layout,
         title=dict(
             text="<b>Headline equity curve vs benchmark</b>"
                  "<br><sup style='color:#666'>Growth of $1, OOS 2018-2024 · "
                  "shaded green = outperformance vs anchor</sup>",
-            x=0.04, xanchor="left",
+            x=0.04, xanchor="left", y=0.97,
         ),
-        height=480,
+        height=520,
         yaxis=dict(title="Growth of $1", gridcolor="#E5E7EB", zeroline=False,
                    tickformat=".3f"),
         xaxis=dict(title="", gridcolor="#E5E7EB", showgrid=True),
-        legend=dict(yanchor="top", y=0.98, xanchor="left", x=0.02,
-                    bgcolor="rgba(255,255,255,0.9)", bordercolor=COLOR_GRAY,
+        legend=dict(yanchor="bottom", y=0.02, xanchor="left", x=0.02,
+                    bgcolor="rgba(255,255,255,0.92)", bordercolor=COLOR_GRAY,
                     borderwidth=1),
     )
     write_chart(fig, "equity_headline_vs_anchor")
@@ -145,24 +147,24 @@ def chart_drawdown_headline():
 
     fig.add_annotation(
         x=max_dd_date, y=max_dd_val,
-        text=f"<b>Max DD {max_dd_val:.3%}</b><br><sup>{max_dd_date.strftime('%b %d, %Y')}</sup>",
-        showarrow=True, arrowhead=2, arrowcolor=COLOR_CRIMSON, arrowwidth=1.5,
-        ax=70, ay=-50,
+        text=f"<b>Max DD {max_dd_val:.3%}</b>",
+        showarrow=True, arrowhead=2, arrowcolor=COLOR_CRIMSON, arrowwidth=1.2,
+        ax=80, ay=40,
         font=dict(size=11, color=COLOR_CRIMSON),
-        bgcolor="rgba(255,255,255,0.95)", bordercolor=COLOR_CRIMSON, borderwidth=1, borderpad=6,
+        bgcolor="rgba(255,255,255,0.95)", bordercolor=COLOR_CRIMSON, borderwidth=1, borderpad=4,
     )
 
-    add_stress_annotations(fig, y_position=0.05, color=COLOR_GRAY)
+    add_stress_annotations(fig)
 
+    layout = {**LAYOUT_BASE, "margin": dict(l=70, r=30, t=130, b=50)}
     fig.update_layout(
-        **LAYOUT_BASE,
+        **layout,
         title=dict(
             text="<b>Drawdown profile</b>"
-                 "<br><sup style='color:#666'>Underwater curve, headline basket · "
-                 "every named stress event absorbed below 0.1%</sup>",
-            x=0.04, xanchor="left",
+                 "<br><sup style='color:#666'>Underwater curve · headline basket</sup>",
+            x=0.04, xanchor="left", y=0.97,
         ),
-        height=380,
+        height=420,
         yaxis=dict(title="Drawdown", tickformat=".2%",
                    gridcolor="#E5E7EB", zeroline=False),
         xaxis=dict(title="", gridcolor="#E5E7EB"),
@@ -193,21 +195,22 @@ def chart_per_instrument_sharpe():
         textfont=dict(size=13),
         hovertemplate="%{x}<br>Excess Sharpe: %{y:+.4f}<extra></extra>",
     ))
-    fig.add_hline(y=0.286, line_color=COLOR_GOLD, line_dash="dash", line_width=2,
-                  annotation_text="<b>v1.5 anchor +0.286</b>",
-                  annotation_position="top right",
-                  annotation_font=dict(size=11, color=COLOR_GOLD))
+    fig.add_hline(y=0.286, line_color=COLOR_GOLD, line_dash="dash", line_width=1.5,
+                  annotation_text="anchor 0.286",
+                  annotation_position="bottom right",
+                  annotation_font=dict(size=10, color=COLOR_GOLD))
     fig.add_hline(y=0.0, line_color=COLOR_GRAY, line_width=1)
     fig.update_layout(
         **LAYOUT_BASE,
         title=dict(
             text="<b>Per-instrument excess Sharpe contribution</b>"
                  "<br><sup style='color:#666'>Halts_only mode · BOOK "
-                 "aggregate beats per-instrument average via correlation diversification</sup>",
-            x=0.04, xanchor="left",
+                 "aggregate beats the per-instrument average via correlation diversification</sup>",
+            x=0.04, xanchor="left", y=0.97,
         ),
-        height=420,
-        yaxis=dict(title="Excess Sharpe (rf = 2.33%)", gridcolor="#E5E7EB", zeroline=False),
+        height=440,
+        yaxis=dict(title="Excess Sharpe (rf = 2.33%)", gridcolor="#E5E7EB",
+                   zeroline=False, range=[-0.05, 0.45]),
         xaxis=dict(title="", gridcolor="#E5E7EB"),
         showlegend=False,
         bargap=0.35,
@@ -244,13 +247,13 @@ def chart_ablation_baskets():
         textfont=dict(size=13),
         hovertemplate="%{y}<br>Excess Sharpe: %{x:+.4f}<extra></extra>",
     ))
-    fig.add_vline(x=anchor, line_color=COLOR_GOLD, line_dash="dash", line_width=2,
-                  annotation_text="<b>v1.5 anchor +0.286</b>",
+    fig.add_vline(x=anchor, line_color=COLOR_GOLD, line_dash="dash", line_width=1.5,
+                  annotation_text="anchor 0.286",
                   annotation_position="top",
-                  annotation_font=dict(size=11, color=COLOR_GOLD))
+                  annotation_font=dict(size=10, color=COLOR_GOLD))
     fig.add_vline(x=0, line_color=COLOR_GRAY, line_width=1)
 
-    layout = {**LAYOUT_BASE, "margin": dict(l=280, r=80, t=100, b=60)}
+    layout = {**LAYOUT_BASE, "margin": dict(l=320, r=90, t=100, b=60)}
     fig.update_layout(
         **layout,
         title=dict(
@@ -304,25 +307,26 @@ def chart_iron_condor_vs_putonly():
 
     fig.add_shape(type="rect", x0="2020-03-01", x1="2024-12-31",
                   y0=0, y1=1, yref="paper",
-                  fillcolor="rgba(196,69,54,0.06)", line=dict(width=0))
-    fig.add_annotation(x="2022-01-01", y=0.96, yref="paper",
-                       text="<b>Post-COVID trending regime</b><br><sup>call wing crushed</sup>",
-                       showarrow=False, font=dict(size=11, color=COLOR_CRIMSON),
-                       bgcolor="rgba(255,255,255,0.95)", borderpad=4)
+                  fillcolor="rgba(196,69,54,0.05)", line=dict(width=0))
+    fig.add_annotation(x="2020-03-01", y=1.04, yref="paper",
+                       text="post-COVID trending regime → call wing crushed",
+                       showarrow=False, font=dict(size=10, color=COLOR_CRIMSON),
+                       xanchor="left")
 
+    layout = {**LAYOUT_BASE, "margin": dict(l=70, r=30, t=110, b=60)}
     fig.update_layout(
-        **LAYOUT_BASE,
+        **layout,
         title=dict(
             text="<b>Iron condor vs put-only on SPX</b>"
                  "<br><sup style='color:#666'>Illustrative equity curves · post-2020 trending equity "
                  "regime systematically destroyed the call wing</sup>",
-            x=0.04, xanchor="left",
+            x=0.04, xanchor="left", y=0.97,
         ),
-        height=440,
+        height=460,
         yaxis=dict(title="Growth of $1", gridcolor="#E5E7EB", zeroline=False, tickformat=".3f"),
         xaxis=dict(title="", gridcolor="#E5E7EB"),
-        legend=dict(yanchor="top", y=0.98, xanchor="left", x=0.02,
-                    bgcolor="rgba(255,255,255,0.9)", bordercolor=COLOR_GRAY, borderwidth=1),
+        legend=dict(yanchor="bottom", y=0.02, xanchor="left", x=0.02,
+                    bgcolor="rgba(255,255,255,0.92)", bordercolor=COLOR_GRAY, borderwidth=1),
     )
     write_chart(fig, "iron_condor_vs_putonly")
 
@@ -369,40 +373,132 @@ def chart_hoeffding_trace():
         hovertemplate="%{x|%b %Y}<br>X̄: %{y:.3f}<extra></extra>",
     ))
 
-    fig.add_hline(y=mu, line_color=COLOR_GRAY, line_dash="dot",
-                  annotation_text=f"μ = {mu:.3f}", annotation_position="bottom right",
-                  yref="y2")
+    add_stress_annotations(fig)
 
-    add_stress_annotations(fig, y_position=0.04, color=COLOR_GRAY)
-
+    layout = {**LAYOUT_BASE, "margin": dict(l=70, r=110, t=130, b=60)}
     fig.update_layout(
-        **LAYOUT_BASE,
+        **layout,
         title=dict(
             text="<b>Hoeffding regime monitor on the headline basket</b>"
                  "<br><sup style='color:#666'>Bound stays in green band 88% of OOS · "
                  "no critical signal fired in 7 years · μ = 0.730 baseline</sup>",
-            x=0.04, xanchor="left",
+            x=0.04, xanchor="left", y=0.97,
         ),
-        height=520,
+        height=540,
         yaxis=dict(title="Hoeffding bound (probability)", range=[0, 1.05],
                    tickformat=".0%", gridcolor="rgba(0,0,0,0)", side="left"),
         yaxis2=dict(title="Rolling 60-trade win rate", overlaying="y", side="right",
                     range=[0, 1], tickformat=".2f", showgrid=False),
         xaxis=dict(title="", gridcolor="#E5E7EB"),
-        legend=dict(yanchor="top", y=0.98, xanchor="left", x=0.02,
-                    bgcolor="rgba(255,255,255,0.9)", bordercolor=COLOR_GRAY, borderwidth=1),
+        legend=dict(yanchor="bottom", y=0.02, xanchor="right", x=0.98,
+                    bgcolor="rgba(255,255,255,0.92)", bordercolor=COLOR_GRAY, borderwidth=1),
         annotations=[
-            dict(x=1.0, y=0.95, xref="paper", yref="y", showarrow=False,
-                 text="<b>green</b>", font=dict(size=10, color=COLOR_EMERALD), xanchor="left"),
-            dict(x=1.0, y=0.40, xref="paper", yref="y", showarrow=False,
-                 text="<b>yellow</b>", font=dict(size=10, color=COLOR_GOLD), xanchor="left"),
-            dict(x=1.0, y=0.18, xref="paper", yref="y", showarrow=False,
-                 text="<b>red</b>", font=dict(size=10, color=COLOR_AMBER), xanchor="left"),
+            dict(x=1.0, y=0.75, xref="paper", yref="y", showarrow=False,
+                 text="<b>green</b>", font=dict(size=10, color=COLOR_EMERALD),
+                 xanchor="left", xshift=8),
+            dict(x=1.0, y=0.37, xref="paper", yref="y", showarrow=False,
+                 text="<b>yellow</b>", font=dict(size=10, color=COLOR_GOLD),
+                 xanchor="left", xshift=8),
+            dict(x=1.0, y=0.17, xref="paper", yref="y", showarrow=False,
+                 text="<b>red</b>", font=dict(size=10, color=COLOR_AMBER),
+                 xanchor="left", xshift=8),
             dict(x=1.0, y=0.05, xref="paper", yref="y", showarrow=False,
-                 text="<b>critical</b>", font=dict(size=10, color=COLOR_CRIMSON), xanchor="left"),
+                 text="<b>critical</b>", font=dict(size=10, color=COLOR_CRIMSON),
+                 xanchor="left", xshift=8),
         ],
     )
     write_chart(fig, "hoeffding_trace")
+
+
+def chart_pnl_per_trade():
+    """P&L per trade time-series bar chart, green/red colored by win/loss."""
+    blotter = pd.DataFrame(json.load(open("website/data/blotter.json")))
+    blotter["entry_date"] = pd.to_datetime(blotter["entry_date"])
+    blotter = blotter.sort_values("entry_date").reset_index(drop=True)
+    blotter["pnl"] = blotter["pnl_per_spread"].fillna(0)
+    blotter["win"] = blotter["pnl"] > 0
+    colors = [COLOR_EMERALD if w else COLOR_CRIMSON for w in blotter["win"]]
+
+    fig = go.Figure()
+    fig.add_trace(go.Bar(
+        x=blotter["entry_date"], y=blotter["pnl"],
+        marker=dict(color=colors, line=dict(width=0)),
+        hovertemplate="<b>%{x|%b %d, %Y}</b><br>P&L: $%{y:+.2f}<extra></extra>",
+    ))
+    fig.add_hline(y=0, line_color=COLOR_GRAY, line_width=1)
+
+    add_stress_annotations(fig)
+
+    layout = {**LAYOUT_BASE, "margin": dict(l=70, r=30, t=130, b=50)}
+    fig.update_layout(
+        **layout,
+        title=dict(
+            text="<b>P&L per trade across the OOS sample</b>"
+                 "<br><sup style='color:#666'>Green = winning trade, red = losing trade · "
+                 "stop-loss hits cap losses at the wing-width bound</sup>",
+            x=0.04, xanchor="left", y=0.97,
+        ),
+        height=460,
+        yaxis=dict(title="P&L per spread ($)", gridcolor="#E5E7EB", zeroline=False),
+        xaxis=dict(title="", gridcolor="#E5E7EB"),
+        showlegend=False,
+        bargap=0.0,
+    )
+    write_chart(fig, "pnl_per_trade")
+
+
+def chart_trade_return_distribution():
+    """Histogram of trade-level returns with mean / median / break-even lines."""
+    blotter = pd.DataFrame(json.load(open("website/data/blotter.json")))
+    blotter["pnl"] = blotter["pnl_per_spread"].fillna(0)
+    pnl = blotter["pnl"].values
+    mean_pnl = float(blotter["pnl"].mean())
+    median_pnl = float(blotter["pnl"].median())
+
+    wins = pnl[pnl > 0]
+    losses = pnl[pnl <= 0]
+
+    fig = go.Figure()
+    fig.add_trace(go.Histogram(
+        x=wins, name=f"Wins ({len(wins)})",
+        marker=dict(color=COLOR_EMERALD, line=dict(color="white", width=1)),
+        opacity=0.85, xbins=dict(start=-200, end=60, size=10),
+        hovertemplate="P&L bucket: $%{x}<br>Count: %{y}<extra></extra>",
+    ))
+    fig.add_trace(go.Histogram(
+        x=losses, name=f"Losses ({len(losses)})",
+        marker=dict(color=COLOR_CRIMSON, line=dict(color="white", width=1)),
+        opacity=0.85, xbins=dict(start=-200, end=60, size=10),
+        hovertemplate="P&L bucket: $%{x}<br>Count: %{y}<extra></extra>",
+    ))
+    fig.add_vline(x=0, line_color=COLOR_GRAY, line_width=1.5,
+                  annotation_text="break-even", annotation_position="top")
+    fig.add_vline(x=mean_pnl, line_color=COLOR_NAVY, line_dash="dash", line_width=2,
+                  annotation_text=f"<b>mean ${mean_pnl:+.2f}</b>",
+                  annotation_position="top right",
+                  annotation_font=dict(size=11, color=COLOR_NAVY))
+    fig.add_vline(x=median_pnl, line_color=COLOR_GOLD, line_dash="dash", line_width=2,
+                  annotation_text=f"<b>median ${median_pnl:+.2f}</b>",
+                  annotation_position="bottom right",
+                  annotation_font=dict(size=11, color=COLOR_GOLD))
+
+    fig.update_layout(
+        **LAYOUT_BASE,
+        title=dict(
+            text="<b>Trade P&L distribution across 437 OOS trades</b>"
+                 "<br><sup style='color:#666'>Right-skew: many small profit-target wins, "
+                 "fewer larger losses bounded by stop-loss / wing width</sup>",
+            x=0.04, xanchor="left",
+        ),
+        height=420,
+        yaxis=dict(title="Number of trades", gridcolor="#E5E7EB", zeroline=False),
+        xaxis=dict(title="P&L per spread ($)", gridcolor="#E5E7EB"),
+        legend=dict(yanchor="top", y=0.98, xanchor="right", x=0.98,
+                    bgcolor="rgba(255,255,255,0.9)", bordercolor=COLOR_GRAY, borderwidth=1),
+        bargap=0.05,
+        barmode="overlay",
+    )
+    write_chart(fig, "trade_return_distribution")
 
 
 if __name__ == "__main__":
@@ -412,4 +508,6 @@ if __name__ == "__main__":
     chart_ablation_baskets()
     chart_iron_condor_vs_putonly()
     chart_hoeffding_trace()
+    chart_pnl_per_trade()
+    chart_trade_return_distribution()
     print("\nAll charts written to website/charts/")
