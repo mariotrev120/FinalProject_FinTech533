@@ -95,6 +95,16 @@ The variants page includes mode comparisons (halts engaged versus disengaged). C
 
 The headline only reports the halts-engaged mode result. The halts-disengaged results are reported on the [Variants](ablations.qmd) page for transparency, not as candidates.
 
+## Future work: treasury management on undeployed capital
+
+The current backtest accrues idle cash at the realized 13-week T-bill yield (IRX averaged 2.33% over OOS). This is the conservative baseline. A natural next step is active treasury management on the undeployed $200,000 of basket capital that backs the options positions.
+
+Replacing the passive T-bill accrual with an ultra-short Treasury ETF (SGOV, BIL) or a short-duration corporate bond fund (VCSH, BSV) targets an additional 100-200 bps of carry with minimal duration or credit risk. The trade-off is a small increase in drawdown sensitivity during credit-spread blowouts, but the headline -0.12% maximum drawdown leaves substantial room before this becomes a constraint.
+
+The deliberate exclusion is broad-equity exposure (SPY, QQQ) for the undeployed capital. Adding equity beta to the cash sleeve introduces correlation risk: in the stress events the strategy is designed to absorb (Volmageddon, COVID, 2022 bear, 2023 banking), the put-credit-spread portfolio is under maximum pressure exactly when an equity cash sleeve would also be drawing down. This double-correlation would destroy the maximum-drawdown profile that makes the strategy useful as a portfolio defensive sleeve.
+
+Recommended treasury overlay for production deployment: 80% allocation to SGOV (0-3M Treasuries, near-zero duration, currently yielding around 5%) and 20% to short-investment-grade-corporate (VCSH, around 1-year duration, currently yielding around 5%). Expected blended carry roughly 100-150 bps above passive IRX accrual, raising the strategy's annualized return from 2.41% to approximately 3.5-4%, while keeping the maximum-drawdown floor near -0.12%. This is a low-risk capital-efficiency improvement, not a return-chasing one.
+
 ## What to read next
 
 - [Live Monitoring](monitoring.qmd), the answer to "how do you know when it stops working"

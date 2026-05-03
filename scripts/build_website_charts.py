@@ -253,7 +253,7 @@ def chart_ablation_baskets():
                   annotation_font=dict(size=10, color=COLOR_GOLD))
     fig.add_vline(x=0, line_color=COLOR_GRAY, line_width=1)
 
-    layout = {**LAYOUT_BASE, "margin": dict(l=380, r=160, t=110, b=70)}
+    layout = {**LAYOUT_BASE, "margin": dict(l=380, r=180, t=110, b=80)}
     fig.update_layout(
         **layout,
         title=dict(
@@ -263,8 +263,14 @@ def chart_ablation_baskets():
             x=0.04, xanchor="left", y=0.97,
         ),
         height=520,
-        xaxis=dict(title="Excess Sharpe (rf = 2.33%)", gridcolor="#E5E7EB",
-                   zeroline=False, range=[-0.75, 0.50]),
+        xaxis=dict(
+            title="Excess Sharpe (rf = 2.33%)",
+            gridcolor="#E5E7EB", zeroline=False,
+            range=[-0.85, 0.55],
+            dtick=0.1,
+            tickformat="+.1f",
+            tickfont=dict(size=11),
+        ),
         yaxis=dict(title="", gridcolor="#E5E7EB", autorange="reversed"),
         showlegend=False,
         bargap=0.25,
@@ -376,12 +382,12 @@ def chart_hoeffding_trace():
 
     add_stress_annotations(fig)
 
-    layout = {**LAYOUT_BASE, "margin": dict(l=70, r=110, t=130, b=60)}
+    layout = {**LAYOUT_BASE, "margin": dict(l=70, r=80, t=130, b=60)}
     fig.update_layout(
         **layout,
         title=dict(
             text="<b>Hoeffding regime monitor on the headline basket</b>"
-                 "<br><sup style='color:#666'>Bound stays in green band 88% of OOS · "
+                 "<br><sup style='color:#666'>Bound stays above 50% on 88% of OOS trades · "
                  "no critical signal fired in 7 years · μ = 0.730 baseline</sup>",
             x=0.04, xanchor="left", y=0.97,
         ),
@@ -393,20 +399,6 @@ def chart_hoeffding_trace():
         xaxis=dict(title="", gridcolor="#E5E7EB"),
         legend=dict(yanchor="bottom", y=0.02, xanchor="right", x=0.98,
                     bgcolor="rgba(255,255,255,0.92)", bordercolor=COLOR_GRAY, borderwidth=1),
-        annotations=[
-            dict(x=1.0, y=0.75, xref="paper", yref="y", showarrow=False,
-                 text="<b>green</b>", font=dict(size=10, color=COLOR_EMERALD),
-                 xanchor="left", xshift=8),
-            dict(x=1.0, y=0.37, xref="paper", yref="y", showarrow=False,
-                 text="<b>yellow</b>", font=dict(size=10, color=COLOR_GOLD),
-                 xanchor="left", xshift=8),
-            dict(x=1.0, y=0.17, xref="paper", yref="y", showarrow=False,
-                 text="<b>red</b>", font=dict(size=10, color=COLOR_AMBER),
-                 xanchor="left", xshift=8),
-            dict(x=1.0, y=0.05, xref="paper", yref="y", showarrow=False,
-                 text="<b>critical</b>", font=dict(size=10, color=COLOR_CRIMSON),
-                 xanchor="left", xshift=8),
-        ],
     )
     write_chart(fig, "hoeffding_trace")
 
