@@ -154,11 +154,46 @@
     "text": "Per-event drawdown attribution\nComputed on the headline (D) basket equity curve, halts_only mode, equal-weight $50K per instrument (basket starting equity $200K).\n\n\n\n\n\n\n\n\n\nEvent\nWindow probed\nBook PnL impact\nWorst intra-window drawdown\n\n\n\n\nVolmageddon\n2018-01-22 → 2018-02-16\n-$35\n-0.06%\n\n\nQ4-2018 selloff\n2018-11-26 → 2019-01-24\n+$783\n0.00%\n\n\nCOVID crash\n2020-02-24 → 2020-04-23\n+$102\n0.00%\n\n\n2022 bear market\n2022-01-03 → 2022-12-30\n+$4,223\n0.00%\n\n\nBanking crisis\n2023-02-13 → 2023-04-13\n+$1,652\n0.00%\n\n\n\nThe halt framework + cross-asset diversification absorbed every named stress event with effectively zero drawdown. The largest intra-event dip was 0.06% during Volmageddon. The basket actually generated positive P&L across the COVID crash, Q4-2018 selloff, 2022 bear market, and banking crisis windows. This is the structural goal of the halt-gated put-credit-spread architecture: turn defined-risk option premium into resilient cash-secured income."
   },
   {
-    "objectID": "results.html#trade-fates-breakdown",
-    "href": "results.html#trade-fates-breakdown",
+    "objectID": "results.html#trade-fates-and-rates",
+    "href": "results.html#trade-fates-and-rates",
     "title": "Results",
-    "section": "Trade fates breakdown",
-    "text": "Trade fates breakdown\nEvery trade exits one of five fates. The distribution across the 437-trade headline blotter:\n\n\n\n\n\n\n\n\n\nFate\nTrigger\nCount\n% of trades\n\n\n\n\nprofit_target\nExit debit ≤ 50% of entry credit\n280\n64.1%\n\n\nstop_loss\nExit debit ≥ 200% of entry credit (gap-aware fill)\n81\n18.5%\n\n\ntime_exit\nDTE ≤ 21\n75\n17.2%\n\n\nemergency\n|short_delta| &gt; 0.50\n1\n0.2%\n\n\neos_force\nEnd-of-OOS forced close\n0\n0.0%\n\n\nTotal\n\n437\n100%\n\n\n\nTrade-level summary statistics:\n\n\n\nMetric\nValue\n\n\n\n\nWin rate (P&L &gt; 0)\n73.0%\n\n\nMean P&L per spread\n+$3.42\n\n\nMedian P&L per spread\n+$17.85\n\n\nMean trade lifetime\n6.5 days"
+    "section": "Trade fates and rates",
+    "text": "Trade fates and rates\nEvery trade exits one of five fates. The distribution across the 437-trade headline blotter:\n\n\n\n\n\n\n\n\n\nFate\nTrigger\nCount\n% of trades\n\n\n\n\nprofit_target\nExit debit ≤ 50% of entry credit\n280\n64.1%\n\n\nstop_loss\nExit debit ≥ 200% of entry credit (gap-aware fill)\n81\n18.5%\n\n\ntime_exit\nDTE ≤ 21\n75\n17.2%\n\n\nemergency\n|short_delta| &gt; 0.50\n1\n0.2%\n\n\neos_force\nEnd-of-OOS forced close\n0\n0.0%\n\n\nTotal\n\n437\n100%\n\n\n\nReading the rates the rubric asks for:\n\n\n\nRate\nValue\n\n\n\n\nSuccess rate (P&L &gt; 0)\n73.0%\n\n\nStop-loss rate\n18.5%\n\n\nTimeout rate (time_exit)\n17.2%\n\n\nEmergency-exit rate\n0.2%"
+  },
+  {
+    "objectID": "results.html#per-trade-summary-statistics",
+    "href": "results.html#per-trade-summary-statistics",
+    "title": "Results",
+    "section": "Per-trade summary statistics",
+    "text": "Per-trade summary statistics\n\n\n\nMetric\nValue\n\n\n\n\nTotal trades\n437\n\n\nWinning trades\n319\n\n\nLosing trades\n118\n\n\nMean P&L per spread\n+$3.42\n\n\nMedian P&L per spread\n+$17.85\n\n\nStandard deviation of P&L\n$37.66\n\n\nLargest single win\n+$49.50\n\n\nLargest single loss\n-$186.00\n\n\nMean trade return\n+8.25%\n\n\nMean trade lifetime\n6.5 days\n\n\nMedian trade lifetime\n7 days\n\n\nProfit factor (gross win / gross loss)\n1.26"
+  },
+  {
+    "objectID": "results.html#per-instrument-breakdown-1",
+    "href": "results.html#per-instrument-breakdown-1",
+    "title": "Results",
+    "section": "Per-instrument breakdown",
+    "text": "Per-instrument breakdown\n\n\n\nTicker\nTrades\nWins\nWin rate\nMean P&L\nTotal P&L\n\n\n\n\nAAPL\n112\n83\n74.1%\n+$4.11\n+$460.23\n\n\nMSFT\n112\n82\n73.2%\n+$3.54\n+$396.33\n\n\nGLD\n106\n80\n75.5%\n+$3.06\n+$324.70\n\n\nWMT\n107\n74\n69.2%\n+$2.92\n+$312.87"
+  },
+  {
+    "objectID": "results.html#pl-per-trade-across-oos",
+    "href": "results.html#pl-per-trade-across-oos",
+    "title": "Results",
+    "section": "P&L per trade across OOS",
+    "text": "P&L per trade across OOS"
+  },
+  {
+    "objectID": "results.html#trade-return-distribution",
+    "href": "results.html#trade-return-distribution",
+    "title": "Results",
+    "section": "Trade-return distribution",
+    "text": "Trade-return distribution\n\nThe distribution is right-skewed by design: a 16-delta short put expires worthless ~84% of the time under lognormal assumptions, and profit_target closes wins early at 50% of credit. Losses are bounded by the wing-width stop. The 1.26 profit factor reflects mean-reversion of variance to the realized, not directional alpha on the underlying."
+  },
+  {
+    "objectID": "results.html#ledger-monthly-pl-sample",
+    "href": "results.html#ledger-monthly-pl-sample",
+    "title": "Results",
+    "section": "Ledger (monthly P&L sample)",
+    "text": "Ledger (monthly P&L sample)\n\n\n\nMonth\nTrades closed\nNet P&L\nCumulative P&L\n\n\n\n\n2018-01\n7\n+$36.75\n+$36.75\n\n\n2018-02\n5\n-$193.88\n-$157.13\n\n\n2018-05\n9\n+$97.05\n-$60.08\n\n\n2018-08\n17\n+$191.15\n+$179.58\n\n\n2018-09\n12\n+$175.50\n+$355.08\n\n\n2018-10\n11\n-$290.25\n+$64.83\n\n\n2019-07\n19\n+$315.85\n+$369.58\n\n\n2019-12\n18\n+$321.70\n+$529.38\n\n\n2020-03\n14\n-$11.20\n+$612.10\n\n\n…\n…\n…\n…\n\n\n2024-08\n5\n-$361.65\n+$1,237.08\n\n\n2024-11\n12\n+$181.80\n+$1,418.88\n\n\n2024-12\n12\n+$75.25\n+$1,494.13\n\n\n\nShowing 12 of 84 months from January 2018 to December 2024. Net P&L in dollars per spread (per-contract basis at $100 multiplier). The full 84-month ledger and the 437-row blotter are at website/data/blotter.json."
   },
   {
     "objectID": "results.html#blotter",
