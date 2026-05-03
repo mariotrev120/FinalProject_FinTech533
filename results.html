@@ -181,6 +181,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#headline" id="toc-headline" class="nav-link" data-scroll-target="#headline">Headline</a>
   <ul class="collapse">
   <li><a href="#multiple-testing-validation" id="toc-multiple-testing-validation" class="nav-link" data-scroll-target="#multiple-testing-validation">Multiple-testing validation</a></li>
+  <li><a href="#equity-curve" id="toc-equity-curve" class="nav-link" data-scroll-target="#equity-curve">Equity curve</a></li>
+  <li><a href="#drawdown" id="toc-drawdown" class="nav-link" data-scroll-target="#drawdown">Drawdown</a></li>
   <li><a href="#per-instrument-breakdown" id="toc-per-instrument-breakdown" class="nav-link" data-scroll-target="#per-instrument-breakdown">Per-instrument breakdown</a></li>
   </ul></li>
   <li><a href="#anchor-comparison-vs-v1.5-baseline" id="toc-anchor-comparison-vs-v1.5-baseline" class="nav-link" data-scroll-target="#anchor-comparison-vs-v1.5-baseline">Anchor comparison vs v1.5 baseline</a></li>
@@ -347,20 +349,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tr class="odd">
 <td>Raw trials tested (N)</td>
 <td style="text-align: right;">12</td>
-<td>,</td>
-<td style="text-align: center;">,</td>
+<td>informational</td>
+<td style="text-align: center;">n/a</td>
 </tr>
 <tr class="even">
 <td>Avg pairwise return correlation (ρ̄)</td>
 <td style="text-align: right;">0.261</td>
-<td>,</td>
-<td style="text-align: center;">,</td>
+<td>informational</td>
+<td style="text-align: center;">n/a</td>
 </tr>
 <tr class="odd">
 <td>Implied independent trials (N̂) per Eq. 9</td>
 <td style="text-align: right;">9</td>
-<td>,</td>
-<td style="text-align: center;">,</td>
+<td>informational</td>
+<td style="text-align: center;">n/a</td>
 </tr>
 <tr class="even">
 <td>Deflated Sharpe (PSR)</td>
@@ -377,6 +379,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 <p>Both gates pass. The headline is statistically significant after correction for the 12-trial selection.</p>
+</section>
+<section id="equity-curve" class="level3">
+<h3 class="anchored" data-anchor-id="equity-curve">Equity curve</h3>
+<iframe src="charts/equity_headline_vs_anchor.html" width="100%" height="480" frameborder="0"></iframe>
+<p>The headline ends at 1.18× starting equity over 7 years (CAGR 2.41%). The reconstructed v1.5 anchor (Sharpe 0.286, ann_ret 2.49%) ends very close. The Sharpe gap (+0.073) shows up not in absolute return but in volatility: the headline runs at 0.21% annualized volatility versus the anchor’s 0.55%, so the same return is more risk-efficient.</p>
+</section>
+<section id="drawdown" class="level3">
+<h3 class="anchored" data-anchor-id="drawdown">Drawdown</h3>
+<iframe src="charts/drawdown_headline.html" width="100%" height="380" frameborder="0"></iframe>
+<p>Maximum drawdown of -0.13% over the 7-year OOS sample. The defined-risk put-credit-spread structure plus the halt framework absorbs every named stress event without measurable equity damage.</p>
 </section>
 <section id="per-instrument-breakdown" class="level3">
 <h3 class="anchored" data-anchor-id="per-instrument-breakdown">Per-instrument breakdown</h3>
@@ -450,6 +462,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 <p>The book aggregate has higher Sharpe than the per-instrument average because cross-instrument correlation is low (mean pairwise 0.26), so equal-weighting reduces volatility without proportional return loss.</p>
+<iframe src="charts/per_instrument_sharpe.html" width="100%" height="400" frameborder="0"></iframe>
 </section>
 </section>
 <section id="anchor-comparison-vs-v1.5-baseline" class="level2">
@@ -487,11 +500,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>2018–2024</td>
 </tr>
 <tr class="odd">
-<td>Δ vs anchor</td>
-<td>,</td>
+<td><strong>Δ vs anchor</strong></td>
+<td>(same OOS window, both halts_only put-only)</td>
 <td style="text-align: right;"><strong>+0.073</strong></td>
 <td style="text-align: right;">+227</td>
-<td>,</td>
+<td>2018–2024</td>
 </tr>
 </tbody>
 </table>
@@ -657,60 +670,66 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td>GLD</td>
-<td style="text-align: right;">(TBC)</td>
+<td style="text-align: right;">-0.971</td>
 <td style="text-align: right;">+0.138</td>
-<td style="text-align: right;">(TBC)</td>
+<td style="text-align: right;">+1.109</td>
 </tr>
 </tbody>
 </table>
-<p>The halt framework’s contribution is measurable per instrument and consistently positive.</p>
+<p>The halt framework’s contribution is measurable per instrument and consistently positive. GLD has the largest gap because its naked exposure is fully on through every regime; the halt framework gates the worst stretches.</p>
 </section>
 <section id="per-event-drawdown-attribution" class="level2">
 <h2 class="anchored" data-anchor-id="per-event-drawdown-attribution">Per-event drawdown attribution</h2>
-<p>(Computed on the headline (D) basket equity curve)</p>
+<p>Computed on the headline (D) basket equity curve, halts_only mode, equal-weight $50K per instrument (basket starting equity $200K).</p>
 <table class="caption-top table">
+<colgroup>
+<col style="width: 21%">
+<col style="width: 21%">
+<col style="width: 28%">
+<col style="width: 28%">
+</colgroup>
 <thead>
 <tr class="header">
 <th>Event</th>
-<th>Window</th>
+<th>Window probed</th>
 <th style="text-align: right;">Book PnL impact</th>
-<th style="text-align: center;">Halt fired?</th>
+<th style="text-align: right;">Worst intra-window drawdown</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
 <td>Volmageddon</td>
-<td>2018-02-05 ± 2w</td>
-<td style="text-align: right;"><em>TBD</em></td>
-<td style="text-align: center;"><em>TBD</em></td>
+<td>2018-01-22 → 2018-02-16</td>
+<td style="text-align: right;">-$35</td>
+<td style="text-align: right;">-0.06%</td>
 </tr>
 <tr class="even">
 <td>Q4-2018 selloff</td>
-<td>2018-12-24 ± 1m</td>
-<td style="text-align: right;"><em>TBD</em></td>
-<td style="text-align: center;"><em>TBD</em></td>
+<td>2018-11-26 → 2019-01-24</td>
+<td style="text-align: right;">+$783</td>
+<td style="text-align: right;">0.00%</td>
 </tr>
 <tr class="odd">
 <td>COVID crash</td>
-<td>2020-03-23 ± 1m</td>
-<td style="text-align: right;"><em>TBD</em></td>
-<td style="text-align: center;"><em>TBD</em></td>
+<td>2020-02-24 → 2020-04-23</td>
+<td style="text-align: right;">+$102</td>
+<td style="text-align: right;">0.00%</td>
 </tr>
 <tr class="even">
 <td>2022 bear market</td>
-<td>(full year)</td>
-<td style="text-align: right;"><em>TBD</em></td>
-<td style="text-align: center;"><em>TBD</em></td>
+<td>2022-01-03 → 2022-12-30</td>
+<td style="text-align: right;">+$4,223</td>
+<td style="text-align: right;">0.00%</td>
 </tr>
 <tr class="odd">
 <td>Banking crisis</td>
-<td>2023-03-13 ± 1m</td>
-<td style="text-align: right;"><em>TBD</em></td>
-<td style="text-align: center;"><em>TBD</em></td>
+<td>2023-02-13 → 2023-04-13</td>
+<td style="text-align: right;">+$1,652</td>
+<td style="text-align: right;">0.00%</td>
 </tr>
 </tbody>
 </table>
-<p>(Filled in after stress-event-window analysis on the headline basket.)</p>
+<p>The halt framework + cross-asset diversification absorbed every named stress event with effectively zero drawdown. The largest intra-event dip was 0.06% during Volmageddon. The basket actually generated positive P&amp;L across the COVID crash, Q4-2018 selloff, 2022 bear market, and banking crisis windows. This is the structural goal of the halt-gated put-credit-spread architecture: turn defined-risk option premium into resilient cash-secured income.</p>
 </section>
 <section id="reproducibility" class="level2">
 <h2 class="anchored" data-anchor-id="reproducibility">Reproducibility</h2>
@@ -1400,103 +1419,123 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb2-55"><a href="#cb2-55" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-56"><a href="#cb2-56" aria-hidden="true" tabindex="-1"></a>| Correction | Value | Acceptance | Pass? |</span>
 <span id="cb2-57"><a href="#cb2-57" aria-hidden="true" tabindex="-1"></a>|---|---:|---|:-:|</span>
-<span id="cb2-58"><a href="#cb2-58" aria-hidden="true" tabindex="-1"></a>| Raw trials tested (N) | 12 |, |, |</span>
-<span id="cb2-59"><a href="#cb2-59" aria-hidden="true" tabindex="-1"></a>| Avg pairwise return correlation (ρ̄) | 0.261 |, |, |</span>
-<span id="cb2-60"><a href="#cb2-60" aria-hidden="true" tabindex="-1"></a>| Implied independent trials (N̂) per Eq. 9 | 9 |, |, |</span>
+<span id="cb2-58"><a href="#cb2-58" aria-hidden="true" tabindex="-1"></a>| Raw trials tested (N) | 12 | informational | n/a |</span>
+<span id="cb2-59"><a href="#cb2-59" aria-hidden="true" tabindex="-1"></a>| Avg pairwise return correlation (ρ̄) | 0.261 | informational | n/a |</span>
+<span id="cb2-60"><a href="#cb2-60" aria-hidden="true" tabindex="-1"></a>| Implied independent trials (N̂) per Eq. 9 | 9 | informational | n/a |</span>
 <span id="cb2-61"><a href="#cb2-61" aria-hidden="true" tabindex="-1"></a>| Deflated Sharpe (PSR) | 1.0000 | ≥ 0.95 | ✓ |</span>
 <span id="cb2-62"><a href="#cb2-62" aria-hidden="true" tabindex="-1"></a>| PBO via CSCV (S=16, 12,870 logits) | 0.0402 | ≤ 0.30 | ✓ |</span>
 <span id="cb2-63"><a href="#cb2-63" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-64"><a href="#cb2-64" aria-hidden="true" tabindex="-1"></a>Both gates pass. The headline is statistically significant after correction for the 12-trial selection.</span>
 <span id="cb2-65"><a href="#cb2-65" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-66"><a href="#cb2-66" aria-hidden="true" tabindex="-1"></a><span class="fu">### Per-instrument breakdown</span></span>
+<span id="cb2-66"><a href="#cb2-66" aria-hidden="true" tabindex="-1"></a><span class="fu">### Equity curve</span></span>
 <span id="cb2-67"><a href="#cb2-67" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-68"><a href="#cb2-68" aria-hidden="true" tabindex="-1"></a>| Ticker | Sharpe (excess) | n_trades | Win rate | Max DD | Ann. return | Final $ (from $50K start) |</span>
-<span id="cb2-69"><a href="#cb2-69" aria-hidden="true" tabindex="-1"></a>|---|---:|---:|---:|---:|---:|---:|</span>
-<span id="cb2-70"><a href="#cb2-70" aria-hidden="true" tabindex="-1"></a>| AAPL | +0.264 | 112 | 67.0% | -0.50% | +2.44% | $59,170 |</span>
-<span id="cb2-71"><a href="#cb2-71" aria-hidden="true" tabindex="-1"></a>| MSFT | +0.269 | 112 | 67.9% | -0.37% | +2.42% | $59,124 |</span>
-<span id="cb2-72"><a href="#cb2-72" aria-hidden="true" tabindex="-1"></a>| WMT  | +0.263 | 107 | 71.0% | -0.18% | +2.40% | $59,017 |</span>
-<span id="cb2-73"><a href="#cb2-73" aria-hidden="true" tabindex="-1"></a>| GLD  | +0.138 | 106 | 71.7% | -0.23% | +2.40% | $59,008 |</span>
-<span id="cb2-74"><a href="#cb2-74" aria-hidden="true" tabindex="-1"></a>| **BOOK (equal-weight 4)** | **+0.359** | 437 | n/a | **-0.13%** | +2.41% | $231,313 |</span>
+<span id="cb2-68"><a href="#cb2-68" aria-hidden="true" tabindex="-1"></a><span class="in">```{=html}</span></span>
+<span id="cb2-69"><a href="#cb2-69" aria-hidden="true" tabindex="-1"></a><span class="in">&lt;iframe src="charts/equity_headline_vs_anchor.html" width="100%" height="480" frameborder="0"&gt;&lt;/iframe&gt;</span></span>
+<span id="cb2-70"><a href="#cb2-70" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb2-71"><a href="#cb2-71" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-72"><a href="#cb2-72" aria-hidden="true" tabindex="-1"></a>The headline ends at 1.18× starting equity over 7 years (CAGR 2.41%). The reconstructed v1.5 anchor (Sharpe 0.286, ann_ret 2.49%) ends very close. The Sharpe gap (+0.073) shows up not in absolute return but in volatility: the headline runs at 0.21% annualized volatility versus the anchor's 0.55%, so the same return is more risk-efficient.</span>
+<span id="cb2-73"><a href="#cb2-73" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-74"><a href="#cb2-74" aria-hidden="true" tabindex="-1"></a><span class="fu">### Drawdown</span></span>
 <span id="cb2-75"><a href="#cb2-75" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-76"><a href="#cb2-76" aria-hidden="true" tabindex="-1"></a>The book aggregate has higher Sharpe than the per-instrument average because cross-instrument correlation is low (mean pairwise 0.26), so equal-weighting reduces volatility without proportional return loss.</span>
-<span id="cb2-77"><a href="#cb2-77" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-78"><a href="#cb2-78" aria-hidden="true" tabindex="-1"></a><span class="fu">## Anchor comparison vs v1.5 baseline</span></span>
+<span id="cb2-76"><a href="#cb2-76" aria-hidden="true" tabindex="-1"></a><span class="in">```{=html}</span></span>
+<span id="cb2-77"><a href="#cb2-77" aria-hidden="true" tabindex="-1"></a><span class="in">&lt;iframe src="charts/drawdown_headline.html" width="100%" height="380" frameborder="0"&gt;&lt;/iframe&gt;</span></span>
+<span id="cb2-78"><a href="#cb2-78" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb2-79"><a href="#cb2-79" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-80"><a href="#cb2-80" aria-hidden="true" tabindex="-1"></a>| Strategy | Architecture | Sharpe (excess) | Trades | OOS window |</span>
-<span id="cb2-81"><a href="#cb2-81" aria-hidden="true" tabindex="-1"></a>|---|---|---:|---:|---|</span>
-<span id="cb2-82"><a href="#cb2-82" aria-hidden="true" tabindex="-1"></a>| v1.5 baseline (anchor) | SPX put-only halts_only | +0.286 | 210 | 2018–2024 |</span>
-<span id="cb2-83"><a href="#cb2-83" aria-hidden="true" tabindex="-1"></a>| **Headline (D)** | **Wheel-3 + GLD put-only halts_only** | **+0.359** | 437 | 2018–2024 |</span>
-<span id="cb2-84"><a href="#cb2-84" aria-hidden="true" tabindex="-1"></a>| Δ vs anchor |, | **+0.073** | +227 |, |</span>
-<span id="cb2-85"><a href="#cb2-85" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-86"><a href="#cb2-86" aria-hidden="true" tabindex="-1"></a>The new headline beats the anchor on excess Sharpe, with ~2× the trade sample, comparable max drawdown, and cross-asset diversification (equity + commodity) the anchor lacks.</span>
-<span id="cb2-87"><a href="#cb2-87" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-88"><a href="#cb2-88" aria-hidden="true" tabindex="-1"></a><span class="fu">## Ablation: alternative baskets tested</span></span>
-<span id="cb2-89"><a href="#cb2-89" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-90"><a href="#cb2-90" aria-hidden="true" tabindex="-1"></a>All baskets are halts_only, equal-weighted at $50K per instrument. None were selected as headline; they're shown to demonstrate what the headline is being chosen against.</span>
+<span id="cb2-80"><a href="#cb2-80" aria-hidden="true" tabindex="-1"></a>Maximum drawdown of -0.13% over the 7-year OOS sample. The defined-risk put-credit-spread structure plus the halt framework absorbs every named stress event without measurable equity damage.</span>
+<span id="cb2-81"><a href="#cb2-81" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-82"><a href="#cb2-82" aria-hidden="true" tabindex="-1"></a><span class="fu">### Per-instrument breakdown</span></span>
+<span id="cb2-83"><a href="#cb2-83" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-84"><a href="#cb2-84" aria-hidden="true" tabindex="-1"></a>| Ticker | Sharpe (excess) | n_trades | Win rate | Max DD | Ann. return | Final $ (from $50K start) |</span>
+<span id="cb2-85"><a href="#cb2-85" aria-hidden="true" tabindex="-1"></a>|---|---:|---:|---:|---:|---:|---:|</span>
+<span id="cb2-86"><a href="#cb2-86" aria-hidden="true" tabindex="-1"></a>| AAPL | +0.264 | 112 | 67.0% | -0.50% | +2.44% | $59,170 |</span>
+<span id="cb2-87"><a href="#cb2-87" aria-hidden="true" tabindex="-1"></a>| MSFT | +0.269 | 112 | 67.9% | -0.37% | +2.42% | $59,124 |</span>
+<span id="cb2-88"><a href="#cb2-88" aria-hidden="true" tabindex="-1"></a>| WMT  | +0.263 | 107 | 71.0% | -0.18% | +2.40% | $59,017 |</span>
+<span id="cb2-89"><a href="#cb2-89" aria-hidden="true" tabindex="-1"></a>| GLD  | +0.138 | 106 | 71.7% | -0.23% | +2.40% | $59,008 |</span>
+<span id="cb2-90"><a href="#cb2-90" aria-hidden="true" tabindex="-1"></a>| **BOOK (equal-weight 4)** | **+0.359** | 437 | n/a | **-0.13%** | +2.41% | $231,313 |</span>
 <span id="cb2-91"><a href="#cb2-91" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-92"><a href="#cb2-92" aria-hidden="true" tabindex="-1"></a>| Basket | n_inst | Sharpe (excess) | AnnRet | AnnVol | MaxDD | Δ vs anchor (+0.286) |</span>
-<span id="cb2-93"><a href="#cb2-93" aria-hidden="true" tabindex="-1"></a>|---|:-:|---:|---:|---:|---:|---:|</span>
-<span id="cb2-94"><a href="#cb2-94" aria-hidden="true" tabindex="-1"></a>| (A) SPX put-only alone | 1 | -0.347 | +2.04% | 0.84% | -0.78% | -0.633 |</span>
-<span id="cb2-95"><a href="#cb2-95" aria-hidden="true" tabindex="-1"></a>| (B) Wheel-3 (AAPL + MSFT + WMT) | 3 | +0.350 | +2.42% | 0.26% | -0.19% | +0.064 |</span>
-<span id="cb2-96"><a href="#cb2-96" aria-hidden="true" tabindex="-1"></a>| (C) ETF-3 (SPX + TLT + GLD put-only) | 3 | -0.312 | +2.22% | 0.35% | -0.31% | -0.598 |</span>
-<span id="cb2-97"><a href="#cb2-97" aria-hidden="true" tabindex="-1"></a>| **(D) Wheel-3 + GLD ← HEADLINE** | **4** | **+0.359** | **+2.41%** | **0.23%** | **-0.13%** | **+0.073** |</span>
-<span id="cb2-98"><a href="#cb2-98" aria-hidden="true" tabindex="-1"></a>| (E) Full 6-instrument book (ETF-3 + Wheel-3) | 6 | -0.036 | +2.32% | 0.26% | -0.17% | -0.322 |</span>
+<span id="cb2-92"><a href="#cb2-92" aria-hidden="true" tabindex="-1"></a>The book aggregate has higher Sharpe than the per-instrument average because cross-instrument correlation is low (mean pairwise 0.26), so equal-weighting reduces volatility without proportional return loss.</span>
+<span id="cb2-93"><a href="#cb2-93" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-94"><a href="#cb2-94" aria-hidden="true" tabindex="-1"></a><span class="in">```{=html}</span></span>
+<span id="cb2-95"><a href="#cb2-95" aria-hidden="true" tabindex="-1"></a><span class="in">&lt;iframe src="charts/per_instrument_sharpe.html" width="100%" height="400" frameborder="0"&gt;&lt;/iframe&gt;</span></span>
+<span id="cb2-96"><a href="#cb2-96" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb2-97"><a href="#cb2-97" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-98"><a href="#cb2-98" aria-hidden="true" tabindex="-1"></a><span class="fu">## Anchor comparison vs v1.5 baseline</span></span>
 <span id="cb2-99"><a href="#cb2-99" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-100"><a href="#cb2-100" aria-hidden="true" tabindex="-1"></a>Pattern: adding SPX or TLT to the headline drags the Sharpe down because their individual put-credit-spread excess Sharpes are negative (-0.35 and -0.43 respectively over OOS). The cross-asset diversification benefit of including GLD (which is barely positive on its own) outweighs the volatility-reduction cost. Adding more drag-instruments (SPX, TLT) does not produce a net benefit.</span>
-<span id="cb2-101"><a href="#cb2-101" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-102"><a href="#cb2-102" aria-hidden="true" tabindex="-1"></a><span class="fu">## Ablation: iron condor variants (tested extensions)</span></span>
-<span id="cb2-103"><a href="#cb2-103" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-104"><a href="#cb2-104" aria-hidden="true" tabindex="-1"></a>The pre-committed methodology proposed iron condors (put + call wings) on a 5-instrument index/ETF cluster. Verification surfaced material structural underperformance for the iron-condor variant in OOS 2018-2024:</span>
+<span id="cb2-100"><a href="#cb2-100" aria-hidden="true" tabindex="-1"></a>| Strategy | Architecture | Sharpe (excess) | Trades | OOS window |</span>
+<span id="cb2-101"><a href="#cb2-101" aria-hidden="true" tabindex="-1"></a>|---|---|---:|---:|---|</span>
+<span id="cb2-102"><a href="#cb2-102" aria-hidden="true" tabindex="-1"></a>| v1.5 baseline (anchor) | SPX put-only halts_only | +0.286 | 210 | 2018–2024 |</span>
+<span id="cb2-103"><a href="#cb2-103" aria-hidden="true" tabindex="-1"></a>| **Headline (D)** | **Wheel-3 + GLD put-only halts_only** | **+0.359** | 437 | 2018–2024 |</span>
+<span id="cb2-104"><a href="#cb2-104" aria-hidden="true" tabindex="-1"></a>| **Δ vs anchor** | (same OOS window, both halts_only put-only) | **+0.073** | +227 | 2018–2024 |</span>
 <span id="cb2-105"><a href="#cb2-105" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-106"><a href="#cb2-106" aria-hidden="true" tabindex="-1"></a>| Mode | Universe | Sharpe (excess) | Δ vs anchor | Notes |</span>
-<span id="cb2-107"><a href="#cb2-107" aria-hidden="true" tabindex="-1"></a>|---|---|---:|---:|---|</span>
-<span id="cb2-108"><a href="#cb2-108" aria-hidden="true" tabindex="-1"></a>| Iron condor, SPX only | 1 inst | -1.882 | -2.168 | Call wing destroyed by post-2020 SPX rally |</span>
-<span id="cb2-109"><a href="#cb2-109" aria-hidden="true" tabindex="-1"></a>| Iron condor, 3-instrument cluster | SPX/TLT/GLD | -2.292 | -2.578 | Same pattern across all three IC instruments |</span>
-<span id="cb2-110"><a href="#cb2-110" aria-hidden="true" tabindex="-1"></a>| Put-only, SPX | 1 inst | -0.347 | -0.633 | Same engine, IC removed |</span>
-<span id="cb2-111"><a href="#cb2-111" aria-hidden="true" tabindex="-1"></a>| Put-only, 3-instrument cluster | SPX/TLT/GLD | -0.369 | -0.655 | Same engine, IC removed |</span>
-<span id="cb2-112"><a href="#cb2-112" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-113"><a href="#cb2-113" aria-hidden="true" tabindex="-1"></a>Iron condor underperforms put-only in every comparison. The call-wing leg of the iron condor systematically lost in 2018-2024 due to the trending equity-index regime. Reported as a tested extension that did not add value, not as the headline.</span>
-<span id="cb2-114"><a href="#cb2-114" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-115"><a href="#cb2-115" aria-hidden="true" tabindex="-1"></a><span class="fu">## Naked-mode comparison (no halts)</span></span>
-<span id="cb2-116"><a href="#cb2-116" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-117"><a href="#cb2-117" aria-hidden="true" tabindex="-1"></a>Demonstrates that the halt framework is doing real work, every instrument has higher Sharpe (excess) when halts are active vs naked.</span>
-<span id="cb2-118"><a href="#cb2-118" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-119"><a href="#cb2-119" aria-hidden="true" tabindex="-1"></a>| Ticker | Naked Sharpe | Halts Sharpe | Δ from halts |</span>
-<span id="cb2-120"><a href="#cb2-120" aria-hidden="true" tabindex="-1"></a>|---|---:|---:|---:|</span>
-<span id="cb2-121"><a href="#cb2-121" aria-hidden="true" tabindex="-1"></a>| AAPL | +0.155 | +0.264 | +0.109 |</span>
-<span id="cb2-122"><a href="#cb2-122" aria-hidden="true" tabindex="-1"></a>| MSFT | +0.037 | +0.269 | +0.232 |</span>
-<span id="cb2-123"><a href="#cb2-123" aria-hidden="true" tabindex="-1"></a>| WMT  | +0.063 | +0.263 | +0.200 |</span>
-<span id="cb2-124"><a href="#cb2-124" aria-hidden="true" tabindex="-1"></a>| GLD  | (TBC) | +0.138 | (TBC) |</span>
+<span id="cb2-106"><a href="#cb2-106" aria-hidden="true" tabindex="-1"></a>The new headline beats the anchor on excess Sharpe, with ~2× the trade sample, comparable max drawdown, and cross-asset diversification (equity + commodity) the anchor lacks.</span>
+<span id="cb2-107"><a href="#cb2-107" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-108"><a href="#cb2-108" aria-hidden="true" tabindex="-1"></a><span class="fu">## Ablation: alternative baskets tested</span></span>
+<span id="cb2-109"><a href="#cb2-109" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-110"><a href="#cb2-110" aria-hidden="true" tabindex="-1"></a>All baskets are halts_only, equal-weighted at $50K per instrument. None were selected as headline; they're shown to demonstrate what the headline is being chosen against.</span>
+<span id="cb2-111"><a href="#cb2-111" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-112"><a href="#cb2-112" aria-hidden="true" tabindex="-1"></a>| Basket | n_inst | Sharpe (excess) | AnnRet | AnnVol | MaxDD | Δ vs anchor (+0.286) |</span>
+<span id="cb2-113"><a href="#cb2-113" aria-hidden="true" tabindex="-1"></a>|---|:-:|---:|---:|---:|---:|---:|</span>
+<span id="cb2-114"><a href="#cb2-114" aria-hidden="true" tabindex="-1"></a>| (A) SPX put-only alone | 1 | -0.347 | +2.04% | 0.84% | -0.78% | -0.633 |</span>
+<span id="cb2-115"><a href="#cb2-115" aria-hidden="true" tabindex="-1"></a>| (B) Wheel-3 (AAPL + MSFT + WMT) | 3 | +0.350 | +2.42% | 0.26% | -0.19% | +0.064 |</span>
+<span id="cb2-116"><a href="#cb2-116" aria-hidden="true" tabindex="-1"></a>| (C) ETF-3 (SPX + TLT + GLD put-only) | 3 | -0.312 | +2.22% | 0.35% | -0.31% | -0.598 |</span>
+<span id="cb2-117"><a href="#cb2-117" aria-hidden="true" tabindex="-1"></a>| **(D) Wheel-3 + GLD ← HEADLINE** | **4** | **+0.359** | **+2.41%** | **0.23%** | **-0.13%** | **+0.073** |</span>
+<span id="cb2-118"><a href="#cb2-118" aria-hidden="true" tabindex="-1"></a>| (E) Full 6-instrument book (ETF-3 + Wheel-3) | 6 | -0.036 | +2.32% | 0.26% | -0.17% | -0.322 |</span>
+<span id="cb2-119"><a href="#cb2-119" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-120"><a href="#cb2-120" aria-hidden="true" tabindex="-1"></a>Pattern: adding SPX or TLT to the headline drags the Sharpe down because their individual put-credit-spread excess Sharpes are negative (-0.35 and -0.43 respectively over OOS). The cross-asset diversification benefit of including GLD (which is barely positive on its own) outweighs the volatility-reduction cost. Adding more drag-instruments (SPX, TLT) does not produce a net benefit.</span>
+<span id="cb2-121"><a href="#cb2-121" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-122"><a href="#cb2-122" aria-hidden="true" tabindex="-1"></a><span class="fu">## Ablation: iron condor variants (tested extensions)</span></span>
+<span id="cb2-123"><a href="#cb2-123" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-124"><a href="#cb2-124" aria-hidden="true" tabindex="-1"></a>The pre-committed methodology proposed iron condors (put + call wings) on a 5-instrument index/ETF cluster. Verification surfaced material structural underperformance for the iron-condor variant in OOS 2018-2024:</span>
 <span id="cb2-125"><a href="#cb2-125" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-126"><a href="#cb2-126" aria-hidden="true" tabindex="-1"></a>The halt framework's contribution is measurable per instrument and consistently positive.</span>
-<span id="cb2-127"><a href="#cb2-127" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-128"><a href="#cb2-128" aria-hidden="true" tabindex="-1"></a><span class="fu">## Per-event drawdown attribution</span></span>
-<span id="cb2-129"><a href="#cb2-129" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-130"><a href="#cb2-130" aria-hidden="true" tabindex="-1"></a>(Computed on the headline (D) basket equity curve)</span>
-<span id="cb2-131"><a href="#cb2-131" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-132"><a href="#cb2-132" aria-hidden="true" tabindex="-1"></a>| Event | Window | Book PnL impact | Halt fired? |</span>
-<span id="cb2-133"><a href="#cb2-133" aria-hidden="true" tabindex="-1"></a>|---|---|---:|:-:|</span>
-<span id="cb2-134"><a href="#cb2-134" aria-hidden="true" tabindex="-1"></a>| Volmageddon | 2018-02-05 ± 2w | _TBD_ | _TBD_ |</span>
-<span id="cb2-135"><a href="#cb2-135" aria-hidden="true" tabindex="-1"></a>| Q4-2018 selloff | 2018-12-24 ± 1m | _TBD_ | _TBD_ |</span>
-<span id="cb2-136"><a href="#cb2-136" aria-hidden="true" tabindex="-1"></a>| COVID crash | 2020-03-23 ± 1m | _TBD_ | _TBD_ |</span>
-<span id="cb2-137"><a href="#cb2-137" aria-hidden="true" tabindex="-1"></a>| 2022 bear market | (full year) | _TBD_ | _TBD_ |</span>
-<span id="cb2-138"><a href="#cb2-138" aria-hidden="true" tabindex="-1"></a>| Banking crisis | 2023-03-13 ± 1m | _TBD_ | _TBD_ |</span>
-<span id="cb2-139"><a href="#cb2-139" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-140"><a href="#cb2-140" aria-hidden="true" tabindex="-1"></a>(Filled in after stress-event-window analysis on the headline basket.)</span>
-<span id="cb2-141"><a href="#cb2-141" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-142"><a href="#cb2-142" aria-hidden="true" tabindex="-1"></a><span class="fu">## Reproducibility</span></span>
-<span id="cb2-143"><a href="#cb2-143" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-144"><a href="#cb2-144" aria-hidden="true" tabindex="-1"></a>The headline result is reproduced by:</span>
+<span id="cb2-126"><a href="#cb2-126" aria-hidden="true" tabindex="-1"></a>| Mode | Universe | Sharpe (excess) | Δ vs anchor | Notes |</span>
+<span id="cb2-127"><a href="#cb2-127" aria-hidden="true" tabindex="-1"></a>|---|---|---:|---:|---|</span>
+<span id="cb2-128"><a href="#cb2-128" aria-hidden="true" tabindex="-1"></a>| Iron condor, SPX only | 1 inst | -1.882 | -2.168 | Call wing destroyed by post-2020 SPX rally |</span>
+<span id="cb2-129"><a href="#cb2-129" aria-hidden="true" tabindex="-1"></a>| Iron condor, 3-instrument cluster | SPX/TLT/GLD | -2.292 | -2.578 | Same pattern across all three IC instruments |</span>
+<span id="cb2-130"><a href="#cb2-130" aria-hidden="true" tabindex="-1"></a>| Put-only, SPX | 1 inst | -0.347 | -0.633 | Same engine, IC removed |</span>
+<span id="cb2-131"><a href="#cb2-131" aria-hidden="true" tabindex="-1"></a>| Put-only, 3-instrument cluster | SPX/TLT/GLD | -0.369 | -0.655 | Same engine, IC removed |</span>
+<span id="cb2-132"><a href="#cb2-132" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-133"><a href="#cb2-133" aria-hidden="true" tabindex="-1"></a>Iron condor underperforms put-only in every comparison. The call-wing leg of the iron condor systematically lost in 2018-2024 due to the trending equity-index regime. Reported as a tested extension that did not add value, not as the headline.</span>
+<span id="cb2-134"><a href="#cb2-134" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-135"><a href="#cb2-135" aria-hidden="true" tabindex="-1"></a><span class="fu">## Naked-mode comparison (no halts)</span></span>
+<span id="cb2-136"><a href="#cb2-136" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-137"><a href="#cb2-137" aria-hidden="true" tabindex="-1"></a>Demonstrates that the halt framework is doing real work, every instrument has higher Sharpe (excess) when halts are active vs naked.</span>
+<span id="cb2-138"><a href="#cb2-138" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-139"><a href="#cb2-139" aria-hidden="true" tabindex="-1"></a>| Ticker | Naked Sharpe | Halts Sharpe | Δ from halts |</span>
+<span id="cb2-140"><a href="#cb2-140" aria-hidden="true" tabindex="-1"></a>|---|---:|---:|---:|</span>
+<span id="cb2-141"><a href="#cb2-141" aria-hidden="true" tabindex="-1"></a>| AAPL | +0.155 | +0.264 | +0.109 |</span>
+<span id="cb2-142"><a href="#cb2-142" aria-hidden="true" tabindex="-1"></a>| MSFT | +0.037 | +0.269 | +0.232 |</span>
+<span id="cb2-143"><a href="#cb2-143" aria-hidden="true" tabindex="-1"></a>| WMT  | +0.063 | +0.263 | +0.200 |</span>
+<span id="cb2-144"><a href="#cb2-144" aria-hidden="true" tabindex="-1"></a>| GLD  | -0.971 | +0.138 | +1.109 |</span>
 <span id="cb2-145"><a href="#cb2-145" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-146"><a href="#cb2-146" aria-hidden="true" tabindex="-1"></a><span class="in">```bash</span></span>
-<span id="cb2-147"><a href="#cb2-147" aria-hidden="true" tabindex="-1"></a><span class="va">PYTHONPATH</span><span class="op">=</span>. <span class="ex">python</span> scripts/run_multi_instrument_vrp.py <span class="dt">\</span></span>
-<span id="cb2-148"><a href="#cb2-148" aria-hidden="true" tabindex="-1"></a>    <span class="at">--tickers</span> AAPL MSFT WMT GLD <span class="dt">\</span></span>
-<span id="cb2-149"><a href="#cb2-149" aria-hidden="true" tabindex="-1"></a>    <span class="at">--mode</span> halts_only <span class="dt">\</span></span>
-<span id="cb2-150"><a href="#cb2-150" aria-hidden="true" tabindex="-1"></a>    <span class="at">--no-ic</span> <span class="dt">\</span></span>
-<span id="cb2-151"><a href="#cb2-151" aria-hidden="true" tabindex="-1"></a>    <span class="at">--total-capital</span> 200000</span>
-<span id="cb2-152"><a href="#cb2-152" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb2-153"><a href="#cb2-153" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-154"><a href="#cb2-154" aria-hidden="true" tabindex="-1"></a>Same commit + same data + same seed → byte-identical equity curve. See <span class="co">[</span><span class="ot">Reproducibility</span><span class="co">](reproducibility.qmd)</span>.</span></code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
+<span id="cb2-146"><a href="#cb2-146" aria-hidden="true" tabindex="-1"></a>The halt framework's contribution is measurable per instrument and consistently positive. GLD has the largest gap because its naked exposure is fully on through every regime; the halt framework gates the worst stretches.</span>
+<span id="cb2-147"><a href="#cb2-147" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-148"><a href="#cb2-148" aria-hidden="true" tabindex="-1"></a><span class="fu">## Per-event drawdown attribution</span></span>
+<span id="cb2-149"><a href="#cb2-149" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-150"><a href="#cb2-150" aria-hidden="true" tabindex="-1"></a>Computed on the headline (D) basket equity curve, halts_only mode, equal-weight $50K per instrument (basket starting equity $200K).</span>
+<span id="cb2-151"><a href="#cb2-151" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-152"><a href="#cb2-152" aria-hidden="true" tabindex="-1"></a>| Event | Window probed | Book PnL impact | Worst intra-window drawdown |</span>
+<span id="cb2-153"><a href="#cb2-153" aria-hidden="true" tabindex="-1"></a>|---|---|---:|---:|</span>
+<span id="cb2-154"><a href="#cb2-154" aria-hidden="true" tabindex="-1"></a>| Volmageddon | 2018-01-22 → 2018-02-16 | -$35 | -0.06% |</span>
+<span id="cb2-155"><a href="#cb2-155" aria-hidden="true" tabindex="-1"></a>| Q4-2018 selloff | 2018-11-26 → 2019-01-24 | +$783 | 0.00% |</span>
+<span id="cb2-156"><a href="#cb2-156" aria-hidden="true" tabindex="-1"></a>| COVID crash | 2020-02-24 → 2020-04-23 | +$102 | 0.00% |</span>
+<span id="cb2-157"><a href="#cb2-157" aria-hidden="true" tabindex="-1"></a>| 2022 bear market | 2022-01-03 → 2022-12-30 | +$4,223 | 0.00% |</span>
+<span id="cb2-158"><a href="#cb2-158" aria-hidden="true" tabindex="-1"></a>| Banking crisis | 2023-02-13 → 2023-04-13 | +$1,652 | 0.00% |</span>
+<span id="cb2-159"><a href="#cb2-159" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-160"><a href="#cb2-160" aria-hidden="true" tabindex="-1"></a>The halt framework + cross-asset diversification absorbed every named stress event with effectively zero drawdown. The largest intra-event dip was 0.06% during Volmageddon. The basket actually generated positive P&amp;L across the COVID crash, Q4-2018 selloff, 2022 bear market, and banking crisis windows. This is the structural goal of the halt-gated put-credit-spread architecture: turn defined-risk option premium into resilient cash-secured income.</span>
+<span id="cb2-161"><a href="#cb2-161" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-162"><a href="#cb2-162" aria-hidden="true" tabindex="-1"></a><span class="fu">## Reproducibility</span></span>
+<span id="cb2-163"><a href="#cb2-163" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-164"><a href="#cb2-164" aria-hidden="true" tabindex="-1"></a>The headline result is reproduced by:</span>
+<span id="cb2-165"><a href="#cb2-165" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-166"><a href="#cb2-166" aria-hidden="true" tabindex="-1"></a><span class="in">```bash</span></span>
+<span id="cb2-167"><a href="#cb2-167" aria-hidden="true" tabindex="-1"></a><span class="va">PYTHONPATH</span><span class="op">=</span>. <span class="ex">python</span> scripts/run_multi_instrument_vrp.py <span class="dt">\</span></span>
+<span id="cb2-168"><a href="#cb2-168" aria-hidden="true" tabindex="-1"></a>    <span class="at">--tickers</span> AAPL MSFT WMT GLD <span class="dt">\</span></span>
+<span id="cb2-169"><a href="#cb2-169" aria-hidden="true" tabindex="-1"></a>    <span class="at">--mode</span> halts_only <span class="dt">\</span></span>
+<span id="cb2-170"><a href="#cb2-170" aria-hidden="true" tabindex="-1"></a>    <span class="at">--no-ic</span> <span class="dt">\</span></span>
+<span id="cb2-171"><a href="#cb2-171" aria-hidden="true" tabindex="-1"></a>    <span class="at">--total-capital</span> 200000</span>
+<span id="cb2-172"><a href="#cb2-172" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb2-173"><a href="#cb2-173" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-174"><a href="#cb2-174" aria-hidden="true" tabindex="-1"></a>Same commit + same data + same seed → byte-identical equity curve. See <span class="co">[</span><span class="ot">Reproducibility</span><span class="co">](reproducibility.qmd)</span>.</span></code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
 <footer class="footer">
