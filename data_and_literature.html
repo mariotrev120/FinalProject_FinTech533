@@ -249,6 +249,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="live-monitoring">Live monitoring</h3>
 <ul>
 <li><strong>Hoeffding, W. (1963).</strong> <em>Probability Inequalities for Sums of Bounded Random Variables.</em> Journal of the American Statistical Association. The bound P[X̄ − μ ≥ t | H₀] ≤ exp(−2 t² N) for any bounded random variable underpins the live-monitoring framework’s threshold semantics.</li>
+<li><strong>Egger, J., and Vestal, R. (2025).</strong> <em>Trader-Application Form of Hoeffding’s Inequality.</em> FinTech 533, Duke MEng FinTech. Source of the trader-form reformulation (Eq. 1.4) and the threshold semantics this project’s live monitor uses.</li>
 </ul>
 </section>
 <section id="calibration" class="level3">
@@ -963,25 +964,26 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a><span class="fu">### Live monitoring</span></span>
 <span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Hoeffding, W. (1963).** *Probability Inequalities for Sums of Bounded Random Variables.* Journal of the American Statistical Association. The bound P<span class="co">[</span><span class="ot">X̄ − μ ≥ t | H₀</span><span class="co">]</span> ≤ exp(−2 t² N) for any bounded random variable underpins the live-monitoring framework's threshold semantics.</span>
-<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a><span class="fu">### Calibration</span></span>
-<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Niculescu-Mizil, A., and Caruana, R. (2005).** *Predicting Good Probabilities with Supervised Learning.* Proceedings of the 22nd International Conference on Machine Learning. Provides the sample-size threshold (n_pos minority class ≈ 200) that the auto-select between Platt scaling and isotonic regression uses in <span class="in">`src/models/calibration.py`</span>.</span>
-<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a><span class="fu">### Time-series statistics</span></span>
-<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Hodrick, R. J. (1992).** *Dividend Yields and Expected Stock Returns: Alternative Procedures for Inference and Measurement.* Review of Financial Studies. Defines the variance estimator for overlapping multi-period predictive regressions that the project's regression diagnostics use, in preference to naive Newey-West standard errors.</span>
-<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a><span class="fu">## Data limitations and how they shape the writeup</span></span>
-<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a>| Limitation | Where the writeup acknowledges it |</span>
-<span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a>|---|---|</span>
-<span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a>| OptionMetrics has 7-15% NaN on Greeks at deep-OTM/ITM strikes | <span class="co">[</span><span class="ot">Limitations</span><span class="co">](limitations.qmd)</span> |</span>
-<span id="cb1-56"><a href="#cb1-56" aria-hidden="true" tabindex="-1"></a>| Per-instrument bars from a separate WRDS query (not from the chain file itself) | <span class="co">[</span><span class="ot">Limitations</span><span class="co">](limitations.qmd)</span> |</span>
-<span id="cb1-57"><a href="#cb1-57" aria-hidden="true" tabindex="-1"></a>| TWS-sourced macro factors are point-in-time but not as-of-decision-time stamped | <span class="co">[</span><span class="ot">Limitations</span><span class="co">](limitations.qmd)</span> |</span>
-<span id="cb1-58"><a href="#cb1-58" aria-hidden="true" tabindex="-1"></a>| Daily-frequency RV in the engine, not 5-minute intraday | <span class="co">[</span><span class="ot">Limitations</span><span class="co">](limitations.qmd)</span> |</span>
-<span id="cb1-59"><a href="#cb1-59" aria-hidden="true" tabindex="-1"></a>| OOS sample only 7 years long | <span class="co">[</span><span class="ot">Limitations</span><span class="co">](limitations.qmd)</span> |</span>
-<span id="cb1-60"><a href="#cb1-60" aria-hidden="true" tabindex="-1"></a>| RUT and NDX dropped because their underlying OHLC was not available locally | <span class="co">[</span><span class="ot">Limitations</span><span class="co">](limitations.qmd)</span> |</span></code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Egger, J., and Vestal, R. (2025).** *Trader-Application Form of Hoeffding's Inequality.* FinTech 533, Duke MEng FinTech. Source of the trader-form reformulation (Eq. 1.4) and the threshold semantics this project's live monitor uses.</span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a><span class="fu">### Calibration</span></span>
+<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Niculescu-Mizil, A., and Caruana, R. (2005).** *Predicting Good Probabilities with Supervised Learning.* Proceedings of the 22nd International Conference on Machine Learning. Provides the sample-size threshold (n_pos minority class ≈ 200) that the auto-select between Platt scaling and isotonic regression uses in <span class="in">`src/models/calibration.py`</span>.</span>
+<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a><span class="fu">### Time-series statistics</span></span>
+<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Hodrick, R. J. (1992).** *Dividend Yields and Expected Stock Returns: Alternative Procedures for Inference and Measurement.* Review of Financial Studies. Defines the variance estimator for overlapping multi-period predictive regressions that the project's regression diagnostics use, in preference to naive Newey-West standard errors.</span>
+<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a><span class="fu">## Data limitations and how they shape the writeup</span></span>
+<span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a>| Limitation | Where the writeup acknowledges it |</span>
+<span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a>|---|---|</span>
+<span id="cb1-56"><a href="#cb1-56" aria-hidden="true" tabindex="-1"></a>| OptionMetrics has 7-15% NaN on Greeks at deep-OTM/ITM strikes | <span class="co">[</span><span class="ot">Limitations</span><span class="co">](limitations.qmd)</span> |</span>
+<span id="cb1-57"><a href="#cb1-57" aria-hidden="true" tabindex="-1"></a>| Per-instrument bars from a separate WRDS query (not from the chain file itself) | <span class="co">[</span><span class="ot">Limitations</span><span class="co">](limitations.qmd)</span> |</span>
+<span id="cb1-58"><a href="#cb1-58" aria-hidden="true" tabindex="-1"></a>| TWS-sourced macro factors are point-in-time but not as-of-decision-time stamped | <span class="co">[</span><span class="ot">Limitations</span><span class="co">](limitations.qmd)</span> |</span>
+<span id="cb1-59"><a href="#cb1-59" aria-hidden="true" tabindex="-1"></a>| Daily-frequency RV in the engine, not 5-minute intraday | <span class="co">[</span><span class="ot">Limitations</span><span class="co">](limitations.qmd)</span> |</span>
+<span id="cb1-60"><a href="#cb1-60" aria-hidden="true" tabindex="-1"></a>| OOS sample only 7 years long | <span class="co">[</span><span class="ot">Limitations</span><span class="co">](limitations.qmd)</span> |</span>
+<span id="cb1-61"><a href="#cb1-61" aria-hidden="true" tabindex="-1"></a>| RUT and NDX dropped because their underlying OHLC was not available locally | <span class="co">[</span><span class="ot">Limitations</span><span class="co">](limitations.qmd)</span> |</span></code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
 <footer class="footer">
